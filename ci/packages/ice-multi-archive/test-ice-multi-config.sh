@@ -35,3 +35,7 @@ test_ice_version ice342 3.4.2
 test_ice_version ice350 3.5.0
 test_ice_version ice351 3.5.1
 
+test_ice_version ice33 3.3.1
+test_ice_version ice34 3.4.2
+test_ice_version ice35 3.5.0
+

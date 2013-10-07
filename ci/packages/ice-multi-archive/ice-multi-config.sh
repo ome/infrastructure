@@ -29,15 +29,15 @@ prepend_path() {
 
 omero_env() {
     case "$1" in
-        ice331 )
+        ice33 | ice331 )
 	    _ICE_HOME=$ICE_BASEDIR/ice-3.3.1
             ;;
 
-        ice342 )
+        ice34 | ice342 )
 	    _ICE_HOME=$ICE_BASEDIR/ice-3.4.2
             ;;
 
-        ice350 )
+        ice35 | ice350 )
 	    _ICE_HOME=$ICE_BASEDIR/ice-3.5.0
             ;;
 
