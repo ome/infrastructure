@@ -40,6 +40,11 @@ wget http://www.zeroc.com/download/Ice/3.5/Ice-3.5.0-el6-x86_64-rpm.tar.gz
 mkdir ice-3.5.0
 tar -C ice-3.5.0 -zxvf Ice-3.5.0-el6-x86_64-rpm.tar.gz
 
+# Zeroc ice-3.5.1 RPMS
+wget http://www.zeroc.com/download/Ice/3.5/Ice-3.5.1-el6-x86_64-rpm.tar.gz
+mkdir ice-3.5.1
+tar -C ice-3.5.1 -zxvf Ice-3.5.1-el6-x86_64-rpm.tar.gz
+
 popd
 
 mkdir ice

@@ -5,13 +5,13 @@
 #
 # Change BASEDIR if the ice packages have been installed somewhere else.
 #
-# Example:
-#   $ eval $(~/ice/ice-multi-config.sh ice34)
+# Example: setup the environment for ice 3.4.2
+#   $ eval $(~/ice/ice-multi-config.sh ice342)
 #   $ echo $ICE_HOME
 #   $ echo $PYTHONPATH
 #   $ echo $PATH
 #   $ echo $LD_LIBRARY_PATH
-#   Build/run an ice34 version of OMERO
+#
 
 set -e
 
@@ -31,16 +31,20 @@ prepend_path() {
 
 omero_env() {
     case "$1" in
-        ice33 )
+        ice331 )
 	    _ICE_HOME=$BASEDIR/ice-3.3.1
             ;;
 
-        ice34 )
+        ice342 )
 	    _ICE_HOME=$BASEDIR/ice-3.4.2
             ;;
 
-        ice35 )
+        ice350 )
 	    _ICE_HOME=$BASEDIR/ice-3.5.0
+            ;;
+
+        ice351 )
+	    _ICE_HOME=$BASEDIR/ice-3.5.1
             ;;
 
         * )
