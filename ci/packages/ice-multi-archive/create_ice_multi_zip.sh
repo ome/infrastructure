@@ -54,7 +54,7 @@ for d in ../ice-rpms/ice-*/; do
     extract_ice_rpms $d
 done
 
-cp ../ice-multi-config.sh .
+cp ../ice-multi-config.sh ../test-ice-multi-config.sh .
 popd
 
 # Use tar because it's easier to handle symlinks
