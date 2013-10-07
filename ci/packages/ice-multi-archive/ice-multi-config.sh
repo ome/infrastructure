@@ -3,7 +3,8 @@
 # eval this file in bash, and provide arguments to set the environment
 # variables for building or running omero.
 #
-# Change BASEDIR if the ice packages have been installed somewhere else.
+# Set or change ICE_BASEDIR if the ice packages have been installed
+# somewhere else.
 #
 # Example: setup the environment for ice 3.4.2
 #   $ eval $(~/ice/ice-multi-config.sh ice342)
@@ -15,7 +16,7 @@
 
 set -e
 
-BASEDIR=$HOME/ice
+ICE_BASEDIR=${ICE_BASEDIR:-$HOME/ice}
 
 prepend_path() {
     VAR="$1"
