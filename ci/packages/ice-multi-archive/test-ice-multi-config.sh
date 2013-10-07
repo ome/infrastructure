@@ -1,8 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
 set -eu
 
-ICE_BASEDIR=${ICE_BASEDIR:-$HOME/ice}
+export ICE_BASEDIR=`dirname $0`
 
 failed()
 {
@@ -23,9 +23,12 @@ test_ice_version()
 
 	test "`icegridadmin --version`" = $2 || \
 		failed "icegridadmin version is incorrect"
-	python -c "import Ice, sys; sys.exit(0 if Ice.__file__.endswith('ice-$2/python/Ice.py') else 1)" || \
+	python -c "import Ice, sys; sys.exit(0 if Ice.__file__.endswith('ice-$2/python/Ice.py') or Ice.__file__.endswith('ice-$2/python/Ice.pyc') else 1)" || \
 		failed "python Ice version is incorrect"
+	echo
 }
+
+echo ICE_BASEDIR=$ICE_BASEDIR
 
 test_ice_version ice331 3.3.1
 test_ice_version ice342 3.4.2
