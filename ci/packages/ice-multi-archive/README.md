@@ -1,5 +1,5 @@
-Run `create_ice_multi_zip.sh` to build an archive containing Ice 3.3,
-3.4 and 3.5 RPMS for deployment on an OME Centos6 CI node.
+Run `create_ice_multi_zip.sh` to build an archive containing multiple
+Ice versions for deployment on an OME Centos6 CI node.
 
 To deploy:
 
@@ -8,11 +8,12 @@ To deploy:
 
 To set the environment for building/running OMERO
 
-    $ eval $(~/ice/ice-multi-config.sh ice34)
+    $ eval $(~/ice/ice-multi-config.sh ice342)
 
     $ echo $ICE_HOME
     $ echo $PYTHONPATH
     $ echo $PATH
     $ echo $LD_LIBRARY_PATH
 
-and similarly for `ice33` and `ice35`.
+See `ice-multi-config.sh` for other versions.
+
