@@ -30,19 +30,19 @@ prepend_path() {
 omero_env() {
     case "$1" in
         ice33 | ice331 )
-	    _ICE_HOME=$ICE_BASEDIR/ice-3.3.1
+            ICE_VERSION=3.3.1
             ;;
 
         ice34 | ice342 )
-	    _ICE_HOME=$ICE_BASEDIR/ice-3.4.2
+            ICE_VERSION=3.4.2
             ;;
 
         ice35 | ice350 )
-	    _ICE_HOME=$ICE_BASEDIR/ice-3.5.0
+            ICE_VERSION=3.5.0
             ;;
 
         ice351 )
-	    _ICE_HOME=$ICE_BASEDIR/ice-3.5.1
+            ICE_VERSION=3.5.1
             ;;
 
         * )
@@ -53,11 +53,14 @@ omero_env() {
             ;;
     esac
 
-    if [ -n "$_ICE_HOME" ]; then
-        echo export ICE_HOME=\"$_ICE_HOME\"
-        prepend_path PYTHONPATH "$_ICE_HOME/python"
-        prepend_path PATH "$_ICE_HOME/bin"
-        prepend_path LD_LIBRARY_PATH "$_ICE_HOME/lib64"
+    if [ -n "$ICE_VERSION" ]; then
+        ICE_HOME=$ICE_BASEDIR/ice-$ICE_VERSION
+        echo export ICE_HOME=\"$ICE_HOME\"
+        echo export ICE_VERSION=\"$ICE_VERSION\"
+        prepend_path PYTHONPATH "$ICE_HOME/python"
+        prepend_path PATH "$ICE_HOME/bin"
+        prepend_path LD_LIBRARY_PATH "$ICE_HOME/lib64"
+        prepend_path LIBPATH "$ICE_HOME/lib64"
     fi
 
     return 0
