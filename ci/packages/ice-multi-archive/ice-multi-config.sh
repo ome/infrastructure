@@ -20,7 +20,6 @@ prepend_path() {
     PRE="$2"
     eval CURRENT="\\\"\$$VAR\\\""
     if [ "$CURRENT" != \"\" ]; then
-        echo "CURRENT $VAR=$CURRENT"
         eval echo export "$VAR=\\\"$PRE:$CURRENT\\\""
     else
         echo export "$VAR=\"$PRE\""
