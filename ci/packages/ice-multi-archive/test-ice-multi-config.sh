@@ -16,10 +16,12 @@ test_ice_version()
 	eval $($ICE_BASEDIR/ice-multi-config.sh $1) || \
 		failed "Setting ice version"
 
+	echo ICE_VERSION=$ICE_VERSION
 	echo ICE_HOME=$ICE_HOME
 	echo PYTHONPATH=$PYTHONPATH
 	echo PATH=$PATH
 	echo LD_LIBRARY_PATH=$LD_LIBRARY_PATH
+	echo LIBPATH=$LIBPATH
 
 	test "`icegridadmin --version`" = $2 || \
 		failed "icegridadmin version is incorrect"
