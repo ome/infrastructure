@@ -13,7 +13,8 @@
 
 set -e
 
-ICE_BASEDIR=`dirname $0`
+ICE_SCRIPT="$(readlink -e "$0")"
+ICE_BASEDIR="$(dirname "$ICE_SCRIPT")"
 
 prepend_path() {
     VAR="$1"
