@@ -59,3 +59,7 @@ popd
 
 # Use tar because it's easier to handle symlinks
 tar -zcvf centos6-ice-multi.tar.gz ice
+
+# Self test
+ice/test-ice-multi-config.sh
+
