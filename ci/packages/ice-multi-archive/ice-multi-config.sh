@@ -28,7 +28,9 @@ prepend_path() {
 }
 
 omero_env() {
-    case "$1" in
+    # Remove - and . when matching
+    IV="${1//[-.]/}"
+    case "$IV" in
         ice33 | ice331 )
             ICE_VERSION=3.3.1
             ;;
