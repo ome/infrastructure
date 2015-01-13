@@ -47,6 +47,10 @@ omero_env() {
             ICE_VERSION=3.5.1
             ;;
 
+        ice36b )
+            ICE_VERSION=3.6b
+            ;;
+
         * )
             echo "ERROR: Unknown environment option: $1" >&2
             # This ensures the eval returns non-zero

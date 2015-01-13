@@ -45,6 +45,11 @@ wget http://www.zeroc.com/download/Ice/3.5/Ice-3.5.1-el6-x86_64-rpm.tar.gz
 mkdir ice-3.5.1
 tar -C ice-3.5.1 -zxvf Ice-3.5.1-el6-x86_64-rpm.tar.gz
 
+# Zeroc ice-3.6 beta RPMS
+wget http://zeroc.com/download/Ice/3.6/Ice-3.6b-el6-x86_64-rpm.tar.gz
+mkdir ice-3.6b
+tar -C ice-3.6b -zxvf Ice-3.6b-el6-x86_64-rpm.tar.gz
+
 popd
 
 mkdir ice
@@ -62,4 +67,3 @@ tar -zcvf centos6-ice-multi.tar.gz ice
 
 # Self test
 ice/test-ice-multi-config.sh
-
