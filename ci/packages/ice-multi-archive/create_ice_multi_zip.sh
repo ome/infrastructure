@@ -24,7 +24,7 @@ pip_install_local()
     pushd ice-$1
     PYTHONUSERBASE=$PWD/usr pip install --user zeroc-ice==$1
     rm python
-    ln -s lib/python2.6/site-packages python
+    ln -s usr/lib/python2.6/site-packages python
     popd
 }
 
