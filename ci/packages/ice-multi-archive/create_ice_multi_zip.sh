@@ -19,6 +19,15 @@ extract_ice_rpms()
     popd
 }
 
+pip_install_local()
+{
+    pushd ice-$1
+    PYTHONUSERBASE=$PWD/usr pip install --user zeroc-ice==$1
+    rm python
+    ln -s lib/python2.6/site-packages python
+    popd
+}
+
 mkdir ice-rpms
 pushd ice-rpms
 
@@ -45,11 +54,8 @@ wget http://www.zeroc.com/download/Ice/3.5/Ice-3.5.1-el6-x86_64-rpm.tar.gz
 mkdir ice-3.5.1
 tar -C ice-3.5.1 -zxvf Ice-3.5.1-el6-x86_64-rpm.tar.gz
 
-# Zeroc ice-3.6 beta RPMS
-wget http://zeroc.com/download/Ice/3.6/Ice-3.6b-el6-x86_64-rpm.tar.gz
-mkdir ice-3.6b
-tar -C ice-3.6b -zxvf Ice-3.6b-el6-x86_64-rpm.tar.gz
-
+# Zeroc ice-3.6.0 RPMS
+wget -nd -P ice-3.6.0 -r -np -l1 -A rpm https://zeroc.com/download/rpm/el6/noarch https://zeroc.com/download/rpm/el6/x86_64
 popd
 
 mkdir ice
@@ -57,6 +63,11 @@ pushd ice
 
 for d in ../ice-rpms/ice-*/; do
     extract_ice_rpms $d
+done
+
+# ice-3.6.0 requires python to be installed using pip
+for v in 3.6.0; do
+    pip_install_local $v
 done
 
 cp ../ice-multi-config.sh ../test-ice-multi-config.sh .
