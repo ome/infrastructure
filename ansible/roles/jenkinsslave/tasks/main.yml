@@ -1,0 +1,43 @@
+---
+# Setup a Jenkins-CI slave
+
+- name: system packages | install jenkins
+  yum:
+    pkg: "{{ item }}"
+    state: latest
+    enablerepo: extras
+  with_items:
+    - java-1.7.0-openjdk
+    - git
+
+- name: jenkins | create user
+  user:
+    name: "{{ jenkinsuser }}"
+    append: yes
+
+- name: jenkins | jenkins workspace
+  file:
+    path: "{{ jenkinsworkdir }}"
+    state: directory
+    owner: "{{ jenkinsuser }}"
+    group: "{{ jenkinsuser }}"
+
+- name: jenkins | ssh key
+  authorized_key:
+    user: "{{ jenkinsuser }}"
+    key: "{{ authorized_key }}"
+
+- name: jenkins | ssh access
+  lineinfile:
+    dest: /etc/security/access.conf
+    backup: yes
+    line: "+:{{ jenkinsuser }}:ALL"
+    insertbefore: "-:ALL EXCEPT root:ALL"
+  when: spacewalk < 1
+
+- name: jenkins | git config
+  template:
+    src: gitconfig.j2
+    dest: /home/{{ jenkinsuser }}/.gitconfig
+    owner: "{{ jenkinsuser }}"
+    group: "{{ jenkinsuser }}"
