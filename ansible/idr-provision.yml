@@ -1,0 +1,7 @@
+---
+# Playbook for provisioning Jenkins CI nodes
+
+- hosts: idr-docker
+  roles:
+  - role: docker-storage
+  - role: docker

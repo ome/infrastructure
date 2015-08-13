@@ -1,0 +1,2 @@
+# Docker storage options (created by Ansible)
+DOCKER_STORAGE_OPTIONS="--storage-opt dm.datadev=/dev/{{ vgname }}/docker-datadev --storage-opt dm.metadatadev=/dev/{{ vgname }}/docker-metadatadev --storage-opt dm.basesize={{ docker.basesize }}"

@@ -1,0 +1,43 @@
+---
+# Setup a Docker node
+
+- name: system packages | install docker
+  yum:
+    pkg: "{{ item }}"
+    state: latest
+    enablerepo: extras
+  with_items:
+    - docker
+
+- name: docker | configure storage
+  template:
+    src: docker-storage.j2
+    dest: /etc/sysconfig/docker-storage
+    backup: yes
+  notify:
+    - restart docker
+    # TODO: This isn't being triggered
+
+- name: docker | configure network
+  template:
+    src: docker-network.j2
+    dest: /etc/sysconfig/docker-network
+    backup: yes
+  when: dockerbridge is defined
+  notify:
+    - restart docker
+    # TODO: This isn't being triggered
+
+- name: docker | enable
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: docker | group members
+  user:
+    name: "{{ item }}"
+    groups: docker
+    append: yes
+  with_items: dockergroupmembers
+  when: dockergroupmembers is defined
