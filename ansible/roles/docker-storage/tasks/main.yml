@@ -1,33 +1,30 @@
 ---
 # Setup LVM partitions for Docker
 
-- name: storage | setup lvm docker-datadev
+- name: storage | setup lvm docker-pool
   lvol:
     vg: "{{ vgname }}"
-    lv: docker-datadev
-    size: "{{ docker.datasize }}"
-
-- name: storage | setup lvm docker-metadatadev
-  lvol:
-    vg: "{{ vgname }}"
-    lv: docker-metadatadev
-    size: "{{ docker.metadatasize }}"
+    lv: docker-pool
+    size: "{{ docker.poolsize }}"
+    opts: "{{ lvopts }} --thin --poolmetadatasize {{ docker.metadatasize }}"
 
 - name: storage | setup lvm docker-volume
   lvol:
     vg: "{{ vgname }}"
     lv: docker-volume
     size: "{{ docker.volumesize }}"
+    opts: "{{ lvopts }}"
 
 - name: storage | setup lvm scratch
   lvol:
     vg: "{{ vgname }}"
     lv: scratch
     size: "{{ scratchsize }}"
+    opts: "{{ lvopts }}"
 
 - name: storage | format
   filesystem:
-    fstype: ext4
+    fstype: "{{ lvfilesystem }}"
     dev: /dev/{{ vgname }}/{{ item }}
   with_items:
     - docker-volume
@@ -37,16 +34,16 @@
   mount:
     name: /scratch
     src: /dev/{{ vgname }}/scratch
-    dump: 1
-    passno: 2
-    fstype: ext4
+    dump: "1"
+    passno: "2"
+    fstype: "{{ lvfilesystem }}"
     state: mounted
 
 - name: storage | mount docker-volume
   mount:
     name: /var/lib/docker
     src: /dev/{{ vgname }}/docker-volume
-    dump: 1
-    passno: 2
-    fstype: ext4
+    dump: "1"
+    passno: "2"
+    fstype: "{{ lvfilesystem }}"
     state: mounted

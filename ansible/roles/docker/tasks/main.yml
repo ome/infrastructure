@@ -9,6 +9,15 @@
   with_items:
     - docker
 
+- name: docker | disable storage autoconfiguration
+  copy:
+    src: docker-storage-setup
+    dest: /etc/sysconfig/docker-storage-setup
+    backup: yes
+  notify:
+    - restart docker
+    # TODO: This isn't being triggered
+
 - name: docker | configure storage
   template:
     src: docker-storage.j2
@@ -34,10 +43,10 @@
     state: started
     enabled: yes
 
-- name: docker | group members
-  user:
-    name: "{{ item }}"
-    groups: docker
-    append: yes
-  with_items: dockergroupmembers
-  when: dockergroupmembers is defined
+#- name: docker | group members
+#  user:
+#    name: "{{ item }}"
+#    groups: docker
+#    append: yes
+#  with_items: dockergroupmembers
+#  when: dockergroupmembers is defined
