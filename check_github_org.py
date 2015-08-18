@@ -5,7 +5,7 @@ import sys
 from scc.git import get_github, get_token
 
 
-def check_members(org):
+def check_public_members(org):
     """Return the list of all members and check visibility"""
 
     # Return list of public and all members
@@ -19,8 +19,6 @@ def check_members(org):
     if diff:
         print 'Private members: %s' % ", ".join(diff)
 
-    return members
-
 
 def main(args):
     if len(args) is not 2:
@@ -29,7 +27,8 @@ def main(args):
     gh = get_github(get_token())
     org = gh.get_organization(args[1])
 
-    members = check_members(org)
+    check_public_members(org)
+
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv))
