@@ -1,0 +1,6 @@
+# Hosts can be part of multiple hostgroups, but note that vars will be
+# read for all groups that the host is a member of
+
+# Jenkins CI slave nodes
+[ci-jenkins-linux]
+localhost
