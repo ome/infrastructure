@@ -1,0 +1,28 @@
+---
+# tasks file for roles/omero-build-base
+
+- name: system packages | install java jre
+  yum:
+    name: "java-{{ item }}-openjdk"
+    state: latest
+    enablerepo: extras
+  with_items: java.jreversions
+
+- name: system packages | install java jdk
+  yum:
+    name: "java-{{ item }}-openjdk-devel"
+    state: latest
+    enablerepo: extras
+  with_items: java.jdkversions
+
+- name: system packages | basic build deps
+  yum:
+    name: "{{ item }}"
+    state: latest
+    enablerepo: extras
+  with_items:
+    - git
+    - tar
+    - unzip
+    - wget
+    - zip

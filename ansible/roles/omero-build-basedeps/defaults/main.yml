@@ -1,0 +1,7 @@
+---
+# defaults file for roles/omero-build-base
+java:
+  jreversions:
+    - 1.8.0
+  jdkversions:
+    - 1.8.0

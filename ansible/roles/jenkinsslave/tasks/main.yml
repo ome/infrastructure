@@ -1,15 +1,6 @@
 ---
 # Setup a Jenkins-CI slave
 
-- name: system packages | install jenkins
-  yum:
-    pkg: "{{ item }}"
-    state: latest
-    enablerepo: extras
-  with_items:
-    - java-1.7.0-openjdk
-    - git
-
 - name: jenkins | create user
   user:
     name: "{{ jenkinsuser }}"
