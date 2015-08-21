@@ -1,0 +1,94 @@
+---
+# tasks file for roles/omero-build
+
+- name: system packages | install epel repo
+  yum:
+    name: epel-release
+    state: latest
+
+- name: system packages | install build tools
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - ant
+    - ant-contrib
+    - make
+    - maven
+    - graphviz
+
+- name: system packages | install build libraries
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - libjpeg-turbo-devel
+    - libpng-devel
+    - libtiff-devel
+    - xerces-c-devel
+    - zlib-devel
+
+- name: system packages | install epel packages
+  yum:
+    name: "{{ item }}"
+    state: latest
+    enablerepo: epel
+  with_items:
+    - hdf5-devel
+    - GraphicsMagick
+
+# Ansible doesn't always detect when a downloaded file has beewn extracted,
+# so use `creates` in `unarchive`
+
+- name: cmake | download and extract
+  unarchive:
+    copy: no
+    creates: /opt/cmake-3.3.1-Linux-x86_64/bin/cmake
+    dest: /opt/
+    src: http://www.cmake.org/files/v3.3/cmake-3.3.1-Linux-x86_64.tar.gz
+
+- name: cmake | symlink
+  file:
+    force: yes
+    path: /opt/cmake
+    src: cmake-3.3.1-Linux-x86_64
+    state: link
+
+- name: exe4j packages | install
+  yum:
+    name: http://download-aws.ej-technologies.com/exe4j/exe4j_linux_5_0_1.rpm
+    state: present
+
+- name: findbugs | download and extract
+  unarchive:
+    copy: no
+    creates: /opt/findbugs-3.0.1/bin/findbugs
+    dest: /opt/
+    src: http://prdownloads.sourceforge.net/findbugs/findbugs-3.0.1.tar.gz?download
+
+- name: findbugs | symlink
+  file:
+    force: yes
+    path: /opt/findbugs
+    src: findbugs-3.0.1
+    state: link
+
+- name: ninja | create parent dir
+  file:
+    path: /opt/ninja-1.6.0
+    state: directory
+
+- name: ninja | download and extract
+  unarchive:
+    copy: no
+    # Ansible doesn't detect when this already exists, so use creates:
+    creates: /opt/ninja-1.6.0/ninja
+    dest: /opt/ninja-1.6.0/
+    src: https://github.com/martine/ninja/releases/download/v1.6.0/ninja-linux.zip
+
+- name: ninja | symlink
+  file:
+    force: yes
+    path: /opt/ninja
+    src: ninja-1.6.0
+    state: link
