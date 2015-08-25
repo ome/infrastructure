@@ -7,5 +7,5 @@ postgresversion: "9.4"
 postgressubpackages:
   - server
 
-# Systemd doesn't work insiode Docker
+# Systemd doesn't work inside Docker
 runningindocker: False
