@@ -5,3 +5,6 @@
   roles:
     - role: jenkinsslave
     - role: omero-build
+  vars:
+    - javajdkversions:
+      - 1.8.0

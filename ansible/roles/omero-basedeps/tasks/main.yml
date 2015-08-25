@@ -6,18 +6,6 @@
     name: epel-release
     state: latest
 
-- name: system packages | install java jre
-  yum:
-    name: "java-{{ item }}-openjdk"
-    state: latest
-  with_items: java.jreversions
-
-- name: system packages | install java jdk
-  yum:
-    name: "java-{{ item }}-openjdk-devel"
-    state: latest
-  with_items: java.jdkversions
-
 - name: system packages | basic build deps
   yum:
     name: "{{ item }}"
