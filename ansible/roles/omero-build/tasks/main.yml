@@ -1,11 +1,6 @@
 ---
 # tasks file for roles/omero-build
 
-- name: system packages | install epel repo
-  yum:
-    name: epel-release
-    state: latest
-
 - name: system packages | install build tools
   yum:
     name: "{{ item }}"
