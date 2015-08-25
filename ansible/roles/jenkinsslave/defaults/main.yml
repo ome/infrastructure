@@ -9,3 +9,5 @@ gitconfig:
   name: Firstname Lastname
   githubuser: example-user
   githubtoken: example-token
+
+spacewalk: False

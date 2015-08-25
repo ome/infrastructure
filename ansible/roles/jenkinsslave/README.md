@@ -16,6 +16,8 @@ Defaults: `defaults/main.yml`
 - `gitconfig.githubuser`: GitHub user
 - `gitconfig.githubtoken`: GitHub token
 
+- `spacewalk`: For internal OME use: Set to `True` if node is also maintained in spacewalk (this disables some operations), default False.
+
 Dependencies
 ------------
 

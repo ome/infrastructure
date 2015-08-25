@@ -24,7 +24,7 @@
     backup: yes
     line: "+:{{ jenkinsuser }}:ALL"
     insertbefore: "-:ALL EXCEPT root:ALL"
-  when: spacewalk < 1
+  when: not spacewalk
 
 - name: jenkins | git config
   template:
