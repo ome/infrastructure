@@ -19,10 +19,6 @@ Installation
 
         venvs/ansible/bin/pip install paramiko jinja2 PyYAML pycrypto six
 
-- You can probably install ansible into your virtualenv:
-
-      python install --help
-
 - Clone this repository:
 
         git clone https://github.com/openmicroscopy/infrastructure.git
@@ -38,10 +34,26 @@ Running the development ansible
 
         source venvs/ansible/bin/activate
 
-- Activate the Ansible development environment
+- Activate the Ansible development environment:
+
         source ansible/hacking/env-setup -q
 
 All ansible tools should now be in your path.
+
+Alternatively adjust the paths in this script as necessary:
+
+```shell
+#!/bin/sh
+source ~/venvs/ansible/bin/activate
+source ~/github/ansible/hacking/env-setup -q
+exec "$(basename $0)" "$@"
+```
+
+And copy/symlink it into a directory on your `PATH` as `ansible`, `ansible-playbook`, etc (the script should automatically run the ansible command corresponding to it's file name).
+
+As another alternative you can probably install ansible into your virtualenv (untested):
+
+        venvs/ansible/bin/python setup.py install --help
 
 Examples
 --------
