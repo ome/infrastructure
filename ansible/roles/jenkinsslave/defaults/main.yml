@@ -1,0 +1,11 @@
+---
+# defaults file for roles/jenkinsslave
+
+jenkinsuser: hudson
+jenkinsworkdir: /opt/hudson
+authorized_key: "ssh-rsa KEY"
+gitconfig:
+  user: email@example.org
+  name: Firstname Lastname
+  githubuser: example-user
+  githubtoken: example-token

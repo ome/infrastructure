@@ -2,15 +2,3 @@
 
 # General vars
 spacewalk: 1
-vgname: VolGroup00
-
-# Jenkins vars
-jenkinssize: 10g
-jenkinsuser: hudson
-jenkinsworkdir: /opt/hudson
-authorized_key: "ssh-rsa KEY"
-gitconfig:
-  user: email@example.org
-  name: Firstname Lastname
-  githubuser: example-user
-  githubtoken: example-token
