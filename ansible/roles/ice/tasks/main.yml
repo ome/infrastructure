@@ -1,0 +1,26 @@
+---
+# tasks file for roles/ice
+
+- name: zeroc ice | setup repository
+  get_url:
+    dest: /etc/yum.repos.d/zeroc-ice-el6.repo
+    url: http://download.zeroc.com/Ice/3.5/el6/zeroc-ice-el6.repo
+    # TODO: I can't get https to work :-(, even after disabling validation
+    # url: https://download.zeroc.com/Ice/3.5/el6/zeroc-ice-el6.repo
+    # validate_certs: False
+
+- name: zeroc ice | install runtime packages
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - ice
+    - ice-python
+    - ice-servers
+
+- name: zeroc ice | install additional packages
+  yum:
+    name: ice-{{ item }}
+    state: latest
+  with_items: icesubpackages
+  when: icesubpackages.0 is defined
