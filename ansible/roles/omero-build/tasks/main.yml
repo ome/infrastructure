@@ -8,9 +8,11 @@
   with_items:
     - ant
     - ant-contrib
+    - doxygen
+    - git
+    - graphviz
     - make
     - maven
-    - graphviz
 
 - name: system packages | install build libraries
   yum:
@@ -22,6 +24,15 @@
     - libtiff-devel
     - xerces-c-devel
     - zlib-devel
+
+- name: system packages | install python tools
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - python-devel
+    - python-pip
+    - python-virtualenv
 
 - name: system packages | install epel packages
   yum:
