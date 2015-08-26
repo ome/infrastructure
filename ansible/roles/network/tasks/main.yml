@@ -1,0 +1,8 @@
+---
+# Setup network interfaces
+
+- name: network | Setup nics
+  template: src=etc-sysconfig-network-scripts-ifcfg.j2 dest=/etc/sysconfig/network-scripts/ifcfg-{{ item.device }}
+  with_items: networkifaces
+  notify:
+    - restart network

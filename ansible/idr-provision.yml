@@ -3,6 +3,7 @@
 
 - hosts: idr-docker
   roles:
+  - role: network
   - role: docker-storage
   - role: lvm-partition
     lvname: scratch
