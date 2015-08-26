@@ -1,7 +1,10 @@
 ---
-# Playbook for provisioning Jenkins CI nodes
+# Playbook for provisioning IDR Docker nodes
 
 - hosts: idr-docker
   roles:
   - role: docker-storage
-  - role: docker
+  - role: lvm-partition
+    lvname: scratch
+    lvmount: /scratch
+    lvsize: "{{ scratchsize }}"

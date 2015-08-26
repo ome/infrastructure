@@ -1,0 +1,6 @@
+---
+# Playbook for maintaining IDR Docker nodes
+
+- hosts: idr-docker
+  roles:
+  - role: docker
