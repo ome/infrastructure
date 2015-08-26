@@ -16,7 +16,6 @@
     backup: yes
   notify:
     - restart docker
-    # TODO: This isn't being triggered
 
 - name: docker | configure storage
   template:
@@ -25,7 +24,6 @@
     backup: yes
   notify:
     - restart docker
-    # TODO: This isn't being triggered
 
 - name: docker | configure network
   template:
@@ -35,7 +33,23 @@
   when: dockerbridge is defined
   notify:
     - restart docker
-    # TODO: This isn't being triggered
+
+# In recent versions of CentOS7 Docker the docker group isn't created
+
+- name: docker | create docker group
+  group:
+    name: docker
+    state: present
+    system: yes
+
+- name: docker | set group for docker socket
+  replace:
+    backup: yes
+    dest: /etc/sysconfig/docker
+    regexp: ^\s*OPTIONS='--selinux-enabled'\s*$
+    replace: OPTIONS='--selinux-enabled -G docker'
+  notify:
+    - restart docker
 
 - name: docker | enable
   service:
@@ -43,10 +57,10 @@
     state: started
     enabled: yes
 
-#- name: docker | group members
-#  user:
-#    name: "{{ item }}"
-#    groups: docker
-#    append: yes
-#  with_items: dockergroupmembers
-#  when: dockergroupmembers is defined
+- name: docker | group members
+  user:
+    name: "{{ item }}"
+    groups: docker
+    append: yes
+  with_items: dockergroupmembers
+  when: dockergroupmembers is defined
