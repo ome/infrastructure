@@ -5,45 +5,5 @@
   lvol:
     vg: "{{ vgname }}"
     lv: docker-pool
-    size: "{{ docker.poolsize }}"
-    opts: "{{ lvopts }} --thin --poolmetadatasize {{ docker.metadatasize }}"
-
-- name: storage | setup lvm docker-volume
-  lvol:
-    vg: "{{ vgname }}"
-    lv: docker-volume
-    size: "{{ docker.volumesize }}"
-    opts: "{{ lvopts }}"
-
-- name: storage | setup lvm scratch
-  lvol:
-    vg: "{{ vgname }}"
-    lv: scratch
-    size: "{{ scratchsize }}"
-    opts: "{{ lvopts }}"
-
-- name: storage | format
-  filesystem:
-    fstype: "{{ lvfilesystem }}"
-    dev: /dev/{{ vgname }}/{{ item }}
-  with_items:
-    - docker-volume
-    - scratch
-
-- name: storage | mount scratch
-  mount:
-    name: /scratch
-    src: /dev/{{ vgname }}/scratch
-    dump: "1"
-    passno: "2"
-    fstype: "{{ lvfilesystem }}"
-    state: mounted
-
-- name: storage | mount docker-volume
-  mount:
-    name: /var/lib/docker
-    src: /dev/{{ vgname }}/docker-volume
-    dump: "1"
-    passno: "2"
-    fstype: "{{ lvfilesystem }}"
-    state: mounted
+    size: "{{ dockerpoolsize }}"
+    opts: "{{ lvopts }} --thin --poolmetadatasize {{ dockermetadatasize }}"
