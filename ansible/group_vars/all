@@ -3,8 +3,6 @@
 # General vars
 spacewalk: 1
 vgname: VolGroup00
-lvopts:
-lvfilesystem: ext4
 
 # Jenkins vars
 jenkinssize: 10g
