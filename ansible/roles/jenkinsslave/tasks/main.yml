@@ -1,15 +1,6 @@
 ---
 # Setup a Jenkins-CI slave
 
-- name: system packages | install jenkins
-  yum:
-    pkg: "{{ item }}"
-    state: latest
-    enablerepo: extras
-  with_items:
-    - java-1.7.0-openjdk
-    - git
-
 - name: jenkins | create user
   user:
     name: "{{ jenkinsuser }}"
@@ -33,7 +24,7 @@
     backup: yes
     line: "+:{{ jenkinsuser }}:ALL"
     insertbefore: "-:ALL EXCEPT root:ALL"
-  when: spacewalk < 1
+  when: not spacewalk
 
 - name: jenkins | git config
   template:

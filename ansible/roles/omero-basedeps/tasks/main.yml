@@ -1,0 +1,18 @@
+---
+# tasks file for roles/omero-build-base
+
+- name: system packages | install epel repo
+  yum:
+    name: epel-release
+    state: latest
+
+- name: system packages | basic build deps
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - rsync
+    - tar
+    - unzip
+    - wget
+    - zip

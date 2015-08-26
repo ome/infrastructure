@@ -1,0 +1,16 @@
+---
+# tasks file for roles/java
+
+- name: system packages | install java jre
+  yum:
+    name: "java-{{ item }}-openjdk"
+    state: latest
+  with_items: javajreversions
+  when: javajreversions.0 is defined
+
+- name: system packages | install java jdk
+  yum:
+    name: "java-{{ item }}-openjdk-devel"
+    state: latest
+  with_items: javajdkversions
+  when: javajdkversions.0 is defined

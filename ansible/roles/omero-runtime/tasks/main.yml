@@ -1,0 +1,15 @@
+---
+# tasks file for roles/omero-runtime
+
+- name: system packages | install python tools
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - Cython
+    - numpy
+    - python-pillow
+    - python-matplotlib
+    - python-numexpr
+    - python-tables
+    - scipy

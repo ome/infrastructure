@@ -1,0 +1,10 @@
+---
+# defaults file for roles/java
+
+# List of JRE versions to install
+javajreversions:
+  - 1.8.0
+
+# List of JDK versions to install
+#javajdkversions:
+#  - 1.8.0

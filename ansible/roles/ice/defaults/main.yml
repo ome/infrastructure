@@ -1,0 +1,5 @@
+---
+# defaults file for roles/ice
+
+# Sub-packages to install in addition to the runtime packages
+icesubpackages:

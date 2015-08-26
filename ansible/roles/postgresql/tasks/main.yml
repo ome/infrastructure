@@ -1,0 +1,50 @@
+---
+# tasks file for roles/postgres
+
+- name: postgres | setup repository
+  yum:
+    name: "{{ postgresqlrepourl }}"
+    state: present
+
+- name: postgres | install client packages
+  yum:
+    name: "{{ postgresqlbasename }}"
+    state: latest
+
+- name: postgres | install additional packages
+  yum:
+    name: "{{ postgresqlbasename }}-{{ item }}"
+    state: latest
+  with_items: postgressubpackages
+  when: postgressubpackages.0 is defined
+
+- name: postgres | initialise data directory
+  command: "{{ postgresqlbindir }}/{{ postgresqlbasename }}-setup initdb"
+  args:
+    creates: "{{ postgresqldatadir }}/PG_VERSION"
+  environment:
+    PGSETUP_INITDB_OPTIONS: --encoding=UTF8 --locale=en_US.UTF-8 --auth-host=md5
+  when: not runningindocker
+
+- name: postgres | initialise data directory
+  command: "{{ postgresqlbindir }}/initdb --pgdata={{ postgresqldatadir }} --encoding=UTF8 --locale=en_US.UTF-8 --auth-host=md5"
+  args:
+    creates: "{{ postgresqldatadir }}/PG_VERSION"
+  become_user: postgres
+  when: runningindocker
+
+- name: postgres | start service
+  service:
+    enabled: yes
+    name: postgresql-{{ postgresversion }}
+    state: started
+  when: not runningindocker
+
+# Command copied from /usr/lib/systemd/system/postgresql-9.4.service
+- name: postgres | start service
+  command: "{{ postgresqlbindir }}/pg_ctl start -D {{ postgresqldatadir }} -s -w -t 300"
+  args:
+    # Only run command if postmaster.pid doesn't exist
+    creates: "{{ postgresqldatadir }}/postmaster.pid"
+  become_user: postgres
+  when: runningindocker
