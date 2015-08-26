@@ -8,3 +8,7 @@
     lvname: scratch
     lvmount: /scratch
     lvsize: "{{ scratchsize }}"
+  - role: lvm-partition
+    lvname: idrdata1
+    lvmount: /idr
+    lvsize: "{{ idrvolumesize }}"
