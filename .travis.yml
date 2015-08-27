@@ -1,5 +1,6 @@
 language: python
 sudo: false
+cache: pip
 
 install:
   - pip install ansible
