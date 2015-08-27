@@ -3,5 +3,8 @@
 
 - hosts: ci-jenkins-linux
   roles:
-  - role: jenkinsslave-storage
+  - role: lvm-partition
+    lvname: jenkins-workdir
+    lvmount: "{{ jenkinsworkdir }}"
+    lvsize: "{{ jenkinssize }}"
   - role: jenkinsslave
