@@ -1,0 +1,8 @@
+language: python
+sudo: false
+
+install:
+  - pip install ansible
+
+script:
+    - ansible-playbook -i ansible/example-hosts --syntax-check ansible/*.yml
