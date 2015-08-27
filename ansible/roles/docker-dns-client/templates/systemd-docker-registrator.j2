@@ -1,0 +1,24 @@
+[Unit]
+Description=Docker registrator
+Requires=docker.service
+# TODO: Should work with a remote etcd daemon
+Requires=docker-{{ dockerdns.etcd }}.service
+After=docker-{{ dockerdns.etcd }}.service
+
+[Service]
+Restart=on-failure
+RestartSec=10
+ExecStartPre=-/usr/bin/docker kill registrator
+ExecStartPre=-/usr/bin/docker rm registrator
+ExecStart=/usr/bin/docker run --name registrator \
+    --link {{ dockerdns.etcd }}:etcd \
+    -v /var/run/docker.sock:/tmp/docker.sock \
+    manics/registrator \
+    -iponly \
+    -ttl 60 \
+    -ttl-refresh=30 \
+    skydns2://etcd:2379/{{ dockerdns.domain }}
+ExecStop=/usr/bin/docker stop registrator
+
+[Install]
+WantedBy=multi-user.target

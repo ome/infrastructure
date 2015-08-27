@@ -1,0 +1,21 @@
+[Unit]
+Description=Docker etcd
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=on-failure
+RestartSec=10
+ExecStartPre=-/usr/bin/docker kill {{ dockerdns.etcd }}
+ExecStartPre=-/usr/bin/docker rm {{ dockerdns.etcd }}
+#ExecStart=/usr/bin/docker run --name {{ dockerdns.etcd }} \
+#    quay.io/coreos/etcd \
+#    --listen-client-urls http://0.0.0.0:2379 \
+#    --advertise-client-urls http://0.0.0.0:2379
+ExecStart=/usr/bin/docker run --name {{ dockerdns.etcd }} \
+    quay.io/coreos/etcd:v0.4.8 \
+    -addr localhost:2379
+ExecStop=/usr/bin/docker stop {{ dockerdns.etcd }}
+
+[Install]
+WantedBy=multi-user.target

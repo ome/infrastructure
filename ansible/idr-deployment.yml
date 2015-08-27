@@ -4,4 +4,6 @@
 - hosts: idr-docker
   roles:
   - role: docker
+  - role: docker-dns-server
+  - role: docker-dns-client
   - role: samba-client
