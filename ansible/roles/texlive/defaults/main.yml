@@ -1,0 +1,4 @@
+---
+
+texlive_dest: /usr/local/texlive
+texlive_version: 2014
