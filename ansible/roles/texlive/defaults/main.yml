@@ -1,4 +1,4 @@
 ---
 
-texlive_dest: /usr/local/texlive
+texlive_dest: /opt/texlive
 texlive_version: 2014
