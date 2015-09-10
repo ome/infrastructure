@@ -2,15 +2,27 @@
   yum: name={{ item }} state=latest
   with_items:
     - wget
+    - perl-Tk
+    - perl-Digest-MD5
+
 - name: texlive | get install-tl
   get_url: url=http://mirror.unl.edu/ctan/systems/texlive/tlnet/install-tl-unx.tar.gz dest=/tmp/install-tl-unx.tar.gz
-- name: texlive | unarchive install-tl
-  command: chdir=/tmp tar xfz /tmp/install-tl-unx.tar.gz
+
+- name: texlive | download and extract installer
+  unarchive:
+    copy: no
+    creates: /tmp/install-tl-unx.tar.gz
+    dest: /tmp/
+    src: http://www.cmake.org/files/v3.3/cmake-3.3.1-Linux-x86_64.tar.gz
+
 - name: texlive | copy profile
   copy: src=install-tl.profile dest=/tmp/install-tl.profile
+
 - name: texlive | install texlive
   shell: cd /tmp/install-tl-* && ./install-tl -profile /tmp/install-tl.profile
+
 - name:  texlive | Symlink 
   shell: ln -s {{ textlive_dest }}/texmf-var/fonts/conf/texlive-fontconfig.conf /etc/fonts/conf.d/09-texlive.conf
+
 - name:  texlive | rebuild font cache
   shell: fc-cache -rsfv
