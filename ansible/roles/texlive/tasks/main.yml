@@ -17,8 +17,8 @@
 
 # Commenting out to test symlink
 #- name: texlive | install texlive
-#  shell: rm /tmp/install-tl-unx.tar.gz
-#  shell: cd /tmp/install-tl-* && ./install-tl -profile /tmp/install-tl.profile
+  shell: rm /tmp/install-tl-unx.tar.gz
+  shell: cd /tmp/install-tl-* && ./install-tl -profile /tmp/install-tl.profile
 
 - name:  texlive | Symlink 
   file: 
