@@ -2,3 +2,9 @@
 
 texlive_dest: /opt/texlive
 texlive_version: 2014
+# The above is duplicated (!) in the installer profile file - ../files/
+# Be good to get the following in here, and have them written to the 'installer profile' file.
+#TEXMFLOCAL /opt/texlive/texmf-local
+#TEXMFSYSCONFIG /opt/texlive/2014/texmf-config
+#TEXMFSYSVAR /opt/texlive/2014/texmf-var
+#TEXMFVAR ~/.texlive2014/texmf-var

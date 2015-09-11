@@ -3,6 +3,10 @@
 # installation profile at installation time.
 selected_scheme scheme-custom
 TEXDIR /opt/texlive/2014
+TEXMFLOCAL /opt/texlive/texmf-local
+TEXMFSYSCONFIG /opt/texlive/2014/texmf-config
+TEXMFSYSVAR /opt/texlive/2014/texmf-var
+TEXMFVAR ~/.texlive2014/texmf-var
 binary_x86_64-linux 1
 collection-basic 1
 collection-fontsextra 1
