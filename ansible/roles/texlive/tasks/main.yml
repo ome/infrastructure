@@ -15,7 +15,39 @@
 - name: texlive | copy profile
   copy: src=install-tl.profile dest=/tmp/install-tl.profile
 
-# Commenting out to test symlink
+# Install path variables to the install-tl.profile file rather than
+# leaving them hard-coded in the profile file. This should be a foreach 
+# and a list, if such a thing is possible...
+- name: texlive | update profile file with install locations | TEXDIR
+  replace: 
+    regexp: '\$TEXDIR'
+    replace: "{{ TEXDIR }}"
+    dest: /tmp/install-tl.profile
+
+- name: texlive | update profile file with install locations | TEXMFLOCAL 
+  replace: 
+    regexp: '\$TEXMFLOCAL'
+    replace: "{{ TEXMFLOCAL }}"
+    dest: /tmp/install-tl.profile
+
+- name: texlive | update profile file with install locations | TEXMFSYSCONFIG
+  replace: 
+    regexp: '\$TEXMFSYSCONFIG'
+    replace: "{{ TEXMFSYSCONFIG}}"
+    dest: /tmp/install-tl.profile
+
+- name: texlive | update profile file with install locations | TEXMFSYSVAR 
+  replace: 
+    regexp: '\$TEXMFSYSVAR'
+    replace: "{{ TEXMFSYSVAR }}"
+    dest: /tmp/install-tl.profile
+
+- name: texlive | update profile file with install locations | TEXMFVAR
+  replace: 
+    regexp: '\$TEXMFVAR'
+    replace: "{{ TEXMFVAR }}"
+    dest: /tmp/install-tl.profile
+
 - name: texlive | install texlive
   shell: rm /tmp/install-tl-unx.tar.gz
   shell: cd /tmp/install-tl-* && ./install-tl -profile /tmp/install-tl.profile
@@ -24,7 +56,7 @@
   file: 
     force: yes
     path: /etc/fonts/conf.d/09-texlive.conf
-    src: "{{ texlive_dest }}/{{ texlive_version }}/texmf-var/fonts/conf/texlive-fontconfig.conf"
+    src: "{{ TEXDIR }}/texmf-var/fonts/conf/texlive-fontconfig.conf"
     state: link
 
 - name:  texlive | rebuild font cache
