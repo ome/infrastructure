@@ -20,7 +20,11 @@
   shell: cd /tmp/install-tl-* && ./install-tl -profile /tmp/install-tl.profile
 
 - name:  texlive | Symlink 
-  shell: ln -s {{ texlive_dest }}/texmf-var/fonts/conf/texlive-fontconfig.conf /etc/fonts/conf.d/09-texlive.conf
+  file: 
+    force: yes
+    path: /etc/fonts/conf.d/09-texlive.conf
+    src: {{ texlive_dest }}/{{ texlive_version }}/texmf-var/fonts/conf/texlive-fontconfig.conf
+    state: link
 
 - name:  texlive | rebuild font cache
   shell: fc-cache -rsfv
