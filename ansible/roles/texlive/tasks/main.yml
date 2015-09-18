@@ -4,6 +4,10 @@
     - perl-Tk
     - perl-Digest-MD5
 
+- name: texlive | create the temp install folder
+  file: path="{{ texlive_dest }}/tmp/" state=directory mode=0755
+    
+
 - name: texlive | download and extract installer
   unarchive:
     copy: no
@@ -14,10 +18,11 @@
     dest: "{{ texlive_dest }}/tmp/"
     src: http://mirror.unl.edu/ctan/systems/texlive/tlnet/install-tl-unx.tar.gz
 
-- name: texlive | rename the installer
+- name: texlive | rename the installer folder
   shell: mv install-tl-* install-tl-ansible
   args:
     chdir: "{{ texlive_dest }}/tmp/"
+    creates: "{{ texlive_dest }}/tmp/install-tl-ansbile"
 
 - name: texlive | copy profile
   copy: src=install-tl.profile dest=/tmp/install-tl.profile
@@ -60,7 +65,7 @@
   #command: rm /tmp/install-tl-unx.tar.gz removes=/tmp/install-tl-unx.tar.gz
   command: ./install-tl -profile /tmp/install-tl.profile
   args:
-    chdir: "{{ texlive_dest }}/tmp/"
+    chdir: "{{ texlive_dest }}/tmp/install-tl-ansible"
 
 - name:  texlive | Symlink 
   file: 
