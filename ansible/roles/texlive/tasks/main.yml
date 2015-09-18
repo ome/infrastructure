@@ -1,16 +1,23 @@
 - name: texlive | prereq
   yum: name={{ item }} state=latest
   with_items:
-    - wget
     - perl-Tk
     - perl-Digest-MD5
 
 - name: texlive | download and extract installer
   unarchive:
     copy: no
-    creates: /tmp/install-tl-unx.tar.gz
-    dest: /tmp/
+    # Checking whether this version of texlive is installed
+    # before downloading the installer.
+    # Can the 'unarchive' test for a directory?
+    creates: "{{ TEXDIR }}"
+    dest: "{{ texlive_dest }}/tmp/"
     src: http://mirror.unl.edu/ctan/systems/texlive/tlnet/install-tl-unx.tar.gz
+
+- name: texlive | rename the installer
+  shell: mv install-tl-* install-tl-ansible
+  args:
+    chdir: "{{ texlive_dest }}/tmp/"
 
 - name: texlive | copy profile
   copy: src=install-tl.profile dest=/tmp/install-tl.profile
@@ -49,8 +56,11 @@
     dest: /tmp/install-tl.profile
 
 - name: texlive | install texlive
-  shell: rm /tmp/install-tl-unx.tar.gz
-  shell: cd /tmp/install-tl-* && ./install-tl -profile /tmp/install-tl.profile
+  # clean up the whole temp dir at the end
+  #command: rm /tmp/install-tl-unx.tar.gz removes=/tmp/install-tl-unx.tar.gz
+  command: ./install-tl -profile /tmp/install-tl.profile
+  args:
+    chdir: "{{ texlive_dest }}/tmp/"
 
 - name:  texlive | Symlink 
   file: 
@@ -60,4 +70,4 @@
     state: link
 
 - name:  texlive | rebuild font cache
-  shell: fc-cache -rsfv
+  command: fc-cache -rsfv
