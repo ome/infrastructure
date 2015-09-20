@@ -7,7 +7,6 @@
 - name: texlive | create the temp install folder
   file: path="{{ texlive_dest }}/tmp/" state=directory mode=0755
     
-
 - name: texlive | download and extract installer
   unarchive:
     copy: no
@@ -22,43 +21,10 @@
   shell: mv install-tl-* install-tl-ansible
   args:
     chdir: "{{ texlive_dest }}/tmp/"
-    creates: "{{ texlive_dest }}/tmp/install-tl-ansbile"
+    creates: "{{ texlive_dest }}/tmp/install-tl-ansible/"
 
-- name: texlive | copy profile
-  copy: src=install-tl.profile dest=/tmp/install-tl.profile
-
-# Install path variables to the install-tl.profile file rather than
-# leaving them hard-coded in the profile file. This should be a foreach 
-# and a list, if such a thing is possible...
-- name: texlive | update profile file with install locations | TEXDIR
-  replace: 
-    regexp: '\$TEXDIR'
-    replace: "{{ TEXDIR }}"
-    dest: /tmp/install-tl.profile
-
-- name: texlive | update profile file with install locations | TEXMFLOCAL 
-  replace: 
-    regexp: '\$TEXMFLOCAL'
-    replace: "{{ TEXMFLOCAL }}"
-    dest: /tmp/install-tl.profile
-
-- name: texlive | update profile file with install locations | TEXMFSYSCONFIG
-  replace: 
-    regexp: '\$TEXMFSYSCONFIG'
-    replace: "{{ TEXMFSYSCONFIG}}"
-    dest: /tmp/install-tl.profile
-
-- name: texlive | update profile file with install locations | TEXMFSYSVAR 
-  replace: 
-    regexp: '\$TEXMFSYSVAR'
-    replace: "{{ TEXMFSYSVAR }}"
-    dest: /tmp/install-tl.profile
-
-- name: texlive | update profile file with install locations | TEXMFVAR
-  replace: 
-    regexp: '\$TEXMFVAR'
-    replace: "{{ TEXMFVAR }}"
-    dest: /tmp/install-tl.profile
+- name: texlive | copy out the templated install-tl.profile
+  template: src=install-tl.profile dest=/tmp/install-tl.profile
 
 - name: texlive | install texlive
   # clean up the whole temp dir at the end

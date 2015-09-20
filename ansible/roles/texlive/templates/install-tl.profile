@@ -2,11 +2,11 @@
 # It will NOT be updated and reflects only the
 # installation profile at installation time.
 selected_scheme scheme-custom
-TEXDIR $TEXDIR
-TEXMFLOCAL $TEXMFLOCAL 
-TEXMFSYSCONFIG $TEXMFSYSCONFIG 
-TEXMFSYSVAR $TEXMFSYSVAR 
-TEXMFVAR $TEXMFVAR 
+TEXDIR {{ TEXDIR }}
+TEXMFLOCAL {{ TEXMFLOCAL }}
+TEXMFSYSCONFIG {{ TEXMFSYSCONFIG }}
+TEXMFSYSVAR {{ TEXMFSYSVAR }}
+TEXMFVAR {{ TEXMFVAR }}
 binary_x86_64-linux 1
 collection-basic 1
 collection-fontsextra 1
