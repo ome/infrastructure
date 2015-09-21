@@ -5,9 +5,9 @@
     - perl-Digest-MD5
     - wget
 
-- name: texlive | check for TEXDIR path existence
+- name: texlive | check for texlive_TEXDIR path existence
   stat: 
-    path: "{{ TEXDIR }}"
+    path: "{{ texlive_TEXDIR }}"
   register: texdir_path
 
 - name: texlive | create the temp install folder
@@ -22,7 +22,7 @@
     copy: no
     # Checking whether this version of texlive has been
     # extracted to the proper folder before downloading the installer.
-    creates: "{{ TEXDIR }}/bin/x86_64-linux/pdftex"
+    creates: "{{ texlive_TEXDIR }}/bin/x86_64-linux/pdftex"
     dest: "{{ texlive_dest }}/tmp/"
     src: http://mirror.unl.edu/ctan/systems/texlive/tlnet/install-tl-unx.tar.gz
 
@@ -31,28 +31,28 @@
   args:
     chdir: "{{ texlive_dest }}/tmp/"
     creates: "{{ texlive_dest }}/tmp/install-tl-ansible/"
-  # Only when lacking the folder TEXDIR - created by installer
+  # Only when lacking the folder texlive_TEXDIR - created by installer
   when: texdir_path.stat.exists == false
 
 - name: texlive | copy out the templated install-tl.profile
   template: 
     src: install-tl.profile.j2
     dest: "{{ texlive_dest }}/tmp/install-tl-ansible/install-tl.profile"
-  # Only when lacking the folder TEXDIR - created by installer
+  # Only when lacking the folder texlive_TEXDIR - created by installer
   when: texdir_path.stat.exists == false
 
 - name: texlive | install texlive
   command: ./install-tl -profile install-tl.profile
   args:
     chdir: "{{ texlive_dest }}/tmp/install-tl-ansible"
-  # Only when lacking the folder TEXDIR - created by this installer run
+  # Only when lacking the folder texlive_TEXDIR - created by this installer run
   when: texdir_path.stat.exists == false
 
 - name:  texlive | Font config Symlink 
   file: 
     force: yes
     path: /etc/fonts/conf.d/09-texlive.conf
-    src: "{{ TEXDIR }}/texmf-var/fonts/conf/texlive-fontconfig.conf"
+    src: "{{ texlive_TEXDIR }}/texmf-var/fonts/conf/texlive-fontconfig.conf"
     state: link
 
 - name:  texlive | rebuild font cache

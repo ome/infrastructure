@@ -15,12 +15,7 @@ contains the installation folder variables which are writeen to install-tl.profi
 
 - `texlive_dest`: Top level install-to folder, Default of /opt/texlive
 - `texlive_version`: "Version" part of install-to folder. Default of `2015`.
-
 - `TEXDIR`: specifies where to install texlive. Default of `/opt/texlive/2015`, constructed from  "{{ texlive_dest }}/{{ texlive_version }}".
-- `TEXMFLOCAL`: constructed from  "{{ texlive_dest }}/texmf-local".
-- `TEXMFSYSCONFIG`: constructed from  "{{ TEXDIR }}/texmf-config".
-- `TEXMFSYSVAR`: constructed from  "{{ TEXDIR }}/texmf-var".
-- `TEXMFVAR`: constructed from  "~/.texlive{{ texlive_version }}/texmf-var".
 
 
 Dependencies

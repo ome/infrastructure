@@ -2,8 +2,4 @@
 
 texlive_dest: /opt/texlive
 texlive_version: 2015
-TEXDIR: "{{ texlive_dest }}/{{ texlive_version }}"
-TEXMFLOCAL: "{{ texlive_dest }}/texmf-local"
-TEXMFSYSCONFIG: "{{ TEXDIR }}/texmf-config"
-TEXMFSYSVAR: "{{ TEXDIR }}/texmf-var"
-TEXMFVAR: "~/.texlive{{ texlive_version }}/texmf-var"
+texlive_TEXDIR: "{{ texlive_dest }}/{{ texlive_version }}"
