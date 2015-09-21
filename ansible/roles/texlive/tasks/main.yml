@@ -24,12 +24,10 @@
     creates: "{{ texlive_dest }}/tmp/install-tl-ansible/"
 
 - name: texlive | copy out the templated install-tl.profile
-  template: src=install-tl.profile dest=/tmp/install-tl.profile
+  template: src=install-tl.profile dest="{{ texlive_dest }}/tmp/install-tl-ansible/install-tl.profile"
 
 - name: texlive | install texlive
-  # clean up the whole temp dir at the end
-  #command: rm /tmp/install-tl-unx.tar.gz removes=/tmp/install-tl-unx.tar.gz
-  command: ./install-tl -profile /tmp/install-tl.profile
+  command: ./install-tl -profile install-tl.profile
   args:
     chdir: "{{ texlive_dest }}/tmp/install-tl-ansible"
 
@@ -42,3 +40,6 @@
 
 - name:  texlive | rebuild font cache
   command: fc-cache -rsfv
+
+- name:  texlive | clean up temp installation files dir
+  command: rm -rf "{{ texlive_dest }}/tmp"
