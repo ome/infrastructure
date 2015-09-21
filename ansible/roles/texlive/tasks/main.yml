@@ -42,4 +42,5 @@
   command: fc-cache -rsfv
 
 - name:  texlive | clean up temp installation files dir
-  command: rm -rf "{{ texlive_dest }}/tmp"
+  file: path="{{ texlive_dest }}/tmp" state=absent
+
