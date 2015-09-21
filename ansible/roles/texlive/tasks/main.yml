@@ -36,7 +36,7 @@
 
 - name: texlive | copy out the templated install-tl.profile
   template: 
-    src: install-tl.profile 
+    src: install-tl.profile.j2
     dest: "{{ texlive_dest }}/tmp/install-tl-ansible/install-tl.profile"
   # Only when lacking the folder TEXDIR - created by installer
   when: texdir_path.stat.exists == false
@@ -65,7 +65,7 @@
 
 - name: texlive | set the global path to include texlive bin
   template:
-    src: texlive-path.sh
+    src: texlive-path.sh.j2
     dest: "/etc/profile.d/texlive-path.sh"
     # If the file exists, and is different to our version, 
     # overwrite the dest with our version.
