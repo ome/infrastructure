@@ -3,17 +3,26 @@
   with_items:
     - perl-Tk
     - perl-Digest-MD5
+    - wget
+
+- name: texlive | check for TEXDIR path existence
+  stat: 
+    path: "{{ TEXDIR }}"
+  register: texdir_path
 
 - name: texlive | create the temp install folder
-  file: path="{{ texlive_dest }}/tmp/" state=directory mode=0755
+  file: 
+    path: "{{ texlive_dest }}/tmp/" 
+    state: directory 
+    mode: 0755
+  when: texdir_path.stat.exists == false
     
 - name: texlive | download and extract installer
   unarchive:
     copy: no
-    # Checking whether this version of texlive is installed
-    # before downloading the installer.
-    # Can the 'unarchive' test for a directory?
-    creates: "{{ TEXDIR }}"
+    # Checking whether this version of texlive has been
+    # extracted to the proper folder before downloading the installer.
+    creates: "{{ TEXDIR }}/bin/x86_64-linux/pdftex"
     dest: "{{ texlive_dest }}/tmp/"
     src: http://mirror.unl.edu/ctan/systems/texlive/tlnet/install-tl-unx.tar.gz
 
@@ -22,16 +31,24 @@
   args:
     chdir: "{{ texlive_dest }}/tmp/"
     creates: "{{ texlive_dest }}/tmp/install-tl-ansible/"
+  # Only when lacking the folder TEXDIR - created by installer
+  when: texdir_path.stat.exists == false
 
 - name: texlive | copy out the templated install-tl.profile
-  template: src=install-tl.profile dest="{{ texlive_dest }}/tmp/install-tl-ansible/install-tl.profile"
+  template: 
+    src: install-tl.profile 
+    dest: "{{ texlive_dest }}/tmp/install-tl-ansible/install-tl.profile"
+  # Only when lacking the folder TEXDIR - created by installer
+  when: texdir_path.stat.exists == false
 
 - name: texlive | install texlive
   command: ./install-tl -profile install-tl.profile
   args:
     chdir: "{{ texlive_dest }}/tmp/install-tl-ansible"
+  # Only when lacking the folder TEXDIR - created by this installer run
+  when: texdir_path.stat.exists == false
 
-- name:  texlive | Symlink 
+- name:  texlive | Font config Symlink 
   file: 
     force: yes
     path: /etc/fonts/conf.d/09-texlive.conf
@@ -42,5 +59,15 @@
   command: fc-cache -rsfv
 
 - name:  texlive | clean up temp installation files dir
-  file: path="{{ texlive_dest }}/tmp" state=absent
+  file: 
+    path: "{{ texlive_dest }}/tmp" 
+    state: absent
 
+- name: texlive | set the global path to include texlive bin
+  template:
+    src: texlive-path.sh
+    dest: "/etc/profile.d/texlive-path.sh"
+    # If the file exists, and is different to our version, 
+    # overwrite the dest with our version.
+    force: yes
+    mode: 0644
