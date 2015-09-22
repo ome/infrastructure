@@ -15,6 +15,7 @@
     path: "{{ texlive_dest }}/tmp/" 
     state: directory 
     mode: 0755
+  # Only when lacking the folder texlive_TEXDIR - created by installer
   when: texdir_path.stat.exists == false
     
 - name: texlive | download and extract installer
@@ -57,6 +58,9 @@
 
 - name:  texlive | rebuild font cache
   command: fc-cache -rsfv
+  # Only when the texlive_TEXDIR folder was missing when tested at the 
+  # start of the play, i.e. it wasn't installed (it will exist now)
+  when: texdir_path.stat.exists == false
 
 - name:  texlive | clean up temp installation files dir
   file: 
