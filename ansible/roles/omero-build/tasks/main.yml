@@ -49,15 +49,15 @@
 - name: cmake | download and extract
   unarchive:
     copy: no
-    creates: /opt/cmake-3.3.1-Linux-x86_64/bin/cmake
+    creates: /opt/cmake-3.3.2-Linux-x86_64/bin/cmake
     dest: /opt/
-    src: http://www.cmake.org/files/v3.3/cmake-3.3.1-Linux-x86_64.tar.gz
+    src: http://www.cmake.org/files/v3.3/cmake-3.3.2-Linux-x86_64.tar.gz
 
 - name: cmake | symlink
   file:
     force: yes
     path: /opt/cmake
-    src: cmake-3.3.1-Linux-x86_64
+    src: cmake-3.3.2-Linux-x86_64
     state: link
 
 - name: exe4j packages | install
