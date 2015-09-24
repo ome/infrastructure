@@ -4,7 +4,7 @@
 - hosts: ci-jenkins-linux
   roles:
   - role: lvm-partition
-    lvname: jenkins-workdir
-    lvmount: "{{ jenkinsworkdir }}"
-    lvsize: "{{ jenkinssize }}"
+    lvm_lvname: jenkins-workdir
+    lvm_lvmount: "{{ jenkinsworkdir }}"
+    lvm_lvsize: "{{ jenkinssize }}"
   - role: jenkinsslave
