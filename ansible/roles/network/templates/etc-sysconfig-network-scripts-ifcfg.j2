@@ -1,0 +1,33 @@
+DEVICE={{ item.device }}
+BOOTPROTO=none
+IPV6INIT=yes
+MTU=1500
+NM_CONTROLLED=yes
+ONBOOT=yes
+{% if 'ip' in item %}
+IPADDR={{ item.ip }}
+{% endif %}
+{% if 'netmask' in item %}
+NETMASK={{ item.netmask }}
+{% endif %}
+{% if 'type' in item %}
+TYPE={{ item.type }}
+{% else %}
+TYPE=Ethernet
+{% endif %}
+{% if 'hwaddr' in item %}
+HWADDR={{ item.hwaddr }}
+{% endif %}
+{% if 'gateway' in item %}
+GATEWAY={{ item.gateway }}
+{% endif %}
+{% if 'dns1' in item %}
+DNS1={{ item.dns1 }}
+{% endif %}
+{% if 'dns2' in item %}
+DNS2={{ item.dns2 }}
+{% endif %}
+{% if 'bridge' in item %}
+BRIDGE={{ item.bridge }}
+{% endif %}
+USERCTL=no

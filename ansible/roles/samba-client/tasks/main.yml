@@ -1,0 +1,10 @@
+---
+# Install Samba client packages for mounts
+
+- name: samba mounts | install clients
+  yum:
+    pkg: "{{ item }}"
+    state: latest
+  with_items:
+    - samba-client
+    - cifs-utils

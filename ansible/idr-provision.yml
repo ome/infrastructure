@@ -1,0 +1,15 @@
+---
+# Playbook for provisioning IDR Docker nodes
+
+- hosts: idr-docker
+  roles:
+  - role: network
+  - role: docker-storage
+  - role: lvm-partition
+    lvname: scratch
+    lvmount: /scratch
+    lvsize: "{{ scratchsize }}"
+  - role: lvm-partition
+    lvname: idrdata1
+    lvmount: /idr
+    lvsize: "{{ idrvolumesize }}"

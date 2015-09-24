@@ -1,0 +1,9 @@
+---
+# Setup LVM partitions for Docker
+
+- name: storage | setup lvm docker-pool
+  lvol:
+    vg: "{{ vgname }}"
+    lv: docker-pool
+    size: "{{ dockerpoolsize }}"
+    opts: "{{ lvopts }} --thin --poolmetadatasize {{ dockermetadatasize }}"
