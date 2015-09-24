@@ -1,0 +1,38 @@
+---
+# defaults file for omero-omego
+
+# If True and server is already installed then upgrade to the version in
+# omero_release, otherwise don"t upgrade an existing server.
+omero_upgrade: no
+
+# If all the OMERO configuration is handled using ansible it should be
+# possible to delete the entire server and re-install if the current
+# installataion appears to be corrupt (the data dir will not be touched)
+omero_reinstall_on_error: no
+
+# OMERO system user
+omero_system_user: omero
+
+omero_basedir: /home/omero
+omero_serverdir: "{{ omero_basedir }}/server"
+omero_server_symlink: OMERO.server
+omero_release: latest
+
+# OMERO database connection parameters
+omero_dbhost: localhost
+omero_dbuser: omero
+omero_dbname: omero
+omero_dbpassword: omero
+
+# OMERO root password
+omero_rootpassword: omero
+
+# OMERO data directory (must already exist)
+omero_datadir: /OMERO
+
+# Automatically upgrade DB, delete old servers
+omero_omego_upgrade_args: "--upgradedb --skipdelete false"
+
+# Optional path to an additional file to be passed to `omero load ...`
+# before starting the server
+omero_prestart_file:
