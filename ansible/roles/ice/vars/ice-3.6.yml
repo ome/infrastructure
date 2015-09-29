@@ -1,0 +1,19 @@
+---
+# vars file for roles/ice
+
+# TODO: I can't get https to work :-(
+ice_repourl: http://zeroc.com/download/rpm/el7/zeroc-ice-el7.repo
+ice_runtime_packages:
+  - ice-all-runtime
+ice_devel_packages:
+  - ice-all-devel
+ice_pip_dependencies:
+  - gcc
+  - gcc-c++
+  - bzip2-devel
+  - openssl-devel
+  - python-devel
+  - python-pip
+ice_pip_packages:
+  - name: zeroc-ice
+    version: 3.6

@@ -1,5 +1,8 @@
 ---
 # defaults file for roles/ice
 
+# Ice version
+ice_version: 3.5
+
 # Sub-packages to install in addition to the runtime packages
 icesubpackages:
