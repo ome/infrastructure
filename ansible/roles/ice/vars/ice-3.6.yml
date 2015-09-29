@@ -16,4 +16,5 @@ ice_pip_dependencies:
   - python-pip
 ice_pip_packages:
   - name: zeroc-ice
-    version: 3.6
+  # We want the highest minor release
+    version: 3.6.1
