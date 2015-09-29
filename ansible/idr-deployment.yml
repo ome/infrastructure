@@ -7,3 +7,4 @@
   - role: docker-dns-server
   - role: docker-dns-client
   - role: samba-client
+  - role: versioncontrol-utils
