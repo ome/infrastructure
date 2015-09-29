@@ -1,0 +1,14 @@
+---
+# tasks file for roles/versioncontrol-utils
+
+- name: system packages | install epel repo
+  yum:
+    name: epel-release
+    state: latest
+
+- name: system packages | basic system utils
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - git
