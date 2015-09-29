@@ -4,7 +4,7 @@
 - name: system packages | install docker
   yum:
     pkg: "{{ item }}"
-    state: latest
+    state: present
     enablerepo: extras
   with_items:
     - docker
