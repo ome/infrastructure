@@ -12,3 +12,4 @@
   vars:
     - javajdkversions:
       - 1.8.0
+    - ice_version: 3.6
