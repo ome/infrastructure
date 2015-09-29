@@ -1,12 +1,12 @@
 ---
-# tasks file for roles/omero-build-base
+# tasks file for roles/omero-basedeps
 
 - name: system packages | install epel repo
   yum:
     name: epel-release
     state: latest
 
-- name: system packages | basic build deps
+- name: system packages | basic system utils
   yum:
     name: "{{ item }}"
     state: latest
