@@ -1,5 +1,5 @@
 ---
-# tasks file for roles/omero-basedeps
+# tasks file for roles/versioncontrol-utils
 
 - name: system packages | install epel repo
   yum:
@@ -9,10 +9,6 @@
 - name: system packages | basic system utils
   yum:
     name: "{{ item }}"
-    state: latest
+    state: present
   with_items:
-    - rsync
-    - tar
-    - unzip
-    - wget
-    - zip
+    - git
