@@ -24,6 +24,7 @@
     - libtiff-devel
     - xerces-c-devel
     - zlib-devel
+    - boost-devel
 
 - name: system packages | install python tools
   yum:
