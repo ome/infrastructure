@@ -19,12 +19,12 @@
     name: "{{ item }}"
     state: latest
   with_items:
+    - boost-devel
     - libjpeg-turbo-devel
     - libpng-devel
     - libtiff-devel
     - xerces-c-devel
     - zlib-devel
-    - boost-devel
 
 - name: system packages | install python tools
   yum:
