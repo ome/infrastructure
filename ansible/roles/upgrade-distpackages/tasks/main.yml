@@ -1,0 +1,8 @@
+---
+# tasks file for roles/upgrade-distpackages
+
+- name: system packages | upgrade
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items: upgrade_distpackages
