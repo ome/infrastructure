@@ -1,0 +1,32 @@
+---
+# tasks file for roles/docs
+
+- name: documentation packages | install docs tools
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - ant
+    - ant-contrib
+    - doxygen
+    - git
+    - graphviz
+    - make
+
+- name: documentation packages | install python tools
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - python-devel
+    - python-pip
+    - python-virtualenv
+
+- name: documentation packages | pip install packages
+  pip:
+    name: "{{ item.name }}"
+    state: present
+    version: "{{ item.version }}"
+  with_items:
+    - name: sphinx
+      version: 1.2.3
