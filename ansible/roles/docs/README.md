@@ -6,7 +6,7 @@ Documentation build dependencies.
 Requirements
 ------------
 
-None.  Should depend upon texlive once merged.
+Depends on python.  Should depend upon texlive once merged.
 
 Author Information
 ------------------

@@ -6,7 +6,7 @@ Most build dependencies (except for C++).
 Requirements
 ------------
 
-Depends on omero-basedeps, java, ice.
+Depends on omero-basedeps, java, ice, python.
 
 Author Information
 ------------------
