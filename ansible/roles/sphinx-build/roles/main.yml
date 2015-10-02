@@ -1,7 +1,7 @@
 ---
-# tasks file for roles/docs
+# tasks file for roles/sphinx-build
 
-- name: documentation packages | install docs tools
+- name: sphinx documentation packages | install docs tools
   yum:
     name: "{{ item }}"
     state: latest
@@ -13,7 +13,7 @@
     - graphviz
     - make
 
-- name: documentation packages | pip install packages
+- name: sphinx documentation packages | pip install packages
   pip:
     name: "{{ item.name }}"
     state: present
