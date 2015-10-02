@@ -26,15 +26,6 @@
     - xerces-c-devel
     - zlib-devel
 
-- name: system packages | install python tools
-  yum:
-    name: "{{ item }}"
-    state: latest
-  with_items:
-    - python-devel
-    - python-pip
-    - python-virtualenv
-
 - name: system packages | pip install packages
   pip:
     name: "{{ item }}"

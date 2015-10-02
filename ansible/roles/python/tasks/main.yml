@@ -1,0 +1,11 @@
+---
+# tasks file for roles/docs
+
+- name: documentation packages | install python tools
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - python-devel
+    - python-pip
+    - python-virtualenv

@@ -13,15 +13,6 @@
     - graphviz
     - make
 
-- name: documentation packages | install python tools
-  yum:
-    name: "{{ item }}"
-    state: latest
-  with_items:
-    - python-devel
-    - python-pip
-    - python-virtualenv
-
 - name: documentation packages | pip install packages
   pip:
     name: "{{ item.name }}"
