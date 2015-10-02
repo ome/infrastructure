@@ -3,6 +3,7 @@
 
 - hosts: ci-jenkins-linux
   roles:
+    - role: docs
     - role: jenkinsslave
     - role: omero-build
     - role: omero-runtime
