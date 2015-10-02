@@ -35,6 +35,13 @@
     - python-pip
     - python-virtualenv
 
+- name: system packages | pip install packages
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - genshi
+
 - name: system packages | install epel packages
   yum:
     name: "{{ item }}"
