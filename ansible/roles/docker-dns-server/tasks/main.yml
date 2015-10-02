@@ -19,12 +19,26 @@
   command: systemctl daemon-reload
   when: systemdetcd.changed or systemdskydns.changed
 
-# service module doesn't seem to work for a new systemd.service
-
 - name: docker production | enable etcd
+  service:
+    enabled: yes
+    name: docker-{{ dockerdns.etcd }}.service
+    state: started
+
+- name: docker production | enable skydns
+  service:
+    enabled: yes
+    name: docker-skydns.service
+    state: started
+
+# service module doesn't seem to work for a new systemd.service so force a
+# restart
+# TODO: check if it works in the latest version
+
+- name: docker production | restart etcd
   command: systemctl restart docker-{{ dockerdns.etcd }}.service
   when: systemdetcd.changed
 
-- name: docker production | enable skydns
+- name: docker production | restart skydns
   command: systemctl restart docker-skydns.service
   when: systemdskydns.changed
