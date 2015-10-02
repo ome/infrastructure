@@ -1,0 +1,8 @@
+---
+# Dump all variables for debugging
+# https://coderwall.com/p/13lh6w/dump-all-variables
+
+- name: Dump all vars
+  template:
+    src: dumpall.j2
+    dest: "{{ debug_dumpallvars_file }}"
