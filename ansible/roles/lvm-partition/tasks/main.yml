@@ -1,20 +1,20 @@
 ---
 # Setup LVM partition
 
-- name: storage | create logical volume
+- name: mount | create logical volume
   lvol:
     vg: "{{ lvm_vgname }}"
     lv: "{{ lvm_lvname }}"
     size: "{{ lvm_lvsize }}"
     opts: "{{ lvm_lvopts }}"
 
-- name: storage | format
+- name: mount | format
   filesystem:
     fstype: "{{ lvm_lvfilesystem }}"
     dev: /dev/{{ lvm_vgname }}/{{ lvm_lvname }}
     resizefs: yes
 
-- name: storage | mount scratch
+- name: mount | mount scratch
   mount:
     name: "{{ lvm_lvmount }}"
     src: /dev/{{ lvm_vgname }}/{{ lvm_lvname }}
