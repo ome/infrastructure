@@ -1,7 +1,0 @@
----
-# Playbook for provisioning Jenkins CI nodes
-
-- hosts: ci-jenkins-linux
-  roles:
-  - role: jenkinsslave-storage
-  - role: jenkinsslave

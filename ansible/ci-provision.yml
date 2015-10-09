@@ -1,0 +1,10 @@
+---
+# Playbook for provisioning Jenkins CI nodes
+
+- hosts: ci-jenkins-linux
+  roles:
+  - role: lvm-partition
+    lvm_lvname: jenkins-workdir
+    lvm_lvmount: "{{ jenkinsworkdir }}"
+    lvm_lvsize: "{{ jenkinssize }}"
+  - role: jenkinsslave

@@ -6,10 +6,10 @@
   - role: network
   - role: docker-storage
   - role: lvm-partition
-    lvname: scratch
-    lvmount: /scratch
-    lvsize: "{{ scratchsize }}"
+    lvm_lvname: scratch
+    lvm_lvmount: /scratch
+    lvm_lvsize: "{{ scratchsize }}"
   - role: lvm-partition
-    lvname: idrdata1
-    lvmount: /idr
-    lvsize: "{{ idrvolumesize }}"
+    lvm_lvname: idrdata1
+    lvm_lvmount: /idr
+    lvm_lvsize: "{{ idrvolumesize }}"
