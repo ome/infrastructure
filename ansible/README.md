@@ -58,8 +58,7 @@ As another alternative you can probably install ansible into your virtualenv (un
 Examples
 --------
 
-In the following examples replace example-hosts with the private host
-inventory file
+In the following examples replace example-hosts with the private host inventory file
 
 Dry-run `ci-provision.yml` for all hosts listed in `ci-provision.yml`:
 - `-u` Login as this user
