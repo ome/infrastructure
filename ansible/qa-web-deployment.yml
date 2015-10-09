@@ -1,0 +1,10 @@
+---
+# Playbook for provisioning Jenkins CI nodes
+
+- hosts: qa-web-linux
+  roles:
+    - role: postgresql
+    - role: nginx
+  vars:
+    - javajdkversions:
+      - 1.8.0
