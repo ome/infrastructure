@@ -1,5 +1,5 @@
 ---
-# Playbook for provisioning Jenkins CI nodes
+# Playbook for provisioning QA Web nodes
 
 - hosts: qa-web-linux
   roles:
