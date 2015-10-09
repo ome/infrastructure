@@ -58,9 +58,10 @@ As another alternative you can probably install ansible into your virtualenv (un
 Examples
 --------
 
-In the following examples replace example-hosts with the private host inventory file
+In the following examples replace example-hosts with the private host
+inventory file
 
-Dry-run `provision.yml` for all hosts listed in `provision.yml`:
+Dry-run `ci-provision.yml` for all hosts listed in `ci-provision.yml`:
 - `-u` Login as this user
 - `-b` use `sudo`
 - `--ask-become-pass` prompt for sudo password
@@ -69,19 +70,19 @@ Dry-run `provision.yml` for all hosts listed in `provision.yml`:
 
 Note this may fail since some tasks are dependent on others being completed:
 
-    ansible-playbook -i example-hosts -u $USERNAME -b --ask-become-pass -C -v provision.yml
+    ansible-playbook -i example-hosts -u $USERNAME -b --ask-become-pass -C -v ci-provision.yml
 
 Run `provision.yml`:
 
-    ansible-playbook -i example-hosts -u $USERNAME -b --ask-become-pass provision.yml
+    ansible-playbook -i example-hosts -u $USERNAME -b --ask-become-pass ci-provision.yml
 
 Run `provision.yml` for all subset of the hosts or groups listed in `provision.yml`:
 
-    ansible-playbook -i example-hosts -u $USERNAME -b --ask-become-pass provision.yml --limit $HOST_OR_GROUP_NAME
+    ansible-playbook -i example-hosts -u $USERNAME -b --ask-become-pass ci-provision.yml --limit $HOST_OR_GROUP_NAME
 
 List the hosts that would be targeted by a command, don't do anything else:
 
-    ansible-playbook -i example-hosts provision.yml --list-hosts
+    ansible-playbook -i example-hosts ci-provision.yml --list-hosts
 
 
 Playbooks which do not alter hardware can often be tested in Docker instead of a full VM, for example by using the [omero-ssh](https://github.com/manics/ome-docker/blob/omero-ssh/omero-ssh/Dockerfile) image:
