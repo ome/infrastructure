@@ -1,0 +1,21 @@
+---
+# tasks file for roles/system-monitor-agent
+
+- name: system packages | install epel repo
+  yum:
+    name: epel-release
+    state: latest
+
+- name: system packages | check-mk agent
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - check-mk-agent
+    - xinetd
+
+- name: xinetd | start and enable
+  service:
+    enabled: yes
+    name: xinetd.service
+    state: started
