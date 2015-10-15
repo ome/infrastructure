@@ -60,6 +60,15 @@
     src: cmake-3.3.2-Linux-x86_64
     state: link
 
+- name: cmake | set the global path to include cmake bin
+  template:
+    src: cmake-path.sh.j2
+    dest: "/etc/profile.d/cmake-path.sh"
+    # If the file exists, and is different to our version,
+    # overwrite the dest with our version.
+    force: yes
+    mode: 0644
+
 - name: exe4j packages | install
   yum:
     name: http://download-aws.ej-technologies.com/exe4j/exe4j_linux_5_0_1.rpm
