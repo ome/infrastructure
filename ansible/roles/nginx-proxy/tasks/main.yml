@@ -1,0 +1,60 @@
+---
+# tasks file for roles/nginx-proxy
+
+- name: system packages | setup upstream nginx repo
+  yum:
+    name: http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
+    state: present
+
+- name: system packages | install nginx
+  yum:
+    name: nginx
+    state: latest
+
+- name: nginx | remove default config
+  file:
+    dest: /etc/nginx/conf.d/{{ item }}
+    state: absent
+  with_items:
+    - example_ssl.conf
+    - default.conf
+  notify:
+    - restart nginx
+
+- name: nginx | main config
+  template:
+    src: nginx-conf.j2
+    dest: /etc/nginx/nginx.conf
+  notify:
+    - restart nginx
+
+- name: nginx | dynamic proxy config
+  template:
+    src: nginx-confd-dynamic-proxy.j2
+    dest: /etc/nginx/conf.d/dynamic-proxy.conf
+  notify:
+    - restart nginx
+  when: nginx_dynamic_proxies is defined and nginx_dynamic_proxies
+
+- name: nginx | dynamic proxy remove config
+  file:
+    dest: /etc/nginx/conf.d/dynamic-proxy.conf
+    state: absent
+  notify:
+    - restart nginx
+  when: nginx_dynamic_proxies is not defined or not nginx_dynamic_proxies
+
+- name: nginx | start service
+  service:
+    enabled: yes
+    name: nginx
+    state: started
+  when: not runningindocker
+
+# Command copied from /usr/lib/systemd/system/nginx.service
+- name: nginx | start service
+  command: /usr/sbin/nginx -c /etc/nginx/nginx.conf
+  args:
+    # Only run command if nginx.pid doesn't exist
+    creates: /var/run/nginx.pid
+  when: runningindocker

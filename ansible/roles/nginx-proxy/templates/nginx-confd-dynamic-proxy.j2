@@ -1,0 +1,58 @@
+server {
+    listen       80 default_server;
+{% if nginx_proxy_ssl %}
+    listen       443 ssl;
+{% endif %}
+    server_name  $hostname;
+
+{% if nginx_proxy_ssl %}
+{% if nginx_proxy_ssl and nginx_proxy_ssl_certificate is defined %}
+    ssl_certificate {{ nginx_proxy_ssl_certificate }};
+{% endif %}
+{% if nginx_proxy_ssl and nginx_proxy_ssl_certificate_key is defined %}
+    ssl_certificate_key {{ nginx_proxy_ssl_certificate_key }};
+{% endif %}
+    ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;  # don’t use SSLv3 ref: POODLE
+{% endif %}
+
+    #charset koi8-r;
+    #access_log  /var/log/nginx/log/host.access.log  main;
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+{% if nginx_dynamic_proxy_resolvers is defined %}
+    # Nginx requires explicit DNS servers
+    resolver {{ nginx_dynamic_proxy_resolvers }};
+{% endif %}
+
+{% if nginx_dynamic_proxy_buffers is defined %}
+    # Proxy buffers
+    proxy_buffers {{ nginx_dynamic_proxy_buffers }};
+{% endif %}
+
+    # Common proxy headers
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+
+    # To force dynamic DNS lookups need to use a variable:
+    # https://www.jethrocarr.com/2013/11/02/nginx-reverse-proxies-and-dns-resolution/
+    # http://forum.nginx.org/read.php?2,215830,215832#msg-215832
+
+{% for item in nginx_dynamic_proxies %}
+    location {{ item.location }} {
+        set $backend_{{ item.name }} "{{ item.server }}";
+        proxy_pass http://$backend_{{ item.name }};
+        proxy_redirect http://$backend_{{ item.name }} http://$server_name;
+    }
+
+{% endfor %}
+}

@@ -1,0 +1,28 @@
+---
+# defaults file for roles/nginx-proxy
+
+# Number of worker processes, use auto to set this to the number of CPUs
+nginx_proxy_worker_processes: 1
+
+# Enable SSL?
+nginx_proxy_ssl: False
+
+# Optional vars:
+
+# Server path to SSL certificate
+#nginx_proxy_ssl_certificate:
+
+# Server path to SSL certificate key
+#nginx_proxy_ssl_certificate_key:
+
+# DNS servers for hostname lookups
+#nginx_dynamic_proxy_resolvers:
+
+# Number and size of proxy buffers
+#nginx_dynamic_proxy_buffers:
+
+# List of dicts of backend servers
+#nginx_dynamic_proxies:
+#- name: test
+#  location: /prefix
+#  server: example.org
