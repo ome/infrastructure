@@ -1,7 +1,7 @@
 ---
 # Playbook for maintaining IDR Docker nodes
 
-- hosts: idr-docker
+- hosts: idr-docker,idr-docker-localstorage
   roles:
   - role: docker
   - role: docker-dns-server

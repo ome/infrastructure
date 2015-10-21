@@ -6,4 +6,4 @@
     vg: "{{ vgname }}"
     lv: docker-pool
     size: "{{ dockerpoolsize }}"
-    opts: "{{ lvopts }} --thin --poolmetadatasize {{ dockermetadatasize }}"
+    opts: "{{ lvm_lvopts | default(None) }} --thin --poolmetadatasize {{ dockermetadatasize }}"

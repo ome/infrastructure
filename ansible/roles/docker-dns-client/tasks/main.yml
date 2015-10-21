@@ -13,6 +13,12 @@
   command: systemctl daemon-reload
   when: systemdregistrator.changed
 
+- name: docker production | enable registrator
+  service:
+    enabled: yes
+    name: docker-registrator.service
+    state: started
+
 # service module doesn't seem to work for a new systemd.service
 
 - name: docker production | enable registrator

@@ -1,0 +1,19 @@
+Module Variables ("vars"):
+--------------------------------
+{{ vars | default('<undefined>') | to_nice_json }}
+
+Environment Variables ("environment"):
+--------------------------------
+{{ environment | default('<undefined>') | to_nice_json }}
+
+Group Name Variables ("group_names"):
+--------------------------------
+{{ group_names | default('<undefined>') | to_nice_json }}
+
+Group Variables ("groups"):
+--------------------------------
+{{ groups | default('<undefined>') | to_nice_json }}
+
+Host Variables ("hostvars"):
+--------------------------------
+{{ hostvars | default('<undefined>') | to_nice_json }}
