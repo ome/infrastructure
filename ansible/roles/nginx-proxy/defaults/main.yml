@@ -26,3 +26,6 @@ nginx_proxy_ssl: False
 #- name: test
 #  location: /prefix
 #  server: example.org
+
+# Systemd doesn't work inside Docker
+runningindocker: False

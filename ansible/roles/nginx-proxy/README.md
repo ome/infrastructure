@@ -41,6 +41,9 @@ will configure this server to proxy:
 
 Note internal communication with backend servers is currently done over plain `http`, however `https` should work for front-end connections.
 
+System variables:
+
+- `runningindocker`: systemd doesn't currently work inside Docker without some fiddling. Set this variable to `True` to start nginx directly, default `False`.
 
 Author Information
 ------------------
