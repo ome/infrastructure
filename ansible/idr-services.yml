@@ -1,7 +1,7 @@
 ---
 # Playbook for maintaining IDR service nodes
 
-- hosts: idr-proxy
+- hosts: prod-web-proxies
   roles:
   - role: nginx-proxy
 
