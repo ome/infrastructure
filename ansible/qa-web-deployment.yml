@@ -5,6 +5,3 @@
   roles:
     - role: postgresql
     - role: nginx
-  vars:
-    - javajdkversions:
-      - 1.8.0
