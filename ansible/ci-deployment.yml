@@ -9,6 +9,7 @@
     - role: omero-build-cpp
     - role: postgresql
     - role: nginx
+    - role: texlive
   vars:
     - javajdkversions:
       - 1.8.0

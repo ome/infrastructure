@@ -1,0 +1,77 @@
+- name: texlive | prereq
+  yum: name={{ item }} state=latest
+  with_items:
+    - perl-Tk
+    - perl-Digest-MD5
+    - wget
+
+- name: texlive | check for texlive_TEXDIR path existence
+  stat: 
+    path: "{{ texlive_TEXDIR }}"
+  register: texdir_path
+
+- name: texlive | create the temp install folder
+  file: 
+    path: "{{ texlive_dest }}/tmp/" 
+    state: directory 
+    mode: 0755
+  # Only when lacking the folder texlive_TEXDIR - created by installer
+  when: texdir_path.stat.exists == false
+    
+- name: texlive | download and extract installer
+  unarchive:
+    copy: no
+    # Checking whether this version of texlive has been
+    # extracted to the proper folder before downloading the installer.
+    creates: "{{ texlive_TEXDIR }}/bin/x86_64-linux/pdftex"
+    dest: "{{ texlive_dest }}/tmp/"
+    src: http://mirror.unl.edu/ctan/systems/texlive/tlnet/install-tl-unx.tar.gz
+
+- name: texlive | rename the installer folder
+  shell: mv install-tl-* install-tl-ansible
+  args:
+    chdir: "{{ texlive_dest }}/tmp/"
+    creates: "{{ texlive_dest }}/tmp/install-tl-ansible/"
+  # Only when lacking the folder texlive_TEXDIR - created by installer
+  when: texdir_path.stat.exists == false
+
+- name: texlive | copy out the templated install-tl.profile
+  template: 
+    src: install-tl.profile.j2
+    dest: "{{ texlive_dest }}/tmp/install-tl-ansible/install-tl.profile"
+  # Only when lacking the folder texlive_TEXDIR - created by installer
+  when: texdir_path.stat.exists == false
+
+- name: texlive | install texlive
+  command: ./install-tl -profile install-tl.profile
+  args:
+    chdir: "{{ texlive_dest }}/tmp/install-tl-ansible"
+  # Only when lacking the folder texlive_TEXDIR - created by this installer run
+  when: texdir_path.stat.exists == false
+
+- name:  texlive | Font config Symlink 
+  file: 
+    force: yes
+    path: /etc/fonts/conf.d/09-texlive.conf
+    src: "{{ texlive_TEXDIR }}/texmf-var/fonts/conf/texlive-fontconfig.conf"
+    state: link
+
+- name:  texlive | rebuild font cache
+  command: fc-cache -rsfv
+  # Only when the texlive_TEXDIR folder was missing when tested at the 
+  # start of the play, i.e. it wasn't installed (it will exist now)
+  when: texdir_path.stat.exists == false
+
+- name:  texlive | clean up temp installation files dir
+  file: 
+    path: "{{ texlive_dest }}/tmp" 
+    state: absent
+
+- name: texlive | set the global path to include texlive bin
+  template:
+    src: texlive-path.sh.j2
+    dest: "/etc/profile.d/texlive-path.sh"
+    # If the file exists, and is different to our version, 
+    # overwrite the dest with our version.
+    force: yes
+    mode: 0644

@@ -1,0 +1,5 @@
+---
+
+texlive_dest: /opt/texlive
+texlive_version: 2015
+texlive_TEXDIR: "{{ texlive_dest }}/{{ texlive_version }}"
