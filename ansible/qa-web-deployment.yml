@@ -1,0 +1,7 @@
+---
+# Playbook for provisioning QA Web nodes
+
+- hosts: qa-web-linux
+  roles:
+    - role: postgresql
+    - role: nginx
