@@ -26,10 +26,7 @@
     insertbefore: "-:ALL EXCEPT root:ALL"
   when: not spacewalk
 
-- name: jenkins | git config | create directory
-  file: path=/home/{{ jenkinsuser }}/.gitconfig state=directory
-
-- name: jenkins | git config | add configuration file
+- name: jenkins | git config
   template:
     src: gitconfig.j2
     dest: /home/{{ jenkinsuser }}/.gitconfig
