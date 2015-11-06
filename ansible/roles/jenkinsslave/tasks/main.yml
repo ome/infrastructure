@@ -27,6 +27,7 @@
   when: not spacewalk
 
 - name: jenkins | git config
+  file: path=/home/{{ jenkinsuser }}/.gitconfig state=directory
   template:
     src: gitconfig.j2
     dest: /home/{{ jenkinsuser }}/.gitconfig
