@@ -8,8 +8,5 @@
     - python-pip
     - python-virtualenv
     
-- name: virtualenv | create
-  pip: virtualenv=/home/{{ jenkinsuser }}/virtualenv
-
-- name: Ensure scc is installed
+- name: virtualenv | scc
   pip: virtualenv=/home/{{ jenkinsuser }}/virtualenv name=scc
