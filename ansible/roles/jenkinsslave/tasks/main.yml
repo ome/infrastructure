@@ -32,3 +32,5 @@
     dest: /home/{{ jenkinsuser }}/.gitconfig
     owner: "{{ jenkinsuser }}"
     group: "{{ jenkinsuser }}"
+
+- include: setup_virtualenv.yml
