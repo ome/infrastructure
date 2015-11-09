@@ -9,4 +9,6 @@
     - python-virtualenv
     
 - name: virtualenv | scc
-  pip: virtualenv=/home/{{ jenkinsuser }}/virtualenv name=scc
+  pip:
+    virtualenv: /home/{{ jenkinsuser }}/virtualenv
+    name: scc
