@@ -1,0 +1,14 @@
+---
+
+- name: virtualenv | install python tools
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - python-pip
+    - python-virtualenv
+    
+- name: virtualenv | scc
+  pip:
+    virtualenv: /home/{{ jenkinsuser }}/virtualenv
+    name: scc

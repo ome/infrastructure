@@ -8,3 +8,4 @@
     lvm_lvmount: "{{ jenkinsworkdir }}"
     lvm_lvsize: "{{ jenkinssize }}"
   - role: jenkinsslave
+  - role: versioncontrol-utils
