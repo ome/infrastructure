@@ -1,0 +1,6 @@
+---
+# Playbook for deploying documentation prerequisites 
+
+- hosts: ci-jenkins-linux
+  roles:
+    - role: texlive
