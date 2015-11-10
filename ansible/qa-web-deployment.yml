@@ -5,3 +5,4 @@
   roles:
     - role: postgresql
     - role: nginx
+    - role: python-devel
