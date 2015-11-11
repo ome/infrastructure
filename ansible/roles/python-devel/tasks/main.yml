@@ -2,6 +2,9 @@
 # tasks file for roles/python-devel
 
 - name: install python-devel
-  sudo: True
-  yum: name={{ item }}  state=present
-  with_items: [ "python-devel", "gcc" ]
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "python-devel"
+    - gcc
