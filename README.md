@@ -2,8 +2,7 @@
 
 Tools, scripts and other systems infrastructure used to support the work of the OME http://www.openmicroscopy.org/
 
-.. image:: https://travis-ci.org/openmicroscopy/infrastructure.png
-   :target: http://travis-ci.org/openmicroscopy/infrastructure
+[![Build Status](https://travis-ci.org/openmicroscopy/infrastructure.png)](http://travis-ci.org/openmicroscopy/infrastructure)
 
 ## OME Ansible repository
 
