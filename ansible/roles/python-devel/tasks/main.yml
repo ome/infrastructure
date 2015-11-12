@@ -1,0 +1,10 @@
+---
+# tasks file for roles/python-devel
+
+- name: install python-devel
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "python-devel"
+    - gcc
