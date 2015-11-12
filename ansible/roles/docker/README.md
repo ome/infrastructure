@@ -1,7 +1,10 @@
 Docker
 ======
 
-Install and configure Docker. Assumes storage has been configured. Also sets up groups and users.
+Advanced installation and configuration of Docker.
+Assumes storage has been configured.
+Also sets up groups and users.
+If you don't need a special setup then use the docker-auto role instead.
 
 Requirements
 ------------
@@ -20,7 +23,7 @@ Optional variables:
 
 - `dockerbridge.name`: The name of a custom network bridge for docker
 - `dockerbridge.ips`: The custom IP range that docker should use for allocating IPs
-- `dockergroupmembers`: A list of users who will be added to the `docker` system group
+- `dockergroupmembers`: A list of users who will be added to the `docker` system group, allows docker to be run without sudo
 
 Dependencies
 ------------
