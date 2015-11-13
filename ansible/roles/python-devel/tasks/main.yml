@@ -6,5 +6,5 @@
     name: "{{ item }}"
     state: present
   with_items:
-    - "python-devel"
+    - python-devel
     - gcc
