@@ -6,3 +6,4 @@
     - role: postgresql
     - role: nginx
     - role: python-devel
+    - role: openldap-devel
