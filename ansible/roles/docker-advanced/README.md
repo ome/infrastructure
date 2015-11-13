@@ -1,10 +1,10 @@
-Docker
-======
+Docker Advanced
+===============
 
 Advanced installation and configuration of Docker.
 Assumes storage has been configured.
 Also sets up groups and users.
-If you don't need a special setup then use the docker-auto role instead.
+If you don't need a special setup then use the docker role instead.
 
 Requirements
 ------------

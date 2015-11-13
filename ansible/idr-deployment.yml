@@ -3,7 +3,7 @@
 
 - hosts: idr-docker,idr-docker-localstorage
   roles:
-  - role: docker
+  - role: docker-advanced
   - role: docker-dns-server
   - role: docker-dns-client
   - role: samba-client

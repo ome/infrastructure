@@ -2,7 +2,7 @@ Docker Storage
 ==============
 
 Advanced setup and configuration of LVM storage partitions for Docker.
-If you don't need a special setup then use the docker-auto role instead.
+If you don't need a special setup then use the docker role instead.
 
 Creates thin-pool logical volumes for Docker, and a normal logical volume for `/var/lib/docker`.
 

@@ -1,5 +1,5 @@
-Docker Auto
-===========
+Docker
+======
 
 Setup Docker using the default setup script instead of manually configuring partitions, and using the default internal bridge/NAT network configuration.
 
