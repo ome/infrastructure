@@ -30,7 +30,7 @@
     src: docker-network.j2
     dest: /etc/sysconfig/docker-network
     backup: yes
-  when: dockerbridge is defined
+  when: docker_bridge is defined
   notify:
     - restart docker
 
@@ -62,5 +62,5 @@
     name: "{{ item }}"
     groups: docker
     append: yes
-  with_items: dockergroupmembers
-  when: dockergroupmembers is defined
+  with_items: docker_groupmembers
+  when: docker_groupmembers is defined

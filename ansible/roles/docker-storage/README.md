@@ -11,14 +11,14 @@ Role Variables
 
 These variables must be defined (defaults aren't provided):
 
-- `vgname`: LVM volume group for the logical volumes
-- `dockerpoolsize`: Size of the Docker thin-pool partition
-- `dockervolumesize`: Size of the `/var/lib/docker` partition
-- `lvfilesystem`: filesystem for the Docker volume partition
+- `docker_vgname`: LVM volume group for the logical volumes
+- `docker_poolsize`: Size of the Docker thin-pool partition
+- `docker_volumesize`: Size of the `/var/lib/docker` partition
+- `docker_lvfilesystem`: filesystem for the Docker volume partition
 
 Optional variables:
 
-- `lvopts`: Logical volume creation options (default: None)
+- `docker_lvopts`: Logical volume creation options (default: None)
 
 Dependencies
 ------------

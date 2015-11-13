@@ -3,7 +3,7 @@
 
 - name: storage | setup lvm docker-pool
   lvol:
-    vg: "{{ vgname }}"
+    vg: "{{ docker_vgname }}"
     lv: docker-pool
-    size: "{{ dockerpoolsize }}"
-    opts: "{{ lvm_lvopts | default(None) }} --thin --poolmetadatasize {{ dockermetadatasize }}"
+    size: "{{ docker_poolsize }}"
+    opts: "{{ docker_lvopts | default(None) }} --thin --poolmetadatasize {{ docker_metadatasize }}"

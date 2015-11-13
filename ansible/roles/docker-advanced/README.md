@@ -17,13 +17,15 @@ Role Variables
 
 These variables must be defined (defaults aren't provided):
 
-- `vgname`: The volume group used in `docker-storage`. This is necessary because the docker setup process requires the name of the raw logical volume device.
+- `docker_vgname`: The volume group used in `docker-storage`. This is necessary because the docker setup process requires the name of the raw logical volume device.
 
 Optional variables:
 
-- `dockerbridge.name`: The name of a custom network bridge for docker
-- `dockerbridge.ips`: The custom IP range that docker should use for allocating IPs
-- `dockergroupmembers`: A list of users who will be added to the `docker` system group, allows docker to be run without sudo
+- `docker_bridge.name`: The name of a custom network bridge for docker
+- `docker_bridge.ips`: The custom IP range that docker should use for allocating IPs
+- `docker_groupmembers`: A list of users who will be added to the `docker` system group, allows docker to be run without sudo
+- `docker_lvfilesystem`: filesystem for the Docker volume partition
+
 
 Dependencies
 ------------

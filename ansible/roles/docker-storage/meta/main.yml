@@ -1,6 +1,9 @@
 ---
 dependencies:
 - role: lvm-partition
-  lvname: docker-volume
-  lvmount: /var/lib/docker
-  lvsize: "{{ dockervolumesize }}"
+  lvm_vgname: "{{ docker_vgname }}"
+  lvm_lvname: docker-volume
+  lvm_lvmount: /var/lib/docker
+  lvm_lvsize: "{{ docker_volumesize }}"
+  lvm_lvfilesystem: "{{ docker_lvfilesystem }}"
+  lvm_lvopts: "{{ docker_lvopts }}"

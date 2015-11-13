@@ -1,5 +1,5 @@
 ---
 # defaults file for roles/docker-dns-client
 
-dockerdns:
+docker_dns:
   etcd: etcd1

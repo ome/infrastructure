@@ -1,2 +1,2 @@
 # Docker network options (created by Ansible)
-DOCKER_NETWORK_OPTIONS="-b {{ dockerbridge.name }} --fixed-cidr {{ dockerbridge.ips }}"
+DOCKER_NETWORK_OPTIONS="-b {{ docker_bridge.name }} --fixed-cidr {{ docker_bridge.ips }}"
