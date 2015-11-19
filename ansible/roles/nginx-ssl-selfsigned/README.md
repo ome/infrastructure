@@ -17,9 +17,7 @@ Optional variables:
 
 Note this role does not configure Nginx for SSL, nor does it restart Nginx.
 This should be handled elsewhere.
-System variables:
 
-- `runningindocker`: systemd doesn't currently work inside Docker without some fiddling. Set this variable to `True` to start nginx directly, default `False`.
 
 Author Information
 ------------------
