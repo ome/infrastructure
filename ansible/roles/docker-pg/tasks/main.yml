@@ -1,0 +1,16 @@
+---
+# tasks file for roles/docker-pg
+
+- name: docker | postgres
+  docker:
+    name: postgres
+    image: postgres:9.4
+    # Prevents reloading with state: reloaded
+    # https://github.com/ansible/ansible-modules-core/issues/1885
+    net: default
+    state: reloaded
+    ports:
+      - "5432:5432"
+#      volumes: /data/pg:/var/lib/postgresql/data
+    # Fixes issue with docker-py and docker-machine
+    use_tls: "encrypt"
