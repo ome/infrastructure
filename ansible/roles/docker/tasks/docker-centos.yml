@@ -7,14 +7,6 @@
     state: present
     enablerepo: extras
 
-- name: docker storage | set options
-  template:
-    src: docker-storage-setup.j2
-    dest: /etc/sysconfig/docker-storage-setup
-    backup: yes
-  notify:
-    - restart docker-storage-setup
-
 # In recent versions of Centos 7 Docker the docker group isn't created
 
 - name: docker | create docker group

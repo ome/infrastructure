@@ -13,14 +13,21 @@
 # Upstream docker doesn't automatically load custom settings, so we need to
 # customise the systemd file
 
+- name: Check change-time of original docker.service
+  stat:
+    path: /usr/lib/systemd/system/docker.service
+  register: st0
+
+- name: Check change-time of modified docker.service
+  stat:
+    path: /etc/systemd/system/docker.service
+  register: st1
+
 - name: upstream docker | copy systemd file
-  synchronize:
-    dest: /etc/systemd/system/docker.service
-    src: /usr/lib/systemd/system/docker.service
-  when: docker_use_custom_storage or docker_use_custom_network
+  command: cp /usr/lib/systemd/system/docker.service /etc/systemd/system/docker.service
+  when: (docker_use_custom_storage or docker_use_custom_network) and (not st1.stat.exists or st1.stat.ctime < st0.stat.ctime)
   notify:
     - restart docker
-  delegate_to: delegate.host
 
 # Use patch so that we know if upstream makes any significant changes
 - name: upstream docker | customise systemd file
@@ -33,7 +40,6 @@
 
 - name: upstream docker | remove custom systemd file
   file:
-  synchronize:
     path: /etc/systemd/system/docker.service
     state: absent
   when: not docker_use_custom_storage and not docker_use_custom_network
