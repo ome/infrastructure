@@ -11,6 +11,7 @@
     name: "{{ item }}"
     state: latest
   with_items:
+    - patch
     - rsync
     - tar
     - unzip
