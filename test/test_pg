@@ -18,13 +18,32 @@ PYTHON="ansible_python_interpreter=$(which python)"
 PORT=${PORT:-5433}
 
 
-
 TESTHOST="$(mktemp test_pg.XXXXXX)"
-trap "rm -rf $TESTHOST" EXIT
+trap "rm -rf $TESTHOST" EXIT ERR
 
 cat - <<EOF > $TESTHOST
 [docker-pg]
 localhost docker_pg_port=$PORT docker_use_tls=$USE_TLS ansible_connection=local $PYTHON
 EOF
 
-ansible-playbook -i $TESTHOST ansible/pg-deployment.yml
+set -e
+set -u
+set -x
+
+ansible-playbook -i $TESTHOST ansible/pg-deployment.yml                   # start postgres
+docker run -id --name test_pg --link postgres postgres bash               # obtain a client IP
+
+cleanup() {
+  rm -rf $TESTHOST
+  docker exec -u postgres postgres dropdb test_pg
+  docker exec -u postgres postgres dropuser test_pg
+  docker rm -f test_pg
+}
+trap cleanup EXIT ERR
+
+HOST=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' test_pg)
+docker exec -u postgres postgres bash -c 'echo "host test_pg test_pg $HOST trust" >> /var/lib/postgresql/data/pg_hba.conf'
+docker kill --signal SIGHUP postgres
+
+docker exec -u postgres postgres createuser -d test_pg
+docker exec -u postgres test_pg createdb -h postgres -U test_pg test_pg   # the actual test!
