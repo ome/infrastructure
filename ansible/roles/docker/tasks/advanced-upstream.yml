@@ -1,0 +1,41 @@
+---
+# Advanced configuration for Docker
+
+- name: upstream docker | configure advanced
+  template:
+    src: docker-engine.j2
+    dest: /etc/sysconfig/docker-engine
+    backup: yes
+  when: docker_use_custom_storage or docker_use_custom_network
+  notify:
+    - restart docker
+
+# Upstream docker doesn't automatically load custom settings, so we need to
+# customise the systemd file
+
+- name: upstream docker | copy systemd file
+  synchronize:
+    dest: /etc/systemd/system/docker.service
+    src: /usr/lib/systemd/system/docker.service
+  when: docker_use_custom_storage or docker_use_custom_network
+  notify:
+    - restart docker
+  delegate_to: delegate.host
+
+# Use patch so that we know if upstream makes any significant changes
+- name: upstream docker | customise systemd file
+  patch:
+    dest: /etc/systemd/system/docker.service
+    src: docker-service.patch
+  when: docker_use_custom_storage or docker_use_custom_network
+  notify:
+    - restart docker
+
+- name: upstream docker | remove custom systemd file
+  file:
+  synchronize:
+    path: /etc/systemd/system/docker.service
+    state: absent
+  when: not docker_use_custom_storage and not docker_use_custom_network
+  notify:
+    - restart docker
