@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# test_pg: assumes that a docker instance is available locally
+# and that the current PYTHONPATH contains docker-py.
+
+TESTHOST="$(mktemp test_pg.XXXXXX)"
+trap "rm -rf $TESTHOST" EXIT
+
+cat - <<EOF > $TESTHOST
+[docker-pg]
+localhost ansible_connection=local ansible_python_interpreter=$(which python)
+EOF
+
+ansible-playbook -i $TESTHOST ansible/pg-deployment.yml
