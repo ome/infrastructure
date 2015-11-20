@@ -1,7 +1,9 @@
-OMERO Base Dependencies
-=======================
+Base Dependencies
+=================
 
-Base dependencies for most OMERO CI servers.
+Base dependencies for most servers.
+
+Mostly basic system utilities.
 
 Author Information
 ------------------

@@ -1,5 +1,5 @@
 ---
-# tasks file for roles/omero-basedeps
+# tasks file for roles/basedeps
 
 - name: system packages | install epel repo
   yum:

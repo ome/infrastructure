@@ -8,7 +8,7 @@ Mostly Python modules.
 Dependencies
 ------------
 
-Depends on omero-basedeps, java, ice.
+Depends on basedeps, java, ice.
 
 Author Information
 ------------------
