@@ -1,0 +1,22 @@
+---
+# tasks file for roles/nginx-ssl-selfsigned
+
+- name: system packages | install openssl
+  yum:
+    name: openssl
+    state: latest
+
+- name: nginx | create certificates directory
+  file:
+    path: "{{ item | dirname }}"
+    state: directory
+  with_items:
+    - "{{ nginx_ssl_certificate }}"
+    - "{{ nginx_ssl_certificate_key }}"
+
+# http://serialized.net/2013/04/simply-generating-self-signed-ssl-certs-with-ansible/
+- name: nginx | generate self-signed SSL certificate
+  command:
+    openssl req -new -nodes -x509 -subj "{{ nginx_ssl_certificate_subject }}" -days {{ nginx_ssl_certificate_days }} -keyout {{ nginx_ssl_certificate_key }} -out {{ nginx_ssl_certificate }} -extensions v3_ca
+  args:
+    creates: "{{ nginx_ssl_certificate }}"
