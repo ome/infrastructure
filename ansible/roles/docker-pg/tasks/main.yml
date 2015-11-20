@@ -13,4 +13,4 @@
       - "5432:5432"
 #      volumes: /data/pg:/var/lib/postgresql/data
     # Fixes issue with docker-py and docker-machine
-    use_tls: "encrypt"
+    use_tls: "{{ docker_use_tls }}"
