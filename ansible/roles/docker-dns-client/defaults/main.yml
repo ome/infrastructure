@@ -1,5 +1,6 @@
 ---
 # defaults file for roles/docker-dns-client
 
-dockerdns:
+docker_dns:
+  domain: docker.internal
   etcd: etcd1

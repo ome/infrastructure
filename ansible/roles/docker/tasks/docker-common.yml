@@ -1,0 +1,16 @@
+---
+# Setup a Docker node
+
+- name: docker | enable
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: docker | group members
+  user:
+    name: "{{ item }}"
+    groups: docker
+    append: yes
+  with_items: docker_groupmembers
+  when: docker_groupmembers is defined

@@ -1,0 +1,66 @@
+---
+# Setup a Docker node
+
+- name: system packages | install docker
+  yum:
+    pkg: "{{ item }}"
+    state: present
+    enablerepo: extras
+  with_items:
+    - docker
+
+- name: docker | disable storage autoconfiguration
+  copy:
+    src: docker-storage-setup
+    dest: /etc/sysconfig/docker-storage-setup
+    backup: yes
+  notify:
+    - restart docker
+
+- name: docker | configure storage
+  template:
+    src: docker-storage.j2
+    dest: /etc/sysconfig/docker-storage
+    backup: yes
+  notify:
+    - restart docker
+
+- name: docker | configure network
+  template:
+    src: docker-network.j2
+    dest: /etc/sysconfig/docker-network
+    backup: yes
+  when: docker_bridge is defined
+  notify:
+    - restart docker
+
+# In recent versions of CentOS7 Docker the docker group isn't created
+
+- name: docker | create docker group
+  group:
+    name: docker
+    state: present
+    system: yes
+
+- name: docker | set group for docker socket
+  replace:
+    backup: yes
+    dest: /etc/sysconfig/docker
+    regexp: ^\s*OPTIONS='--selinux-enabled'\s*$
+    replace: OPTIONS='--selinux-enabled -G docker'
+  notify:
+    - restart docker
+
+- name: docker | enable
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: docker | group members
+  user:
+    name: "{{ item }}"
+    groups: docker
+    append: yes
+  with_items: docker_groupmembers
+  when: docker_groupmembers is defined

@@ -1,0 +1,31 @@
+---
+# Advanced configuration for Docker
+
+- name: docker | disable storage autoconfiguration
+  copy:
+    src: docker-storage-setup
+    dest: /etc/sysconfig/docker-storage-setup
+    backup: yes
+  when: docker_use_custom_storage
+  notify:
+    - restart docker
+
+- name: docker | configure storage
+  template:
+    src: docker-storage.j2
+    dest: /etc/sysconfig/docker-storage
+    backup: yes
+  when: docker_use_custom_storage
+  notify:
+    - restart docker
+
+- name: docker | configure network
+  template:
+    src: docker-network.j2
+    dest: /etc/sysconfig/docker-network
+    backup: yes
+  when: docker_use_custom_network
+  notify:
+    - restart docker
+
+# The above files are automatically read by the systemd service on Centos 7

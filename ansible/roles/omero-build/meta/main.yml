@@ -1,5 +1,5 @@
 ---
 dependencies:
-- { role: omero-basedeps }
+- { role: basedeps }
 - { role: java }
 - { role: ice }

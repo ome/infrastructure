@@ -1,7 +1,7 @@
 [Unit]
 Description=Docker skydns
 Requires=docker.service
-After=docker-{{ dockerdns.etcd }}.service
+After=docker-{{ docker_dns.etcd }}.service
 
 [Service]
 Restart=on-failure
@@ -10,11 +10,11 @@ ExecStartPre=-/usr/bin/docker kill skydns
 ExecStartPre=-/usr/bin/docker rm skydns
 ExecStart=/usr/bin/docker run --name skydns \
     -p 53:53 -p 53:53/udp \
-    --link {{ dockerdns.etcd }}:etcd \
+    --link {{ docker_dns.etcd }}:etcd \
     skynetservices/skydns \
     -addr=0.0.0.0:53 \
-    -nameservers={{ dockerdns.forwarders }} \
-    -domain {{ dockerdns.domain }} \
+    -nameservers={{ docker_dns.forwarders }} \
+    -domain {{ docker_dns.domain }} \
     -machines http://etcd:2379/ \
     -verbose
 ExecStop=/usr/bin/docker stop skydns
