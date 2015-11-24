@@ -1,6 +1,13 @@
 ---
 # tasks file for roles/docker-pg
 
+
+- name: system packages | install docker-py
+  yum:
+    pkg: docker-py
+    state: present
+    enablerepo: extras
+
 - name: Run postgres:9.4
   docker:
     name: postgres
