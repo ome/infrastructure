@@ -1,1 +1,7 @@
 docker_pg_port: 5432
+
+pg_cfg_pg_hba_default:
+  - { type: local, database: all, user: postgres, address: '', method: 'trust', comment: '' }
+  - { type: local, database: all, user: all, address: '',             method: 'trust', comment: '"local" is for Unix domain socket connections only' }
+  - { type: host,  database: all, user: all, address: '127.0.0.1/32', method: 'trust', comment: 'IPv4 local connections:' }
+  - { type: host,  database: all, user: all, address: '::1/128',      method: 'trust', comment: 'IPv6 local connections:' }

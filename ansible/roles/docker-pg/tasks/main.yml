@@ -1,7 +1,7 @@
 ---
 # tasks file for roles/docker-pg
 
-- name: docker-pg | postgres
+- name: Run postgres:9.4
   docker:
     name: postgres
     image: postgres:9.4
@@ -14,3 +14,7 @@
 #      volumes: /data/pg:/var/lib/postgresql/data
     # Fixes issue with docker-py and docker-machine
     use_tls: "{{ docker_use_tls }}"
+
+- name: Update pg_hba.conf file
+  template: src=pg_hba.conf.j2 dest=/tmp/docker_pg_hba.conf
+  notify: deploy_docker_pg_hba

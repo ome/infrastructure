@@ -1,0 +1,6 @@
+- name: deploy_docker_pg_hba
+  shell: cat /tmp/docker_pg_hba.conf | docker exec postgres sh -c 'cat - > /var/lib/postgresql/data/pg_hba.conf'
+  notify: reload_docker_pg
+
+- name: reload_docker_pg
+  shell: docker kill --signal SIGHUP postgres

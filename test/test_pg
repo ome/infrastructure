@@ -42,8 +42,13 @@ cleanup() {
 trap cleanup EXIT ERR
 
 HOST=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' test_pg)
-docker exec -u postgres postgres bash -c 'echo "host test_pg test_pg $HOST trust" >> /var/lib/postgresql/data/pg_hba.conf'
-docker kill --signal SIGHUP postgres
 
+#docker exec -u postgres postgres bash -c 'echo "host test_pg test_pg $HOST trust" >> /var/lib/postgresql/data/pg_hba.conf'
+#docker kill --signal SIGHUP postgres
+
+# 1. test a connection from test_pg
 docker exec -u postgres postgres createuser -d test_pg
-docker exec -u postgres test_pg createdb -h postgres -U test_pg test_pg   # the actual test!
+docker exec -u postgres test_pg createdb -h postgres -U test_pg test_pg
+
+# 2. use a new container and see that a connection isn't possible.
+docker run --rm --link postgres postgres psql -h postgres -U test_pg test_pg -c "select now()"
