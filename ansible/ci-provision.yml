@@ -7,3 +7,22 @@
     lvm_lvname: jenkins-workdir
     lvm_lvmount: "{{ jenkinsworkdir }}"
     lvm_lvsize: "{{ jenkinssize }}"
+
+
+# Playbook for provisioning Docker Production nodes
+
+- hosts: prod-docker-internal
+  roles:
+  - role: lvm-partition
+    lvm_lvname: root
+    lvm_lvmount: /
+    lvm_lvsize: "{{ rootsize }}"
+    lvm_lvfilesystem: ext4
+  - role: lvm-partition
+    lvm_lvname: scratch
+    lvm_lvmount: /scratch
+    lvm_lvsize: "{{ scratch_size }}"
+    lvm_lvfilesystem: "{{ scratch_filesystem }}"
+  - role: basedeps
+  - role: upgrade-distpackages
+  - role: docker
