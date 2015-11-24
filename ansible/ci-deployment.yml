@@ -1,14 +1,24 @@
 ---
-# Playbook for provisioning Jenkins CI nodes
+# Playbook for deploying Jenkins CI nodes
 
 - hosts: ci-jenkins-linux
+  roles:
+    - role: jenkinsslave
+    - role: versioncontrol-utils
+
+# Deploy OMERO build and runtime prerequisites
+- hosts: ci-omero
   roles:
     - role: omero-build
     - role: omero-runtime
     - role: omero-build-cpp
     - role: postgresql
     - role: nginx
-    - role: texlive
   vars:
     - javajdkversions:
       - 1.8.0
+
+# Deploy Documentation prerequisites
+- hosts: ci-docs
+  roles:
+    - role: texlive

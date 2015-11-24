@@ -9,7 +9,8 @@ Role Variables
 
 The defaults will work unless the name of the `etcd` container has been changed:
 
-- `dockerdns.etcd`: Runtime name of the `etcd` container, default: `etcd1`
+- `docker_dns.etcd`: Runtime name of the `etcd` container, default: `etcd1`
+- `docker_dns.domain`: Domain for the DNS service, see role `docker-dns-server`
 
 Author Information
 ------------------

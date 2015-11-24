@@ -4,7 +4,7 @@
 - name: docker production | etcd
   template:
     src: systemd-docker-etcd.j2
-    dest: /etc/systemd/system/docker-{{ dockerdns.etcd }}.service
+    dest: /etc/systemd/system/docker-{{ docker_dns.etcd }}.service
   register: systemdetcd
 
 - name: docker production | skydns
@@ -22,7 +22,7 @@
 - name: docker production | enable etcd
   service:
     enabled: yes
-    name: docker-{{ dockerdns.etcd }}.service
+    name: docker-{{ docker_dns.etcd }}.service
     state: started
 
 - name: docker production | enable skydns
@@ -36,7 +36,7 @@
 # TODO: check if it works in the latest version
 
 - name: docker production | restart etcd
-  command: systemctl restart docker-{{ dockerdns.etcd }}.service
+  command: systemctl restart docker-{{ docker_dns.etcd }}.service
   when: systemdetcd.changed
 
 - name: docker production | restart skydns

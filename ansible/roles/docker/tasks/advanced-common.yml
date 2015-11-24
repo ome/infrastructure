@@ -1,5 +1,5 @@
 ---
-# Setup LVM partitions for Docker
+# Advanced configuration for Docker
 
 - name: storage | setup lvm docker-pool
   lvol:
@@ -7,3 +7,4 @@
     lv: docker-pool
     size: "{{ docker_poolsize }}"
     opts: "{{ docker_lvopts | default(None) }} --thin --poolmetadatasize {{ docker_metadatasize }}"
+  when: docker_use_custom_storage

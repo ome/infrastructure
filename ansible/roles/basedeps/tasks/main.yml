@@ -1,5 +1,5 @@
 ---
-# tasks file for roles/omero-basedeps
+# tasks file for roles/basedeps
 
 - name: system packages | install epel repo
   yum:
@@ -11,6 +11,7 @@
     name: "{{ item }}"
     state: latest
   with_items:
+    - patch
     - rsync
     - tar
     - unzip
