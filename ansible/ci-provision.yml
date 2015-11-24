@@ -11,7 +11,7 @@
 
 # Playbook for provisioning Docker Production nodes
 
-- hosts: prod-docker-internal
+- hosts: docker-prod-hosts
   roles:
   - role: lvm-partition
     lvm_lvname: root
