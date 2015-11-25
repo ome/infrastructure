@@ -9,4 +9,5 @@ DOCKER_OPTIONS="\
     -b {{ docker_bridge_name }} \
     --fixed-cidr {{ docker_bridge_ips }} \
 {% endif %}
+    {{ docker_additional_args }} \
     "

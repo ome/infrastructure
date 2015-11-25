@@ -6,7 +6,7 @@
     src: docker-engine.j2
     dest: /etc/sysconfig/docker-engine
     backup: yes
-  when: docker_use_custom_storage or docker_use_custom_network
+  when: docker_use_custom_storage or docker_use_custom_network or docker_additional_args
   notify:
     - restart docker
 
