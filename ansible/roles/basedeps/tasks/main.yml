@@ -12,6 +12,7 @@
     state: latest
   with_items:
     - patch
+    - redhat-lsb-core
     - rsync
     - tar
     - unzip
