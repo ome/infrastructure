@@ -36,3 +36,6 @@ omero_omego_upgrade_args: "--upgradedb --skipdelete false"
 # Optional path to an additional file to be passed to `omero load ...`
 # before starting the server
 omero_prestart_file:
+
+# Setup OMERO.web
+omero_web_install: True

@@ -11,11 +11,14 @@
     name: "{{ omero_system_user }}"
     append: yes
 
+# Explicitly include omero_basedir so that it'll be world-accessible
 - name: omero | create omero directories
   file:
+    mode: 0755
     path: "{{ item }}"
     state: directory
   with_items:
+    - "{{ omero_basedir }}"
     - "{{ omero_basedir }}/config"
     - "{{ omero_serverdir }}"
 
@@ -24,6 +27,24 @@
     owner: "{{ omero_system_user }}"
     path: "{{ omero_serverdir }}"
     state: directory
+
+
+# OMERO data directory: If it already exists assume the permissions are
+# correct, don't touch anything
+
+- name: Check omero data directory
+  stat:
+    path: "{{ omero_datadir }}"
+  register: stdd
+
+- name: omero | create omero data directory
+  file:
+    owner: "{{ omero_system_user }}"
+    path: "{{ omero_datadir }}"
+    state: directory
+  when: not stdd.stat.exists
+
+# OMERO.server
 
 - name: omero | get server version
   command: "{{ omero_serverdir }}/{{ omero_server_symlink }}/bin/omero version"
@@ -35,7 +56,7 @@
   ignore_errors: yes
 
 - fail:
-    msg: "OMERO.server found but unable to get version, you may have a corrupt installation may be corrupt"
+    msg: "OMERO.server found but unable to get version, you may have a corrupt installation"
   when: omero_server_symlink_st.stat.exists and omero_server_version is undefined
 
 # TODO: omero_reinstall_on_error
@@ -119,3 +140,6 @@
   become: yes
   become_user: "{{ omero_system_user }}"
   when: omero_upgrade and omero_server_symlink_st.stat.exists
+
+- include: omero-web-upstream.yml
+  when: omero_web_install

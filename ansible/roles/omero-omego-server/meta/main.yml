@@ -1,3 +1,5 @@
 ---
 dependencies:
 - { role: omero-runtime }
+- { role: nginx, when: omero_web_install }
+- { role: omero-web-runtime, when: omero_web_install }

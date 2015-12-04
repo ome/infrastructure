@@ -1,0 +1,42 @@
+---
+# tasks file for omero-web
+
+- name: omero web | generate nginx config
+  shell: >
+    {{ omero_serverdir }}/{{ omero_server_symlink }}/bin/omero
+    web config nginx > {{ omero_serverdir }}/omero-web.conf
+  args:
+    creates: /etc/nginx/conf.d/omero-web.conf
+  become: yes
+  become_user: "{{ omero_system_user }}"
+
+- name: omero web | install nginx config
+  command: >
+    cp {{ omero_serverdir }}/omero-web.conf /etc/nginx/conf.d/omero-web.conf
+  args:
+    creates: /etc/nginx/conf.d/omero-web.conf
+  when: omero_generate_nginx_config.changed
+
+- name: nginx | remove system defaults
+  replace:
+    backup: yes
+    dest: /etc/nginx/nginx.conf
+    regexp: '80\s*default_server\s*;'
+    replace: '80; # default_server;'
+
+- name: omero web | selinux booleans
+  seboolean:
+    name: "{{ item }}"
+    state: yes
+    persistent: yes
+  with_items:
+    - httpd_read_user_content
+    - httpd_enable_homedirs
+
+# Alternatively set httpd_can_network_connect=yes to allow all ports
+- name: omero web | selinux ports
+  seport:
+    ports: 4080
+    proto: tcp
+    se_type: http_port_t
+    state: present

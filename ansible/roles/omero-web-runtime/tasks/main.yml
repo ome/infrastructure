@@ -1,0 +1,18 @@
+---
+# tasks file for roles/omero-runtime
+
+- name: system packages | install python pip
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - python-gunicorn
+    - python-pip
+    - python-pillow
+
+- name: omero web | pip install packages
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "django<1.9"
