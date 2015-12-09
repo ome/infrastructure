@@ -3,6 +3,7 @@
 
 - hosts: idr-docker
   roles:
+  - role: server-swap
   - role: network
   - role: docker-storage
   - role: lvm-partition
@@ -17,6 +18,7 @@
 - hosts: idr-docker-localstorage
   roles:
   - role: upgrade-distpackages
+  - role: server-swap
   - role: network
   - role: docker-storage
   - role: lvm-partition
