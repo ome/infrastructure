@@ -10,6 +10,9 @@ IPADDR={{ item.ip }}
 {% if 'netmask' in item %}
 NETMASK={{ item.netmask }}
 {% endif %}
+{% if 'prefix' in item %}
+PREFIX={{ item.prefix }}
+{% endif %}
 {% if 'type' in item %}
 TYPE={{ item.type }}
 {% else %}
