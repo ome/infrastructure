@@ -10,3 +10,6 @@ docker_use_custom_storage: False
 
 # Set to True if using a custom network configuration
 docker_use_custom_network: False
+
+# Any other arguments to be passed to the docker daemon
+docker_additional_args:

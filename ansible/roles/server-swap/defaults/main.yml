@@ -1,0 +1,4 @@
+---
+# defaults file for roles/server-swap
+
+sysctl_vm_swappiness: 1

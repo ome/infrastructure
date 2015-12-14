@@ -1,0 +1,10 @@
+---
+# tasks file for roles/server-swap
+
+- name: sysctl | set vm swappiness
+  sysctl:
+    ignoreerrors: no
+    reload: yes
+    state: present
+    name: vm.swappiness
+    value: "{{ sysctl_vm_swappiness }}"

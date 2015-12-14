@@ -3,6 +3,7 @@
 
 - hosts: idr-docker
   roles:
+  - role: server-swap
   - role: network
   - role: docker-storage
   - role: lvm-partition
@@ -17,8 +18,8 @@
 - hosts: idr-docker-localstorage
   roles:
   - role: upgrade-distpackages
+  - role: server-swap
   - role: network
-  - role: docker-storage
   - role: lvm-partition
     lvm_lvname: root
     lvm_lvmount: /
@@ -27,4 +28,7 @@
   - role: lvm-partition
     lvm_lvname: scratch
     lvm_lvmount: /scratch
-    lvm_lvsize: "{{ scratchsize }}"
+    lvm_lvsize: "{{ scratch_size }}"
+    lvm_lvfilesystem: "{{ scratch_filesystem }}"
+  - role: basedeps
+  - role: docker

@@ -15,11 +15,11 @@
     state: present
     system: yes
 
-- name: docker | set group for docker socket
+- name: docker | set additional docker options
   replace:
     backup: yes
     dest: /etc/sysconfig/docker
     regexp: ^\s*OPTIONS='--selinux-enabled'\s*$
-    replace: OPTIONS='--selinux-enabled -G docker'
+    replace: OPTIONS='--selinux-enabled -G docker {{ docker_additional_args }}'
   notify:
     - restart docker

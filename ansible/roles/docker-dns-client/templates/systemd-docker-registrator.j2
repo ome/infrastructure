@@ -13,11 +13,14 @@ ExecStartPre=-/usr/bin/docker rm registrator
 ExecStart=/usr/bin/docker run --name registrator \
     --link {{ docker_dns.etcd }}:etcd \
     -v /var/run/docker.sock:/tmp/docker.sock \
-    manics/registrator \
+    --entrypoint=sh \
+    manics/registrator -c \
+    "sleep 5; \
+     registrator \
     -iponly \
     -ttl 60 \
     -ttl-refresh=30 \
-    skydns2://etcd:2379/{{ docker_dns.domain }}
+    skydns2://etcd:2379/{{ docker_dns.domain }}"
 ExecStop=/usr/bin/docker stop registrator
 
 [Install]
