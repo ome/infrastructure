@@ -1,0 +1,36 @@
+---
+# tasks file for roles/local-users
+
+- name: users | create local users
+  user:
+    append: yes
+    createhome: yes
+    groups: "{{ item.groups | default() }}"
+    name: "{{ item.user }}"
+    password: "{{ item.password | default() }}"
+    state: present
+    uid: "{{ item.uid }}"
+    update_password: on_create
+  with_items: "{{ local_users_create | default() }}"
+  register: changes
+
+- name: users | force password change for new users
+  command: chage -d 0 {{ item.item.user }}
+  with_items: "{{ changes.results }}"
+  when: "{{ item.changed }}"
+
+- name: users | ssh authorised keys
+  authorized_key:
+    exclusive: no
+    key: "{{ item.sshpubkey }}"
+    manage_dir: no
+    state: present
+    user: "{{ item.user }}"
+  with_items: local_users_create
+  when: item.sshpubkey is defined
+
+- name: users | delete local users
+  user:
+    name: "{{ item }}"
+    state: absent
+  with_items: "{{ local_users_delete | default() }}"
