@@ -2,6 +2,7 @@
 # tasks file for roles/local-users
 
 - name: users | create local users
+  become: yes
   user:
     append: yes
     createhome: yes
@@ -15,11 +16,13 @@
   register: changes
 
 - name: users | force password change for new users
+  become: yes
   command: chage -d 0 {{ item.item.user }}
   with_items: "{{ changes.results }}"
   when: "{{ item.changed }}"
 
 - name: users | ssh authorised keys
+  become: yes
   authorized_key:
     exclusive: no
     key: "{{ item.sshpubkey }}"
@@ -30,6 +33,7 @@
   when: item.sshpubkey is defined
 
 - name: users | delete local users
+  become: yes
   user:
     name: "{{ item }}"
     state: absent
