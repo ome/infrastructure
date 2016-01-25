@@ -12,7 +12,7 @@
     state: present
     uid: "{{ item.uid }}"
     update_password: on_create
-  with_items: "{{ local_users_create | default() }}"
+  with_items: "{{ local_users_create | default([]) }}"
   register: changes
 
 - name: users | force password change for new users
@@ -23,13 +23,14 @@
 
 - name: users | ssh authorised keys
   become: yes
+  become_user: "{{ item.user }}"
   authorized_key:
     exclusive: no
     key: "{{ item.sshpubkey }}"
     manage_dir: no
     state: present
     user: "{{ item.user }}"
-  with_items: local_users_create
+  with_items: "{{ local_users_create | default([]) }}"
   when: item.sshpubkey is defined
 
 - name: users | delete local users
@@ -37,4 +38,4 @@
   user:
     name: "{{ item }}"
     state: absent
-  with_items: "{{ local_users_delete | default() }}"
+  with_items: "{{ local_users_delete | default([]) }}"
