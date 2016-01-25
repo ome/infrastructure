@@ -2,6 +2,7 @@
 # Advanced configuration for Docker
 
 - name: storage | setup lvm docker-pool
+  become: yes
   lvol:
     vg: "{{ docker_vgname }}"
     lv: docker-pool

@@ -2,9 +2,10 @@
 # tasks file for roles/omero-build
 
 - name: system packages | install build tools
+  become: yes
   yum:
     name: "{{ item }}"
-    state: latest
+    state: present
   with_items:
     - ant
     - ant-contrib
@@ -15,9 +16,10 @@
     - maven
 
 - name: system packages | install build libraries
+  become: yes
   yum:
     name: "{{ item }}"
-    state: latest
+    state: present
   with_items:
     - boost-devel
     - libjpeg-turbo-devel
@@ -27,18 +29,20 @@
     - zlib-devel
 
 - name: system packages | install python tools
+  become: yes
   yum:
     name: "{{ item }}"
-    state: latest
+    state: present
   with_items:
     - python-devel
     - python-pip
     - python-virtualenv
 
 - name: system packages | install epel packages
+  become: yes
   yum:
     name: "{{ item }}"
-    state: latest
+    state: present
     enablerepo: epel
   with_items:
     - hdf5-devel
@@ -48,6 +52,7 @@
 # so use `creates` in `unarchive`
 
 - name: cmake | download and extract
+  become: yes
   unarchive:
     copy: no
     creates: /opt/cmake-3.3.2-Linux-x86_64/bin/cmake
@@ -55,6 +60,7 @@
     src: http://www.cmake.org/files/v3.3/cmake-3.3.2-Linux-x86_64.tar.gz
 
 - name: cmake | symlink
+  become: yes
   file:
     force: yes
     path: /opt/cmake
@@ -62,6 +68,7 @@
     state: link
 
 - name: cmake | set the global path to include cmake bin
+  become: yes
   template:
     src: cmake-path.sh.j2
     dest: "/etc/profile.d/cmake-path.sh"
@@ -71,11 +78,13 @@
     mode: 0644
 
 - name: exe4j packages | install
+  become: yes
   yum:
     name: http://download-aws.ej-technologies.com/exe4j/exe4j_linux_5_0_1.rpm
     state: present
 
 - name: findbugs | download and extract
+  become: yes
   unarchive:
     copy: no
     creates: /opt/findbugs-3.0.1/bin/findbugs
@@ -83,6 +92,7 @@
     src: http://prdownloads.sourceforge.net/findbugs/findbugs-3.0.1.tar.gz?download
 
 - name: findbugs | symlink
+  become: yes
   file:
     force: yes
     path: /opt/findbugs
@@ -90,11 +100,13 @@
     state: link
 
 - name: ninja | create parent dir
+  become: yes
   file:
     path: /opt/ninja-1.6.0
     state: directory
 
 - name: ninja | download and extract
+  become: yes
   unarchive:
     copy: no
     # Ansible doesn't detect when this already exists, so use creates:
@@ -103,6 +115,7 @@
     src: https://github.com/martine/ninja/releases/download/v1.6.0/ninja-linux.zip
 
 - name: ninja | symlink
+  become: yes
   file:
     force: yes
     path: /opt/ninja

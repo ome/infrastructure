@@ -2,6 +2,7 @@
 # Distribution (Centos 7) docker
 
 - name: system packages | install docker
+  become: yes
   yum:
     pkg: docker
     state: present
@@ -10,12 +11,14 @@
 # In recent versions of Centos 7 Docker the docker group isn't created
 
 - name: docker | create docker group
+  become: yes
   group:
     name: docker
     state: present
     system: yes
 
 - name: docker | set additional docker options
+  become: yes
   replace:
     backup: yes
     dest: /etc/sysconfig/docker

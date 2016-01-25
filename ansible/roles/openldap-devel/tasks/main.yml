@@ -2,6 +2,7 @@
 # tasks file for roles/openldap-devel
 
 - name: install openldap-devel
+  become: yes
   yum:
     name: "{{ item }}"
     state: present
