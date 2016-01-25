@@ -10,6 +10,8 @@
     - python-virtualenv
     
 - name: virtualenv | scc
+  become: yes
+  become_user: "{{ jenkinsuser }}"
   pip:
     virtualenv: /home/{{ jenkinsuser }}/virtualenv
     name: scc
