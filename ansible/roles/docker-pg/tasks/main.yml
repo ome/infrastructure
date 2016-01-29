@@ -1,0 +1,27 @@
+---
+# tasks file for roles/docker-pg
+
+
+- name: system packages | install docker-py
+  yum:
+    pkg: docker-py
+    state: present
+    enablerepo: extras
+
+- name: Run postgres:9.4
+  docker:
+    name: postgres
+    image: postgres:9.4
+    # Prevents reloading with state: reloaded
+    # https://github.com/ansible/ansible-modules-core/issues/1885
+    net: default
+    state: reloaded
+    ports:
+      - "{{ docker_pg_port }}:5432"
+#      volumes: /data/pg:/var/lib/postgresql/data
+    # Fixes issue with docker-py and docker-machine
+    use_tls: "{{ docker_use_tls }}"
+
+- name: Update pg_hba.conf file
+  template: src=pg_hba.conf.j2 dest=/tmp/docker_pg_hba.conf
+  notify: deploy_docker_pg_hba

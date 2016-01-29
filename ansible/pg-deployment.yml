@@ -1,0 +1,6 @@
+---
+# Playbook for provisioning postgres servers
+
+- hosts: docker-pg
+  roles:
+    - role: docker-pg

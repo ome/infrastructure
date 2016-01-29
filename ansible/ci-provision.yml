@@ -26,3 +26,10 @@
   - role: basedeps
   - role: upgrade-distpackages
   - role: docker
+
+# Playbook for provisioning a shared postgres
+# container on a docker node.
+
+- hosts: docker-pg-container
+  roles:
+    - role: docker-pg

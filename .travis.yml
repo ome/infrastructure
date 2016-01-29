@@ -1,9 +1,13 @@
 language: python
-sudo: false
 cache: pip
+sudo: required
+services:
+  - docker
 
 install:
   - pip install ansible
+  - pip install -U docker-py
 
 script:
     - ansible-playbook -i ansible/example-hosts --syntax-check ansible/*.yml
+    - bash -eux test/test_pg
