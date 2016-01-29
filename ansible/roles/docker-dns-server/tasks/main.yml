@@ -2,12 +2,14 @@
 # Setup production Docker services to run automatically
 
 - name: docker production | etcd
+  become: yes
   template:
     src: systemd-docker-etcd.j2
     dest: /etc/systemd/system/docker-{{ docker_dns.etcd }}.service
   register: systemdetcd
 
 - name: docker production | skydns
+  become: yes
   template:
     src: systemd-docker-skydns.j2
     dest: /etc/systemd/system/docker-skydns.service
@@ -16,16 +18,19 @@
 # Can't use a notifier because the reload must happen before the next step
 
 - name: docker production | reload systemd
+  become: yes
   command: systemctl daemon-reload
   when: systemdetcd.changed or systemdskydns.changed
 
 - name: docker production | enable etcd
+  become: yes
   service:
     enabled: yes
     name: docker-{{ docker_dns.etcd }}.service
     state: started
 
 - name: docker production | enable skydns
+  become: yes
   service:
     enabled: yes
     name: docker-skydns.service
@@ -36,9 +41,11 @@
 # TODO: check if it works in the latest version
 
 - name: docker production | restart etcd
+  become: yes
   command: systemctl restart docker-{{ docker_dns.etcd }}.service
   when: systemdetcd.changed
 
 - name: docker production | restart skydns
+  become: yes
   command: systemctl restart docker-skydns.service
   when: systemdskydns.changed

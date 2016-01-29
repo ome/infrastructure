@@ -2,6 +2,7 @@
 # Advanced configuration for Docker
 
 - name: upstream docker | configure advanced
+  become: yes
   template:
     src: docker-engine.j2
     dest: /etc/sysconfig/docker-engine
@@ -28,11 +29,13 @@
     docker_systemd_file_update: (docker_use_custom_storage or docker_use_custom_network) and (not st1.stat.exists or st1.stat.ctime < st0.stat.ctime)
 
 - name: upstream docker | copy systemd file
+  become: yes
   command: cp /usr/lib/systemd/system/docker.service /etc/systemd/system/docker.service
   when: docker_systemd_file_update
 
 # Can't use a notifier because the reload must happen before a start/restart
 - name: docker production | reload systemd
+  become: yes
   command: systemctl daemon-reload
   when: docker_systemd_file_update
   notify:
@@ -40,6 +43,7 @@
 
 # Use patch so that we know if upstream makes any significant changes
 - name: upstream docker | customise systemd file
+  become: yes
   patch:
     dest: /etc/systemd/system/docker.service
     src: docker-service.patch
@@ -48,6 +52,7 @@
     - restart docker
 
 - name: upstream docker | remove custom systemd file
+  become: yes
   file:
     path: /etc/systemd/system/docker.service
     state: absent

@@ -2,11 +2,13 @@
 # Setup a Jenkins-CI slave
 
 - name: jenkins | create user
+  become: yes
   user:
     name: "{{ jenkinsuser }}"
     append: yes
 
 - name: jenkins | jenkins workspace
+  become: yes
   file:
     path: "{{ jenkinsworkdir }}"
     state: directory
@@ -14,11 +16,13 @@
     group: "{{ jenkinsuser }}"
 
 - name: jenkins | ssh key
+  become: yes
   authorized_key:
     user: "{{ jenkinsuser }}"
     key: "{{ authorized_key }}"
 
 - name: jenkins | ssh access
+  become: yes
   lineinfile:
     dest: /etc/security/access.conf
     backup: yes
@@ -27,6 +31,7 @@
   when: not spacewalk
 
 - name: jenkins | git config
+  become: yes
   template:
     src: gitconfig.j2
     dest: /home/{{ jenkinsuser }}/.gitconfig

@@ -2,6 +2,7 @@
 # tasks file for roles/server-swap
 
 - name: sysctl | set vm swappiness
+  become: yes
   sysctl:
     ignoreerrors: no
     reload: yes

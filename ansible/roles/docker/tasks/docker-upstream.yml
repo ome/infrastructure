@@ -2,12 +2,14 @@
 # Upstream Docker
 
 - name: upstream docker | setup repository
+  become: yes
   copy:
     src: docker.repo
     dest: /etc/yum.repos.d/
     backup: no
 
 - name: upstream docker | install docker
+  become: yes
   yum:
     pkg: docker-engine
     state: present

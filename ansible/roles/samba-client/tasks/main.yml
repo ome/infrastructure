@@ -2,6 +2,7 @@
 # Install Samba client packages for mounts
 
 - name: samba mounts | install clients
+  become: yes
   yum:
     pkg: "{{ item }}"
     state: present

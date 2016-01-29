@@ -2,6 +2,7 @@
 # tasks file for roles/upgrade-distpackages
 
 - name: system packages | upgrade
+  become: yes
   yum:
     name: "{{ item }}"
     state: latest

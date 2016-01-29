@@ -2,6 +2,7 @@
 # Advanced configuration for Docker
 
 - name: docker | disable storage autoconfiguration
+  become: yes
   copy:
     src: docker-storage-setup
     dest: /etc/sysconfig/docker-storage-setup
@@ -11,6 +12,7 @@
     - restart docker
 
 - name: docker | configure storage
+  become: yes
   template:
     src: docker-storage.j2
     dest: /etc/sysconfig/docker-storage
@@ -20,6 +22,7 @@
     - restart docker
 
 - name: docker | configure network
+  become: yes
   template:
     src: docker-network.j2
     dest: /etc/sysconfig/docker-network

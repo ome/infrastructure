@@ -2,16 +2,19 @@
 # tasks file for roles/nginx-proxy
 
 - name: system packages | setup upstream nginx repo
+  become: yes
   yum:
     name: http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
     state: present
 
 - name: system packages | install nginx
+  become: yes
   yum:
     name: nginx
-    state: latest
+    state: presentt
 
 - name: nginx | remove default config
+  become: yes
   file:
     dest: /etc/nginx/conf.d/{{ item }}
     state: absent
@@ -22,6 +25,7 @@
     - restart nginx
 
 - name: nginx | main config
+  become: yes
   template:
     src: nginx-conf.j2
     dest: /etc/nginx/nginx.conf
@@ -29,6 +33,7 @@
     - restart nginx
 
 - name: nginx | dynamic proxy config
+  become: yes
   template:
     src: nginx-confd-dynamic-proxy.j2
     dest: /etc/nginx/conf.d/dynamic-proxy.conf
@@ -37,6 +42,7 @@
   when: nginx_dynamic_proxies is defined and nginx_dynamic_proxies
 
 - name: nginx | dynamic proxy remove config
+  become: yes
   file:
     dest: /etc/nginx/conf.d/dynamic-proxy.conf
     state: absent
@@ -45,6 +51,7 @@
   when: nginx_dynamic_proxies is not defined or not nginx_dynamic_proxies
 
 - name: nginx | start service
+  become: yes
   service:
     enabled: yes
     name: nginx
@@ -53,6 +60,7 @@
 
 # Command copied from /usr/lib/systemd/system/nginx.service
 - name: nginx | start service
+  become: yes
   command: /usr/sbin/nginx -c /etc/nginx/nginx.conf
   args:
     # Only run command if nginx.pid doesn't exist

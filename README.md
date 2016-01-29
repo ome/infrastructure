@@ -65,22 +65,21 @@ In the following examples replace example-hosts with the private host inventory 
 
 Dry-run `ci-provision.yml` for all hosts listed in `ci-provision.yml`:
 - `-u` Login as this user
-- `-b` use `sudo`
 - `--ask-become-pass` prompt for sudo password
 - `-C` Dry-run mode
 - `-v` Verbose (repeat to increase verbosity)
 
 Note this may fail since some tasks are dependent on others being completed:
 
-    ansible-playbook -i example-hosts -u $USERNAME -b --ask-become-pass -C -v ci-provision.yml
+    ansible-playbook -i example-hosts -u $USERNAME --ask-become-pass -C -v ci-provision.yml
 
 Run `provision.yml`:
 
-    ansible-playbook -i example-hosts -u $USERNAME -b --ask-become-pass ci-provision.yml
+    ansible-playbook -i example-hosts -u $USERNAME --ask-become-pass ci-provision.yml
 
 Run `provision.yml` for all subset of the hosts or groups listed in `provision.yml`:
 
-    ansible-playbook -i example-hosts -u $USERNAME -b --ask-become-pass ci-provision.yml --limit $HOST_OR_GROUP_NAME
+    ansible-playbook -i example-hosts -u $USERNAME --ask-become-pass ci-provision.yml --limit $HOST_OR_GROUP_NAME
 
 List the hosts that would be targeted by a command, don't do anything else:
 

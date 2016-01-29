@@ -2,6 +2,7 @@
 # tasks file for roles/omero-build-cpp
 
 - name: system packages | install C++ build tools
+  become: yes
   yum:
     name: "@Development Tools"
-    state: latest
+    state: present

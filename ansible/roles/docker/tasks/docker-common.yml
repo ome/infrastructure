@@ -2,12 +2,14 @@
 # Setup a Docker node
 
 - name: docker | enable
+  become: yes
   service:
     name: docker
     state: started
     enabled: yes
 
 - name: docker | group members
+  become: yes
   user:
     name: "{{ item }}"
     groups: docker

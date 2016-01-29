@@ -5,30 +5,35 @@
   include_vars: ice-{{ ice_version }}.yml
 
 - name: zeroc ice | setup repository
+  become: yes
   get_url:
     dest: /etc/yum.repos.d/zeroc-ice-el7.repo
     url: "{{ ice_repourl }}"
 
 - name: zeroc ice | install runtime packages
+  become: yes
   yum:
     name: "{{ item }}"
-    state: latest
+    state: present
   with_items: "{{ ice_runtime_packages }}"
 
 - name: zeroc ice | install devel packages
+  become: yes
   yum:
     name: "{{ item }}"
-    state: latest
+    state: present
   with_items: "{{ ice_devel_packages }}"
 
 - name: zeroc ice | install ice pip dependencies
+  become: yes
   yum:
     name: "{{ item }}"
-    state: latest
+    state: present
   with_items: "{{ ice_pip_dependencies }}"
   when: ice_pip_dependencies
 
 - name: zeroc ice | pip install packages
+  become: yes
   pip:
     name: "{{ item.name }}"
     state: present

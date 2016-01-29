@@ -2,6 +2,7 @@
 # Setup LVM partition
 
 - name: storage | create logical volume
+  become: yes
   lvol:
     vg: "{{ lvm_vgname }}"
     lv: "{{ lvm_lvname }}"
@@ -9,12 +10,14 @@
     opts: "{{ lvm_lvopts | default(None) }}"
 
 - name: storage | format
+  become: yes
   filesystem:
     fstype: "{{ lvm_lvfilesystem }}"
     dev: /dev/{{ lvm_vgname }}/{{ lvm_lvname }}
     resizefs: yes
 
 - name: storage | mount
+  become: yes
   mount:
     name: "{{ lvm_lvmount }}"
     src: /dev/{{ lvm_vgname }}/{{ lvm_lvname }}

@@ -2,6 +2,7 @@
 # Setup production Docker DNS clients to run automatically
 
 - name: docker production | registrator
+  become: yes
   template:
     src: systemd-docker-registrator.j2
     dest: /etc/systemd/system/docker-registrator.service
@@ -10,10 +11,12 @@
 # Can't use a notifier because the reload must happen before the next step
 
 - name: reload systemd
+  become: yes
   command: systemctl daemon-reload
   when: systemdregistrator.changed
 
 - name: docker production | enable registrator
+  become: yes
   service:
     enabled: yes
     name: docker-registrator.service
@@ -22,5 +25,6 @@
 # service module doesn't seem to work for a new systemd.service
 
 - name: docker production | enable registrator
+  become: yes
   command: systemctl restart docker-registrator.service
   when: systemdregistrator.changed
