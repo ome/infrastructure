@@ -2,12 +2,9 @@
 # tasks file for roles/gpfs
 
 - name: gpfs | current kernel version
-  set_fact:
-    kernel_version: "{{ ansible_kernel }}"
-
-- name: gpfs | kernel module prebuilt
-  set_fact:
-    build_module: gpfs_kernel_rpm_prebuilt is not defined or not gpfs_kernel_rpm_prebuilt
+  fail:
+    msg: "Current kernel {{ ansible_kernel }} must match specified GPFS kernel {{ gpfs_kernel_version }}"
+  when: ansible_kernel != gpfs_kernel_version
 
 - name: gpfs | install system requirements
   become: yes
@@ -21,7 +18,6 @@
   - kernel-tools-libs
   - rpm-build
   - gcc-c++
-  when: build_module
 
 - name: gpfs | download directory
   become: yes
@@ -56,39 +52,18 @@
   args:
     creates: "{{ gpfs_package_test_unpacked }}"
 
+- name: gpfs | Remove packages
+  become: yes
+  yum:
+    name: "{{ gpfs_rpm_remove_list }}"
+    state: absent
+
 - name: gpfs | Install packages
   become: yes
   yum:
-    name: /usr/lpp/mmfs/4.1.1/gpfs_rpms/{{ item }}
+    name: "{{ gpfs_package_extracted_rpms_dir }}/{{ item }}"
     state: present
-  with_items:
-  - gpfs.base-{{ gpfs_rpm_version }}.x86_64.rpm
-  - gpfs.docs-{{ gpfs_rpm_version }}.noarch.rpm
-  - gpfs.ext-{{ gpfs_rpm_version }}.x86_64.rpm
-  - gpfs.gpl-{{ gpfs_rpm_version }}.noarch.rpm
-  - gpfs.gskit-{{ gpfs_gskit_version }}.x86_64.rpm
-  - gpfs.hadoop-2-connector-{{ gpfs_rpm_version }}.x86_64.rpm
-  - gpfs.msg.en_US-{{ gpfs_rpm_version }}.noarch.rpm
-
-- name: gpfs | nsd access
-  become: yes
-  authorized_key:
-    key: "{{ item }}"
-    manage_dir: yes
-    state: present
-    user: root
-  with_items: "{{ gpfs_public_keys | default([]) }}"
-
-# Somewhere between kernel 3.10.0-229.14.1.el7.x86_64 and 3.10.0-327.4.5.el7.x86_64
-# the definition of generic_setlease was changed:
-# https://github.com/torvalds/linux/commit/e6f5c78930e409f3a6b37f5484313a416359ac7f
-# This is an attempt to patch the GPFS module
-- name: gpfs | patch kernel module
-  become: yes
-  patch:
-    dest: /usr/lpp/mmfs/src/gpl-linux/verdep.h
-    src: mmfs-src-gpl-linux-verdep.h.patch
-  when: build_module
+  with_items: "{{ gpfs_rpm_list }}"
 
 - name: gpfs | build kernel module
   become: yes
@@ -97,8 +72,6 @@
     creates: /root/rpmbuild/RPMS/x86_64/{{ gpfs_kernel_rpm_name }}
   environment:
     LINUX_DISTRIBUTION: REDHAT_AS_LINUX
-  register: kernelbuild
-  when: build_module
 
 - name: gpfs | install kernel module (locally built)
   become: yes

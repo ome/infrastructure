@@ -1,29 +1,47 @@
 ---
 # defaults file for roles/gpfs
 
-gpfs_version: "4.1.1"
-gpfs_rpm_release: "0"
-gpfs_rpm_version: "{{ gpfs_version }}-{{ gpfs_rpm_release }}"
-gpfs_gskit_version: "8.0.50-40"
+# Require a GPFS module for this kernel version
+gpfs_kernel_version: 3.10.0-327.4.5.el7.x86_64
+# Local directory for GPFS RPMs. gpfs-build will copy RPMs here so they can be deployed to other nodes without needing to rerun the extract and build process
+#gpfs_local_rpm_dir:
 
-gpfs_package_filename: Spectrum_Scale_install-{{ gpfs_version }}.{{ gpfs_rpm_release }}_x86_64_standard_protocols
-gpfs_package_sha1: ae4bd4978afa5f239c7a806ba0e76d2705032c00
+gpfs_version: "4.1.1"
+gpfs_rpm_release: "4"
+gpfs_rpm_version: "{{ gpfs_version }}-{{ gpfs_rpm_release }}"
+
+#gpfs_package_filename: Spectrum_Scale_install-{{ gpfs_version }}.{{ gpfs_rpm_release }}_x86_64_standard_protocols
+#gpfs_package_sha1: ae4bd4978afa5f239c7a806ba0e76d2705032c00
+gpfs_package_filename: Spectrum_Scale_Standard-{{ gpfs_version }}.{{ gpfs_rpm_release }}-x86_64-Linux-update
+gpfs_package_sha1: 805356e8a5575250f021e1f2b2ec036c01ba3b65
+
 # Either a local path to the source, or a URL, required
 gpfs_package_source:
 # If source is a remote URL optionally specify a username and password
 gpfs_download_password:
 gpfs_download_username:
 
+# The expected path to the directory containing the GPFS RPMs after extracting the archive
+gpfs_package_extracted_rpms_dir: /usr/lpp/mmfs/{{ gpfs_version }}.{{ gpfs_rpm_release }}
 # If this file exists assume the archive was unpacked successfully
-# I think this is the last file to be extracted:
-gpfs_package_test_unpacked: /usr/lpp/mmfs/{{ gpfs_version }}/zimon_rpms/gpfs.gss.pmcollector-4.1.0-8.el7.x86_64.rpm
+gpfs_package_test_unpacked: "{{ gpfs_package_extracted_rpms_dir }}/gpfs.msg.en_US-{{ gpfs_rpm_version }}.noarch.rpm"
 
-# The name of the built kernel module rpm (note kernel_version is defined in tasks)
-gpfs_kernel_rpm_name: gpfs.gplbin-{{ kernel_version }}-{{ gpfs_rpm_version }}.x86_64.rpm
+# The name of the built kernel module rpm
+gpfs_kernel_rpm_name: gpfs.gplbin-{{ gpfs_kernel_version }}-{{ gpfs_rpm_version }}.x86_64.rpm
 
-# If this variable is non-empty it must be the path/URL to a prebuilt kernel module rpm
-# Otherwise the kernel module will be built (this will automatically install development packages)
-#gpfs_kernel_rpm_prebuilt:
+# The list of GPFS RPMs (excluding the kernel module RPM)
+gpfs_rpm_list:
+#- gpfs.base-{{ gpfs_rpm_version }}.x86_64.rpm
+- gpfs.base-{{ gpfs_rpm_version }}.x86_64.update.rpm
+- gpfs.docs-{{ gpfs_rpm_version }}.noarch.rpm
+#- gpfs.ext-{{ gpfs_rpm_version }}.x86_64.rpm
+- gpfs.ext-{{ gpfs_rpm_version }}.x86_64.update.rpm
+- gpfs.gpl-{{ gpfs_rpm_version }}.noarch.rpm
+- gpfs.gskit-8.0.50-47.x86_64.rpm
+#- gpfs.hadoop-2-connector-{{ gpfs_rpm_version }}.x86_64.rpm
+- gpfs.hadoop-connector-2.7.0-3.x86_64.rpm
+- gpfs.msg.en_US-{{ gpfs_rpm_version }}.noarch.rpm
 
-# Public SSH keys of the GPFS NSD servers
-#gpfs_public_keys:
+# List of RPMs to uninstall (e.g. because the RPM has different names in different version of GPFS)
+gpfs_rpm_remove_list:
+- gpfs.hadoop-2-connector
