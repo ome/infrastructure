@@ -1,0 +1,29 @@
+---
+# defaults file for roles/gpfs
+
+gpfs_version: "4.1.1"
+gpfs_rpm_release: "0"
+gpfs_rpm_version: "{{ gpfs_version }}-{{ gpfs_rpm_release }}"
+gpfs_gskit_version: "8.0.50-40"
+
+gpfs_package_filename: Spectrum_Scale_install-{{ gpfs_version }}.{{ gpfs_rpm_release }}_x86_64_standard_protocols
+gpfs_package_sha1: ae4bd4978afa5f239c7a806ba0e76d2705032c00
+# Either a local path to the source, or a URL, required
+gpfs_package_source:
+# If source is a remote URL optionally specify a username and password
+gpfs_download_password:
+gpfs_download_username:
+
+# If this file exists assume the archive was unpacked successfully
+# I think this is the last file to be extracted:
+gpfs_package_test_unpacked: /usr/lpp/mmfs/{{ gpfs_version }}/zimon_rpms/gpfs.gss.pmcollector-4.1.0-8.el7.x86_64.rpm
+
+# The name of the built kernel module rpm (note kernel_version is defined in tasks)
+gpfs_kernel_rpm_name: gpfs.gplbin-{{ kernel_version }}-{{ gpfs_rpm_version }}.x86_64.rpm
+
+# If this variable is non-empty it must be the path/URL to a prebuilt kernel module rpm
+# Otherwise the kernel module will be built (this will automatically install development packages)
+#gpfs_kernel_rpm_prebuilt:
+
+# Public SSH keys of the GPFS NSD servers
+#gpfs_public_keys:
