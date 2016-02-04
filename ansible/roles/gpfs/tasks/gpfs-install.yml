@@ -1,0 +1,61 @@
+---
+# Install GPFS packages extracted and compiled by the gpfs-build tasks
+
+- name: gpfs | current kernel version
+  fail:
+    msg: "Current kernel {{ ansible_kernel }} must match specified GPFS kernel {{ gpfs_kernel_version }}"
+  when: gpfs_install_check_kernel_version and (ansible_kernel != gpfs_kernel_version)
+
+- name: gpfs | install installer gpfs rpms
+  become: yes
+  yum:
+    name: "{{ gpfs_installer_extracted_rpms_dir }}/{{ item }}"
+    state: present
+  with_items: "{{ gpfs_installer_rpms }}"
+
+- name: gpfs | download directory
+  become: yes
+  file:
+    path: /opt/gpfs-installer
+    state: directory
+
+# Note this is a relative user directory to avoid problems with running rsync as root
+- name: gpfs | copy rpms
+  synchronize:
+    dest: gpfs-rpms/
+    src: "{{ gpfs_local_rpm_dir }}/"
+
+- name: gpfs | remove packages
+  become: yes
+  yum:
+    name: "{{ gpfs_remove_rpms }}"
+    state: absent
+
+- name: gpfs | install installer packages
+  become: yes
+  yum:
+    name: gpfs-rpms/1/{{ item }}
+    state: present
+  with_items: "{{ gpfs_installer_rpms }}"
+
+- name: gpfs | install patch packages
+  become: yes
+  yum:
+    name: gpfs-rpms/2/{{ item }}
+    state: present
+  with_items: "{{ gpfs_patch_rpms }}"
+
+- name: gpfs | install kernel module
+  become: yes
+  yum:
+    name: gpfs-rpms/3/{{ gpfs_kernel_rpm_name }}
+    state: present
+
+- name: gpfs | nsd access
+  become: yes
+  authorized_key:
+    key: "{{ item }}"
+    manage_dir: yes
+    state: present
+    user: root
+  with_items: "{{ gpfs_public_keys | default([]) }}"

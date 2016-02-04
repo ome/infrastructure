@@ -3,5 +3,6 @@
 
 - include: gpfs-build.yml
   when: gpfs_build
-#- include: gpfs-install.yml
-#  when: gpfs_install
+
+- include: gpfs-install.yml
+  when: gpfs_install
