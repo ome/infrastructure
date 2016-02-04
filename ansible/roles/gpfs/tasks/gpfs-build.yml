@@ -29,10 +29,15 @@
   become: yes
   copy:
     dest: /opt/gpfs-installer/{{ gpfs_installer_package }}
-    force: no
+    force: yes
     mode: 0755
     src: "{{ gpfs_package_source_dir }}/{{ gpfs_installer_package }}"
-    validate: sh -c '[ "$(cat %s | sha1sum)" = "{{ gpfs_installer_package_sha1 }}  -" ]'
+  register: r
+
+- name: gpfs | checksum installer package
+  fail:
+    msg: "{{ gpfs_installer_package }} checksum failed"
+  when: r.checksum != gpfs_installer_package_sha1
 
 - name: gpfs | extract installer packages
   become: yes
@@ -43,10 +48,16 @@
   become: yes
   copy:
     dest: /opt/gpfs-installer/{{ gpfs_patch_package }}
-    force: no
+    force: yes
     mode: 0755
     src: "{{ gpfs_package_source_dir }}/{{ gpfs_patch_package }}"
     validate: sh -c '[ "$(cat %s | sha1sum)" = "{{ gpfs_patch_package_sha1 }}  -" ]'
+  register: r
+
+- name: gpfs | checksum patch package
+  fail:
+    msg: "{{ gpfs_patch_package }} checksum failed"
+  when: r.checksum != gpfs_patch_package_sha1
 
 - name: gpfs | extract patch packages
   become: yes

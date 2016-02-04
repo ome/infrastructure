@@ -30,9 +30,12 @@ Role Variables
 
 You will need to override many of the variables in `defaults/main.yml`, depending on your GPFS version.
 
+- `gpfs_build`: If true extract and build GPFS RPMs. You will need to run with this set on at least one node, but note the build node doesn't have to be an active GPFS client since it's purely used for extracting and building packages
+- `gpfs_install`: If True install GPFS using RPMs provided in a local directory, this should be True unless you are only extracting/building the GPFS RPMs
 - `gpfs_kernel_version`: Compile/install the GPFS module for this kernel version
 - `gpfs_local_rpm_dir`: A local directory to which the extracted/built RPMs can be copied from the build node and subsequently deployed onto other nodes. For convenience this can be defined on the command line, e.g. `-e gpfs_local_rpm_dir=/tmp/gpfs-rpms`.
-- `gpfs_package_source`: A local path or URL to the main GPFS package
+- `gpfs_package_source_dir`: A local path to a directory containing the GPFS packages (default `files/`)
+- `gpfs_install_check_kernel_version`: If True check that the currently running kernel version matches that of the compiled GPFS kernel module. Set to False if you are upgrading the kernel and GPFS kernel module at the same time.
 
 
 Example Playbook

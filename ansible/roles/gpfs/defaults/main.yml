@@ -1,15 +1,23 @@
 ---
 # defaults file for roles/gpfs
 
+# If true extract and build GPFS RPMs
+gpfs_build: False
+# If true install GPFS using RPMs
+gpfs_install: True
+
 # Build/Install a GPFS module for this kernel version
 gpfs_kernel_version: 3.10.0-327.4.5.el7.x86_64
 
 # A local directory containing the above installer and patch packages
-# Default is the files directory of this role
 gpfs_package_source_dir: files
 
 # Local directory for GPFS RPMs. They will be copied here here so they can be deployed to other nodes without needing to rerun the extract and build process
 #gpfs_local_rpm_dir:
+
+# When installing the GPFS RPMs check whether the current kernel version matches the RPM.
+# Ignored when building (versions must always match)
+gpfs_install_check_kernel_version: True
 
 ################################################################################
 # Only change the following if you really know what you are doing
