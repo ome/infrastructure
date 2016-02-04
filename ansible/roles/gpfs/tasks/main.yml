@@ -73,19 +73,19 @@
   environment:
     LINUX_DISTRIBUTION: REDHAT_AS_LINUX
 
-- name: gpfs | install kernel module (locally built)
+- name: gpfs | Fetch all GPFS RPMs
   become: yes
-  yum:
-    name: /root/rpmbuild/RPMS/x86_64/{{ gpfs_kernel_rpm_name }}
-    state: present
-  when: build_module
+  fetch:
+    dest: "{{ gpfs_local_rpm_dir }}/"
+    fail_on_missing: yes
+    flat: yes
+    src: "{{ gpfs_package_extracted_rpms_dir }}/{{ item }}"
+  with_items: "{{ gpfs_rpm_list }}"
 
-- name: gpfs | install kernel module (prebuilt)
+- name: gpfs | Fetch GPFS kernel RPM
   become: yes
-  yum:
-    name: "{{ gpfs_kernel_rpm_prebuilt }}"
-    state: present
-  when: not build_module
-
-# TODO
-# name: gpfs | fetch kernel module
+  fetch:
+    dest: "{{ gpfs_local_rpm_dir }}/"
+    fail_on_missing: yes
+    flat: yes
+    src: /root/rpmbuild/RPMS/x86_64/{{ gpfs_kernel_rpm_name }}
