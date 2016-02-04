@@ -1,47 +1,57 @@
 ---
 # defaults file for roles/gpfs
 
-# Require a GPFS module for this kernel version
+# Build/Install a GPFS module for this kernel version
 gpfs_kernel_version: 3.10.0-327.4.5.el7.x86_64
-# Local directory for GPFS RPMs. gpfs-build will copy RPMs here so they can be deployed to other nodes without needing to rerun the extract and build process
+
+# A local directory containing the above installer and patch packages
+# Default is the files directory of this role
+gpfs_package_source_dir: files
+
+# Local directory for GPFS RPMs. They will be copied here here so they can be deployed to other nodes without needing to rerun the extract and build process
 #gpfs_local_rpm_dir:
 
+################################################################################
+# Only change the following if you really know what you are doing
+
 gpfs_version: "4.1.1"
-gpfs_rpm_release: "4"
-gpfs_rpm_version: "{{ gpfs_version }}-{{ gpfs_rpm_release }}"
+gpfs_installer_version: "4.1.1.0"
+gpfs_installer_rpm_version: "4.1.1-0"
+gpfs_patch_version: "4.1.1.4"
+gpfs_patch_rpm_version: "4.1.1-4"
 
-#gpfs_package_filename: Spectrum_Scale_install-{{ gpfs_version }}.{{ gpfs_rpm_release }}_x86_64_standard_protocols
-#gpfs_package_sha1: ae4bd4978afa5f239c7a806ba0e76d2705032c00
-gpfs_package_filename: Spectrum_Scale_Standard-{{ gpfs_version }}.{{ gpfs_rpm_release }}-x86_64-Linux-update
-gpfs_package_sha1: 805356e8a5575250f021e1f2b2ec036c01ba3b65
+gpfs_installer_package: Spectrum_Scale_install-{{ gpfs_installer_version }}_x86_64_standard_protocols
+gpfs_installer_package_sha1: ae4bd4978afa5f239c7a806ba0e76d2705032c00
+gpfs_patch_package: Spectrum_Scale_Standard-{{ gpfs_patch_version }}-x86_64-Linux-update
+gpfs_patch_package_sha1: 805356e8a5575250f021e1f2b2ec036c01ba3b65
 
-# Either a local path to the source, or a URL, required
-gpfs_package_source:
-# If source is a remote URL optionally specify a username and password
-gpfs_download_password:
-gpfs_download_username:
+# Expected path to the directory containing the extracted RPMs
+gpfs_installer_extracted_rpms_dir: /usr/lpp/mmfs/{{ gpfs_version }}/gpfs_rpms
+gpfs_patch_extracted_rpms_dir: /usr/lpp/mmfs/{{ gpfs_patch_version }}
 
-# The expected path to the directory containing the GPFS RPMs after extracting the archive
-gpfs_package_extracted_rpms_dir: /usr/lpp/mmfs/{{ gpfs_version }}.{{ gpfs_rpm_release }}
-# If this file exists assume the archive was unpacked successfully
-gpfs_package_test_unpacked: "{{ gpfs_package_extracted_rpms_dir }}/gpfs.msg.en_US-{{ gpfs_rpm_version }}.noarch.rpm"
+# The list of GPFS RPMs to be installed from the installer package
+gpfs_installer_rpms:
+- gpfs.base-{{ gpfs_installer_rpm_version }}.x86_64.rpm
+- gpfs.docs-{{ gpfs_installer_rpm_version }}.noarch.rpm
+- gpfs.ext-{{ gpfs_installer_rpm_version }}.x86_64.rpm
+- gpfs.gpl-{{ gpfs_installer_rpm_version }}.noarch.rpm
+- gpfs.gskit-8.0.50-40.x86_64.rpm
+#- gpfs.hadoop-2-connector-{{ gpfs_installer_rpm_version }}.x86_64.rpm
+- gpfs.msg.en_US-{{ gpfs_installer_rpm_version }}.noarch.rpm
+
+# List of RPMs to uninstall (because the patch RPM has a different name from the installer RPM)
+gpfs_remove_rpms:
+- gpfs.hadoop-2-connector
+
+# The list of GPFS RPMs to be installed from the patch package
+gpfs_patch_rpms:
+- gpfs.base-{{ gpfs_patch_rpm_version }}.x86_64.update.rpm
+- gpfs.docs-{{ gpfs_patch_rpm_version }}.noarch.rpm
+- gpfs.ext-{{ gpfs_patch_rpm_version }}.x86_64.update.rpm
+- gpfs.gpl-{{ gpfs_patch_rpm_version }}.noarch.rpm
+- gpfs.gskit-8.0.50-47.x86_64.rpm
+- gpfs.hadoop-connector-2.7.0-3.x86_64.rpm
+- gpfs.msg.en_US-{{ gpfs_patch_rpm_version }}.noarch.rpm
 
 # The name of the built kernel module rpm
-gpfs_kernel_rpm_name: gpfs.gplbin-{{ gpfs_kernel_version }}-{{ gpfs_rpm_version }}.x86_64.rpm
-
-# The list of GPFS RPMs (excluding the kernel module RPM)
-gpfs_rpm_list:
-#- gpfs.base-{{ gpfs_rpm_version }}.x86_64.rpm
-- gpfs.base-{{ gpfs_rpm_version }}.x86_64.update.rpm
-- gpfs.docs-{{ gpfs_rpm_version }}.noarch.rpm
-#- gpfs.ext-{{ gpfs_rpm_version }}.x86_64.rpm
-- gpfs.ext-{{ gpfs_rpm_version }}.x86_64.update.rpm
-- gpfs.gpl-{{ gpfs_rpm_version }}.noarch.rpm
-- gpfs.gskit-8.0.50-47.x86_64.rpm
-#- gpfs.hadoop-2-connector-{{ gpfs_rpm_version }}.x86_64.rpm
-- gpfs.hadoop-connector-2.7.0-3.x86_64.rpm
-- gpfs.msg.en_US-{{ gpfs_rpm_version }}.noarch.rpm
-
-# List of RPMs to uninstall (e.g. because the RPM has different names in different version of GPFS)
-gpfs_rpm_remove_list:
-- gpfs.hadoop-2-connector
+gpfs_kernel_rpm_name: gpfs.gplbin-{{ gpfs_kernel_version }}-{{ gpfs_patch_rpm_version }}.x86_64.rpm

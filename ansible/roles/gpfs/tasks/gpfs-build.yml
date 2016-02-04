@@ -1,0 +1,108 @@
+---
+# Extract GPFS packages, compile kernel module, download all RPMs so they can be deployed to other hosts
+
+- name: gpfs | current kernel version
+  fail:
+    msg: "Current kernel {{ ansible_kernel }} must match specified GPFS kernel {{ gpfs_kernel_version }}"
+  when: ansible_kernel != gpfs_kernel_version
+
+- name: gpfs | install system requirements
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - kernel-devel
+  - kernel-headers
+  - kernel-tools
+  - kernel-tools-libs
+  - rpm-build
+  - gcc-c++
+
+- name: gpfs | download directory
+  become: yes
+  file:
+    path: /opt/gpfs-installer
+    state: directory
+
+- name: gpfs | get installer package
+  become: yes
+  copy:
+    dest: /opt/gpfs-installer/{{ gpfs_installer_package }}
+    force: no
+    mode: 0755
+    src: "{{ gpfs_package_source_dir }}/{{ gpfs_installer_package }}"
+    validate: sh -c '[ "$(cat %s | sha1sum)" = "{{ gpfs_installer_package_sha1 }}  -" ]'
+
+- name: gpfs | extract installer packages
+  become: yes
+  command: /opt/gpfs-installer/{{ gpfs_installer_package }} --silent
+  # Assume this works, if not you'll know because the rpm install tasks will complain about a missing file
+
+- name: gpfs | get patch package
+  become: yes
+  copy:
+    dest: /opt/gpfs-installer/{{ gpfs_patch_package }}
+    force: no
+    mode: 0755
+    src: "{{ gpfs_package_source_dir }}/{{ gpfs_patch_package }}"
+    validate: sh -c '[ "$(cat %s | sha1sum)" = "{{ gpfs_patch_package_sha1 }}  -" ]'
+
+- name: gpfs | extract patch packages
+  become: yes
+  command: /opt/gpfs-installer/{{ gpfs_patch_package }} --silent
+  # Assume this works, if not you'll know because the rpm install tasks will complain about a missing file
+
+- name: gpfs | remove packages
+  become: yes
+  yum:
+    name: "{{ gpfs_remove_rpms }}"
+    state: absent
+
+- name: gpfs | install installer packages
+  become: yes
+  yum:
+    name: "{{ gpfs_installer_extracted_rpms_dir }}/{{ item }}"
+    state: present
+  with_items: "{{ gpfs_installer_rpms }}"
+
+- name: gpfs | install patch packages
+  become: yes
+  yum:
+    name: "{{ gpfs_patch_extracted_rpms_dir }}/{{ item }}"
+    state: present
+  with_items: "{{ gpfs_patch_rpms }}"
+
+- name: gpfs | build kernel module
+  become: yes
+  command: /usr/lpp/mmfs/bin/mmbuildgpl --buildrpm
+  args:
+    creates: /root/rpmbuild/RPMS/x86_64/{{ gpfs_kernel_rpm_name }}
+  environment:
+    LINUX_DISTRIBUTION: REDHAT_AS_LINUX
+
+- name: gpfs | fetch installer rpms
+  become: yes
+  fetch:
+    dest: "{{ gpfs_local_rpm_dir }}/1/"
+    fail_on_missing: yes
+    flat: yes
+    src: "{{ gpfs_installer_extracted_rpms_dir }}/{{ item }}"
+  with_items: "{{ gpfs_installer_rpms }}"
+
+- name: gpfs | fetch patch rpms
+  become: yes
+  fetch:
+    dest: "{{ gpfs_local_rpm_dir }}/2/"
+    fail_on_missing: yes
+    flat: yes
+    src: "{{ gpfs_patch_extracted_rpms_dir }}/{{ item }}"
+  with_items: "{{ gpfs_patch_rpms }}"
+
+- name: gpfs | fetch kernel module rpm
+  become: yes
+  fetch:
+    dest: "{{ gpfs_local_rpm_dir }}/3/"
+    fail_on_missing: yes
+    flat: yes
+    src: /root/rpmbuild/RPMS/x86_64/{{ gpfs_kernel_rpm_name }}
