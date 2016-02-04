@@ -1,17 +1,25 @@
 GPFS
 ====
 
-Extract GPFS RPMs from their distributed package and build a kernel module RPM.
-Setup a GPFS client.
+Extracts GPFS RPMs from the distributed installer package and compiles a kernel module.
+Installs RPMs and kernel module on a GPFS client.
 
-Work in progress.
+This role is designed to allow GPFS RPMs to be extracted, and the kernel module built, on a single node, and for the RPMs and kernel module to be installed on other nodes.
+This means only one node needs to contain a kernel development environment, and this node does not need to be an active GPFS client node (for example a plain CentOS 7 virtual machine is sufficient).
+
+After extracting and building the RPMs and kernel module they will be copied to the local machine (the one that's running Ansible).
+The install part of this role will take the locally copied RPMs, send them to the nodes on which GPFS should be deployed, and install them.
+
+TODO: Configure GPFS
+TODO: Don't re-copy when building and installing on the same node
 
 
-Requirements
-------------
+Requirements (Building)
+-----------------------
 
-Building:
-Ensure all system packages are updated. The GPFS kernel module will be compiled for the kernel currently running on the machine (so reboot if it has been updated).
+Set `gpfs_build: True`.
+Ensure all system packages are updated.
+The GPFS kernel module will be compiled for the kernel currently running on the machine (so reboot if it has been updated).
 This role will attempt to install the following kernel-related packages if they are missing:
 
 - kernel-devel
@@ -22,7 +30,12 @@ This role will attempt to install the following kernel-related packages if they 
 However if you are running an older kernel it is sometimes possible for a more recent version of these packages to be automatically installed, which will lead to failure of the kernel module build.
 To avoid these problems it is highly recommended that you install these packages first and verify that their versions match the kernel version exactly.
 
-TODO: Add error checking of kernel package versions at start.
+
+Requirements (Installing)
+-------------------------
+
+Set `gpfs_install: True` (this is the default).
+Ensure the kernel corresponding matching the built GPFS module is installed.
 
 
 Role Variables
@@ -36,19 +49,37 @@ You will need to override many of the variables in `defaults/main.yml`, dependin
 - `gpfs_local_rpm_dir`: A local directory to which the extracted/built RPMs can be copied from the build node and subsequently deployed onto other nodes. For convenience this can be defined on the command line, e.g. `-e gpfs_local_rpm_dir=/tmp/gpfs-rpms`.
 - `gpfs_package_source_dir`: A local path to a directory containing the GPFS packages (default `files/`)
 - `gpfs_install_check_kernel_version`: If True check that the currently running kernel version matches that of the compiled GPFS kernel module. Set to False if you are upgrading the kernel and GPFS kernel module at the same time.
+- `gpfs_public_keys`: A list of the SSH public keys belonging to the root users on the NSD nodes, needed so that the NSD nodes can connect to this GPFS client node (default: don't configure)
 
 
 Example Playbook
 ----------------
 
+    # Build GPFS on one node (this must be run before installing GPFS anywhere)
+    - hosts: gpfs-build-node
+      roles:
+      - gpfs
+      vars:
+      - gpfs_build: True
+      - gpfs_install: False
+      - gpfs_local_rpm_dir: /tmp/gpfs-rpms
+
+    # Install GPFS on client nodes:
+    - hosts: gpfs-client-nodes
+      roles:
+      - gpfs
+      vars:
+      #- gpfs_build: False
+      #- gpfs_install: True
+      - gpfs_local_rpm_dir: /tmp/gpfs-rpms
 
 
 Additional Notes
 ----------------
 
-- An earlier version of this role used parameters extensively for all versions.
-However, the addition of the GPFS patch package complicates things since the names of packages aren't completely consistent, so it's easier to hardcode things.
-- The GPFS patch requires some of the original installer packages to already be present, which adds to the complexity of this role.
+- An earlier version of this role used parameters extensively.
+  However, the addition of the GPFS patch package complicates things since the names of packages aren't completely consistent, so for many tasks it's easier to hardcode things.
+- The GPFS patch refuses to install unless some of the original installer packages are present.
 
 
 Author Information

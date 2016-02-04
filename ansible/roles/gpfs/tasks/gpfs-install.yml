@@ -4,14 +4,7 @@
 - name: gpfs | current kernel version
   fail:
     msg: "Current kernel {{ ansible_kernel }} must match specified GPFS kernel {{ gpfs_kernel_version }}"
-  when: gpfs_install_check_kernel_version and (ansible_kernel != gpfs_kernel_version)
-
-- name: gpfs | install installer gpfs rpms
-  become: yes
-  yum:
-    name: "{{ gpfs_installer_extracted_rpms_dir }}/{{ item }}"
-    state: present
-  with_items: "{{ gpfs_installer_rpms }}"
+  when: (gpfs_install_check_kernel_version == True) and (ansible_kernel != gpfs_kernel_version)
 
 - name: gpfs | download directory
   become: yes

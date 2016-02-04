@@ -19,6 +19,9 @@ gpfs_package_source_dir: files
 # Ignored when building (versions must always match)
 gpfs_install_check_kernel_version: True
 
+# A list of the SSH public keys belonging to the root users on the NSD nodes
+#gpfs_public_keys:
+
 ################################################################################
 # Only change the following if you really know what you are doing
 
