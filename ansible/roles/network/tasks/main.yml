@@ -3,7 +3,10 @@
 
 - name: network | Setup nics
   become: yes
-  template: src=etc-sysconfig-network-scripts-ifcfg.j2 dest=/etc/sysconfig/network-scripts/ifcfg-{{ item.device }}
+  template:
+    backup: yes
+    src: etc-sysconfig-network-scripts-ifcfg.j2
+    dest: /etc/sysconfig/network-scripts/ifcfg-{{ item.device }}
   with_items: networkifaces
   notify:
     - restart network
