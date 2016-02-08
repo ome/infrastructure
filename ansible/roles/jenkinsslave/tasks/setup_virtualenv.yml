@@ -14,4 +14,4 @@
   become_user: "{{ jenkinsuser }}"
   pip:
     virtualenv: /home/{{ jenkinsuser }}/virtualenv
-    name: scc
+    name: scc Sphinx==1.2.3 genshi virtualenv epydoc yaclifw omego pytest docker-py PyYAML
