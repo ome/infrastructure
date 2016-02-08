@@ -45,6 +45,13 @@ Example Playbook
           bondmaster: bond0
 
 
+Notes
+-----
+
+- If you change the network settings it may be restarted, which means your connection from Ansible may be broken.
+- If you are using this role to set a network IP after a system has been PXEed you may need to temporarily set `ansible_host` in your host inventory if DNS isn't already setup for the host.
+
+
 Author Information
 ------------------
 

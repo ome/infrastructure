@@ -1,6 +1,15 @@
 ---
 # Setup network interfaces
 
+- name: network | remove nics
+  become: yes
+  file:
+    path: /etc/sysconfig/network-scripts/ifcfg-{{ item }}
+    state: absent
+  with_items: network_delete_ifaces | default ([])
+  notify:
+    - restart network
+
 - name: network | Setup nics
   become: yes
   template:
@@ -10,6 +19,9 @@
   with_items: networkifaces
   notify:
     - restart network
+
+- name: network | restart network if necessary before checking bonding
+  meta: flush_handlers
 
 - name: network | check bonding
   stat:
