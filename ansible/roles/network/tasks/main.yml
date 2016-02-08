@@ -16,7 +16,7 @@
     backup: yes
     src: etc-sysconfig-network-scripts-ifcfg.j2
     dest: /etc/sysconfig/network-scripts/ifcfg-{{ item.device }}
-  with_items: networkifaces
+  with_items: network_ifaces
   notify:
     - restart network
 
@@ -26,7 +26,7 @@
 - name: network | check bonding
   stat:
     path: /proc/net/bonding/{{ item.bondmaster }}
-  with_items: networkifaces
+  with_items: network_ifaces
   when: "'bondmaster' in item"
   register: checkbonds
 

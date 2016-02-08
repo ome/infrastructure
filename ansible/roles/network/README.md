@@ -3,12 +3,14 @@ Network
 
 Set up custom network interface configurations for a server.
 
+
 Role Variables
 --------------
 
-- `networkifaces`: A list of dictionaries, one per network device, of network parameters which will be substituted into `templates/etc-sysconfig-network-scripts-ifcfg.j2`.
-- `networkifaces[].device`: The device name. All other fields are optional, see the template for details.
-- `networkifaces[].bondmaster`: If specified this NIC will be part of a bonded interface. If the `device` name matches `bondmaster` it will be set as the master, otherwise it will be a slave of `bondmaster`.
+- `network_ifaces`: A list of dictionaries, one per network device, of network parameters which will be substituted into `templates/etc-sysconfig-network-scripts-ifcfg.j2`.
+- `network_ifaces[].device`: The device name. All other fields are optional, see the template for details.
+- `network_ifaces[].bondmaster`: If specified this NIC will be part of a bonded interface. If the `device` name matches `bondmaster` it will be set as the master, otherwise it will be a slave of `bondmaster`.
+- `network_delete_ifaces`: A list of network device names to be removed.
 
 
 Example Playbook
@@ -18,7 +20,7 @@ Example Playbook
     - hosts: localhost
       roles:
       - role: network
-        networkifaces:
+        network_ifaces:
         - device: eth0
           ip: 192.168.1.1
           netmask: 255.255.255.0
@@ -31,7 +33,7 @@ Example Playbook
     - hosts: localhost
       roles:
       - role: network
-        networkifaces:
+        network_ifaces:
         - device: bond0
           ip: 192.168.1.1
           prefix: 24
