@@ -32,3 +32,15 @@ DNS2={{ item.dns2 }}
 BRIDGE={{ item.bridge }}
 {% endif %}
 USERCTL=no
+{% if 'bondmaster' in item %}
+{%   if item.bondmaster == item.device %}
+{%     if 'type' not in item %}
+TYPE=Bond
+{%     endif %}
+BONDING_MASTER=yes
+BONDING_OPTS="resend_igmp=1 updelay=0 use_carrier=1 miimon=100 downdelay=0 xmit_hash_policy=0 primary_reselect=0 fail_over_mac=0 arp_validate=0 mode=active-backup primary=eno1 lacp_rate=0 arp_interval=0 ad_select=0"
+{%   else %}
+MASTER={{ item.bondmaster }}
+SLAVE=yes
+{%   endif %}
+{% endif %}

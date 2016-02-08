@@ -10,3 +10,17 @@
   with_items: networkifaces
   notify:
     - restart network
+
+- name: network | check bonding
+  stat:
+    path: /proc/net/bonding/{{ item.bondmaster }}
+  with_items: networkifaces
+  when: "'bondmaster' in item"
+  register: checkbonds
+
+- name: network | check bonding active
+  assert:
+    that:
+    - "item.stat.exists and not item.stat.isdir"
+  with_items:
+    - "{{ checkbonds.results }}"
