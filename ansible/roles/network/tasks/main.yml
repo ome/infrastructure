@@ -1,22 +1,41 @@
 ---
 # Setup network interfaces
 
+- name: network | find unwanted nics
+  become: yes
+  find:
+    paths: /etc/sysconfig/network-scripts/
+    patterns: ifcfg-{{ network_delete_ifaces }}
+    use_regex: True
+  when: network_delete_ifaces is defined and network_delete_ifaces
+  register: unwanted
+
 - name: network | remove nics
   become: yes
   file:
-    path: /etc/sysconfig/network-scripts/ifcfg-{{ item }}
+    path: "{{ item.path }}"
     state: absent
-  with_items: network_delete_ifaces | default ([])
+  with_items: "{{ unwanted.files | default([]) }}"
   notify:
     - restart network
 
-- name: network | Setup nics
+- name: network | setup nics
   become: yes
   template:
     backup: yes
     src: etc-sysconfig-network-scripts-ifcfg.j2
     dest: /etc/sysconfig/network-scripts/ifcfg-{{ item.device }}
   with_items: network_ifaces
+  notify:
+    - restart network
+
+- name: network | disable nics
+  become: yes
+  template:
+    backup: yes
+    src: etc-sysconfig-network-scripts-ifcfg-disabled.j2
+    dest: /etc/sysconfig/network-scripts/ifcfg-{{ item }}
+  with_items: network_disable_ifaces | default([])
   notify:
     - restart network
 

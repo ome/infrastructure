@@ -2,8 +2,10 @@ DEVICE={{ item.device }}
 BOOTPROTO=none
 IPV6INIT=yes
 MTU=1500
-NM_CONTROLLED=yes
 ONBOOT=yes
+{% if 'networkmanager' in item %}
+NM_CONTROLLED={{ item.networkmanager }}
+{% endif %}
 {% if 'ip' in item %}
 IPADDR={{ item.ip }}
 {% endif %}

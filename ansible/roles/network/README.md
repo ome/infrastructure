@@ -10,7 +10,8 @@ Role Variables
 - `network_ifaces`: A list of dictionaries, one per network device, of network parameters which will be substituted into `templates/etc-sysconfig-network-scripts-ifcfg.j2`.
 - `network_ifaces[].device`: The device name. All other fields are optional, see the template for details.
 - `network_ifaces[].bondmaster`: If specified this NIC will be part of a bonded interface. If the `device` name matches `bondmaster` it will be set as the master, otherwise it will be a slave of `bondmaster`.
-- `network_delete_ifaces`: A list of network device names to be removed.
+- `network_disable_ifaces`: A list of network device names to be explicitly disabled, use this if you want to be sure the interface is disabled (as opposed to being auto-configured by the system).
+- `network_delete_ifaces`: A regular expression describing the network device name(s) to be removed (note this means the system may auto-configure them), use this for cleaning up spare configuration files.
 
 
 Example Playbook
@@ -51,6 +52,7 @@ Notes
 -----
 
 - If you change the network settings it may be restarted, which means your connection from Ansible may be broken.
+- In some cases restarting the network is insufficient, you may need to reboot.
 - If you are using this role to set a network IP after a system has been PXEed you may need to temporarily set `ansible_host` in your host inventory if DNS isn't already setup for the host.
 
 
