@@ -30,12 +30,16 @@ This role will attempt to install the following kernel-related packages if they 
 However if you are running an older kernel it is sometimes possible for a more recent version of these packages to be automatically installed, which will lead to failure of the kernel module build.
 To avoid these problems it is highly recommended that you install these packages first and verify that their versions match the kernel version exactly.
 
+Ensure the GPFS installer packages are in `gpfs_package_source_dir`, default location is the `files/` directory of this role).
+The extracted and built RPMs will be copied into `gpfs_local_rpm_dir` which must be defined.
+
 
 Requirements (Installing)
 -------------------------
 
 Set `gpfs_install: True` (this is the default).
 Ensure the kernel corresponding matching the built GPFS module is installed.
+Ensure `gpfs_local_rpm_dir` contains the extracted and built RPMs.
 
 
 Role Variables
@@ -46,11 +50,12 @@ You will need to override many of the variables in `defaults/main.yml`, dependin
 - `gpfs_build`: If true extract and build GPFS RPMs. You will need to run with this set on at least one node, but note the build node doesn't have to be an active GPFS client since it's purely used for extracting and building packages
 - `gpfs_install`: If True install GPFS using RPMs provided in a local directory, this should be True unless you are only extracting/building the GPFS RPMs
 - `gpfs_kernel_version`: Compile/install the GPFS module for this kernel version
-- `gpfs_local_rpm_dir`: A local directory to which the extracted/built RPMs can be copied from the build node and subsequently deployed onto other nodes. For convenience this can be defined on the command line, e.g. `-e gpfs_local_rpm_dir=/tmp/gpfs-rpms`.
+- `gpfs_local_rpm_dir`: A local directory to which the extracted/built RPMs can be copied from the build node and subsequently deployed onto other nodes (mandatory, no default).
 - `gpfs_package_source_dir`: A local path to a directory containing the GPFS packages (default `files/`)
 - `gpfs_install_check_kernel_version`: If True check that the currently running kernel version matches that of the compiled GPFS kernel module. Set to False if you are upgrading the kernel and GPFS kernel module at the same time.
 - `gpfs_public_keys`: A list of the SSH public keys belonging to the root users on the NSD nodes, needed so that the NSD nodes can connect to this GPFS client node (default: don't configure)
 
+For convenience you may want to define some variables on the command line, e.g. `-e gpfs_local_rpm_dir=/data/gpfs/rpms -e gpfs_package_source_dir=/data/gpfs/src`.
 
 Example Playbook
 ----------------
@@ -62,16 +67,16 @@ Example Playbook
       vars:
       - gpfs_build: True
       - gpfs_install: False
-      - gpfs_local_rpm_dir: /tmp/gpfs-rpms
+      - gpfs_local_rpm_dir: /data/gpfs/rpms
 
     # Install GPFS on client nodes:
     - hosts: gpfs-client-nodes
       roles:
       - gpfs
       vars:
-      #- gpfs_build: False
-      #- gpfs_install: True
-      - gpfs_local_rpm_dir: /tmp/gpfs-rpms
+      #(Default) gpfs_build: False
+      #(Default) gpfs_install: True
+      - gpfs_local_rpm_dir: /data/gpfs/rpms
 
 
 Additional Notes

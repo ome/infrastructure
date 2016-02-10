@@ -1,6 +1,11 @@
 ---
 # Setup a GPFS client node
 
+
+- name: gpfs | check gpfs_local_rpm_dir defined
+  assert:
+    that: gpfs_local_rpm_dir is defined and gpfs_local_rpm_dir
+
 - include: gpfs-build.yml
   when: gpfs_build
 
