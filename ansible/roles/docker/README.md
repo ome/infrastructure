@@ -15,14 +15,16 @@ Defaults: `defaults/main.yml`
 
 Custom storage: If `docker_use_custom_storage` is `True` thin-pool logical volumes will be created for Docker, and a separate logical volume will be created for the Docker volume (`/var/lib/docker`).
 This is highly recommended for production use.
+
+- `docker_basefs`: Filesystem to use for the Docker containers (default xfs)
+- `docker_lvfilesystem`: Filesystem for the Docker volume (default xfs)
+
 The following variables must be defined:
 
 - `docker_vgname`: LVM volume group for the logical volumes
 - `docker_poolsize`: Size of the Docker thin-pool partition
 - `docker_metadatasize`: Size of the Docker thin-pool metadata partition (try 1% of the poolsize)
-- `docker_basefs`: Filesystem to use for the Docker containers (e.g. ext4, xfs)
 - `docker_volumesize`: Size of the Docker volume
-- `docker_lvfilesystem`: Filesystem for the Docker volume
 
 Custom networking: If `docker_use_custom_network` is `True` a custom network bridge will be used, this must be created outside of this role.
 The following variables must be defined:
