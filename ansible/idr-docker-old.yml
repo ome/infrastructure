@@ -1,0 +1,19 @@
+---
+# Playbook for provisioning IDR Docker nodes
+# TODO: Out of date, use the new role/docker
+
+- hosts: idr-docker
+  roles:
+  - role: server-swap
+  - role: network
+  - role: docker-storage
+# TODO: lvm_lvfilesystem: root?
+  - role: lvm-partition
+    lvm_lvname: scratch
+    lvm_lvmount: /scratch
+    lvm_lvsize: "{{ scratchsize }}"
+# TODO: lvm_lvfilesystem: "{{ scratch_filesystem }}"
+  - role: lvm-partition
+    lvm_lvname: idrdata1
+    lvm_lvmount: /idr
+    lvm_lvsize: "{{ idrvolumesize }}"

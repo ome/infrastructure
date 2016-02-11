@@ -1,0 +1,8 @@
+# RPMs should already be built. You may need to update all packages and
+# reboot before running this
+
+- hosts: idr-gpfs-client
+  roles:
+  - role: gpfs
+    gpfs_install_check_kernel_version: False
+    gpfs_local_rpm_dir: ~/ansible-data/gpfs

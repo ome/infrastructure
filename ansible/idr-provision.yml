@@ -1,36 +1,16 @@
 ---
-# Playbook for provisioning IDR Docker nodes
+# Playbook for running all IDR provisioning playbooks
 
-- hosts: idr-docker
-  roles:
-  - role: server-swap
-  - role: network
-  - role: docker-storage
-# TODO: lvm_lvfilesystem: root?
-  - role: lvm-partition
-    lvm_lvname: scratch
-    lvm_lvmount: /scratch
-    lvm_lvsize: "{{ scratchsize }}"
-# TODO: lvm_lvfilesystem: "{{ scratch_filesystem }}"
-  - role: lvm-partition
-    lvm_lvname: idrdata1
-    lvm_lvmount: /idr
-    lvm_lvsize: "{{ idrvolumesize }}"
+# Initial networking and basic system configuration
+# A reboot may be required after this playbook
+- include: idr-initial.yml
 
-- hosts: idr-docker-localstorage
-  roles:
-  - role: upgrade-distpackages
-  - role: server-swap
-  - role: network
-  - role: lvm-partition
-    lvm_lvname: root
-    lvm_lvmount: /
-    lvm_lvsize: "{{ rootsize }}"
-    lvm_lvfilesystem: "{{ root_filesystem }}"
-  - role: lvm-partition
-    lvm_lvname: scratch
-    lvm_lvmount: /scratch
-    lvm_lvsize: "{{ scratch_size }}"
-    lvm_lvfilesystem: "{{ scratch_filesystem }}"
-  - role: basedeps
-  - role: docker
+# Upgrade all system packages
+# A reboot may be required after this playbook
+- include: idr-upgrade.yml
+
+# Install GPFS client
+- include: idr-gpfs-client.yml
+
+# Install docker
+- include: idr-docker-localstorage.yml
