@@ -1,13 +1,13 @@
 ---
 # Playbook for provisioning Docker Production nodes
 
-- hosts: ci-docker-dev-hosts
+- hosts: ci-docker-prod-hosts
   roles:
   - role: lvm-partition
     lvm_lvname: root
     lvm_lvmount: /
     lvm_lvsize: "{{ rootsize }}"
-    lvm_lvfilesystem: ext4
+    lvm_lvfilesystem: "{{ root_filesystem }}"
   - role: lvm-partition
     lvm_lvname: scratch
     lvm_lvmount: /scratch
@@ -16,5 +16,3 @@
   - role: basedeps
   - role: upgrade-distpackages
   - role: docker
-  - role: docker-dns-server
-  - role: docker-dns-client

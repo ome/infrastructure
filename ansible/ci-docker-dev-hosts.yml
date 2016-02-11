@@ -7,7 +7,7 @@
     lvm_lvname: root
     lvm_lvmount: /
     lvm_lvsize: "{{ rootsize }}"
-    lvm_lvfilesystem: ext4
+    lvm_lvfilesystem: "{{ root_filesystem }}"
   - role: lvm-partition
     lvm_lvname: scratch
     lvm_lvmount: /scratch
