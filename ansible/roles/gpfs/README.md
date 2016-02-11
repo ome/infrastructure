@@ -9,7 +9,9 @@ This means only one node needs to contain a kernel development environment, and 
 
 After extracting and building the RPMs and kernel module they will be copied to the local machine (the one that's running Ansible).
 The install part of this role will take the locally copied RPMs, send them to the nodes on which GPFS should be deployed, and install them.
-The GPFS binaries path will be added to `PATH` in `/root/.bash_profile`
+The GPFS binaries path will be added to `PATH` in `/root/.bash_profile`.
+Also note that the GPFS control servers need to be able to ssh into all servers as root.
+This role will enable root access in `/etc/ssh/sshd_config`, and you should provide a list of public keys in `gpfs_public_keys`.
 
 TODO: Configure GPFS
 TODO: Don't re-copy when building and installing on the same node

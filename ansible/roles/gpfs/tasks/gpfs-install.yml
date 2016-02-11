@@ -44,7 +44,19 @@
     name: gpfs-rpms/3/{{ gpfs_kernel_rpm_name }}
     state: present
 
-- name: gpfs | nsd access
+- name: gpfs | nsd access ssh root
+  become: yes
+  lineinfile:
+    backup: yes
+    create: no
+    dest: /etc/ssh/sshd_config
+    line: "PermitRootLogin yes"
+    regexp: '[\s#]*PermitRootLogin\s.*'
+    state: present
+  notify:
+    - restart sshd
+
+- name: gpfs | nsd access ssh keys
   become: yes
   authorized_key:
     key: "{{ item }}"
