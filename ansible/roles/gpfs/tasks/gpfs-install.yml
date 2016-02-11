@@ -53,6 +53,13 @@
     user: root
   with_items: "{{ gpfs_public_keys | default([]) }}"
 
+# Abuse fail/ignore_errors to print out a warning message without aborting
+- name: gpfs | warn if no nsd access keys
+  fail:
+    msg: "WARNING: gpfs_public_keys is empty"
+  when: not (gpfs_public_keys | default([]))
+  ignore_errors: yes
+
 # This regexp checks for the absence of gpfs_binaries_path in PATH
 # It won't work if there are multiple PATH statements in .bash_profile
 # https://coderwall.com/p/ynvi0q/updating-path-with-ansible-system-wide
