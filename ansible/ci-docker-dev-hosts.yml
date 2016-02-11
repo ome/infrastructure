@@ -14,6 +14,7 @@
     lvm_lvsize: "{{ scratch_size }}"
     lvm_lvfilesystem: "{{ scratch_filesystem }}"
   - role: basedeps
+#  - role: system-monitor-agent
   - role: docker
   - role: docker-dns-server
   - role: docker-dns-client
