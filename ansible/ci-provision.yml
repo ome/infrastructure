@@ -1,6 +1,10 @@
 ---
 # Playbook for running all CI provisioning playbooks
 
+# Initial networking and basic system configuration
+# A reboot may be required after this playbook
+- include: ci-initial.yml
+
 # Jenkins CI servers
 - include: ci-jenkins-linux.yml
 
