@@ -66,3 +66,6 @@ gpfs_patch_rpms:
 
 # The name of the built kernel module rpm
 gpfs_kernel_rpm_name: gpfs.gplbin-{{ gpfs_kernel_version }}-{{ gpfs_patch_rpm_version }}.x86_64.rpm
+
+# Path to GPFS installed binaries
+gpfs_binaries_path: /usr/lpp/mmfs/bin
