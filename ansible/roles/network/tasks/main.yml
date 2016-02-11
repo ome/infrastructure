@@ -25,7 +25,7 @@
     backup: yes
     src: etc-sysconfig-network-scripts-ifcfg.j2
     dest: /etc/sysconfig/network-scripts/ifcfg-{{ item.device }}
-  with_items: network_ifaces
+  with_items: network_ifaces | default([])
   notify:
     - restart network
 
