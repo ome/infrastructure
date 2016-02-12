@@ -80,6 +80,9 @@ Example Playbook
       #(Default) gpfs_build: False
       #(Default) gpfs_install: True
       - gpfs_local_rpm_dir: /data/gpfs/rpms
+      - gpfs_public_keys:
+          - ssh-rsa AAAA1...
+          - ssh-rsa AAAA2...
 
 
 Additional Notes
@@ -88,6 +91,21 @@ Additional Notes
 - An earlier version of this role used parameters extensively.
   However, the addition of the GPFS patch package complicates things since the names of packages aren't completely consistent, so for many tasks it's easier to hardcode things.
 - The GPFS patch refuses to install unless some of the original installer packages are present.
+
+
+Adding a node to the GPFS cluster (interactive, not handled by Ansible)
+-----------------------------------------------------------------------
+
+Once this role has been applied log into a root shell on one of the GPFS admin nodes.
+Commands will be sent from the admin nodes to the other cluster nodes, this is why password-less ssh root access is required.
+
+1. Check you can ssh as root without a password into the new node
+2. Check the reverse IP of the new node matches it's hostname
+3. Run `mmaddnode -N new.node.hostname` to add the node
+4. Run `mmchlicense {client|server} -N new.node.hostname` to assign a license
+5. Run `mmlscluster` and `mmlslicense` to check the cluster
+6. Run `mmstartup -N new.node.hostname` to start GPFS on the new node
+7. Run `mmmount filesystem-name -N new.node.hostname` to enable the mount on the new node (this will automatically add an entry to `/etc/fstab`)
 
 
 Author Information
