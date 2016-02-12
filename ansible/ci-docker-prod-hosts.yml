@@ -15,4 +15,5 @@
     lvm_lvfilesystem: "{{ scratch_filesystem }}"
   - role: basedeps
   - role: system-monitor-agent
+  - role: versioncontrol-utils
   - role: docker
