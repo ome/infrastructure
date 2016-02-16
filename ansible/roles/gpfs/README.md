@@ -13,9 +13,6 @@ The GPFS binaries path will be added to `PATH` in `/root/.bash_profile`.
 Also note that the GPFS control servers need to be able to ssh into all servers as root.
 This role will enable root access in `/etc/ssh/sshd_config`, and you should provide a list of public keys in `gpfs_public_keys`.
 
-TODO: Configure GPFS
-TODO: Don't re-copy when building and installing on the same node
-
 
 Requirements (Building)
 -----------------------
@@ -33,7 +30,7 @@ This role will attempt to install the following kernel-related packages if they 
 However if you are running an older kernel it is sometimes possible for a more recent version of these packages to be automatically installed, which will lead to failure of the kernel module build.
 To avoid these problems it is highly recommended that you install these packages first and verify that their versions match the kernel version exactly.
 
-Ensure the GPFS installer packages are in `gpfs_package_source_dir`, default location is the `files/` directory of this role).
+Ensure the GPFS installer packages are in `gpfs_package_source_dir`, default location is the `files/` directory of this role.
 The extracted and built RPMs will be copied into `gpfs_local_rpm_dir` which must be defined.
 
 
@@ -41,7 +38,7 @@ Requirements (Installing)
 -------------------------
 
 Set `gpfs_install: True` (this is the default).
-Ensure the kernel corresponding matching the built GPFS module is installed.
+Ensure the kernel corresponding to the built GPFS module is installed.
 Ensure `gpfs_local_rpm_dir` contains the extracted and built RPMs.
 
 
@@ -50,15 +47,15 @@ Role Variables
 
 You will need to override many of the variables in `defaults/main.yml`, depending on your GPFS version.
 
-- `gpfs_build`: If true extract and build GPFS RPMs. You will need to run with this set on at least one node, but note the build node doesn't have to be an active GPFS client since it's purely used for extracting and building packages
-- `gpfs_install`: If True install GPFS using RPMs provided in a local directory, this should be True unless you are only extracting/building the GPFS RPMs
+- `gpfs_build`: If True extract and build GPFS RPMs. You will need to run with this set on at least one node, but note the build node doesn't have to be an active GPFS client since it's purely used for extracting and building packages (default False)
+- `gpfs_install`: If True (default) install GPFS using RPMs provided in a local directory, this should be True unless you are only extracting/building the GPFS RPMs
 - `gpfs_configure`: If True (default same as `gpfs_install`) configure the system, including SSH access and local GPFS options.
 - `gpfs_kernel_version`: Compile/install the GPFS module for this kernel version
 - `gpfs_local_rpm_dir`: A local directory to which the extracted/built RPMs can be copied from the build node and subsequently deployed onto other nodes (mandatory, no default).
 - `gpfs_package_source_dir`: A local path to a directory containing the GPFS packages (default `files/`)
 - `gpfs_install_check_kernel_version`: If True check that the currently running kernel version matches that of the compiled GPFS kernel module. Set to False if you are upgrading the kernel and GPFS kernel module at the same time.
 - `gpfs_public_keys`: A list of the SSH public keys belonging to the root users on the NSD nodes, needed so that the NSD nodes can connect to this GPFS client node (default: don't configure)
-- `gpfs_node_specific_mount_options`: A dictionary of special mount options for a specific node only, e.g. to make one node mount GPFS as read-only: `gpfs-name: ro`, to remove custom mount options set the dictionary value to empty: `gpfs-name: `.
+- `gpfs_node_specific_mount_options`: A dictionary of special mount options for a specific node only, for example to make one node mount GPFS as read-only: `gpfs-name: ro`, to remove custom mount options set the dictionary value to empty: `gpfs-name: `.
 
 For convenience you may want to define some variables on the command line, e.g. `-e gpfs_local_rpm_dir=/data/gpfs/rpms -e gpfs_package_source_dir=/data/gpfs/src`.
 
@@ -105,12 +102,15 @@ Additional Notes
 - An earlier version of this role used parameters extensively.
   However, the addition of the GPFS patch package complicates things since the names of packages aren't completely consistent, so for many tasks it's easier to hardcode things.
 - The GPFS patch refuses to install unless some of the original installer packages are present.
+- This role contains additional internal patches for GPFS which may be fixed in the next release.
+- Possible todo: Don't re-copy when building and installing on the same node
 
 
-Adding a node to the GPFS cluster (interactive, not handled by Ansible)
------------------------------------------------------------------------
+Adding a node to the GPFS cluster (interactive)
+-----------------------------------------------
 
-Once this role has been applied log into a root shell on one of the GPFS admin nodes.
+Once this role has been applied you must manually add the node to the GPFS cluster using these instructions as a guide (this is not handled by Ansible).
+First log into a root shell on one of the GPFS admin nodes.
 Commands will be sent from the admin nodes to the other cluster nodes, this is why password-less ssh root access is required.
 
 1. Check you can ssh as root without a password into the new node
