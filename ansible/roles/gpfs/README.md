@@ -56,6 +56,7 @@ You will need to override many of the variables in `defaults/main.yml`, dependin
 - `gpfs_install_check_kernel_version`: If True check that the currently running kernel version matches that of the compiled GPFS kernel module. Set to False if you are upgrading the kernel and GPFS kernel module at the same time.
 - `gpfs_public_keys`: A list of the SSH public keys belonging to the root users on the NSD nodes, needed so that the NSD nodes can connect to this GPFS client node (default: don't configure)
 - `gpfs_node_specific_mount_options`: A dictionary of special mount options for a specific node only, for example to make one node mount GPFS as read-only: `gpfs-name: ro`, to remove custom mount options set the dictionary value to empty: `gpfs-name: `.
+- `gpfs_enable_systemd_workaround`: Workaround a bug in GPFS v4.1 when used with systemd-219, (default False)
 
 For convenience you may want to define some variables on the command line, e.g. `-e gpfs_local_rpm_dir=/data/gpfs/rpms -e gpfs_package_source_dir=/data/gpfs/src`.
 
@@ -104,6 +105,9 @@ Additional Notes
 - The GPFS patch refuses to install unless some of the original installer packages are present.
 - This role contains additional internal patches for GPFS which may be fixed in the next release.
 - Possible todo: Don't re-copy when building and installing on the same node
+- Relevant GPFS kernel/systemd issues:
+    - [GPFS filesystem mounts and unmounts on RHEL-7](https://www.ibm.com/developerworks/community/forums/html/topic?id=00104bb5-acf5-4036-93ba-29ea7b1d43b7&ps=25#176065bb-65f3-48c0-b97b-4d14094fd77e)
+    - [What are the current restrictions on IBM Spectrum Scale Linux kernel support?](http://www-01.ibm.com/support/knowledgecenter/api/content/SSFKCN/com.ibm.cluster.gpfs.doc/gpfs_faqs/gpfsclustersfaq.html?locale=en&ro=kcUI#linuxrest)
 
 
 Adding a node to the GPFS cluster (interactive)
@@ -120,8 +124,9 @@ Commands will be sent from the admin nodes to the other cluster nodes, this is w
 5. Run `mmlscluster` and `mmlslicense` to check the cluster
 6. Run `mmstartup -N new.node.hostname` to start GPFS on the new node
 7. Run `mmmount filesystem-name -N new.node.hostname` to enable the mount on the new node (this will automatically add an entry to `/etc/fstab`)
+8. You can check the state of all nodes by running `mmgetstate -a`
 
-Note do not edit `/etc/fstab` directly, instead use `gpfs_node_specific_mount_options`.
+Note do not edit `/etc/fstab` directly (it is managed centrally by GPFS), instead use `gpfs_node_specific_mount_options`.
 
 
 Author Information

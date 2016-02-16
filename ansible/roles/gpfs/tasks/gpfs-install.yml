@@ -58,3 +58,27 @@
     src: "{{ item.src }}"
   with_items: gpfs_local_patches | default([])
   when: gpfs_local_patches
+
+# Systemd-219 workaround (see readme)
+
+- name: gpfs | get initd file status
+  become: yes
+  stat:
+    path: /etc/init.d/gpfs
+  register: initd_gpfs
+  when: gpfs_enable_systemd_workaround | default(False)
+
+- name: gpfs | get initd file status
+  become: yes
+  file:
+    path: /etc/init.d/gpfs
+    state: absent
+  when: (gpfs_enable_systemd_workaround | default(False)) and (initd_gpfs.stat.islnk)
+
+- name: gpfs | apply systemd workaround
+  become: yes
+  file:
+    path: /etc/init.d/gpfs
+    src: /usr/lpp/mmfs/bin/gpfsrunlevel
+    state: hard
+  when: gpfs_enable_systemd_workaround | default(False)

@@ -29,6 +29,10 @@ gpfs_install_check_kernel_version: True
 # Use this for making special changes to a specific node only (everything else should be configured centrally)
 #gpfs_node_specific_mount_options:
 
+# If True workaround a bug in GPFS when used with systemd 219+
+# http://www-01.ibm.com/support/knowledgecenter/api/content/SSFKCN/com.ibm.cluster.gpfs.doc/gpfs_faqs/gpfsclustersfaq.html?locale=en&ro=kcUI#linuxrest
+gpfs_enable_systemd_workaround: False
+
 ################################################################################
 # Only change the following if you really know what you are doing
 
@@ -41,6 +45,7 @@ gpfs_patch_rpm_version: "4.1.1-4"
 # A list local fixes to deal with GPFS bugs in the form
 # `- { src: file.patch, dest: /path/to/be/patched}`
 # This is highly dependent on the GPFS patch version, if you upgrade GPFS you must check whether these patches are appropriate.
+# https://www.ibm.com/developerworks/community/forums/html/topic?id=00104bb5-acf5-4036-93ba-29ea7b1d43b7&ps=25#176065bb-65f3-48c0-b97b-4d14094fd77e
 gpfs_local_patches:
 - src: mmfs-bin-mmglobfuncs.Linux.patch
   dest: /usr/lpp/mmfs/bin/mmglobfuncs.Linux
