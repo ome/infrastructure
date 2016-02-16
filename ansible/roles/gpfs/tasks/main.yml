@@ -11,3 +11,6 @@
 
 - include: gpfs-install.yml
   when: gpfs_install
+
+- include: gpfs-configure.yml
+  when: gpfs_configure

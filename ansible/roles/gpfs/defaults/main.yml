@@ -5,6 +5,8 @@
 gpfs_build: False
 # If true install GPFS using RPMs
 gpfs_install: True
+# If true configure system for GPFS
+gpfs_configure: gpfs_install
 
 # Build/Install a GPFS module for this kernel version
 gpfs_kernel_version: 3.10.0-327.4.5.el7.x86_64
@@ -21,6 +23,11 @@ gpfs_install_check_kernel_version: True
 
 # A list of the SSH public keys belonging to the root users on the NSD nodes
 #gpfs_public_keys:
+
+# A dictionary of host-specific mount options for GPFS in the form
+# `{ fsname: "mount options"}`
+# Use this for making special changes to a specific node only (everything else should be configured centrally)
+#gpfs_node_specific_mount_options:
 
 ################################################################################
 # Only change the following if you really know what you are doing

@@ -52,11 +52,13 @@ You will need to override many of the variables in `defaults/main.yml`, dependin
 
 - `gpfs_build`: If true extract and build GPFS RPMs. You will need to run with this set on at least one node, but note the build node doesn't have to be an active GPFS client since it's purely used for extracting and building packages
 - `gpfs_install`: If True install GPFS using RPMs provided in a local directory, this should be True unless you are only extracting/building the GPFS RPMs
+- `gpfs_configure`: If True (default same as `gpfs_install`) configure the system, including SSH access and local GPFS options.
 - `gpfs_kernel_version`: Compile/install the GPFS module for this kernel version
 - `gpfs_local_rpm_dir`: A local directory to which the extracted/built RPMs can be copied from the build node and subsequently deployed onto other nodes (mandatory, no default).
 - `gpfs_package_source_dir`: A local path to a directory containing the GPFS packages (default `files/`)
 - `gpfs_install_check_kernel_version`: If True check that the currently running kernel version matches that of the compiled GPFS kernel module. Set to False if you are upgrading the kernel and GPFS kernel module at the same time.
 - `gpfs_public_keys`: A list of the SSH public keys belonging to the root users on the NSD nodes, needed so that the NSD nodes can connect to this GPFS client node (default: don't configure)
+- `gpfs_node_specific_mount_options`: A dictionary of special mount options for a specific node only, e.g. to make one node mount GPFS as read-only: `gpfs-name: ro`, to remove custom mount options set the dictionary value to empty: `gpfs-name: `.
 
 For convenience you may want to define some variables on the command line, e.g. `-e gpfs_local_rpm_dir=/data/gpfs/rpms -e gpfs_package_source_dir=/data/gpfs/src`.
 
@@ -72,7 +74,7 @@ Example Playbook
       - gpfs_install: False
       - gpfs_local_rpm_dir: /data/gpfs/rpms
 
-    # Install GPFS on client nodes:
+    # Install and configure GPFS on client nodes:
     - hosts: gpfs-client-nodes
       roles:
       - gpfs
@@ -83,6 +85,18 @@ Example Playbook
       - gpfs_public_keys:
           - ssh-rsa AAAA1...
           - ssh-rsa AAAA2...
+
+    # Configure GPFS only (assumes GPFS has already been installed):
+    - hosts: gpfs-client-nodes
+      roles:
+      - gpfs
+      vars:
+      #(Default) gpfs_build: False
+      gpfs_install: False
+      gpfs_configure: True
+    - gpfs_public_keys:
+        - ssh-rsa AAAA1...
+        - ssh-rsa AAAA2...
 
 
 Additional Notes
@@ -106,6 +120,8 @@ Commands will be sent from the admin nodes to the other cluster nodes, this is w
 5. Run `mmlscluster` and `mmlslicense` to check the cluster
 6. Run `mmstartup -N new.node.hostname` to start GPFS on the new node
 7. Run `mmmount filesystem-name -N new.node.hostname` to enable the mount on the new node (this will automatically add an entry to `/etc/fstab`)
+
+Note do not edit `/etc/fstab` directly, instead use `gpfs_node_specific_mount_options`.
 
 
 Author Information
