@@ -43,14 +43,14 @@
   become: yes
   copy:
     content: "{{ item.value }}"
-    dest: /var/mmfs/etc/{{ item.key }}
+    dest: /var/mmfs/etc/localMountOptions.{{ item.key }}
   when: item.value
   with_dict: gpfs_node_specific_mount_options | default ({})
 
 - name: gpfs | clear mount options
   become: yes
   file:
-    path: /var/mmfs/etc/{{ item.key }}
+    path: /var/mmfs/etc/localMountOptions.{{ item.key }}
     state: absent
   when: not item.value
   with_dict: gpfs_node_specific_mount_options | default ({})

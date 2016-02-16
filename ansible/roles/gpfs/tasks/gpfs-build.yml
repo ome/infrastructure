@@ -84,12 +84,20 @@
     state: present
   with_items: "{{ gpfs_patch_rpms }}"
 
+- name: gpfs | install patch
+  become: yes
+  yum:
+    name: patch
+    state: present
+  when: gpfs_local_patches | default(False)
+
 - name: gpfs | apply local patches
   become: yes
   patch:
     dest: "{{ item.dest }}"
     src: "{{ item.src }}"
   with_items: gpfs_local_patches | default([])
+  when: gpfs_local_patches
 
 - name: gpfs | build kernel module
   become: yes
