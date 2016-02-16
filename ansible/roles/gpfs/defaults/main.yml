@@ -31,6 +31,13 @@ gpfs_installer_rpm_version: "4.1.1-0"
 gpfs_patch_version: "4.1.1.4"
 gpfs_patch_rpm_version: "4.1.1-4"
 
+# A list local fixes to deal with GPFS bugs in the form
+# `- { src: file.patch, dest: /path/to/be/patched}`
+# This is highly dependent on the GPFS patch version, if you upgrade GPFS you must check whether these patches are appropriate.
+gpfs_local_patches:
+- src: mmfs-bin-mmglobfuncs.Linux.patch
+  dest: /usr/lpp/mmfs/bin/mmglobfuncs.Linux
+
 gpfs_installer_package: Spectrum_Scale_install-{{ gpfs_installer_version }}_x86_64_standard_protocols
 gpfs_installer_package_sha1: ae4bd4978afa5f239c7a806ba0e76d2705032c00
 gpfs_patch_package: Spectrum_Scale_Standard-{{ gpfs_patch_version }}-x86_64-Linux-update

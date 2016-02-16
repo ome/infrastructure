@@ -44,6 +44,13 @@
     name: gpfs-rpms/3/{{ gpfs_kernel_rpm_name }}
     state: present
 
+- name: gpfs | apply local patches
+  become: yes
+  patch:
+    dest: "{{ item.dest }}"
+    src: "{{ item.src }}"
+  with_items: gpfs_local_patches | default([])
+
 - name: gpfs | nsd access ssh root
   become: yes
   lineinfile:

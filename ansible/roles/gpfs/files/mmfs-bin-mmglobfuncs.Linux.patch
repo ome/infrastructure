@@ -1,0 +1,20 @@
+--- /usr/lpp/mmfs/bin/mmglobfuncs.Linux.orig	2016-02-15 13:13:32.218701682 +0000
++++ /usr/lpp/mmfs/bin/mmglobfuncs.Linux	2016-02-16 10:14:48.657256622 +0000
+@@ -269,7 +269,7 @@
+ 
+ elif [[ -f /etc/redhat-release ]]
+ then
+-  DISTRO=$($awk '/Enterprise Linux/ { print "RHEL"; exit }' /etc/redhat-release)
++  DISTRO=$($awk '/(Enterprise|CentOS) Linux/ { print "RHEL"; exit }' /etc/redhat-release)
+   DISTRO_VERSION=$($awk '/release/ && $NF != "release" {  \
+     for(i = 1 ; i < NF ; i++) {                           \
+       if( $i == "release" ) { print int($(i+1)) ; exit }  \
+@@ -277,7 +277,7 @@
+   }' /etc/redhat-release)
+   DISTRO_MINOR_VERSION=$($awk '/release/ && $NF != "release" {                    \
+     for(i = 1 ; i < NF ; i++) {                                                   \
+-      if( $i == "release" ) { print substr($(i+1), index($(i+1), ".")+1) ; exit } \
++      if( $i == "release" ) { split($(i+1), a, ".") ; print a[2] ; exit } \
+     }                                                                             \
+   }' /etc/redhat-release)
+   [[ -z $DISTRO_VERSION ]] && DISTRO_VERSION=0

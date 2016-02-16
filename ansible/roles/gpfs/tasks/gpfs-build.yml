@@ -84,6 +84,13 @@
     state: present
   with_items: "{{ gpfs_patch_rpms }}"
 
+- name: gpfs | apply local patches
+  become: yes
+  patch:
+    dest: "{{ item.dest }}"
+    src: "{{ item.src }}"
+  with_items: gpfs_local_patches | default([])
+
 - name: gpfs | build kernel module
   become: yes
   command: /usr/lpp/mmfs/bin/mmbuildgpl --buildrpm
