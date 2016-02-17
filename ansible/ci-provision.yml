@@ -1,46 +1,15 @@
 ---
-# Playbook for provisioning Jenkins CI nodes
+# Playbook for running all CI provisioning playbooks
 
-- hosts: ci-jenkins-linux
-  roles:
-  - role: lvm-partition
-    lvm_lvname: jenkins-workdir
-    lvm_lvmount: "{{ jenkinsworkdir }}"
-    lvm_lvsize: "{{ jenkinssize }}"
+# Initial networking and basic system configuration
+# A reboot may be required after this playbook
+- include: ci-initial.yml
 
+# Jenkins CI servers
+- include: ci-jenkins-linux.yml
 
-# Playbook for provisioning Docker Production nodes
+# Docker CI hosts
+- include: ci-docker-dev-hosts.yml
 
-- hosts: docker-prod-hosts
-  roles:
-  - role: lvm-partition
-    lvm_lvname: root
-    lvm_lvmount: /
-    lvm_lvsize: "{{ rootsize }}"
-    lvm_lvfilesystem: ext4
-  - role: lvm-partition
-    lvm_lvname: scratch
-    lvm_lvmount: /scratch
-    lvm_lvsize: "{{ scratch_size }}"
-    lvm_lvfilesystem: "{{ scratch_filesystem }}"
-  - role: basedeps
-  - role: upgrade-distpackages
-  - role: docker
-
-- hosts: docker-dev-hosts
-  roles:
-  - role: lvm-partition
-    lvm_lvname: root
-    lvm_lvmount: /
-    lvm_lvsize: "{{ rootsize }}"
-    lvm_lvfilesystem: ext4
-  - role: lvm-partition
-    lvm_lvname: scratch
-    lvm_lvmount: /scratch
-    lvm_lvsize: "{{ scratch_size }}"
-    lvm_lvfilesystem: "{{ scratch_filesystem }}"
-  - role: basedeps
-  - role: upgrade-distpackages
-  - role: docker
-  - role: docker-dns-server
-  - role: docker-dns-client
+# Docker production hosts
+- include: ci-docker-prod-hosts.yml

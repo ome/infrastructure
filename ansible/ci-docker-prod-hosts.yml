@@ -1,0 +1,19 @@
+---
+# Playbook for provisioning Docker Production nodes
+
+- hosts: ci-docker-prod-hosts
+  roles:
+  - role: lvm-partition
+    lvm_lvname: root
+    lvm_lvmount: /
+    lvm_lvsize: "{{ rootsize }}"
+    lvm_lvfilesystem: "{{ root_filesystem }}"
+  - role: lvm-partition
+    lvm_lvname: scratch
+    lvm_lvmount: /scratch
+    lvm_lvsize: "{{ scratch_size }}"
+    lvm_lvfilesystem: "{{ scratch_filesystem }}"
+  - role: basedeps
+  - role: system-monitor-agent
+  - role: versioncontrol-utils
+  - role: docker
