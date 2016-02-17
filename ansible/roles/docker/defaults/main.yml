@@ -13,3 +13,9 @@ docker_use_custom_network: False
 
 # Any other arguments to be passed to the docker daemon
 docker_additional_args:
+
+# Filesystem to use for the Docker containers
+docker_basefs: xfs
+
+# Filesystem for the Docker volume
+docker_lvfilesystem: xfs
