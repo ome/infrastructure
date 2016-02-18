@@ -9,7 +9,7 @@ gpfs_install: True
 gpfs_configure: gpfs_install
 
 # Build/Install a GPFS module for this kernel version
-gpfs_kernel_version: 3.10.0-327.4.5.el7.x86_64
+gpfs_kernel_version: 3.10.0-327.10.1.el7.x86_64
 
 # A local directory containing the above installer and patch packages
 gpfs_package_source_dir: files
@@ -31,7 +31,8 @@ gpfs_install_check_kernel_version: True
 
 # If True workaround a bug in GPFS when used with systemd 219+
 # http://www-01.ibm.com/support/knowledgecenter/api/content/SSFKCN/com.ibm.cluster.gpfs.doc/gpfs_faqs/gpfsclustersfaq.html?locale=en&ro=kcUI#linuxrest
-gpfs_enable_systemd_workaround: False
+# This is highly dependent on the GPFS and systemd versions
+gpfs_enable_systemd_workaround: True
 
 ################################################################################
 # Only change the following if you really know what you are doing
