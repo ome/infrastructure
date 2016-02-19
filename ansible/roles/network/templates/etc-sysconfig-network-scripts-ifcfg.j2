@@ -1,7 +1,19 @@
 DEVICE={{ item.device }}
+{% if 'bootproto' in item %}
+BOOTPROTO={{ item.bootproto }}
+{% else %}
 BOOTPROTO=none
+{% endif %}
+{% if 'ipv6init' in item %}
+IPV6INIT={{ item.ipv6init }}
+{% else %}
 IPV6INIT=yes
+{% endif %}
+{% if 'mtu' in item %}
+MTU={{ item.mtu }}
+{% else %}
 MTU=1500
+{% endif %}
 ONBOOT=yes
 {% if 'networkmanager' in item %}
 NM_CONTROLLED={{ item.networkmanager }}
@@ -14,6 +26,9 @@ NETMASK={{ item.netmask }}
 {% endif %}
 {% if 'prefix' in item %}
 PREFIX={{ item.prefix }}
+{% endif %}
+{% if 'devicetype' in item %}
+DEVICETYPE={{ item.devicetype }}
 {% endif %}
 {% if 'type' in item %}
 TYPE={{ item.type }}
@@ -45,4 +60,7 @@ BONDING_OPTS="resend_igmp=1 updelay=0 use_carrier=1 miimon=100 downdelay=0 xmit_
 MASTER={{ item.bondmaster }}
 SLAVE=yes
 {%   endif %}
+{% endif %}
+{% if 'ovsbridge' in item %}
+OVS_BRIDGE={{ item.ovsbridge }}
 {% endif %}
