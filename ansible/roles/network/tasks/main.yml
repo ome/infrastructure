@@ -49,9 +49,15 @@
   when: "'bondmaster' in item"
   register: checkbonds
 
+- debug:
+    msg: "checkbonds.results.item: {{ item }}"
+  with_items:
+    - "{{ checkbonds.results }}"
+
 - name: network | check bonding active
   assert:
     that:
     - "item.stat.exists and not item.stat.isdir"
+  when: not item.skipped
   with_items:
     - "{{ checkbonds.results }}"
