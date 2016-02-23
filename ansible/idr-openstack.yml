@@ -1,63 +1,26 @@
 ---
 # Playbook for preparing IDR openstack nodes
 
+# idr-initial.yml must have already been run
+
 - hosts: idr-openstack
 
   roles:
-  - role: network
-  - role: upgrade-distpackages
-#  - role: lvm-partition
-#    lvm_lvname: var_lib
-#    lvm_lvmount: /var/lib
-#    lvm_lvsize: 100G
+  - role: lvm-partition
+    lvm_lvname: var_lib
+    lvm_lvmount: /var/lib
+    lvm_lvsize: 200G
+    lvm_vgname: VGopenstack
+    lvm_lvfilesystem: xfs
+  - role: openstack-prepare
 
   vars:
 
-  post_tasks:
-  - name: Setup RDO repository
-    become: yes
-    yum:
-      pkg: https://www.rdoproject.org/repos/rdo-release.rpm
-      state: present
-  - name: Install packstack
-    become: yes
-    yum:
-      pkg: openstack-packstack
-      state: present
-    when: openstack_master_node
-  - name: Enable root ssh
-    become: yes
-    lineinfile:
-      backup: yes
-      create: no
-      dest: /etc/ssh/sshd_config
-      line: "PermitRootLogin yes"
-      regexp: '[\s#]*PermitRootLogin\s.*'
-      state: present
-    register: sshd
-  - name: Restart ssh
-    become: yes
-    service:
-      name: sshd
-      state: restarted
-    when: sshd.changed
-  - name: Enable sudoers.d
-    become: yes
-    lineinfile:
-      backup: no
-      create: no
-      dest: /etc/sudoers
-      insertafter: EOF
-      line: "#includedir /etc/sudoers.d"
-      state: present
-      validate: "visudo -cf %s"
 
-  - name: Disable Network Manager
-    become: yes
-    service:
-      name: NetworkManager
-      enabled: no
-      state: stopped
+# You may wish to run idr-gpfs-client.yml
+
+
+#packstack --allinone --provision-demo=n
 
 # Possible bug: https://bugzilla.redhat.com/show_bug.cgi?id=1272572
 #openstack-config --set /etc/cinder/cinder.conf keystone_authtoken auth_uri http://localhost:5000/
