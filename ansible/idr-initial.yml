@@ -8,3 +8,7 @@
   - role: upgrade-distpackages
   - role: server-swap
   - role: network
+
+  post_tasks:
+  - debug:
+      msg: "You may need to reboot your system"
