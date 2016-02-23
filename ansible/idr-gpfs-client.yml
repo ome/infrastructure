@@ -3,6 +3,7 @@
 
 - hosts: idr-gpfs-client
   roles:
+  - role: yum-excludes
   - role: gpfs
     gpfs_install_check_kernel_version: False
     gpfs_local_rpm_dir: ~/ansible-data/gpfs
