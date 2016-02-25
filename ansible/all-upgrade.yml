@@ -1,0 +1,6 @@
+# Generic playbook for updating hosts which don't require any special tasks
+# For instance, this should not update excluded packages
+
+- hosts: all
+  roles:
+  - role: upgrade-distpackages
