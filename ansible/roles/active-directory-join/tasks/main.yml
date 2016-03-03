@@ -1,0 +1,113 @@
+---
+# tasks file for roles/active-directory-join
+
+- name: system packages | active directory client
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - adcli
+    - krb5-workstation
+    - oddjob
+    - oddjob-mkhomedir
+    - pam_krb5
+    - policycoreutils-python
+    - samba-common
+    - sssd
+
+- name: active directory | authconfig
+  become: yes
+  command: authconfig --enableshadow --passalgo=sha512 --disableldap --disableldapauth --enablekrb5 --krb5realm={{ active_directory_realm }} --enablekrb5kdcdns --enablekrb5realmdns --smbsecurity=ads --smbworkgroup={{ active_directory_workgroup }} --smbrealm={{ active_directory_realm }} --enablelocauthorize --enablemkhomedir --enablepamaccess --enablesssd --enablesssdauth --update
+  args:
+    # This file is actually created by the "active directory | join domain"
+    # task later on, however if it exists we know this step has already
+    # been run
+    creates: /etc/krb5.keytab
+
+# This must be run after authconfig since it modifies the generated config
+- name: active directory | configure smb kerberos
+  become: yes
+  lineinfile:
+    backup: yes
+    dest: /etc/samba/smb.conf
+    line: "kerberos method = secrets and keytab"
+    regexp: '^[\s]*kerberos method\s.*='
+    state: present
+
+- name: active directory | join domain
+  become: yes
+  command: net ads join createcomputer={{ active_directory_join_ou }} -U {{ active_directory_join_user }}
+  args:
+    creates: /etc/krb5.keytab
+
+- name: active directory | configure sssd
+  become: yes
+  template:
+    backup: yes
+    dest: /etc/sssd/sssd.conf
+    mode: 0600
+    src: sssd-sssd-conf.j2
+  notify:
+    - restart sssd
+
+- name: active directory | configure krb5
+  become: yes
+  template:
+    backup: yes
+    dest: /etc/krb5.conf
+    src: krb5-conf.j2
+
+- name: active directory | enable sssd
+  become: yes
+  service:
+    enabled: yes
+    name: sssd
+
+- name: active directory | configure access.conf
+  become: yes
+  template:
+    backup: yes
+    dest: /etc/security/access.conf
+    src: security-access-conf.j2
+
+- name: active directory | enable ssh access
+  become: yes
+  lineinfile:
+    backup: yes
+    create: no
+    dest: /etc/ssh/sshd_config
+    line: "PasswordAuthentication {{ active_directory_ssh_passwords | ternary('yes', 'no') }}"
+    mode: 0600
+    regexp: '^[\s]*PasswordAuthentication\s.*'
+    state: present
+  when: active_directory_ssh_passwords is defined
+  notify:
+    - restart sshd
+
+- name: active directory | selinux status
+  command: /sbin/getenforce
+  register: selinux_status
+  changed_when: False
+
+- name: active directory | check selinux homes
+  become: yes
+  command: grep "/homes /home" /etc/selinux/targeted/contexts/files/file_contexts.subs
+  register: selinux_homes
+  failed_when: False
+  changed_when: False
+
+- name: active directory | create user homes
+  become: yes
+  file:
+    path: "{{ active_directory_user_homes }}"
+    seuser: system_u
+    serole: object_r
+    setype: home_root_t
+    state: directory
+  when: active_directory_user_homes | default(None)
+
+- name: active directory | set selinux homes policy
+  become: yes
+  command: semanage fcontext -a -e /home {{ active_directory_user_homes }}
+  when: (selinux_status.stdout != "Disabled") and (selinux_homes.rc > 0) and (active_directory_user_homes | default(None))
