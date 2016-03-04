@@ -1,0 +1,8 @@
+---
+# Handlers for active-directory-samba-share
+
+- name: restart smb
+  become: yes
+  service:
+    name: smb
+    state: restarted
