@@ -1,18 +1,21 @@
 ---
 # tasks file for omero-omego
 
-- name: omero | is server installed
+- name: omero | is server symlink present
+  become: yes
   stat:
     path: "{{ omero_serverdir }}/{{ omero_server_symlink }}"
   register: omero_server_symlink_st
 
 - name: omero | create system user
+  become: yes
   user:
     name: "{{ omero_system_user }}"
     append: yes
 
 # Explicitly include omero_basedir so that it'll be world-accessible
 - name: omero | create omero directories
+  become: yes
   file:
     mode: 0755
     path: "{{ item }}"
@@ -23,6 +26,7 @@
     - "{{ omero_serverdir }}"
 
 - name: omero | set owner omero server directory
+  become: yes
   file:
     owner: "{{ omero_system_user }}"
     path: "{{ omero_serverdir }}"
@@ -33,11 +37,13 @@
 # correct, don't touch anything
 
 - name: Check omero data directory
+  become: yes
   stat:
     path: "{{ omero_datadir }}"
   register: stdd
 
 - name: omero | create omero data directory
+  become: yes
   file:
     owner: "{{ omero_system_user }}"
     path: "{{ omero_datadir }}"
@@ -46,12 +52,18 @@
 
 # OMERO.server
 
+- debug:
+    msg: "WARNING: `omero_reinstall_on_error` not implemented"
+
+# This should be safe to always run including in check-mode
 - name: omero | get server version
-  command: "{{ omero_serverdir }}/{{ omero_server_symlink }}/bin/omero version"
   become: yes
   become_user: "{{ omero_system_user }}"
+  command: "{{ omero_serverdir }}/{{ omero_server_symlink }}/bin/omero version"
   register: omero_server_version
   when: omero_server_symlink_st.stat.exists
+  changed_when: False
+  always_run: yes
   # Set a custom error message
   ignore_errors: yes
 
@@ -63,83 +75,113 @@
 
 # TODO: omero_server_version.stdout...
 
-# TODO: Create database and user
+# TODO: Create database and user (omero_db_create)
 
 # TODO: /OMERO must exist and be writeable
 
-- name: system packages | install python virtualenv
-  yum:
-    name: python-virtualenv
-#    state: latest
-    state: present
-
-- name: omero | setup omego virtualenv
-  pip:
-    name: omego
-    state: latest
-    virtualenv: "{{ omero_basedir }}/omego-venv"
-    virtualenv_site_packages: yes
 
 - name: omero | create common configuration file
+  become: yes
   template:
     dest: "{{ omero_basedir }}/config/omero-base.config"
     force: yes
     src: omero-base.config.j2
 
 - name: omero | empty additional configuration file
+  become: yes
   copy:
     content: ""
     dest: "{{ omero_basedir }}/config/omero-additional.config"
     force: yes
-  when: omero_prestart_file|default(None) == None
+  when: omero_prestart_file | default(None) == None
 
 - name: omero | copy additional configuration file
+  become: yes
   copy:
     dest: "{{ omero_basedir }}/config/omero-additional.config"
     force: yes
     src: "{{ omero_prestart_file }}"
-  when: omero_prestart_file|default(None) != None
+  when: omero_prestart_file | default(None) != None
 
 - name: omero | set omego options
   set_fact:
     omero_omego_options: >
       --release {{ omero_release }}
       --sym {{ omero_server_symlink }}
-      --dbhost {{ omero_dbhost }}
-      --dbuser {{ omero_dbuser }}
-      --dbname {{ omero_dbname }}
-      --dbpass {{ omero_dbpassword | quote  }}
       --prestartfile {{ omero_basedir }}/config/omero-base.config
       --prestartfile {{ omero_basedir }}/config/omero-additional.config
       -qq
 
+- name: omero | set omego db options
+  set_fact:
+    omero_omego_db_options: >
+      --dbhost {{ omero_dbhost | quote }}
+      --dbuser {{ omero_dbuser | quote }}
+      --dbname {{ omero_dbname | quote }}
+      --dbpass {{ omero_dbpassword | quote  }}
+
 - name: omero | install omero
+  become: yes
+  become_user: "{{ omero_system_user }}"
   command: >
-    {{ omero_basedir }}/omego-venv/bin/omego
+    {{ omero_omego_path }}
     install
     {{ omero_omego_options }}
+    {{ omero_omego_db_options }}
     --rootpass {{ omero_rootpassword | quote }}
     --initdb
   args:
     chdir: "{{ omero_serverdir }}"
     creates: "{{ omero_serverdir }}/{{ omero_server_symlink }}"
-  become: yes
-  become_user: "{{ omero_system_user }}"
 
 # TODO: Check whether an upgrade is available since `omego upgrade` always
-# restarts the server
+# restarts the server. It should be possible to use `omero admin checkupgrade`
+# to check, but due to the incomplete registry work it doesn't currently work.
+# For now just compare the current and requested version
+
+- name: omero | checkupgrade
+  set_fact:
+    omero_update_needed: not (omero_server_version.stdout | match("{{ omero_release | regex_escape() }}-.*"))
+  when: omero_server_version is defined
+
+- name: omero | checkupgrade
+  set_fact:
+    omero_update_needed: False
+  when: omero_server_version is not defined
+
+- name: omero | create omero backup directory
+  become: yes
+  file:
+    mode: 0700
+    owner: "{{ omero_system_user }}"
+    path: omero_database_backup_dir
+    state: directory
+  when: (omero_database_backup_dir | default(None)) and omero_upgrade and omero_update_needed
+
+- name: omero | backup database
+  become: yes
+  become_user: "{{ omero_system_user }}"
+  command: >
+    {{ omero_omego_path }}
+    db dump
+    {{ omero_omego_db_options }}
+    --serverdir {{ omero_serverdir }}/{{ omero_server_symlink }}
+  args:
+    chdir: "{{ omero_database_backupdir }}"
+  when: (omero_database_backup_dir | default(None)) and omero_upgrade and omero_update_needed
 
 - name: omero | upgrade
+  become: yes
+  become_user: "{{ omero_system_user }}"
   command: >
-    {{ omero_basedir }}/omego-venv/bin/omego
+    {{ omero_omego_path }}
     upgrade
     {{ omero_omego_options }}
+    {{ omero_omego_db_options }}
     {{ omero_omego_upgrade_args }}
   args:
     chdir: "{{ omero_serverdir }}"
-  become: yes
-  become_user: "{{ omero_system_user }}"
-  when: omero_upgrade and omero_server_symlink_st.stat.exists
+  when: omero_upgrade and omero_update_needed
 
-- include: omero-web-upstream.yml
+- include: omero-web.yml
   when: omero_web_install

@@ -1,30 +1,44 @@
 ---
 # tasks file for omero-web
 
-- name: omero web | generate nginx config
-  shell: >
-    {{ omero_serverdir }}/{{ omero_server_symlink }}/bin/omero
-    web config nginx > {{ omero_serverdir }}/omero-web.conf
-  args:
-    creates: /etc/nginx/conf.d/omero-web.conf
-  become: yes
-  become_user: "{{ omero_system_user }}"
+# Check whether the web configuration needs to be regenerated
 
-- name: omero web | install nginx config
-  command: >
-    cp {{ omero_serverdir }}/omero-web.conf /etc/nginx/conf.d/omero-web.conf
-  args:
-    creates: /etc/nginx/conf.d/omero-web.conf
-  when: omero_generate_nginx_config.changed
+- name: omero | check server timestamp
+  stat:
+    follow: no
+    path: "{{ omero_serverdir }}/{{ omero_server_symlink }}"
+  register: omero_server_st
+
+- name: omero | check web timestamp
+  stat:
+    path: /etc/nginx/conf.d/omero-web.conf
+  register: omero_web_st
+
+- name: omero | web checkupgrade
+  set_fact:
+    omero_web_update_needed: (not omero_web_st.stat.exists) or (omero_web_st.stat.ctime < omero_server_st.stat.ctime)
+
+# This will generate a warning about running su, ignore it since we need to run as root for the redirection
+- name: omero web | generate nginx config
+  become: yes
+  shell: >
+    su {{ omero_system_user }} -lc
+    "{{ omero_serverdir }}/{{ omero_server_symlink }}/bin/omero web config nginx"
+    > /etc/nginx/conf.d/omero-web.conf
+  when: (not omero_web_st.stat.exists) or (omero_upgrade and omero_web_update_needed)
+  notify: restart nginx
 
 - name: nginx | remove system defaults
+  become: yes
   replace:
     backup: yes
     dest: /etc/nginx/nginx.conf
     regexp: '80\s*default_server\s*;'
     replace: '80; # default_server;'
+  notify: restart nginx
 
 - name: omero web | selinux booleans
+  become: yes
   seboolean:
     name: "{{ item }}"
     state: yes
@@ -32,11 +46,14 @@
   with_items:
     - httpd_read_user_content
     - httpd_enable_homedirs
+  when: omero_selinux_setup
 
 # Alternatively set httpd_can_network_connect=yes to allow all ports
 - name: omero web | selinux ports
+  become: yes
   seport:
     ports: 4080
     proto: tcp
     se_type: http_port_t
     state: present
+  when: omero_selinux_setup

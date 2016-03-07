@@ -2,6 +2,7 @@
 # tasks file for roles/omero-runtime
 
 - name: system packages | install python pip
+  become: yes
   yum:
     name: "{{ item }}"
     state: latest
@@ -11,6 +12,7 @@
     - python-pillow
 
 - name: omero web | pip install packages
+  become: yes
   pip:
     name: "{{ item }}"
     state: present

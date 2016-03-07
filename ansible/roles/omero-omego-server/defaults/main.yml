@@ -2,13 +2,16 @@
 # defaults file for omero-omego
 
 # If True and server is already installed then upgrade to the version in
-# omero_release, otherwise don"t upgrade an existing server.
-omero_upgrade: no
+# omero_release, otherwise don't upgrade an existing server.
+omero_upgrade: False
+
+# If true create the postgres database if it doesn't already exist
+omero_db_create: False
 
 # If all the OMERO configuration is handled using ansible it should be
 # possible to delete the entire server and re-install if the current
 # installataion appears to be corrupt (the data dir will not be touched)
-omero_reinstall_on_error: no
+omero_reinstall_on_error: False
 
 # OMERO system user
 omero_system_user: omero
@@ -17,6 +20,9 @@ omero_basedir: /home/omero
 omero_serverdir: "{{ omero_basedir }}/server"
 omero_server_symlink: OMERO.server
 omero_release: latest
+
+# If non-empty dump the OMERO database to this directory before upgrading
+omero_database_backupdir: "{{ omero_basedir }}/backups"
 
 # OMERO database connection parameters
 omero_dbhost: localhost
@@ -30,6 +36,9 @@ omero_rootpassword: omero
 # OMERO data directory (must already exist)
 omero_datadir: /OMERO
 
+# Dictionary of additional OMERO configuration options
+omero_server_config: {}
+
 # Automatically upgrade DB, delete old servers
 omero_omego_upgrade_args: "--upgradedb --skipdelete false"
 
@@ -39,3 +48,6 @@ omero_prestart_file:
 
 # Setup OMERO.web
 omero_web_install: True
+
+# Configure SELinux
+omero_selinux_setup: False
