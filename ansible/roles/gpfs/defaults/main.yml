@@ -1,0 +1,91 @@
+---
+# defaults file for roles/gpfs
+
+# If true extract and build GPFS RPMs
+gpfs_build: False
+# If true install GPFS using RPMs
+gpfs_install: True
+# If true configure system for GPFS
+gpfs_configure: gpfs_install
+
+# Build/Install a GPFS module for this kernel version
+gpfs_kernel_version: 3.10.0-327.10.1.el7.x86_64
+
+# A local directory containing the above installer and patch packages
+gpfs_package_source_dir: files
+
+# Local directory for GPFS RPMs. They will be copied here here so they can be deployed to other nodes without needing to rerun the extract and build process
+#gpfs_local_rpm_dir:
+
+# When installing the GPFS RPMs check whether the current kernel version matches the RPM.
+# Ignored when building (versions must always match)
+gpfs_install_check_kernel_version: True
+
+# A list of the SSH public keys belonging to the root users on the NSD nodes
+#gpfs_public_keys:
+
+# A dictionary of host-specific mount options for GPFS in the form
+# `{ fsname: "mount options"}`
+# Use this for making special changes to a specific node only (everything else should be configured centrally)
+#gpfs_node_specific_mount_options:
+
+# If True workaround a bug in GPFS when used with systemd 219+
+# http://www-01.ibm.com/support/knowledgecenter/api/content/SSFKCN/com.ibm.cluster.gpfs.doc/gpfs_faqs/gpfsclustersfaq.html?locale=en&ro=kcUI#linuxrest
+# This is highly dependent on the GPFS and systemd versions
+gpfs_enable_systemd_workaround: True
+
+################################################################################
+# Only change the following if you really know what you are doing
+
+gpfs_version: "4.1.1"
+gpfs_installer_version: "4.1.1.0"
+gpfs_installer_rpm_version: "4.1.1-0"
+gpfs_patch_version: "4.1.1.4"
+gpfs_patch_rpm_version: "4.1.1-4"
+
+# A list local fixes to deal with GPFS bugs in the form
+# `- { src: file.patch, dest: /path/to/be/patched}`
+# This is highly dependent on the GPFS patch version, if you upgrade GPFS you must check whether these patches are appropriate.
+# https://www.ibm.com/developerworks/community/forums/html/topic?id=00104bb5-acf5-4036-93ba-29ea7b1d43b7&ps=25#176065bb-65f3-48c0-b97b-4d14094fd77e
+gpfs_local_patches:
+- src: mmfs-bin-mmglobfuncs.Linux.patch
+  dest: /usr/lpp/mmfs/bin/mmglobfuncs.Linux
+
+gpfs_installer_package: Spectrum_Scale_install-{{ gpfs_installer_version }}_x86_64_standard_protocols
+gpfs_installer_package_sha1: ae4bd4978afa5f239c7a806ba0e76d2705032c00
+gpfs_patch_package: Spectrum_Scale_Standard-{{ gpfs_patch_version }}-x86_64-Linux-update
+gpfs_patch_package_sha1: 805356e8a5575250f021e1f2b2ec036c01ba3b65
+
+# Expected path to the directory containing the extracted RPMs
+gpfs_installer_extracted_rpms_dir: /usr/lpp/mmfs/{{ gpfs_version }}/gpfs_rpms
+gpfs_patch_extracted_rpms_dir: /usr/lpp/mmfs/{{ gpfs_patch_version }}
+
+# The list of GPFS RPMs to be installed from the installer package
+gpfs_installer_rpms:
+- gpfs.base-{{ gpfs_installer_rpm_version }}.x86_64.rpm
+- gpfs.docs-{{ gpfs_installer_rpm_version }}.noarch.rpm
+- gpfs.ext-{{ gpfs_installer_rpm_version }}.x86_64.rpm
+- gpfs.gpl-{{ gpfs_installer_rpm_version }}.noarch.rpm
+- gpfs.gskit-8.0.50-40.x86_64.rpm
+#- gpfs.hadoop-2-connector-{{ gpfs_installer_rpm_version }}.x86_64.rpm
+- gpfs.msg.en_US-{{ gpfs_installer_rpm_version }}.noarch.rpm
+
+# List of RPMs to uninstall (because the patch RPM has a different name from the installer RPM)
+gpfs_remove_rpms:
+- gpfs.hadoop-2-connector
+
+# The list of GPFS RPMs to be installed from the patch package
+gpfs_patch_rpms:
+- gpfs.base-{{ gpfs_patch_rpm_version }}.x86_64.update.rpm
+- gpfs.docs-{{ gpfs_patch_rpm_version }}.noarch.rpm
+- gpfs.ext-{{ gpfs_patch_rpm_version }}.x86_64.update.rpm
+- gpfs.gpl-{{ gpfs_patch_rpm_version }}.noarch.rpm
+- gpfs.gskit-8.0.50-47.x86_64.rpm
+- gpfs.hadoop-connector-2.7.0-3.x86_64.rpm
+- gpfs.msg.en_US-{{ gpfs_patch_rpm_version }}.noarch.rpm
+
+# The name of the built kernel module rpm
+gpfs_kernel_rpm_name: gpfs.gplbin-{{ gpfs_kernel_version }}-{{ gpfs_patch_rpm_version }}.x86_64.rpm
+
+# Path to GPFS installed binaries
+gpfs_binaries_path: /usr/lpp/mmfs/bin

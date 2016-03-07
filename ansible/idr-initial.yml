@@ -1,0 +1,14 @@
+---
+# Initial configuration of IDR nodes
+# Note you should reboot after changing the network configuration, and
+# manually verify that the configuration is correct
+
+- hosts: idr
+  roles:
+  - role: upgrade-distpackages
+  - role: server-swap
+  - role: network
+
+  post_tasks:
+  - debug:
+      msg: "You may need to reboot your system"

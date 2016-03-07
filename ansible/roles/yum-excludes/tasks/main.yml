@@ -1,0 +1,12 @@
+---
+# tasks file for roles/yum-excludes
+
+- name: system packages | exclude
+  become: yes
+  ini_file:
+    backup: yes
+    dest: /etc/yum.conf
+    option: exclude
+    section: main
+    state: present
+    value: "{{ (yum_excludes_packages | default([])) | join(',') }}"
