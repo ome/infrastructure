@@ -1,6 +1,11 @@
 ---
 # tasks file for omero-omego
 
+- include: ansible-prerequisites.yml
+
+- include: omero-database.yml
+  when: omero_db_create
+
 - name: omero | is server symlink present
   become: yes
   stat:
@@ -48,12 +53,13 @@
     owner: "{{ omero_system_user }}"
     path: "{{ omero_datadir }}"
     state: directory
-  when: not stdd.stat.exists
+  when: omero_datadir_create and not stdd.stat.exists
 
 # OMERO.server
 
 - debug:
     msg: "WARNING: `omero_reinstall_on_error` not implemented"
+  when: omero_reinstall_on_error | default(False)
 
 # This should be safe to always run including in check-mode
 - name: omero | get server version
@@ -72,13 +78,6 @@
   when: omero_server_symlink_st.stat.exists and omero_server_version is undefined
 
 # TODO: omero_reinstall_on_error
-
-# TODO: omero_server_version.stdout...
-
-# TODO: Create database and user (omero_db_create)
-
-# TODO: /OMERO must exist and be writeable
-
 
 - name: omero | create common configuration file
   become: yes
@@ -178,10 +177,13 @@
     upgrade
     {{ omero_omego_options }}
     {{ omero_omego_db_options }}
-    {{ omero_omego_upgrade_args }}
+    --upgradedb
   args:
     chdir: "{{ omero_serverdir }}"
   when: omero_upgrade and omero_update_needed
 
 - include: omero-web.yml
   when: omero_web_install
+
+- include: omero-systemd.yml
+  when: omero_systemd_setup

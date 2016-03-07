@@ -1,0 +1,14 @@
+[Unit]
+Description=OMERO.server
+# Not mandatory, PostgreSQL may be running on a different server
+#Requires=postgresql-9.4.service
+
+[Service]
+User={{ omero_system_user }}
+Type=simple
+Restart=on-failure
+RestartSec=10
+ExecStart={{ omero_serverdir }}/{{ OMERO.server }}/bin/omero admin start --foreground
+
+[Install]
+WantedBy=multi-user.target

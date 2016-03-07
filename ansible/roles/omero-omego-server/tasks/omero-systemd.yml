@@ -1,0 +1,48 @@
+---
+# Setup systemd files
+
+- name: omero | server systemd service
+  become: yes
+  template:
+    dest: /etc/systemd/system/omero.service
+    force: yes
+    src: systemd-system-omero-service.j2
+  register: omero_systemd_server
+
+- name: omero | web systemd service
+  become: yes
+  template:
+    dest: /etc/systemd/system/omero-web.service
+    force: yes
+    src: systemd-system-omero-web-service.j2
+  register: omero_systemd_web
+  when: omero_web_install
+
+# Can't use a notifier because the reload must happen before a start/restart
+- name: omero | reload systemd
+  become: yes
+  command: systemctl daemon-reload
+  when: omero_systemd_server.changed or (omero_systemd_web is defined and omero_systemd_web.changed)
+
+- name: omero | enable server systemd
+  become: yes
+  service:
+    enabled: yes
+    name: omero.service
+    state: started
+
+- name: omero | enable web systemd
+  become: yes
+  service:
+    enabled: yes
+    name: omero-web.service
+    state: started
+  when: omero_web_install
+
+- name: omero | enable nginx service
+  become: yes
+  service:
+    enabled: yes
+    name: nginx.service
+    state: started
+  when: omero_web_install

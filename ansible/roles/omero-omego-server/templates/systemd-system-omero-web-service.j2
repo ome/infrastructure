@@ -1,0 +1,17 @@
+[Unit]
+Description=OMERO.web
+# Not mandatory, Nginx may be running on a different server
+#Requires=nginx.service
+
+# TODO: Run web in foreground mode so that it can be monitored by systemd
+[Service]
+User={{ omero_system_user }}
+Type=forking
+PIDFile={{ omero_serverdir }}/{{ OMERO.server }}/var/django.pid
+Restart=on-failure
+RestartSec=10
+ExecStart={{ omero_serverdir }}/{{ OMERO.server }}/bin/omero web start
+ExecStop={{ omero_serverdir }}/{{ OMERO.server }}/bin/omero web stop
+
+[Install]
+WantedBy=multi-user.target
