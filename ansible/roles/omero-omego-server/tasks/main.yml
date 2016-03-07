@@ -140,22 +140,29 @@
 
 - name: omero | checkupgrade
   set_fact:
-    omero_update_needed: not (omero_server_version.stdout | match("{{ omero_release | regex_escape() }}-.*"))
-  when: omero_server_version is defined
+    omero_update_needed: True
+  when: "{{ omero_server_version.stdout | regex_replace('^([^-]+).*', '\\1') != omero_release }}"
+  ignore_errors: yes
 
 - name: omero | checkupgrade
   set_fact:
     omero_update_needed: False
-  when: omero_server_version is not defined
+  when: omero_update_needed is not defined
+
+- debug:
+    msg: "Upgrade needed: {{ omero_server_version.stdout | regex_replace('^([^-]+).*', '\\1') }} -> {{ omero_release }}"
+  when: omero_update_needed
+
+# Backup database
 
 - name: omero | create omero backup directory
   become: yes
   file:
     mode: 0700
     owner: "{{ omero_system_user }}"
-    path: omero_database_backup_dir
+    path: "{{ omero_database_backupdir }}"
     state: directory
-  when: (omero_database_backup_dir | default(None)) and omero_upgrade and omero_update_needed
+  when: (omero_database_backupdir | default(None)) and omero_upgrade and omero_update_needed
 
 - name: omero | backup database
   become: yes
@@ -167,7 +174,9 @@
     --serverdir {{ omero_serverdir }}/{{ omero_server_symlink }}
   args:
     chdir: "{{ omero_database_backupdir }}"
-  when: (omero_database_backup_dir | default(None)) and omero_upgrade and omero_update_needed
+  when: (omero_database_backupdir | default(None)) and omero_upgrade and omero_update_needed
+
+# Upgrade
 
 - name: omero | upgrade
   become: yes
