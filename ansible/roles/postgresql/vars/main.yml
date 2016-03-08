@@ -1,7 +1,7 @@
 ---
 # vars file for roles/postgres
 
-externalpostgresql:
+postgresql_external:
   repourl:
     "9.3": http://yum.postgresql.org/9.3/redhat/rhel-7-x86_64/pgdg-redhat93-9.3-1.noarch.rpm
     "9.4": http://yum.postgresql.org/9.4/redhat/rhel-7-x86_64/pgdg-redhat94-9.4-1.noarch.rpm
@@ -10,7 +10,7 @@ externalpostgresql:
     "9.4": postgresql94
 
 # Internal role variables, do not modify
-postgresqlbindir: /usr/pgsql-{{ postgresversion }}/bin
-postgresqldatadir: /var/lib/pgsql/{{ postgresversion }}/data
-postgresqlbasename: "{{ externalpostgresql.basename[postgresversion] }}"
-postgresqlrepourl: "{{ externalpostgresql.repourl[postgresversion] }}"
+postgresql_bindir: /usr/pgsql-{{ postgresql_version }}/bin
+postgresql_datadir: /var/lib/pgsql/{{ postgresql_version }}/data
+postgresql_basename: "{{ postgresql_external.basename[postgresql_version] }}"
+postgresql_repourl: "{{ postgresql_external.repourl[postgresql_version] }}"

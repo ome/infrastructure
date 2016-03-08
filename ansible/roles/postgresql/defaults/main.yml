@@ -2,10 +2,7 @@
 # defaults file for roles/postgres
 
 # Version of postgres (see vars)
-postgresversion: "9.4"
-# Sub-packages to install in addition to the clients
-postgressubpackages:
-  - server
+postgresql_version: "9.4"
 
-# Systemd doesn't work inside Docker
-runningindocker: False
+# Whether to install and setup PostgreSQL server
+postgresql_install_server: True
