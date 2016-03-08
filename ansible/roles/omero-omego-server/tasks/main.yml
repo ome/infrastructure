@@ -141,7 +141,7 @@
 - name: omero | checkupgrade
   set_fact:
     omero_update_needed: True
-  when: "{{ omero_server_version.stdout | regex_replace('^([^-]+).*', '\\1') != omero_release }}"
+  when: (omero_server_version.stdout | regex_replace('^([^-]+).*', '\\1')) != omero_release
   ignore_errors: yes
 
 - name: omero | checkupgrade

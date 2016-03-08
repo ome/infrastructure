@@ -1,15 +1,23 @@
 ---
-# tasks file for roles/omero-runtime
+# tasks file for roles/omero-web-runtime
 
-- name: system packages | install python pip
+- name: omero web | install python packages
   become: yes
   yum:
     name: "{{ item }}"
     state: latest
   with_items:
-    - python-gunicorn
     - python-pip
     - python-pillow
+
+# Uninstall python module rpms that will be replaced with a pip installed version
+- name: omero web | remove python packages
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - python-gunicorn
 
 - name: omero web | pip install packages
   become: yes
@@ -17,4 +25,5 @@
     name: "{{ item }}"
     state: present
   with_items:
-    - "django<1.9"
+    - "django>=1.8,<1.9"
+    - "gunicorn>=19.3"
