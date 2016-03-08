@@ -109,7 +109,7 @@
       --sym {{ omero_server_symlink }}
       --prestartfile {{ omero_basedir }}/config/omero-base.config
       --prestartfile {{ omero_basedir }}/config/omero-additional.config
-      -qq
+      {{ omero_omego_additional_args }}
 
 - name: omero | set omego db options
   set_fact:
