@@ -1,5 +1,5 @@
 ---
-# defaults file for omero-omego
+# defaults file for omero-server
 
 # If True and server is already installed then upgrade to the version in
 # omero_release, otherwise don't upgrade an existing server.
