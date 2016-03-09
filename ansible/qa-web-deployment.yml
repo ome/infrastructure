@@ -7,3 +7,4 @@
     - role: nginx
     - role: python-devel
     - role: openldap-devel
+    - role: redis
