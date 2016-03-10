@@ -62,8 +62,8 @@
 - name: omero web | selinux ports
   become: yes
   seport:
-    ports: 4080
+    ports: "4080"
     proto: tcp
-    se_type: http_port_t
+    setype: http_port_t
     state: present
   when: omero_selinux_setup
