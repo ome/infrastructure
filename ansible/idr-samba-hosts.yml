@@ -1,0 +1,6 @@
+---
+# Playbook for maintaining IDR Samba nodes
+
+- hosts: idr-samba-hosts
+  roles:
+  - role: active-directory-samba-share
