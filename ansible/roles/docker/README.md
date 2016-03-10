@@ -43,6 +43,13 @@ Dependencies
 
 Depends on lvm-partition
 
+
+Upgrades
+--------
+
+If you are using advanced networking or storage this role will override the `docker.service` file included in the distributed packages. If an upgrade to docker is planned you are advised to check for differences in `/usr/lib/systemd/system/docker.service` between the old and new RPMs, and if necessary merge any changes into `files/docker.service` in this role.
+
+
 Author Information
 ------------------
 
