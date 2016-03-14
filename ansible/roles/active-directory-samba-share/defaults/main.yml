@@ -1,0 +1,5 @@
+---
+# defaults file for roles/active-direcgtory-samba
+
+# A dictionary of dictionaries of shares, see README.md
+active_directory_shares: {}

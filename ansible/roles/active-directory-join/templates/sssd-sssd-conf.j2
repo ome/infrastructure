@@ -1,0 +1,26 @@
+[sssd]
+domains = {{ active_directory_realm | lower }}
+config_file_version = 2
+services = nss, pam, pac
+
+[domain/{{ active_directory_realm | lower }}]
+id_provider = ad
+ad_domain = {{ active_directory_realm | lower }}
+ad_server = {{ active_directory_server }}
+auth_provider = ad
+chpass_provider = ad
+access_provider = ad
+
+krb5_realm = {{ active_directory_realm }}
+realmd_tags = {{ active_directory_realmd_tags }}
+cache_credentials = True
+krb5_store_password_if_offline = True
+default_shell = /bin/bash
+
+ldap_schema = ad
+ldap_id_mapping = False
+
+use_fully_qualified_names = False
+fallback_homedir = /home/%u
+
+cache_credentials = true

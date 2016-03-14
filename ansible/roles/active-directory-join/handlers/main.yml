@@ -1,0 +1,14 @@
+---
+# Handlers for active-directory-join
+
+- name: restart sshd
+  become: yes
+  service:
+    name: sshd
+    state: restarted
+
+- name: restart sssd
+  become: yes
+  service:
+    name: sssd
+    state: restarted
