@@ -9,3 +9,20 @@
 - hosts: docker
   roles:
   - role: docker
+
+- hosts: samba
+  roles:
+  - role: active-directory-samba-share
+    active_directory_realm: AD.EXAMPLE.ORG
+    active_directory_workgroup: workgroup
+    active_directory_shares:
+      share-ro:
+        path: /srv/samba/ro
+        comment: Read-only share
+        users: [root]
+
+      share-rw:
+        path: /srv/samba/rw
+        comment: Read-write share
+        readonly: False
+        users: [root]
