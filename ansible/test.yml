@@ -1,0 +1,11 @@
+---
+# Playbook for testing individual and sets of roles.
+#
+# Host names in this file should match the name of the Vagrant configuration
+# in Vagrantfile. Tests can be run either by using `vagrant up $NAME` when a
+# box does not yet exist, or `vagrant provision $NAME` for one that exists &
+# is running.
+
+- hosts: docker
+  roles:
+  - role: docker
