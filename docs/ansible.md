@@ -13,6 +13,10 @@ In many cases it is possible to run a role using the default role arguments, the
 
 At present there are effectively two groups of hosts and playbooks, `idr-*` and `ci-*`.
 Both share the same set of roles.
+
+Some of the roles are directly related to managing dependencies for production OMERO servers- these should always default to the current recommended versions for the latest OMERO release.
+If necessary optional variables can be added to support alternatives.
+
 The inventory files, and group and host specific configuration files, are currently held in a private repository.
 
 `group_vars` contains variables which are common to most hosts in that group.
