@@ -36,3 +36,6 @@
     name: postgresql-{{ postgresql_version }}
     state: started
   when: postgresql_install_server
+
+- include: databases.yml
+  when: postgresql_users_databases.0 is defined

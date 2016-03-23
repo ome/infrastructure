@@ -1,0 +1,35 @@
+---
+# Manage a local databases and users
+# This only works where the local system `postgres` user has admin rights
+
+- name: postgres | install ansible prerequisites
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - python-psycopg2
+
+- name: postgres | create database
+  become: yes
+  become_user: postgres
+  postgresql_db:
+    encoding: UTF-8
+    name: "{{ item.1 }}"
+    state: present
+  with_subelements:
+    - "{{ postgresql_users_databases }}"
+    - databases
+
+- name: postgres | create user
+  become: yes
+  become_user: postgres
+  postgresql_user:
+    db: "{{ item.1 }}"
+    encrypted: yes
+    name: "{{ item.0.user }}"
+    password: "{{ item.0.password }}"
+    state: present
+  with_subelements:
+    - "{{ postgresql_users_databases }}"
+    - databases

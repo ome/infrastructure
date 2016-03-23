@@ -6,3 +6,6 @@ postgresql_version: "9.4"
 
 # Whether to install and setup PostgreSQL server
 postgresql_install_server: True
+
+# List of dictionaries containing user and databases information
+postgresql_users_databases: []
