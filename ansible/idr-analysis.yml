@@ -1,6 +1,8 @@
 ---
 # Playbook for maintaining IDR Samba nodes
 
-- hosts: idr-sudoers
+- hosts: idr-analysis
   roles:
+  - role: analysis-tools
+  - role: samba-client
   - role: sudoers
