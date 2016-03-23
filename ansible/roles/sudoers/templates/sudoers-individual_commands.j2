@@ -1,0 +1,3 @@
+{% for item in sudoers_individual_commands %}
+{{ item.user }} ALL=({{ item.become }}) {{ item.command }}
+{% endfor %}

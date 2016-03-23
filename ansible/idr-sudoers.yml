@@ -1,0 +1,6 @@
+---
+# Playbook for maintaining IDR Samba nodes
+
+- hosts: idr-sudoers
+  roles:
+  - role: sudoers
