@@ -1,6 +1,14 @@
 # Example playbook for installing OMERO.server into a VM
 
 - hosts: localhost
+  pre_tasks:
+  # This is needed for ansible to be run by cloud-init
+  - lineinfile:
+      backup: yes
+      dest: /etc/sudoers
+      regexp: "^Defaults\\s+requiretty"
+      state: absent
+      validate: "visudo -cf %s"
   roles:
   - role: upgrade-distpackages
   - role: samba-client
