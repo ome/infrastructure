@@ -117,7 +117,11 @@ Many of the `neutron` commands can be replaced by `openstack` commands fairly si
 - `neutron subnet-list`: `openstack subnet list`
 - `neutron security-group-create ...`: `openstack security group create ...`
 
-For example, to start a VM:
+If you want to use the original `neutron` command for managing networks install it:
+
+    pip install python-neutronclient
+
+To start a VM using `nova`:
 
     nova boot --image "Cirros 0.3.4" --flavor m1.tiny \
         --security-groups default,ssh --key-name "$SSH_KEY_NAME" test-vm
@@ -125,3 +129,9 @@ For example, to start a VM:
     # ssh cirros@$FLOATING_IP
     nova delete test-vm
     nova list
+
+To start a VM backed by a volume:
+
+    nova boot --image "CentOS 7.2 1602" --flavor m1.medium \
+        --security-groups all --key-name "$SSH_KEY_NAME" \
+        --block-device id=$IMAGE_UUID,source=image,size=$SIZE_IN_GB test-vm

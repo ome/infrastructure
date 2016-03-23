@@ -266,7 +266,7 @@ Copy and modify the `keystonerc_admin` file, or login to Horizon as a user of th
 
     source keystonerc_$NEW_TENANT
     neutron net-create ${NEW_TENANT}_network
-    neutron subnet-create --name private_subnet ${NEW_TENANT}_network 192.168.1.0/24 --dns-nameserver 8.8.4.4 --dns-nameserver 8.8.8.8
+    neutron subnet-create --name ${NEW_TENANT}_subnet ${NEW_TENANT}_network 192.168.1.0/24 --dns-nameserver 8.8.4.4 --dns-nameserver 8.8.8.8
 
 Create a router to connect the external and private networks:
 
