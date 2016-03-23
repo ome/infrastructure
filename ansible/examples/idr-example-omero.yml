@@ -1,0 +1,21 @@
+# RPMs should already be built. You may need to update all packages and
+# reboot before running this
+
+- hosts: localhost
+  roles:
+  - role: upgrade-distpackages
+  - role: samba-client
+  - role: omero-server
+  vars:
+    postgresql_users_databases:
+    - user: omero
+      password: omero
+      databases: [omero]
+    omero_release: 5.2.0
+    omero_dbhost: localhost
+    omero_dbuser: omero
+    omero_dbname: omero
+    omero_dbpassword: omero
+    omero_datadir: /OMERO
+    omero_selinux_setup: True
+    omero_upgrade: True
