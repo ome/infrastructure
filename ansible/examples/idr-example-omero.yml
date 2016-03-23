@@ -1,5 +1,4 @@
-# RPMs should already be built. You may need to update all packages and
-# reboot before running this
+# Example playbook for installing OMERO.server into a VM
 
 - hosts: localhost
   roles:
@@ -11,7 +10,6 @@
     - user: omero
       password: omero
       databases: [omero]
-    omero_release: 5.2.0
     omero_dbhost: localhost
     omero_dbuser: omero
     omero_dbname: omero
@@ -19,3 +17,6 @@
     omero_datadir: /OMERO
     omero_selinux_setup: True
     omero_upgrade: True
+    omero_release: 5.2.0
+    #omero_release: OMERO-build
+    #omero_omego_additional_args: -qq --ci alternative-ci.openmicroscopy.org:8080
