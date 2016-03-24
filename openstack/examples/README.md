@@ -36,6 +36,8 @@ You can also run it manually to install OMERO on localhost, see `idr-example-ome
 ---------------------
 
 This playbook will connect to OpenStack, spin up a VM, and pass `idr-example-omero-bootstrap.sh` to cloud-init.
+The Ansible modules in this playbook require the `shade` Python module.
+
 Before running the playbook you must [setup your OpenStack environment variables](http://docs.openstack.org/user-guide/common/cli_set_environment_variables_using_openstack_rc.html).
 You will need to edit some of the variables in the file to match your OpenStack installation: `omero_vm_key_name`, `omero_vm_image`, `omero_vm_flavour`.
 Then run:
