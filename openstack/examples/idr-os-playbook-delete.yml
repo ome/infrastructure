@@ -1,0 +1,21 @@
+---
+# Delete VMs and security groups created by idr-os-playbook.yml
+
+- hosts: localhost
+
+  vars:
+    # This must match the value in idr-os-playbook.yml
+    omero_vm_name: test-idr-omero
+
+  tasks:
+
+    - name: Remove OMERO VM
+      os_server:
+        name: '{{ omero_vm_name }}'
+        state: absent
+
+    # Can't remove security group unless nothing is using it
+    - name: Remove OMERO external access security group
+      os_security_group:
+        name: omero-external
+        state: absent

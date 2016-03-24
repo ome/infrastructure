@@ -12,5 +12,7 @@ ANSIBLE_VARS='{"omero_release": "5.2.2" }'
 #ANSIBLE_VARS='{"omero_release": "OMERO-build", "omero_omego_additional_args": "-qq --ci alternative-ci.openmicroscopy.org:8080"}'
 
 export ANSIBLE_ROLES_PATH=./infrastructure/ansible/roles
-/opt/ansible/bin/ansible-playbook ./infrastructure/ansible/examples/idr-example-omero.yml \
+/opt/ansible/bin/ansible-playbook ./infrastructure/openstack/examples/idr-example-omero.yml \
     --extra-vars "$ANSIBLE_VARS" 2>&1
+
+exit 0
