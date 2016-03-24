@@ -54,8 +54,9 @@
 
 # OMERO.server
 
-- debug:
-    msg: "WARNING: `omero_reinstall_on_error` not implemented"
+# TODO: omero_reinstall_on_error
+- fail:
+    msg: "omero_reinstall_on_error not implemented"
   when: omero_reinstall_on_error | default(False)
 
 # This should be safe to always run including in check-mode
@@ -73,11 +74,6 @@
 - fail:
     msg: "OMERO.server found but unable to get version, you may have a corrupt installation"
   when: omero_server_symlink_st.stat.exists and omero_server_version is undefined
-
-# TODO: omero_reinstall_on_error
-- fail:
-    msg: "omero_reinstall_on_error not implemented"
-  when: omero_reinstall_on_error
 
 - name: omero | create common configuration file
   become: yes
