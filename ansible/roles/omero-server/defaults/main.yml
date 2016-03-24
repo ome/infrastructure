@@ -41,8 +41,11 @@ omero_datadir: /OMERO
 # Create the OMERO data directory, set to False if storage is externally managed
 omero_datadir_create: True
 
+# Control verbosity of omego
+omero_omego_verbosity: "-qq"
+
 # Additional omego aguments passed to upgrade or install
-omero_omego_additional_args: "-qq"
+omero_omego_additional_args: ""
 
 # Dictionary of additional OMERO configuration options
 omero_server_config: {}

@@ -9,7 +9,7 @@ virtualenv -q --system-site-packages /opt/ansible 2>&1
 
 git clone -q --single-branch -b omego https://github.com/manics/infrastructure.git 2>&1
 ANSIBLE_VARS='{"omero_release": "5.2.2" }'
-#ANSIBLE_VARS='{"omero_release": "OMERO-build", "omero_omego_additional_args": "-qq --ci alternative-ci.openmicroscopy.org:8080"}'
+#ANSIBLE_VARS='{"omero_release": "OMERO-build", "omero_omego_additional_args": "--ci alternative-ci.openmicroscopy.org:8080"}'
 
 export ANSIBLE_ROLES_PATH=./infrastructure/ansible/roles
 /opt/ansible/bin/ansible-playbook ./infrastructure/openstack/examples/idr-example-omero.yml \
