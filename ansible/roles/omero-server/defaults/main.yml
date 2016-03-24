@@ -10,7 +10,7 @@ omero_db_create: True
 
 # If all the OMERO configuration is handled using ansible it should be
 # possible to delete the entire server and re-install if the current
-# installataion appears to be corrupt (the data dir will not be touched)
+# installation appears to be corrupt (the data dir will not be touched)
 # EXPERIMENTAL, may break your system
 omero_reinstall_on_error: False
 

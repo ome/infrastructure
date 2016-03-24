@@ -75,6 +75,9 @@
   when: omero_server_symlink_st.stat.exists and omero_server_version is undefined
 
 # TODO: omero_reinstall_on_error
+- fail:
+    msg: "omero_reinstall_on_error not implemented"
+  when: omero_reinstall_on_error
 
 - name: omero | create common configuration file
   become: yes
