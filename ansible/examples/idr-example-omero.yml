@@ -26,5 +26,3 @@
     omero_selinux_setup: True
     omero_upgrade: True
     omero_release: 5.2.0
-    #omero_release: OMERO-build
-    #omero_omego_additional_args: -qq --ci alternative-ci.openmicroscopy.org:8080
