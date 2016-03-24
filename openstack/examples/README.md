@@ -58,7 +58,7 @@ To monitor it's progress see the VM logs in the OpenStack Horizon web interface,
 
 To see the full logs:
 
-    nova console-log
+    nova console-log test-idr-omero
 
 The advantage of running this playbook from inside the VM instead of pushing it out is that no SSH authentication needs to be setup, and it is not necessary to wait for the VM to initialise its SSH server.
 
