@@ -3,6 +3,8 @@
 
 - include: ansible-prerequisites.yml
 
+- include: omego.yml
+
 - name: omero | is server symlink present
   become: yes
   stat:
