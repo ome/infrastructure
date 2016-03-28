@@ -47,6 +47,13 @@
     replace: '80; # default_server;'
   notify: restart nginx
 
+- name: omero web | enable nginx
+  become: yes
+  service:
+    enabled: yes
+    name: nginx
+    state: started
+
 - name: omero web | selinux booleans
   become: yes
   seboolean:
