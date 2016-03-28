@@ -18,7 +18,8 @@ omero_reinstall_on_error: False
 omero_system_user: omero
 
 omero_basedir: /home/omero
-omero_serverdir: "{{ omero_basedir }}/server"
+#omero_serverdir: "{{ omero_basedir }}/server"
+omero_serverdir: "{{ omero_basedir }}"
 omero_server_symlink: OMERO.server
 # WARNING: This will currently always attempt to update the server since the registry check is broken
 omero_release: latest
