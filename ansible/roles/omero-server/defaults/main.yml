@@ -43,7 +43,7 @@ omero_datadir: /OMERO
 omero_datadir_create: True
 
 # Path of the omego virtualenv
-omero_omego_venv: {{ omero_basedir }}/omego
+omero_omego_venv: "{{ omero_basedir }}/omego"
 
 # Control verbosity of omego
 omero_omego_verbosity: "-qq"
