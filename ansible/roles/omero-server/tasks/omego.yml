@@ -1,5 +1,5 @@
 ---
-# tasks file for omero-omego
+# install omego in a virtualenv
 
 - name: system packages | install python virtualenv
   become: yes
@@ -12,9 +12,9 @@
   pip:
     name: omego
     state: latest
-    virtualenv: "{{ omero_omego_venv | default('/opt/omego') }}"
+    virtualenv: "{{ omero_omego_venv }}"
     virtualenv_site_packages: yes
 
 - name: omero omego | get omego path
   set_fact:
-    omero_omego_path: "{{ omero_omego_venv | default('/opt/omego') }}/bin/omego"
+    omero_omego_path: "{{ omero_omego_venv }}/bin/omego"
