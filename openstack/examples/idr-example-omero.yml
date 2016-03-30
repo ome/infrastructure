@@ -1,6 +1,10 @@
 # Example playbook for installing OMERO.server into a VM
 
-- hosts: localhost
+# Set hosts to all so this can be run locally, or pushed out to any testing VM.
+# If you are going to use this as part of a production playbook you should
+# change this to a host-group to avoid accidents.
+- hosts: all
+
   pre_tasks:
   # This is needed for ansible to be run by cloud-init
   - lineinfile:
