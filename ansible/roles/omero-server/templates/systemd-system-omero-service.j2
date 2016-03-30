@@ -6,9 +6,9 @@ Description=OMERO.server
 [Service]
 User={{ omero_system_user }}
 Type=simple
-Restart=on-failure
+Restart={{ omero_systemd_restart }}
 RestartSec=10
-ExecStart={{ omero_serverdir }}/{{ OMERO.server }}/bin/omero admin start --foreground
+ExecStart={{ omero_serverdir }}/{{ omero_server_symlink }}/bin/omero admin start --foreground
 
 [Install]
 WantedBy=multi-user.target

@@ -109,6 +109,10 @@
       --prestartfile {{ omero_basedir }}/config/omero-additional.config
       {{ omero_omego_verbosity }}
       {{ omero_omego_additional_args }}
+      {{ omero_systemd_setup | ternary('--no-start', '') }}
+# If systemd is enabled don't start anything, leave systemd to handle this
+# later omego will still stop omero and omero-web outside of systemd, so you
+# should ensure the service file contains `Restart=no` (default)
 
 - name: omero | set omego db options
   set_fact:

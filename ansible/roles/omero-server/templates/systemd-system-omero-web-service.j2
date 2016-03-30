@@ -7,11 +7,11 @@ Description=OMERO.web
 [Service]
 User={{ omero_system_user }}
 Type=forking
-PIDFile={{ omero_serverdir }}/{{ OMERO.server }}/var/django.pid
-Restart=on-failure
+PIDFile={{ omero_serverdir }}/{{ omero_server_symlink }}/var/django.pid
+Restart={{ omero_systemd_restart }}
 RestartSec=10
-ExecStart={{ omero_serverdir }}/{{ OMERO.server }}/bin/omero web start
-ExecStop={{ omero_serverdir }}/{{ OMERO.server }}/bin/omero web stop
+ExecStart={{ omero_serverdir }}/{{ omero_server_symlink }}/bin/omero web start
+ExecStop={{ omero_serverdir }}/{{ omero_server_symlink }}/bin/omero web stop
 
 [Install]
 WantedBy=multi-user.target

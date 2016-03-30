@@ -68,3 +68,8 @@ omero_selinux_setup: False
 # Setup systemd services
 # EXPERIMENTAL, may break your system
 omero_systemd_setup: False
+
+# Restart policy for systemd services
+# EXPERIMENTAL, may break your system
+# Quoted to prevent autoconversion to bool
+omero_systemd_restart: "no"
