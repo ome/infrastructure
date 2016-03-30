@@ -114,6 +114,9 @@
 # later omego will still stop omero and omero-web outside of systemd, so you
 # should ensure the service file contains `Restart=no` (default)
 
+# TODO: If server was started by systemd but stopped directly you may end up
+# with a hanging process
+
 - name: omero | set omego db options
   set_fact:
     omero_omego_db_options: >

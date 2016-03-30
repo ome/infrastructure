@@ -44,3 +44,4 @@
     omero_selinux_setup: True
     omero_upgrade: True
     omero_release: 5.2.0
+    omero_systemd_setup: True
