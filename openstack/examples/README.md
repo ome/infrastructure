@@ -65,3 +65,12 @@ The advantage of running this playbook from inside the VM instead of pushing it 
 To delete the VM and related security group:
 
     ansible-playbook idr-os-playbook-delete.yml
+
+
+Updating an OpenStack VM
+------------------------
+
+You can take advantage of an [Ansible dynamic inventory script for OpenStack (`openstack.py`)](http://docs.ansible.com/ansible/intro_dynamic_inventory.html#example-openstack-external-inventory-script) instead of having to manage an inventory file when using Ansible to push out changes.
+For example:
+
+    ANSIBLE_ROLES_PATH=../../ansible/roles ansible-playbook -i openstack.py -l test-idr-omero idr-example-omero.yml -u centos -vv
