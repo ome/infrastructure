@@ -1,0 +1,64 @@
+---
+# tasks file for roles/omero-logmonitor
+
+- name: system packages | install dependencies
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - git
+    - python-virtualenv
+
+- name: omero logmonitor | setup virtualenv
+  become: yes
+  pip:
+    name: sleekxmpp
+    state: latest
+    virtualenv: "{{ omero_logmonitor_venv }}"
+    virtualenv_site_packages: yes
+
+- name: omero logmonitor | get logmonitor
+  become: yes
+  git:
+    depth: 1
+    dest: "{{ omero_logmonitor_logbotdir }}"
+    repo: https://github.com/manics/omero-fenton.git
+
+- name: omero logmonitor | create configuration file
+  become: yes
+  template:
+    src: omero-fenton-cfg.j2
+    dest: "{{ omero_logmonitor_logbotdir }}/omero-fenton.cfg"
+  notify:
+    - restart logmonitor
+
+- name: omero logmonitor | create systemd file
+  become: yes
+  template:
+    dest: /etc/systemd/system/omero-logmonitor.service
+    force: yes
+    src: systemd-system-omero-logmonitor-service.j2
+  register: omero_systemd_logmonitor
+
+# Can't use a notifier because the reload must happen before a start/restart
+- name: omero | reload systemd
+  become: yes
+  command: systemctl daemon-reload
+  when: omero_systemd_logmonitor.changed
+
+- name: omero | enable logmonitor systemd
+  become: yes
+  service:
+    enabled: yes
+    name: omero-logmonitor.service
+    state: started
+  when: omero_logmonitor_autostart
+
+- name: omero | disable logmonitor systemd
+  become: yes
+  service:
+    enabled: no
+    name: omero-logmonitor.service
+    state: stopped
+  when: not omero_logmonitor_autostart

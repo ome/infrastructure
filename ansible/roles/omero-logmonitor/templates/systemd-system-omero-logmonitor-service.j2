@@ -1,0 +1,11 @@
+[Unit]
+Description=OMERO logmonitor {{ omero_logmonitor_server_name }}
+
+[Service]
+User={{ omero_logmonitor_system_user }}
+Type=simple
+WorkingDirectory={{ omero_logmonitor_logbotdir }}
+ExecStart={{ omero_logmonitor_venv }}/bin/python OmeroFenton.py -f omero-fenton.cfg
+
+[Install]
+WantedBy=multi-user.target
