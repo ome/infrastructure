@@ -1,0 +1,62 @@
+---
+# defaults file for roles/omero-logmonitor
+
+omero_logmonitor_basedir: /home/omero/logmonitor
+omero_logmonitor_venv: "{{ omero_logmonitor_basedir }}/venv"
+omero_logmonitor_logbotdir: "{{ omero_logmonitor_basedir }}/omero-fenton"
+
+#jid: user@example.org
+#password: password
+# Specify the server if it's different from the JID, e.g. talk.google.com:5222
+#server:
+
+#room: monitoring
+# Nickname
+nick: omero-logmonitor
+# Chatroom users who have admin control of this bot
+botadmins: []
+
+omero_logmonitor_default_levels:
+  - ERROR
+  - FATAL
+
+omero_logmonitor_email_oom: False
+#omero_logmonitor_email_smtp: smtp.example.org
+#omero_logmonitor_email_from: logmonitor@example.org
+#omero_logmonitor_email_to: alert@example.org
+
+# The display name for this server, can be overridden by individual log configs
+omero_logmonitor_server_name: omero-server
+
+# If True enable and autostart/restart the bot, otherwise disable and stop
+omero_logmonitor_autostart: True
+
+# System user for running the bot
+omero_logmonitor_system_user: omero
+
+# OMERO.server logs directory, used in the default configuration below
+omero_logmonitor_logs_dir: /home/omero/OMERO.server/var/logs
+
+# Log files to be monitored
+# Defaults for each item:
+#   type: logdefault
+#   displayname: omero_logmonitor_server_name file-basename-without-.log
+# You can optionally override the levels, and the display name for the logfile:
+#  - file: logs/example.log
+#    displayname: example server log
+#    levels: [WARN, ERROR, FATAL]
+omero_logmonitor_logfiles:
+  - file: "{{ omero_logmonitor_logs_dir }}/Blitz-0.log"
+  - file: "{{ omero_logmonitor_logs_dir }}/DropBox.log"
+  - file: "{{ omero_logmonitor_logs_dir }}/FileServer.log"
+  - file: "{{ omero_logmonitor_logs_dir }}/Indexer-0.log"
+  - file: "{{ omero_logmonitor_logs_dir }}/MonitorServer.log"
+  - file: "{{ omero_logmonitor_logs_dir }}/OMEROweb.log"
+  - file: "{{ omero_logmonitor_logs_dir }}/OMEROweb_request.log"
+  - file: "{{ omero_logmonitor_logs_dir }}/PixelData-0.log"
+  - file: "{{ omero_logmonitor_logs_dir }}/Processor-0.log"
+  - file: "{{ omero_logmonitor_logs_dir }}/Tables-0.log"
+  - file: "{{ omero_logmonitor_logs_dir }}/master.err"
+    type: logall
+  - file: "{{ omero_logmonitor_logs_dir }}/master.out"
+    type: logall

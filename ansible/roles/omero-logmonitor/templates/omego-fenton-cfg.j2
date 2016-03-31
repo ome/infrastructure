@@ -1,0 +1,52 @@
+[main]
+jid = {{ omero_logmonitor_jabber_user }}
+password = {{ omero_logmonitor_jabber_password }}
+# Specify the server if it's different from the JID, e.g. talk.google.com:5222
+{% if omero_logmonitor_jabber_server %}
+server = {{ omero_logmonitor_jabber_server }}
+{% endif %}
+
+room = {{ omero_logmonitor_jabber_room }}
+nick = {{ omero_logmonitor_jabber_nick }}
+botadmins = {{ omero_logmonitor_jabber_admins | join(",") }}
+
+# Log reporting options, can be overridden in individual log configs
+
+# Rate limit: rate_limit_n messages per rate_limit_t seconds, per log file
+rate_limit_t = 60
+rate_limit_n = 4
+# Truncate log messages to this length
+max_log_length = 1024
+# Notify these log levels
+levels = {{ omero_logmonitor_default_levels | join(",") }}
+
+# Disk space warnings
+#[diskmonitor /repositories]
+#path = /repositories
+#warn_mb = 102400,51200,20480,10240,5120,2048,1024,512,0
+hysteresis_mb = 512
+
+# Log file email alerts
+{% if omero_logmonitor_email_oom %}
+[emailalerts out-of-memory]
+conditions = [('', '', 'out\s*of\s*memory')]
+delay = 120
+interval = 3600
+smtp = {{ omero_logmonitor_email_smtp }}
+email_from = {{ omero_logmonitor_email_from }}
+email_to = {{ omero_logmonitor_email_to }}
+email_subject = [logbot] Out of memory detected ({{ omero_logmonitor_server_name }})
+{% endif %}
+
+# Log files to be monitored
+
+{% for logfile in omero_logmonitor_logfiles %}
+{%   if 'displayname' in logfile %}
+[{{ logfile.type if 'type' in logfile else 'logdefault' }} {{ logfile.displayname }}]
+{%   else %}}
+[{{ logfile.type if 'type' in logfile else 'logdefault' }} {{ omero_logmonitor_server_name }} {{ logfile.file | regex_replace('\.log$', '') }}]
+{%   endif %}
+file = {{ logfile.file }}
+{%   if 'levels' in logfile %}
+levels = {{ omero_logmonitor_default_levels | join(",") }}
+{% endfor %}
