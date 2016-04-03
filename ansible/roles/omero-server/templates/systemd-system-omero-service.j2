@@ -5,10 +5,14 @@ Description=OMERO.server
 
 [Service]
 User={{ omero_system_user }}
-Type=simple
+Type=forking
+PIDFile={{ omero_serverdir }}/{{ omero_server_symlink }}/var/master/master.pid
 Restart={{ omero_systemd_restart }}
 RestartSec=10
-ExecStart={{ omero_serverdir }}/{{ omero_server_symlink }}/bin/omero admin start --foreground
+# Allow up to 5 min for start/stop
+TimeoutSec=300
+ExecStart={{ omero_serverdir }}/{{ omero_server_symlink }}/bin/omero admin start
+ExecStop={{ omero_serverdir }}/{{ omero_server_symlink }}/bin/omero admin stop
 
 [Install]
 WantedBy=multi-user.target
