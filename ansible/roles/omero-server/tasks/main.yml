@@ -24,6 +24,9 @@
     mode: 0755
     path: "{{ item }}"
     state: directory
+    serole: _default
+    setype: _default
+    seuser: _default
   with_items:
     - "{{ omero_basedir }}"
     - "{{ omero_basedir }}/config"
