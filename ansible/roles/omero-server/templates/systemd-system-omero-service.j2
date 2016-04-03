@@ -1,7 +1,10 @@
 [Unit]
 Description=OMERO.server
-# Not mandatory, PostgreSQL may be running on a different server
+# Requires: forces the dependency to be started
+# After: ensures this service starts after the dependency, but only if the dependency is also started
+# PostgreSQL may be running on a different server so don't set Requires
 #Requires=postgresql-9.4.service
+After=postgresql-9.4.service
 
 [Service]
 User={{ omero_system_user }}
