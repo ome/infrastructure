@@ -7,12 +7,19 @@ yum install -q -y git python-virtualenv gcc 2>&1
 virtualenv -q --system-site-packages /opt/ansible 2>&1
 /opt/ansible/bin/pip -q install ansible 2>&1
 
-git clone -q --single-branch -b omego https://github.com/manics/infrastructure.git 2>&1
-ANSIBLE_VARS='{"omero_release": "5.2.2" }'
-#ANSIBLE_VARS='{"omero_release": "OMERO-build", "omero_omego_additional_args": "--ci alternative-ci.openmicroscopy.org:8080"}'
+cd /opt
 
-export ANSIBLE_ROLES_PATH=./infrastructure/ansible/roles
-/opt/ansible/bin/ansible-playbook ./infrastructure/openstack/examples/idr-example-omero.yml \
-    --extra-vars "$ANSIBLE_VARS" 2>&1
+git clone -q --single-branch -b omego https://github.com/manics/infrastructure.git /opt/infrastructure 2>&1
+
+# Custom variable overrides (YAML, can be empty)
+cat << EOF > /opt/infrastructure/localhost-extravars.yml
+omero_release: "5.2.2"
+#omero_release: OMERO-build
+#omero_omego_additional_args: "--ci alternative-ci.openmicroscopy.org:8080"
+EOF
+
+export ANSIBLE_ROLES_PATH=/opt/infrastructure/ansible/roles
+/opt/ansible/bin/ansible-playbook /opt/infrastructure/openstack/examples/idr-example-omero.yml \
+    --extra-vars @/opt/infrastructure/localhost-extravars.yml 2>&1
 
 exit 0
