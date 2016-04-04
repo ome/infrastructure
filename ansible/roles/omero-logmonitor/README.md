@@ -49,7 +49,7 @@ Including an example of how to use your role (for instance, with variables passe
       - role: omero-logmonitor
         omero_logmonitor_jabber_user: omero-logmonitor@jabber.example.org
         omero_logmonitor_jabber_password: secret-password
-        omero_logmonitor_jabber_room: alerts
+        omero_logmonitor_jabber_room: alerts@conference.example.org
         omero_logmonitor_jabber_nick omero-logmonitor
         omero_logmonitor_server_name: omero test instance
         # Include the follow variables to setup email OOM alerts
