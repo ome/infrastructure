@@ -43,10 +43,11 @@ email_subject = [logbot] Out of memory detected ({{ omero_logmonitor_server_name
 {% for logfile in omero_logmonitor_logfiles %}
 {%   if 'displayname' in logfile %}
 [{{ logfile.type if 'type' in logfile else 'logdefault' }} {{ logfile.displayname }}]
-{%   else %}}
+{%   else %}
 [{{ logfile.type if 'type' in logfile else 'logdefault' }} {{ omero_logmonitor_server_name }} {{ logfile.file | regex_replace('\.log$', '') }}]
 {%   endif %}
 file = {{ logfile.file }}
 {%   if 'levels' in logfile %}
 levels = {{ omero_logmonitor_default_levels | join(",") }}
+{%   endif %}
 {% endfor %}

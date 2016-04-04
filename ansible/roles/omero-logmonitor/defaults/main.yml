@@ -8,13 +8,13 @@ omero_logmonitor_logbotdir: "{{ omero_logmonitor_basedir }}/omero-fenton"
 #jid: user@example.org
 #password: password
 # Specify the server if it's different from the JID, e.g. talk.google.com:5222
-#server:
+omero_logmonitor_jabber_server:
 
 #room: monitoring
 # Nickname
-nick: omero-logmonitor
+omero_logmonitor_jabber_nick: omero-logmonitor
 # Chatroom users who have admin control of this bot
-botadmins: []
+omero_logmonitor_jabber_admins: []
 
 omero_logmonitor_default_levels:
   - ERROR
