@@ -1,6 +1,10 @@
 # Example playbook for installing OMERO.server into a VM
+#
 # This is initially aimed at testing a mini-IDR, so some production tuning is
-# required (limits.d)
+# required (limits.d).
+# In addition the samba-client and python-pydata roles are also installed
+# as they are required for some IDR related tasks.
+# For a standard production server you won't need these.
 
 # Set hosts to all so this can be run locally, or pushed out to any testing VM.
 # If you are going to use this as part of a production playbook you should
@@ -30,6 +34,7 @@
   - role: upgrade-distpackages
   - role: samba-client
   - role: omero-server
+  - role: python-pydata
 
   vars:
     postgresql_users_databases:
