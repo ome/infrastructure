@@ -35,7 +35,7 @@ omero_logmonitor_autostart: True
 omero_logmonitor_system_user: omero
 
 # OMERO.server logs directory, used in the default configuration below
-omero_logmonitor_logs_dir: /home/omero/OMERO.server/var/logs
+omero_logmonitor_logs_dir: /home/omero/OMERO.server/var/log
 
 # Log files to be monitored
 # Defaults for each item:
