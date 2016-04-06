@@ -2,6 +2,10 @@
 
 Tools, scripts and other systems infrastructure used to support the work of the OME http://www.openmicroscopy.org/
 
+Eventually this will be used for setting up production servers including OMERO instances.
+If you are interested in this work please be aware it is a relatively new initiative and still under development, so please [contact us](http://www.openmicroscopy.org/site/community) if you require more information.
+
+
 [![Build Status](https://travis-ci.org/openmicroscopy/infrastructure.png)](http://travis-ci.org/openmicroscopy/infrastructure)
 
 ## OME Ansible repository
