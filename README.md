@@ -97,3 +97,10 @@ Playbooks which do not alter hardware can often be tested in Docker instead of a
     ssh-copy-id omero@172.17.1.1
     # Pass -K if sudo requires a password, and -k if ssh keys aren't setup
     ansible-playbook -i etc/test-hosts -u omero ci-deployment.yml -bv
+
+Alternatively, if you have vagrant installed, you can use any of the targets from Vagrantfile for testing. The definition of the hosts is test.yml.
+
+    # First run this creates, starts, and provisions a new machine.
+    vagrant up docker
+    # Subsequent runs of `provision` re-run ansible on the host.
+    vagrant provision docker
