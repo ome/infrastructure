@@ -11,7 +11,7 @@ config:
 	docker exec -u root $(NAME) usermod -u $(UID) omero
 	docker exec -u root $(NAME) chown -R omero /home/omero
 	docker exec -u root $(NAME) bash -eux /tmp/idr-example-omero-bootstrap.sh
-	docker exec -u omero $(NAME) bash -eux /tmp/idr-setup-1.sh
+	docker exec -u omero $(NAME) bash -eux /tmp/01_install.sh
 
 run: build
 	docker run -d \
