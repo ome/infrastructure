@@ -24,7 +24,7 @@ EOF
 
 export ANSIBLE_ROLES_PATH=/opt/infrastructure/ansible/roles
 /opt/ansible/bin/ansible-playbook /opt/infrastructure/openstack/examples/idr-example-omero.yml \
-    --extra-vars "omero_selinux_setup=False @/opt/infrastructure/localhost-extravars.yml" 2>&1
+    --extra-vars "omero_release=OMERO-DEV-merge-build omero_selinux_setup=False @/opt/infrastructure/localhost-extravars.yml" 2>&1
 
 
 exit 0
