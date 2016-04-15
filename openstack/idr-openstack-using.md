@@ -135,3 +135,14 @@ To start a VM backed by a volume:
     nova boot --image "CentOS 7.2 1602" --flavor m1.medium \
         --security-groups all --key-name "$SSH_KEY_NAME" \
         --block-device id=$IMAGE_UUID,source=image,size=$SIZE_IN_GB test-vm
+
+
+## Access to the VM
+
+For many VMs your ssh private key provides the only way to access the VM.
+This means if you lose access for some reason it is not possible for an administrator to access it.
+
+If you want to safeguard against this you can do one or more of:
+- add someone else's public ssh key to `.ssh/authorized_keys`
+- set a password for the default or root account (`passwd`) to allow console access
+- set a password and ensure ssh allows password authentication (`PasswordAuthentication yes` in `/etc/ssh/sshd_config`)
