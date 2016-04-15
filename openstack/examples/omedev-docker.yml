@@ -1,5 +1,14 @@
 # Example playbook for installing upstream Docker into a VM
 # You must attach a second volume to your VM 
+#
+# E.g. To use this on an Openstack CentOS7 cloud instance:
+# 1. Create a new CentOS7 cloud instance (size can be quite small)
+# 2. Create a new volume for Docker
+# 3. Attach this volume to the instance
+# 4. Run this playbook, e.g.:
+#     export ANSIBLE_ROLES_PATH=infrastructure/ansible/roles
+#     ansible-playbook -i openstack.py -l VM-HOSTNAME -vv -u centos \
+#         infrastructure/openstack/examples/omedev-docker.yml
 
 # Set hosts to all so this can be run locally, or pushed out to any testing VM.
 # If you are going to use this as part of a production playbook you should
