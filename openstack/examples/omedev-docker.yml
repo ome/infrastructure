@@ -1,0 +1,37 @@
+# Example playbook for installing upstream Docker into a VM
+# You must attach a second volume to your VM 
+
+# Set hosts to all so this can be run locally, or pushed out to any testing VM.
+# If you are going to use this as part of a production playbook you should
+# change this to a host-group to avoid accidents.
+- hosts: localhost, all
+
+  pre_tasks:
+
+    - name: Install LVM
+      become: yes
+      yum:
+        pkg: lvm2
+        state: present
+
+    - name: Create volume group
+      become: yes
+      lvg:
+        pvs: "{{ physical_drive }}"
+        state: present
+        vg: "{{ docker_vgname }}"
+
+  roles:
+  - role: upgrade-distpackages
+  - role: docker
+
+  vars:
+    physical_drive: /dev/vdb
+
+    docker_use_upstream_repo: True
+    docker_use_custom_storage: True
+    docker_vgname: VGdocker
+    docker_poolsize: 80%VG
+    docker_metadatasize: 256M
+    docker_volumesize: 19%VG
+    docker_groupmembers: ["{{ ansible_user }}"]
