@@ -177,6 +177,19 @@ Create a router to connect the external and private networks:
     neutron router-interface-add router1 private_subnet
 
 
+## Openstack storage setup
+
+If you are using a manually configured storage driver such as GPFS you may need to set it as a volume type.
+
+First source the admin login credentials for the OpenStack API:
+
+    source keystonerc_admin
+
+Create the volume type:
+
+    cinder type-create gpfs
+
+
 # Testing the installation so far
 
 At this point it is advisable to check everything is working before continuing.
@@ -217,6 +230,7 @@ For instance, to replace all the default flavours:
     nova flavor-create m1.large 4 8192 20 8
     nova flavor-create m1.xlarge 5 16384 20 16
 
+
 # Adding more nodes
 
 See https://www.rdoproject.org/install/adding-a-compute-node/ for more details.
@@ -231,12 +245,29 @@ For example, to add two new nodes, 10.0.0.2 and 10.0.0.3 without changing the cu
     crudini --set $PACKSTACK_ANSWERS general EXCLUDE_SERVERS 10.0.0.1
 
 As before you will need to setup `ssh root@new-node`.
+
+If you are using the GPFS driver to provide storage you will need to install GPFS on all new compute nodes too.
+This is specific to the GPFS driver since GPFS is accessed through local mounts (http://docs.openstack.org/liberty/config-reference/content/GPFS-driver-background.html).
+This is in contrast to for example NFS where compute nodes can access the NFS server remotely.
+
 Once this is done run packstack again from the current node as a normal user.
 
     packstack --answer-file $PACKSTACK_ANSWERS
 
 You will need to reconfigure the physical network interface to match that of the original node (e.g. create bridge `br-ex` using `eno1`).
 It should not be necessary to make any other changes (for example, it is not necessary to run the neutron configuration steps again since it is a virtual network).
+
+
+# Setting up nova ssh connections
+
+Some VM operations require the `nova` user/service to `ssh` between compute nodes.
+Packstack may not have set this up correctly, especially if the compute nodes were setup separately since Packstack may have generated different ssh keys.
+
+If necessary, copy `/var/lib/nova/.ssh/{authorized_keys,id_rsa}` from the master controller node to `/var/lib/nova/.ssh/` on the other compute nodes.
+Run `usermod -s /bin/bash nova` on all compute nodes.
+If necessary edit any other configuration files that restrict `ssh` access, such as `/etc/security/access.conf`.
+Test that you can connect between computer nodes as the `nova` user: `sudo -u nova ssh nova@10.0.0.X`.
+You may wish to copy `known_hosts` between compute nodes.
 
 
 # Adding projects/tenancies and users
