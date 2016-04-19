@@ -3,6 +3,8 @@
 set -eu
 
 # EPEL now has Ansible 2.x
+# TODO: Temporarily force cache update since this is a very recent update
+yum clean -q all 2>&1
 yum install -q -y epel-release 2>&1
 yum install -q -y ansible git 2>&1
 
