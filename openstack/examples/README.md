@@ -60,6 +60,11 @@ To see the full logs:
 
     nova console-log test-idr-omero
 
+Alternatively you can `ssh` in and tail the cloud-init logs or the system logs:
+
+    ssh centos@IP_ADDRESS tail -f /var/log/cloud-init-output.log
+    ssh centos@IP_ADDRESS sudo journalctl -f
+
 The advantage of running this playbook from inside the VM instead of pushing it out is that no SSH authentication needs to be setup, and it is not necessary to wait for the VM to initialise its SSH server.
 
 To delete the VM and related security group:
