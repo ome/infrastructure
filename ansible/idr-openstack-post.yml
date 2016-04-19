@@ -1,0 +1,14 @@
+---
+# Playbook for preparing IDR openstack nodes
+
+# idr-initial.yml must have already been run
+
+- hosts: idr-openstack
+
+  roles:
+  - role: network
+
+  vars:
+    network_interfaces: "{{ post_network_ifaces }}"
+
+

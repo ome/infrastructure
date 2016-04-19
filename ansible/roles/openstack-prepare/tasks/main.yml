@@ -1,0 +1,45 @@
+---
+# Setup system and install Packstack
+
+- name: openstack | Setup RDO repository
+  become: yes
+  yum:
+    pkg: https://www.rdoproject.org/repos/rdo-release.rpm
+    state: present
+
+- name: openstack | Install packstack
+  become: yes
+  yum:
+    pkg: openstack-packstack
+    state: present
+  when: openstack_master_node | default(False)
+
+- name: openstack | Enable root ssh
+  become: yes
+  lineinfile:
+    backup: yes
+    create: no
+    dest: /etc/ssh/sshd_config
+    line: "PermitRootLogin yes"
+    regexp: '[\s#]*PermitRootLogin\s.*'
+    state: present
+  notify:
+    - restart ssh
+
+- name: openstack | Enable sudoers.d
+  become: yes
+  lineinfile:
+    backup: no
+    create: no
+    dest: /etc/sudoers
+    insertafter: EOF
+    line: "#includedir /etc/sudoers.d"
+    state: present
+    validate: "visudo -cf %s"
+
+- name: openstack | Disable Network Manager
+  become: yes
+  service:
+    name: NetworkManager
+    enabled: no
+    state: stopped
