@@ -21,7 +21,7 @@ omero_release: OMERO-DEV-merge-build
 #omero_omego_additional_args: "--ci alternative-ci.openmicroscopy.org:8080"
 EOF
 
-if [ $(getenforce) = Disabled ]; then
+if [ \! -f /usr/sbin/getenforce -o /usr/sbin/getenforce = Disabled  ]; then
     echo "omero_selinux_setup: False" >> $VARSFILE
 fi
 
