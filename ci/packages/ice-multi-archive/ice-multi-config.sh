@@ -47,8 +47,8 @@ omero_env() {
             ICE_VERSION=3.5.1
             ;;
 
-        ice36 | ice360 )
-            ICE_VERSION=3.6.0
+        ice36 | ice362 )
+            ICE_VERSION=3.6.2
             ;;
 
         * )
@@ -67,6 +67,7 @@ omero_env() {
         prepend_path PATH "$ICE_HOME/bin"
         prepend_path LD_LIBRARY_PATH "$ICE_HOME/lib64"
         prepend_path LIBPATH "$ICE_HOME/lib64"
+        prepend_path SLICEPATH "$ICE_HOME/slice"
     fi
 
     return 0
