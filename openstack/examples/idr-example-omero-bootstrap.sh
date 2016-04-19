@@ -1,15 +1,10 @@
 #!/bin/sh
 
-set -e
+set -eu
 
-# gcc needed for ansible dependencies
-yum install -q -y git python-virtualenv gcc 2>&1
-
-if [ ! -d /opt/ansible ];
-then
-  virtualenv -q --system-site-packages /opt/ansible 2>&1
-  /opt/ansible/bin/pip -q install ansible 2>&1
-fi
+# EPEL now has Ansible 2.x
+yum install -q -y epel-release 2>&1
+yum install -q -y ansible git 2>&1
 
 cd /opt
 
@@ -23,8 +18,7 @@ omero_release: "5.2.2"
 EOF
 
 export ANSIBLE_ROLES_PATH=/opt/infrastructure/ansible/roles
-/opt/ansible/bin/ansible-playbook /opt/infrastructure/openstack/examples/idr-example-omero.yml \
+ansible-playbook /opt/infrastructure/openstack/examples/idr-example-omero.yml \
     --extra-vars "omero_release=OMERO-DEV-merge-build omero_selinux_setup=False @/opt/infrastructure/localhost-extravars.yml" 2>&1
-
 
 exit 0
