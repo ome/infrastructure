@@ -77,6 +77,12 @@ wget https://zeroc.com/download/rpm/el6/x86_64/libice-java-3.6.2-1.el6.x86_64.rp
 wget https://zeroc.com/download/rpm/el6/x86_64/libice3.6-c%2B%2B-3.6.2-1.el6.x86_64.rpm
 wget https://zeroc.com/download/rpm/el6/x86_64/libicestorm3.6-3.6.2-1.el6.x86_64.rpm
 wget https://zeroc.com/download/rpm/el6/x86_64/mcpp-devel-2.7.2-3ice.el6.x86_64.rpm
+
+wget https://zeroc.com/download/rpm/el6/x86_64/php-ice-3.6.2-1.el6.x86_64.rpm
+wget https://zeroc.com/download/rpm/el6/x86_64/php-ice-devel-3.6.2-1.el6.x86_64.rpm
+
+wget https://zeroc.com/download/rpm/el6/noarch/ice-slice-3.6.2-1.el6.noarch.rpm
+wget https://zeroc.com/download/rpm/el6/noarch/ice-utils-java-3.6.2-1.el6.noarch.rpm
 cd ..
 popd
 
