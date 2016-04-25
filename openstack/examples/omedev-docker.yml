@@ -1,9 +1,10 @@
 # Example playbook for installing upstream Docker into a VM
-# You must attach a second volume to your VM 
+# You must attach a second volume to your VM
 #
 # E.g. To use this on an Openstack CentOS7 cloud instance:
 # 1. Create a new CentOS7 cloud instance (size can be quite small)
-# 2. Create a new volume for Docker
+# 2. Create a new volume for Docker (you may want to adjust the
+#    `docker_*size` variables in this playbook).
 # 3. Attach this volume to the instance
 # 4. Run this playbook, e.g.:
 #     export ANSIBLE_ROLES_PATH=infrastructure/ansible/roles
@@ -37,10 +38,10 @@
   vars:
     physical_drive: /dev/vdb
 
-    docker_use_upstream_repo: True
     docker_use_custom_storage: True
     docker_vgname: VGdocker
     docker_poolsize: 80%VG
-    docker_metadatasize: 256M
-    docker_volumesize: 19%VG
+    docker_metadatasize: 256MB
+    docker_volumesize: 15%VG
     docker_groupmembers: ["{{ ansible_user }}"]
+    docker_use_ipv4_nic_mtu: True
