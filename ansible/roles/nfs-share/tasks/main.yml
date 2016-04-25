@@ -21,3 +21,4 @@
   service:
     enabled: yes
     name: nfs-server
+    state: started
