@@ -1,16 +1,10 @@
 ---
 # Setup a Docker node
 
-- include: docker-centos.yml
-  when: not docker_use_upstream_repo
 - include: docker-upstream.yml
-  when: docker_use_upstream_repo
 
 - include: advanced-common.yml
 
-- include: advanced-centos.yml
-  when: not docker_use_upstream_repo
 - include: advanced-upstream.yml
-  when: docker_use_upstream_repo
 
 - include: docker-common.yml

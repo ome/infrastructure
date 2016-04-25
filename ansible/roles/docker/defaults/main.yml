@@ -1,10 +1,6 @@
 ---
 # defaults file for roles/docker
 
-# Set to False to install Docker from the distribution repositories,
-# or True to use the latest official upstream Docker
-docker_use_upstream_repo: False
-
 # Set to True if using a custom storage configuration
 docker_use_custom_storage: False
 
