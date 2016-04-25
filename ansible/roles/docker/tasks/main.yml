@@ -23,13 +23,12 @@
     opts: "{{ docker_lvopts | default(None) }} --thin --poolmetadatasize {{ docker_metadatasize }}"
   when: docker_use_custom_storage
 
-- name: upstream docker | configure advanced
+- name: upstream docker | configure docker options
   become: yes
   template:
     src: docker-engine.j2
     dest: /etc/sysconfig/docker-engine
     backup: yes
-  when: docker_use_custom_storage or docker_use_custom_network or docker_additional_args
   notify:
     - restart docker
 
@@ -50,15 +49,6 @@
   become: yes
   command: systemctl daemon-reload
   when: docker_systemd_file.changed
-  notify:
-    - restart docker
-
-- name: upstream docker | remove custom systemd file
-  become: yes
-  file:
-    path: /etc/systemd/system/docker.service
-    state: absent
-  when: not docker_use_custom_storage and not docker_use_custom_network
   notify:
     - restart docker
 

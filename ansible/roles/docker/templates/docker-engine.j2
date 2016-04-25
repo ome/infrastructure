@@ -9,5 +9,8 @@ DOCKER_OPTIONS="\
     -b {{ docker_bridge_name }} \
     --fixed-cidr {{ docker_bridge_ips }} \
 {% endif %}
+{% if docker_use_ipv4_nic_mtu %}
+    --mtu {{ ansible_default_ipv4.mtu }} \
+{% endif %}
     {{ docker_additional_args }} \
     "
