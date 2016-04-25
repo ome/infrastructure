@@ -1,10 +1,79 @@
 ---
 # Setup a Docker node
 
-- include: docker-upstream.yml
+- name: upstream docker | setup repository
+  become: yes
+  copy:
+    src: docker.repo
+    dest: /etc/yum.repos.d/
+    backup: no
 
-- include: advanced-common.yml
+- name: upstream docker | install docker
+  become: yes
+  yum:
+    pkg: docker-engine
+    state: present
 
-- include: advanced-upstream.yml
+- name: storage | setup lvm docker-pool
+  become: yes
+  lvol:
+    vg: "{{ docker_vgname }}"
+    lv: docker-pool
+    size: "{{ docker_poolsize }}"
+    opts: "{{ docker_lvopts | default(None) }} --thin --poolmetadatasize {{ docker_metadatasize }}"
+  when: docker_use_custom_storage
 
-- include: docker-common.yml
+- name: upstream docker | configure advanced
+  become: yes
+  template:
+    src: docker-engine.j2
+    dest: /etc/sysconfig/docker-engine
+    backup: yes
+  when: docker_use_custom_storage or docker_use_custom_network or docker_additional_args
+  notify:
+    - restart docker
+
+# Upstream docker doesn't automatically load custom settings, so we need to
+# use a custom systemd file
+# For comparison the original docker.service file at the time of writing is
+# included as files/docker.service-1.10.2
+
+- name: upstream docker | copy systemd file
+  become: yes
+  copy:
+    dest: /etc/systemd/system/docker.service
+    src: docker.service
+  register: docker_systemd_file
+
+# Can't use a notifier because the reload must happen before a start/restart
+- name: upstream docker | reload systemd
+  become: yes
+  command: systemctl daemon-reload
+  when: docker_systemd_file.changed
+  notify:
+    - restart docker
+
+- name: upstream docker | remove custom systemd file
+  become: yes
+  file:
+    path: /etc/systemd/system/docker.service
+    state: absent
+  when: not docker_use_custom_storage and not docker_use_custom_network
+  notify:
+    - restart docker
+
+- name: docker | enable
+  become: yes
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: docker | group members
+  become: yes
+  user:
+    name: "{{ item }}"
+    groups: docker
+    append: yes
+  with_items: docker_groupmembers
+  when: docker_groupmembers is defined
