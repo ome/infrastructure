@@ -35,7 +35,7 @@
 # Upstream docker doesn't automatically load custom settings, so we need to
 # use a custom systemd file
 # For comparison the original docker.service file at the time of writing is
-# included as files/docker.service-1.10.2
+# included as files/docker.service-1.11.0
 
 - name: upstream docker | copy systemd file
   become: yes
