@@ -3,8 +3,12 @@
 
 - name: run docker-storage-setup
   become: yes
-  service: name=docker-storage-setup state=restarted
+  service:
+    name: docker-storage-setup
+    state: restarted
 
 - name: restart docker
   become: yes
-  service: name=docker state=restarted
+  service:
+    name: docker
+    state: restarted
