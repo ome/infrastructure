@@ -1,0 +1,27 @@
+---
+# tasks file for roles/active-directory-samba-share
+
+- name: system packages | samba server
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - samba
+    - samba-client
+
+- name: samba server | configure shares
+  become: yes
+  template:
+    backup: yes
+    dest: /etc/samba/smb.conf
+    src: samba-smb-conf.j2
+    validate: "testparm -s %s"
+  notify:
+    - restart smb
+
+- name: active directory | enable smb
+  become: yes
+  service:
+    enabled: yes
+    name: smb

@@ -1,0 +1,29 @@
+---
+# Configure sudo
+
+- name: system packages | install sudo
+  become: yes
+  yum:
+    pkg: "{{ item }}"
+    state: present
+  with_items:
+    - sudo
+
+- name: sudo | enable sudoers.d
+  become: yes
+  lineinfile:
+    backup: yes
+    dest: /etc/sudoers
+    line: '#includedir /etc/sudoers.d'
+    state: present
+    validate: visudo -cf %s
+
+- name: sudo | setup individual users and commands
+  become: yes
+  template:
+    src: sudoers-individual_commands.j2
+    dest: /etc/sudoers.d/sudoers-individual_commands
+    backup: no
+    validate: visudo -cf %s
+  with_items: sudoers_individual_commands
+  when: sudoers_individual_commands | default([])
