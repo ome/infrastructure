@@ -1,0 +1,9 @@
+---
+# Prerequisites required for this Ansible role
+
+- name: omero | install selinux utilities
+  become: yes
+  yum:
+    name: libselinux-python
+    state: present
+  when: omero_selinux_setup

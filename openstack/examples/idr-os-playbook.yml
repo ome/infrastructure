@@ -1,0 +1,62 @@
+---
+# Playbook for creating OpenStack IDR VMs
+
+- hosts: localhost
+
+  vars:
+
+    omero_vm_name: test-idr-omero
+    omero_vm_key_name: SSH keypair name
+    omero_vm_image: CentOS 7.2 1602
+    omero_vm_flavour: m1.medium
+
+    setup_script: idr-example-omero-bootstrap.sh
+
+  tasks:
+
+    - name: OMERO external access security group
+      os_security_group:
+        description: External access to OMERO servers (managed by Ansible)
+        name: omero-external
+        state: present
+
+    - name: OMERO external access security group rules
+      os_security_group_rule:
+        direction: ingress
+        port_range_max: "{{ item }}"
+        port_range_min: "{{ item }}"
+        protocol: tcp
+        remote_ip_prefix: 0.0.0.0/0
+        security_group: omero-external
+        state: present
+      with_items:
+        - 22
+        - 80
+        - 443
+        - 4063
+        - 4064
+
+    - name: OMERO VM
+      os_server:
+        name: "{{ omero_vm_name }}"
+        state: present
+        image: "{{ omero_vm_image }}"
+        key_name: "{{ omero_vm_key_name }}"
+        flavor: "{{ omero_vm_flavour }}"
+        auto_ip: yes
+#        boot_from_volume: yes
+        meta:
+          hostname: "{{ omero_vm_name }}"
+        security_groups: [default, omero-external]
+#        terminate_volume: yes
+#        volume_size: 40
+        userdata: "{{ lookup('file', setup_script) }}"
+      register: vmomero
+      # Note this should run setup_script but will not wait for it to complete
+
+    - debug:
+        msg: "Floating IP: {{ vmomero.openstack.public_v4 }}"
+
+    - debug:
+        msg: "OMERO VM changed, it may take a while for setup_script to complete"
+      when: vmomero.changed

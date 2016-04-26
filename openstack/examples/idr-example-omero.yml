@@ -1,0 +1,52 @@
+# Example playbook for installing OMERO.server into a VM
+#
+# This is initially aimed at testing a mini-IDR, so some production tuning is
+# required (limits.d).
+# In addition the samba-client and python-pydata roles are also installed
+# as they are required for some IDR related tasks.
+# For a standard production server you won't need these.
+
+# Set hosts to all so this can be run locally, or pushed out to any testing VM.
+# If you are going to use this as part of a production playbook you should
+# change this to a host-group to avoid accidents.
+- hosts: localhost, all
+
+  pre_tasks:
+  # This is needed for ansible to be run by cloud-init
+  - lineinfile:
+      backup: yes
+      dest: /etc/sudoers
+      regexp: "^Defaults\\s+requiretty"
+      state: absent
+      validate: "visudo -cf %s"
+    become: yes
+  # Increase open files and processes (alternatively use the pam_limits module)
+  - copy:
+      content: |
+        omero hard nofile 16384
+        omero soft nofile 16384
+        omero hard noproc 8192
+        omero soft noproc 8192
+      dest: /etc/security/limits.d/95-omero.conf
+    become: yes
+
+  roles:
+  - role: upgrade-distpackages
+  - role: samba-client
+  - role: omero-server
+  - role: python-pydata
+
+  vars:
+    postgresql_users_databases:
+    - user: omero
+      password: omero
+      databases: [omero]
+    omero_dbhost: localhost
+    omero_dbuser: omero
+    omero_dbname: omero
+    omero_dbpassword: omero
+    omero_datadir: /OMERO
+    omero_selinux_setup: True
+    omero_upgrade: True
+    omero_release: 5.2.0
+    omero_systemd_setup: True

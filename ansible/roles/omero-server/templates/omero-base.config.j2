@@ -1,0 +1,10 @@
+config set omero.db.host {{ omero_dbhost | quote }}
+config set omero.db.user {{ omero_dbuser | quote }}
+config set omero.db.name {{ omero_dbname | quote }}
+config set omero.db.password {{ omero_dbpassword | quote }}
+config set omero.data.dir {{ omero_datadir | quote }}
+
+# Additional custom options
+{% for key in omero_server_config %}
+config set {{ key | quote }} {{ omero_server_config[key] | quote }}
+{% endfor %}
