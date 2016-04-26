@@ -13,7 +13,8 @@
     name: redis
     state: present
 
-- name: set redis to start on startup 
+- name: set redis to start on startup
+  become: yes
   service:
     name: redis
     state: started
