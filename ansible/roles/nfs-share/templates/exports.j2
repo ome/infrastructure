@@ -1,0 +1,3 @@
+{% for key, value in nfs_shares.iteritems() %}
+{{ key }} {% for access in value %} {{ access.host }}({{ access.options | default("ro,all_squash") }}) {% endfor %}
+{% endfor %}

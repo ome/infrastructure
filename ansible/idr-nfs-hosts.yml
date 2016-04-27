@@ -1,0 +1,6 @@
+---
+# Playbook for maintaining IDR NFS nodes
+
+- hosts: idr-nfs-hosts
+  roles:
+  - role: nfs-share

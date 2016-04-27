@@ -1,0 +1,24 @@
+---
+# tasks file for roles/nfs-share
+
+- name: system packages | nfs server
+  become: yes
+  yum:
+    name: nfs-utils
+    state: present
+
+- name: nfs server | configure shares
+  become: yes
+  template:
+    backup: yes
+    dest: /etc/exports
+    src: exports.j2
+  notify:
+    - refresh nfs
+
+- name: nfs server | enable nfs
+  become: yes
+  service:
+    enabled: yes
+    name: nfs-server
+    state: started
