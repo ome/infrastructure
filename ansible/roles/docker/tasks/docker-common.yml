@@ -16,3 +16,31 @@
     append: yes
   with_items: docker_groupmembers
   when: docker_groupmembers is defined
+
+# Install extra dependencies (globally)
+
+- name: system packages | install epel
+  become: yes
+  yum:
+    pkg: epel-release
+    state: present
+
+- name: system packages | install pip
+  become: yes
+  yum:
+    pkg: python-pip
+    state: present
+
+- name: pip | install six
+  become: yes
+  pip:
+    name: six
+    state: present
+    version: 1.10.0
+
+- name: pip | install docker-compose
+  become: yes
+  pip:
+    name: docker-compose
+    state: present
+    version: 1.6.2
