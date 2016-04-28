@@ -49,10 +49,10 @@
   when: "'bondmaster' in item"
   register: checkbonds
 
-- debug:
-    msg: "checkbonds.results.item: {{ item }}"
-  with_items:
-    - "{{ checkbonds.results }}"
+#- debug:
+#    msg: "checkbonds.results.item: {{ item }}"
+#  with_items:
+#    - "{{ checkbonds.results }}"
 
 - name: network | check bonding active
   assert:
