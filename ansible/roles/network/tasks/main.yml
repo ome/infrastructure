@@ -58,6 +58,7 @@
   assert:
     that:
     - "item.stat.exists and not item.stat.isdir"
-  when: not item.skipped
+  # 'skipped' field may be missing if it wasn't skipped
+  when: not item.skipped | default (False)
   with_items:
     - "{{ checkbonds.results }}"
