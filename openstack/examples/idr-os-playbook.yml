@@ -5,14 +5,17 @@
 
   vars:
 
-    omero_vm_name: test-idr-omero
-    omero_vm_key_name: SSH keypair name
     omero_vm_image: CentOS 7.2 1602
     omero_vm_flavour: m1.medium
-
     setup_script: idr-example-omero-bootstrap.sh
 
   tasks:
+
+    - fail: msg="omero_vm_name is required"
+      when: omero_vm_name is undefined
+
+    - fail: msg="omero_vm_key_name is required"
+      when: omero_vm_key_name is undefined
 
     - name: OMERO external access security group
       os_security_group:
