@@ -25,7 +25,7 @@
     backup: yes
     src: etc-sysconfig-network-scripts-ifcfg.j2
     dest: /etc/sysconfig/network-scripts/ifcfg-{{ item.device }}
-  with_items: network_ifaces | default([])
+  with_items: "{{ network_ifaces | default([]) }}"
   notify:
     - restart network
 
@@ -35,7 +35,7 @@
     backup: yes
     src: etc-sysconfig-network-scripts-ifcfg-disabled.j2
     dest: /etc/sysconfig/network-scripts/ifcfg-{{ item }}
-  with_items: network_disable_ifaces | default([])
+  with_items: "{{ network_disable_ifaces | default([]) }}"
   notify:
     - restart network
 
@@ -45,7 +45,7 @@
 - name: network | check bonding
   stat:
     path: /proc/net/bonding/{{ item.bondmaster }}
-  with_items: network_ifaces
+  with_items: "{{ network_ifaces | default([]) }}"
   when: "'bondmaster' in item"
   register: checkbonds
 
@@ -60,5 +60,4 @@
     - "item.stat.exists and not item.stat.isdir"
   # 'skipped' field may be missing if it wasn't skipped
   when: not item.skipped | default (False)
-  with_items:
-    - "{{ checkbonds.results }}"
+  with_items: "{{ checkbonds.results }}"
