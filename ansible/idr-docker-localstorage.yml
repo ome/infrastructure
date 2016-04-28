@@ -11,6 +11,11 @@
     lvm_lvsize: "{{ rootsize }}"
     lvm_lvfilesystem: "{{ root_filesystem }}"
   - role: lvm-partition
+    lvm_lvname: var_log
+    lvm_lvmount: /var/log
+    lvm_lvsize: "{{ varlog_size }}"
+    lvm_lvfilesystem: "{{ root_filesystem }}"
+  - role: lvm-partition
     lvm_lvname: scratch
     lvm_lvmount: /scratch
     lvm_lvsize: "{{ scratch_size }}"
