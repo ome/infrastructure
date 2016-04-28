@@ -20,5 +20,6 @@
     lvm_lvmount: /scratch
     lvm_lvsize: "{{ scratch_size }}"
     lvm_lvfilesystem: "{{ scratch_filesystem }}"
+  - role: system-monitor-agent
   - role: basedeps
   - role: docker
