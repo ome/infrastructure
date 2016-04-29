@@ -2,6 +2,8 @@
 # Delete VMs and security groups created by os-create.yml
 
 - hosts: localhost
+  connection: local
+  gather_facts: false
 
   tasks:
 

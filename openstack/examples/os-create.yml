@@ -2,6 +2,8 @@
 # Playbook for creating OpenStack IDR VMs
 
 - hosts: localhost
+  connection: local
+  gather_facts: false
 
   vars:
 
