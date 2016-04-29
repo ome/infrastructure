@@ -9,9 +9,12 @@
 
     omero_vm_image: CentOS 7.2 1602
     omero_vm_flavour: m1.large
-    omero_vm_groups: "os-image-centos,omero-hosts"
+    omero_vm_groups: "ansible-managed,os-image-centos,omero-hosts"
+    omero_vm_extra_groups: ""
 
   tasks:
+
+    - set_fact: omero_vm_joined_groups="{{ omero_vm_groups.split(',') | union(omero_vm_extra_groups.split(',')) | join(',')}}"
 
     - fail: msg="omero_vm_name is required"
       when: omero_vm_name is undefined
@@ -51,7 +54,7 @@
         auto_ip: yes
         meta:
           hostname: "{{ omero_vm_name }}"
-          groups: "{{ omero_vm_groups }}"
+          groups: "{{ omero_vm_joined_groups }} "
         security_groups: [default, omero-external]
       register: vmomero
       # Note this should run setup_script but will not wait for it to complete
