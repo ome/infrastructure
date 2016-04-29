@@ -1,0 +1,6 @@
+---
+# defaults file for roles/logrotate
+
+logrotate_interval: weekly
+logrotate_backlog_size: 12
+logrotate_compress: True
