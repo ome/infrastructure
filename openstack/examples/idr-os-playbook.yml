@@ -47,12 +47,9 @@
         key_name: "{{ omero_vm_key_name }}"
         flavor: "{{ omero_vm_flavour }}"
         auto_ip: yes
-#        boot_from_volume: yes
         meta:
           hostname: "{{ omero_vm_name }}"
         security_groups: [default, omero-external]
-#        terminate_volume: yes
-#        volume_size: 40
         userdata: "{{ lookup('file', setup_script) }}"
       register: vmomero
       # Note this should run setup_script but will not wait for it to complete
