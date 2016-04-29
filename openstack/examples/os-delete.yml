@@ -3,11 +3,10 @@
 
 - hosts: localhost
 
-  vars:
-    # This must match the value in idr-os-playbook.yml
-    omero_vm_name: test-idr-omero
-
   tasks:
+
+    - fail: msg="omero_vm_name is required"
+      when: omero_vm_name is undefined
 
     - name: Remove OMERO VM
       os_server:
