@@ -1,5 +1,5 @@
 # Self-contained Ansible playbook for setting up the Embassy IDR NFS shares
-- hosts: localhost, all
+- hosts: ebi-nfs
 
   tasks:
 
