@@ -31,8 +31,8 @@
     become: yes
 
   roles:
-  - role: versioncontrol-utils
   - role: upgrade-distpackages
+  - role: versioncontrol-utils
   - role: samba-client
   - role: omero-server
   - role: python-pydata

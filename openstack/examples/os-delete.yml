@@ -1,5 +1,5 @@
 ---
-# Delete VMs and security groups created by idr-os-playbook.yml
+# Delete VMs and security groups created by os-create.yml
 
 - hosts: localhost
 

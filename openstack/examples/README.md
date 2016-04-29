@@ -41,6 +41,8 @@ To delete the VM and related security group:
 
     ansible-playbook os-delete.yml
 
+If another instance is using the OMERO security group, the task will fail but can be safely ignored.
+
 Inventory
 ---------
 
