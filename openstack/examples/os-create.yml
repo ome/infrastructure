@@ -7,7 +7,7 @@
 
     omero_vm_image: CentOS 7.2 1602
     omero_vm_flavour: m1.large
-    omero_vm_groups: "centos,omero"
+    omero_vm_groups: "os-image-centos,omero-hosts"
 
   tasks:
 

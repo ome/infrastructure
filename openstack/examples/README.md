@@ -51,6 +51,6 @@ This directory takes advantage of an
 instead of having to manage an inventory file when using Ansible to push out changes.
 For example:
 
-    ANSIBLE_ROLES_PATH=../../ansible/roles ansible-playbook -i inventory -l centos os-omero.yml -vv
+    ANSIBLE_ROLES_PATH=../../ansible/roles ansible-playbook -i inventory -l os-image-centos os-omero.yml -vv
 
 Variables for the groups defined in os-create.yml as omero_vm_groups can be added under inventory/variables.
