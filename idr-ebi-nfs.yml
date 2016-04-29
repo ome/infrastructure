@@ -39,13 +39,6 @@
       state: present
       uid: 6166
 
-  - name: Create NFS mountpoint
-    become: yes
-    file:
-      path: "{{ nfs_mountpoint }}"
-      recurse: yes
-      state: directory
-
   - name: Mount NFS share
     become: yes
     mount:
