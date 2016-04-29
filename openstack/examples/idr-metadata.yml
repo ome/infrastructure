@@ -1,0 +1,8 @@
+---
+# Playbook for accessing idr metadata
+
+- hosts: idr-hosts
+  tasks:
+    - git: repo=git://github.com/snoopycrimecop/idr-metadata.git
+           dest=idr-metadata
+           version=merge/trigger

@@ -1,0 +1,34 @@
+---
+# Playbook for attaching an extra volume to
+# an openstack instance.
+
+- hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+
+    os_vol_name: var
+    os_vol_size: 100 # GB
+
+  tasks:
+
+  - fail: msg="omero_vm_name is required"
+    when: omero_vm_name is undefined
+
+  - name: create volume
+    os_volume:
+      state: present
+      size: "{{ os_vol_size }}"
+      display_name: "{{omero_vm_name}}-{{os_vol_name}}"
+    register: osvolume
+
+  - name: attach volume to host
+    os_server_volume:
+      state: present
+      server: "{{omero_vm_name}}"
+      volume: "{{omero_vm_name}}-{{os_vol_name}}"
+    register: osattachment
+
+  - debug:
+      msg: "Device: {{ osvolume.volume }}"
