@@ -7,6 +7,7 @@
 
     omero_vm_image: CentOS 7.2 1602
     omero_vm_flavour: m1.medium
+    omero_vm_groups: "centos,omero"
     setup_script: idr-example-omero-bootstrap.sh
 
   tasks:
@@ -49,6 +50,7 @@
         auto_ip: yes
         meta:
           hostname: "{{ omero_vm_name }}"
+          groups: "{{ omero_vm_groups }}"
         security_groups: [default, omero-external]
         userdata: "{{ lookup('file', setup_script) }}"
       register: vmomero
