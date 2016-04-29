@@ -32,7 +32,7 @@ Before running the playbook you must [setup your OpenStack environment variables
 You can override variables at the command line, for example (note double quoting is necessary if spaces are present):
 
     ansible-playbook os-create.yml -e omero_vm_name=FOO -e omero_vm_key_name=YOURKEY \
-        -e "omero_vm_flavour='My Keypair'"
+        -e "omero_vm_flavour='m2.xxlarge'"
 
 If this step fails it could be due to an incorrect variable, the Ansible `os_server` module usually gives an uninformative "Error in creating instance" message.
 If the VM was created the floating IP of the VM will be printed out.
