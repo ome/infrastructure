@@ -31,6 +31,7 @@
     become: yes
 
   roles:
+  - role: versioncontrol-utils
   - role: upgrade-distpackages
   - role: samba-client
   - role: omero-server

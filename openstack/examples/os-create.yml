@@ -8,7 +8,6 @@
     omero_vm_image: CentOS 7.2 1602
     omero_vm_flavour: m1.medium
     omero_vm_groups: "centos,omero"
-    setup_script: idr-example-omero-bootstrap.sh
 
   tasks:
 
@@ -52,13 +51,8 @@
           hostname: "{{ omero_vm_name }}"
           groups: "{{ omero_vm_groups }}"
         security_groups: [default, omero-external]
-        userdata: "{{ lookup('file', setup_script) }}"
       register: vmomero
       # Note this should run setup_script but will not wait for it to complete
 
     - debug:
         msg: "Floating IP: {{ vmomero.openstack.public_v4 }}"
-
-    - debug:
-        msg: "OMERO VM changed, it may take a while for setup_script to complete"
-      when: vmomero.changed
