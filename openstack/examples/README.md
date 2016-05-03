@@ -39,7 +39,7 @@ If the VM was created the floating IP of the VM will be printed out.
 
 To delete the VM and related security group:
 
-    ansible-playbook os-delete.yml
+    ansible-playbook os-delete.yml -e omero_vm_name=FOO
 
 If another instance is using the OMERO security group, the task will fail but can be safely ignored.
 
