@@ -18,32 +18,49 @@ If SSL is enabled you should install the certificates on the server (not handled
 
 Optional variables:
 
+- `nginx_proxy_buffers`: Number and size of proxy buffers (optional)
 - `nginx_dynamic_proxy_resolvers`: If the proxied servers are referred to by hostname instead of IP addresses you must provide at least one DNS server
-- `nginx_dynamic_proxy_buffers`: Number and size of proxy buffers (optional)
 
 Backend servers:
 
-- `nginx_dynamic_proxies`: List of dictionaries of backend servers
+- `nginx_dynamic_proxies`: List of dictionaries of backend servers (hosts/IPs will be dynamically resolved on every request)
+- `nginx_static_proxies`: List of dictionaries of backend servers (hosts/IPs will be resolved once)
 
-For example:
 
-    nginx_dynamic_proxies:
-    - name: testa
-      location: /
-      server: a.internal
-    - name: testb
-      location: /b
-      server: b.internal/subdir
+Example Playbooks
+-----------------
 
-will configure this server to proxy:
-- http://this.server/ to http://a.internal/
-- http://this.server/b to http://b.internal/subdir
+Proxy:
+- http://localhost/ to http://a.internal/
+- http://localhost/b to http://b.internal/subdir
+
+Dynamically, making a DNS request for `a.internal` on every request
+
+    - hosts: localhost
+      roles:
+      - role: nginx_proxy
+        nginx_dynamic_proxies:
+        - name: testa
+          location: /
+          server: a.internal
+        - name: testb
+          location: /b
+          server: b.internal/subdir
+
+Statically, make a single DNS request for `a.internal` at the start
+
+    - hosts: localhost
+      roles:
+      - role: nginx_proxy
+        nginx_static_proxies:
+        - location: /
+          server: a.internal
+        - location: /b
+          server: b.internal/subdir
+
 
 Note internal communication with backend servers is currently done over plain `http`, however `https` should work for front-end connections.
 
-System variables:
-
-- `runningindocker`: systemd doesn't currently work inside Docker without some fiddling. Set this variable to `True` to start nginx directly, default `False`.
 
 Author Information
 ------------------
