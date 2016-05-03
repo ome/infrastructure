@@ -51,7 +51,7 @@ server {
     location {{ item.location }} {
         set $backend_{{ item.name }} "{{ item.server }}";
         proxy_pass http://$backend_{{ item.name }};
-        proxy_redirect http://$backend_{{ item.name }} http://$server_name;
+        proxy_redirect http://$backend_{{ item.name }} $scheme://$server_name;
     }
 {% endfor %}
 
