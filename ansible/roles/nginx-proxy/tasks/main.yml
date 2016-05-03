@@ -32,19 +32,19 @@
   notify:
     - restart nginx
 
-- name: nginx | dynamic proxy config
+- name: nginx | proxy config
   become: yes
   template:
-    src: nginx-confd-dynamic-proxy.j2
-    dest: /etc/nginx/conf.d/dynamic-proxy.conf
+    src: nginx-confd-proxy.j2
+    dest: /etc/nginx/conf.d/proxy.conf
   notify:
     - restart nginx
   when: nginx_dynamic_proxies is defined and nginx_dynamic_proxies
 
-- name: nginx | dynamic proxy remove config
+- name: nginx | dynamic proxy config
   become: yes
   file:
-    dest: /etc/nginx/conf.d/dynamic-proxy.conf
+    dest: /etc/nginx/conf.d/proxy.conf
     state: absent
   notify:
     - restart nginx
