@@ -15,9 +15,9 @@
 
 - name: nginx | remove default config
   become: yes
-  file:
+  copy:
+    content: "# This file is intentionally blank (Ansible)"
     dest: /etc/nginx/conf.d/{{ item }}
-    state: absent
   with_items:
     - example_ssl.conf
     - default.conf
