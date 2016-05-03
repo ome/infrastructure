@@ -32,9 +32,9 @@ server {
     resolver {{ nginx_dynamic_proxy_resolvers }};
 {% endif %}
 
-{% if nginx_dynamic_proxy_buffers is defined %}
+{% if nginx_proxy_buffers is defined %}
     # Proxy buffers
-    proxy_buffers {{ nginx_dynamic_proxy_buffers }};
+    proxy_buffers {{ nginx_proxy_buffers }};
 {% endif %}
 
     # Common proxy headers

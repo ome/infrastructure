@@ -19,7 +19,7 @@ nginx_proxy_ssl: False
 #nginx_dynamic_proxy_resolvers:
 
 # Number and size of proxy buffers
-#nginx_dynamic_proxy_buffers:
+#nginx_proxy_buffers:
 
 # List of dicts of backend servers
 #nginx_dynamic_proxies:
