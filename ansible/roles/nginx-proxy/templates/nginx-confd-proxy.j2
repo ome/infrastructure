@@ -53,6 +53,13 @@ server {
         proxy_pass http://$backend_{{ item.name }};
         proxy_redirect http://$backend_{{ item.name }} http://$server_name;
     }
-
 {% endfor %}
+
+{% for item in nginx_static_proxies %}
+    location {{ item.location }} {
+        proxy_pass http://{{ item.server }};
+        proxy_redirect http://{{ item.server }} $scheme://$server_name;
+    }
+{% endfor %}
+
 }

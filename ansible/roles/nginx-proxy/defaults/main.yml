@@ -21,10 +21,15 @@ nginx_proxy_ssl: False
 # Number and size of proxy buffers
 #nginx_proxy_buffers:
 
-# List of dicts of backend servers
-#nginx_dynamic_proxies:
+# List of dicts of backend servers with dynamic IPs
+nginx_dynamic_proxies: []
 #- name: test
 #  location: /prefix
+#  server: example.org
+
+# List of dicts of backend servers with static IPs
+nginx_static_proxies: []
+#- location: /prefix
 #  server: example.org
 
 # Systemd doesn't work inside Docker

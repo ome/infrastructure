@@ -39,7 +39,7 @@
     dest: /etc/nginx/conf.d/proxy.conf
   notify:
     - restart nginx
-  when: nginx_dynamic_proxies is defined and nginx_dynamic_proxies
+  when: nginx_dynamic_proxies or nginx_static_proxies
 
 - name: nginx | dynamic proxy config
   become: yes
@@ -48,7 +48,7 @@
     state: absent
   notify:
     - restart nginx
-  when: nginx_dynamic_proxies is not defined or not nginx_dynamic_proxies
+  when: not nginx_dynamic_proxies and not nginx_static_proxies
 
 - name: nginx | start service
   become: yes
