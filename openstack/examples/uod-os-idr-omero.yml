@@ -2,7 +2,9 @@
 # Playbook for starting an IDR-like OMERO in the UoD
 # openstack cloud.
 
-- include: os-create.yml omero_vm_extra_groups="uod-nfs,idr-hosts"
+- include: os-create.yml
+  vars:
+    omero_vm_extra_groups: "uod-nfs,idr-hosts"
 
 - include: idr-dundee-nfs.yml
 
@@ -11,4 +13,6 @@
 
 - include: idr-metadata.yml
 
-- include: os-voladd.yml os_vol_name="db"
+- include: os-voladd.yml
+  vars:
+    os_vol_name: "db"

@@ -3,6 +3,7 @@
 
 - hosts: idr-hosts
   tasks:
-    - git: repo=git://github.com/snoopycrimecop/idr-metadata.git
-           dest=idr-metadata
-           version=merge/trigger
+    - git:
+        repo: git://github.com/snoopycrimecop/idr-metadata.git
+        dest: idr-metadata
+        version: merge/trigger

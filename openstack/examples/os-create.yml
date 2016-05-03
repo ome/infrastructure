@@ -57,12 +57,11 @@
           groups: "{{ omero_vm_joined_groups }} "
         security_groups: [default, omero-external]
       register: vmomero
-      # Note this should run setup_script but will not wait for it to complete
 
     - add_host:
         name: "{{ omero_vm_name }}"
         groups: "{{ omero_vm_joined_groups }} "
-        ansible_host: "{{vmomero.server.public_v4}}"
+        ansible_host: "{{ vmomero.server.public_v4 }}"
         ansible_user: centos
         ansible_become: true
 
