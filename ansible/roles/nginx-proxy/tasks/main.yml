@@ -56,13 +56,3 @@
     enabled: yes
     name: nginx
     state: started
-  when: not runningindocker
-
-# Command copied from /usr/lib/systemd/system/nginx.service
-- name: nginx | start service
-  become: yes
-  command: /usr/sbin/nginx -c /etc/nginx/nginx.conf
-  args:
-    # Only run command if nginx.pid doesn't exist
-    creates: /var/run/nginx.pid
-  when: runningindocker

@@ -6,4 +6,3 @@
   service:
     name: nginx
     state: restarted
-  when: not runningindocker
