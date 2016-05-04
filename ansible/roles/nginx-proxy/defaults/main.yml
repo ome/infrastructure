@@ -25,12 +25,12 @@ nginx_proxy_ssl: False
 nginx_dynamic_proxies: []
 #- name: test
 #  location: /prefix
-#  server: example.org
+#  server: http://example.org
 
 # List of dicts of backend servers with static IPs
 nginx_static_proxies: []
 #- location: /prefix
-#  server: example.org
+#  server: http://example.org
 
 # Systemd doesn't work inside Docker
 runningindocker: False
