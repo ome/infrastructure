@@ -37,6 +37,3 @@ nginx_dynamic_proxies: []
 nginx_static_proxies: []
 #- location: /prefix
 #  server: http://example.org
-
-# Systemd doesn't work inside Docker
-runningindocker: False
