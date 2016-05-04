@@ -32,6 +32,7 @@
   notify:
     - restart nginx
 
+# See http://serverfault.com/a/337893
 - name: nginx | proxy config
   become: yes
   template:

@@ -1,5 +1,15 @@
 server {
     listen       80 default_server;
+
+{% if nginx_proxy_ssl and nginx_proxy_force_ssl %}
+    server_name  $hostname;
+    # Redirect all http to https
+    return 301 https://$host$request_uri;
+}
+
+server {
+{% endif %}
+
 {% if nginx_proxy_ssl %}
     listen       443 ssl{% if nginx_proxy_http2 %} http2{% endif %};
 {% endif %}
@@ -13,11 +23,6 @@ server {
     ssl_certificate_key {{ nginx_proxy_ssl_certificate_key }};
 {% endif %}
     ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;  # don’t use SSLv3 ref: POODLE
-{% if nginx_proxy_force_ssl %}
-    if ($ssl_protocol = "") {
-        rewrite ^/(.*) https://$host/$1 permanent;
-    }
-{% endif %}
 {% endif %}
 
     #charset koi8-r;
