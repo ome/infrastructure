@@ -10,6 +10,9 @@ Defaults: `defaults/main.yml`
 
 - `nginx_proxy_worker_processes`: Number of worker processes, default 1
 - `nginx_proxy_ssl`: If `True` enable SSL, default `False`
+- `nginx_proxy_http2`: If `True` enable HTTP2, ignored if `nginx_proxy_ssl: False`, default `False`
+- `nginx_proxy_force_ssl`: If True permanently redirect all `http` requests to `https` (efault `False`
+
 
 If SSL is enabled you should install the certificates on the server (not handled by this role) and set the following two variables:
 
@@ -25,6 +28,8 @@ Backend servers:
 
 - `nginx_dynamic_proxies`: List of dictionaries of backend servers (hosts/IPs will be dynamically resolved on every request)
 - `nginx_static_proxies`: List of dictionaries of backend servers (hosts/IPs will be resolved once)
+
+See example below.
 
 
 Example Playbooks
@@ -42,10 +47,10 @@ Dynamically, making a DNS request for `a.internal` on every request
         nginx_dynamic_proxies:
         - name: testa
           location: /
-          server: a.internal
+          server: http://a.internal
         - name: testb
           location: /b
-          server: b.internal/subdir
+          server: http://b.internal/subdir
 
 Statically, make a single DNS request for `a.internal` at the start
 
@@ -54,9 +59,9 @@ Statically, make a single DNS request for `a.internal` at the start
       - role: nginx_proxy
         nginx_static_proxies:
         - location: /
-          server: a.internal
+          server: http://a.internal
         - location: /b
-          server: b.internal/subdir
+          server: http://b.internal/subdir
 
 
 Note internal communication with backend servers is currently done over plain `http`, however `https` should work for front-end connections.
