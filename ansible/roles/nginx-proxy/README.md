@@ -23,6 +23,7 @@ Optional variables:
 
 - `nginx_proxy_buffers`: Number and size of proxy buffers (optional)
 - `nginx_dynamic_proxy_resolvers`: If the proxied servers are referred to by hostname instead of IP addresses you must provide at least one DNS server
+- `nginx_proxy_hsts_age`: The max-age in seconds for a HSTS (HTTP Strict Transport Security) header, default is to omit this header
 
 Backend servers:
 

@@ -21,6 +21,9 @@ nginx_proxy_force_ssl: False
 # Server path to SSL certificate key
 #nginx_proxy_ssl_certificate_key:
 
+# If defined the age to return in the Strict-Transport-Security header
+# nginx_proxy_hsts_age:
+
 # DNS servers for hostname lookups
 #nginx_dynamic_proxy_resolvers:
 
