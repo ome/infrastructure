@@ -50,6 +50,14 @@
     - restart nginx
   when: not nginx_dynamic_proxies and not nginx_static_proxies
 
+- name: nginx | Remove old proxy config
+  become: yes
+  file:
+    dest: /etc/nginx/conf.d/dynamic-proxy.conf
+    state: absent
+  notify:
+    - restart nginx
+
 - name: nginx | start service
   become: yes
   service:
