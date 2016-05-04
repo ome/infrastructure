@@ -7,6 +7,12 @@ nginx_proxy_worker_processes: 1
 # Enable SSL?
 nginx_proxy_ssl: False
 
+# Enable HTTP2 (ignore is nginx_proxy_ssl False)?
+nginx_proxy_http2: False
+
+# Redirect all http requests to https?
+nginx_proxy_force_ssl: False
+
 # Optional vars:
 
 # Server path to SSL certificate
