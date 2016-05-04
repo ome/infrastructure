@@ -19,12 +19,12 @@ server {
     server_name  $hostname;
 
 {% if nginx_proxy_ssl %}
-{% if nginx_proxy_ssl and nginx_proxy_ssl_certificate is defined %}
+{%   if nginx_proxy_ssl_certificate is defined %}
     ssl_certificate {{ nginx_proxy_ssl_certificate }};
-{% endif %}
-{% if nginx_proxy_ssl and nginx_proxy_ssl_certificate_key is defined %}
+{%   endif %}
+{%   if nginx_proxy_ssl_certificate_key is defined %}
     ssl_certificate_key {{ nginx_proxy_ssl_certificate_key }};
-{% endif %}
+{%   endif %}
     ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;  # don’t use SSLv3 ref: POODLE
 {% endif %}
 
