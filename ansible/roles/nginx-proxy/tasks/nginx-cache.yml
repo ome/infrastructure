@@ -1,0 +1,31 @@
+---
+# tasks file for roles/nginx-proxy cache setup
+
+- name: nginx | create cache directories
+  become: yes
+  file:
+    dest: "{{ nginx_proxy_cache_parent_path }}/{{ item.name }}"
+    group: nginx
+    mode: 0750
+    owner: nginx
+    state: directory
+  with_items: "{{ nginx_proxy_caches }}"
+  when: nginx_proxy_caches
+
+- name: nginx | proxy cache config
+  become: yes
+  template:
+    src: nginx-confd-proxy-cache.j2
+    dest: /etc/nginx/conf.d/proxy-cache.conf
+  when: nginx_proxy_caches
+  notify:
+    - restart nginx
+
+- name: nginx | proxy cache config
+  become: yes
+  file:
+    dest: /etc/nginx/conf.d/proxy-cache.conf
+    state: absent
+  notify:
+    - restart nginx
+  when: not nginx_proxy_caches

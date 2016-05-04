@@ -59,6 +59,8 @@
   notify:
     - restart nginx
 
+- include: nginx-cache.yml
+
 - name: nginx | start service
   become: yes
   service:

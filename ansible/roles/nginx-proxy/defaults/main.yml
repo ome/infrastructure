@@ -39,3 +39,26 @@ nginx_proxy_backends: []
 #  location: /prefix
 #  server: http://example.org
 #  dynamic: False
+#  cache_validity: 1d
+
+# Caching parameters
+nginx_proxy_cache_parent_path: /var/cache/nginx
+nginx_proxy_caches: []
+nginx_proxy_cache_skip: default
+nginx_proxy_cache_match:
+# Set to True to add X-Proxy-Cache* headers for debugging
+nginx_proxy_debug_cache_headers: False
+
+# EXPERIMENTAL: Example caching parameters for public OMERO
+# nginx_proxy_cache_skip: "{{ nginx_proxy_cache_skip_omero }}"
+# nginx_proxy_caches: "{{ nginx_proxy_caches_omero }}"
+nginx_proxy_cache_match_omero: '"~web(client|gateway)/(metadata|render)_*"'
+nginx_proxy_caches_omero:
+- name: omero
+  keysize: 500m
+  inactive: 30d
+  match: default
+- name: omerorender
+  keysize: 4000m
+  inactive: 30d
+  match: '"~web(client|gateway)/render_image/*"'

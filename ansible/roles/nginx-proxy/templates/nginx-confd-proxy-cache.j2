@@ -1,0 +1,20 @@
+{% for item in nginx_proxy_caches %}
+proxy_cache_path {{ nginx_proxy_cache_parent_path }}/{{ item.name }} levels=1:2 keys_zone={{ item.name }}:{{ item.keysize }} inactive={{ item.inactive }} use_temp_path=off;
+{% endfor %}
+
+map $request_uri $skip_cache
+{
+{% if nginx_proxy_cache_skip %}
+    {{ nginx_proxy_cache_skip }} 1;
+{% endif %}
+{% if nginx_proxy_cache_match %}
+    {{ nginx_proxy_cache_match }} 0;
+{% endif %}
+}
+
+map $request_uri $cache_zone_name
+{
+{% for item in nginx_proxy_caches %}
+    {{ item.match }} {{ item.name }};
+{% endfor %}
+}
