@@ -77,18 +77,18 @@ server {
         proxy_cache_bypass     $skip_cache;
         proxy_no_cache         $skip_cache;
 
+{%     if nginx_proxy_debug_cache_headers %}
+        add_header             X-Proxy-Cache $upstream_cache_status;
+        add_header             X-Proxy-Cache-Skip $skip_cache;
+        add_header             X-Proxy-Cache-Zone $cache_zone_name;
+        #add_header             X-Proxy-Cache-Key "$host$request_uri";
+{%     endif %}
+
 {%     if nginx_proxy_ignore_headers %}
         proxy_ignore_headers   {{ nginx_proxy_ignore_headers }};
 {%     endif %}
 {%   endif %}
     }
 {% endfor %}
-
-{% if nginx_proxy_debug_cache_headers %}
-    add_header             X-Proxy-Cache $upstream_cache_status;
-    add_header             X-Proxy-Cache-Skip $skip_cache;
-    add_header             X-Proxy-Cache-Zone $cache_zone_name;
-    add_header             X-Proxy-Cache-Key "$host$request_uri";
-{% endif %}
 
 }
