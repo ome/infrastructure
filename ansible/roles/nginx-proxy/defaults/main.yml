@@ -49,14 +49,21 @@ nginx_proxy_backends: []
 nginx_proxy_cache_parent_path: /var/cache/nginx
 # List of caches
 nginx_proxy_caches: []
-# Don't cache these patterns
-nginx_proxy_cache_skip: default
-# Cache these patterns
-nginx_proxy_cache_match:
+
+# Don't cache these URI patterns (list)
+nginx_proxy_cache_skip_uri: [ default ]
+# Cache these URI patterns (list)
+nginx_proxy_cache_match_uri: []
+# Don't cache these arg patterns (list)
+nginx_proxy_cache_skip_arg: []
+# Cache these arg patterns (list)
+nginx_proxy_cache_match_arg: []
+
+
 # Set to True to add X-Proxy-Cache* headers for debugging
 nginx_proxy_debug_cache_headers: False
 
-# Prevent multiple backend requests to the same objet within this time
+# Prevent multiple backend requests to the same object within this time
 nginx_proxy_lock_time: 1m
 
 # Headers to be ignored, e.g. '"Set-Cookie" "Vary" "Expires"'
@@ -67,15 +74,18 @@ nginx_proxy_cache_use_stale: "error timeout invalid_header updating http_500 htt
 
 
 # EXPERIMENTAL: Example caching parameters for public OMERO
-# nginx_proxy_cache_skip: "{{ nginx_proxy_cache_skip_omero }}"
+# nginx_proxy_cache_skip_url: "{{ nginx_proxy_cache_skip_url_omero }}"
 # nginx_proxy_caches: "{{ nginx_proxy_caches_omero }}"
-nginx_proxy_cache_match_omero: '"~web(client|gateway)/(metadata|render)_*"'
+nginx_proxy_cache_match_uri_omero:
+- '"~web(client|gateway)/(metadata|render)_*"'
 nginx_proxy_caches_omero:
 - name: omero
   keysize: 500m
   inactive: 30d
-  match: default
+  match:
+  - default
 - name: omerorender
   keysize: 4000m
   inactive: 30d
-  match: '"~web(client|gateway)/render_image/*"'
+  match:
+  - '"~web(client|gateway)/render_image/*"'

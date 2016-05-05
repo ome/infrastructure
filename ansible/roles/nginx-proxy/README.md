@@ -40,9 +40,11 @@ Caching:
   - `name`: Name of the cache
   - `keysize`: Amount of shared memory to use for storing cache keys
   - `inactive`: Time that items should be cached for
-  - `match`: Patterns to be stored in this cache, you probably want one item with the value `default`
-- `nginx_proxy_cache_skip`: Don't cache these patterns (default: everything that doesn't match `nginx_proxy_cache_match`)
-- `nginx_proxy_cache_match`: Cache these patterns
+  - `match`: List of patterns to be stored in this cache, you probably want one item with the value `default` somewhere
+- `nginx_proxy_cache_skip_uri`: List of URI patterns that shouldn't be cached (default: everything that doesn't match `nginx_proxy_cache_match_uri`)
+- `nginx_proxy_cache_match_uri`: List of URI patterns that should be cached
+- `nginx_proxy_cache_skip_arg`: List of query patterns that shouldn't be cached (default for this is always the result of `nginx_proxy_cache_*_url`)
+- `nginx_proxy_cache_match_arg`: List of query patterns that should be cached (default for this is always the result of `nginx_proxy_cache_*_url`)
 
 - `nginx_proxy_debug_cache_headers`: If `True` add extra headers for debugging (not for production), default `False`
 - `nginx_proxy_ignore_headers`: Headers to be ignored, e.g. `'"Set-Cookie" "Vary" "Expires"'`
@@ -87,7 +89,7 @@ Advanced configuration: force https, enable caching, use HSTS, enable HTTP2
         nginx_proxy_force_ssl: True
         nginx_proxy_hsts_age: 31536000
         # Example predefined cache configurations are in defaults/main.yml:
-        nginx_proxy_cache_match: "{{ nginx_proxy_cache_match_omero }}"
+        nginx_proxy_cache_match_uri: "{{ nginx_proxy_cache_match_uri_omero }}"
         nginx_proxy_caches: "{{ nginx_proxy_caches_omero }}"
 
 
