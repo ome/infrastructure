@@ -76,6 +76,10 @@ server {
         proxy_cache_use_stale  error timeout invalid_header updating http_500 http_502 http_503 http_504;
         proxy_cache_bypass     $skip_cache;
         proxy_no_cache         $skip_cache;
+
+{%     if nginx_proxy_ignore_headers %}
+        proxy_ignore_headers   {{ nginx_proxy_ignore_headers }};
+{%     endif %}
 {%   endif %}
     }
 {% endfor %}

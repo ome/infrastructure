@@ -52,6 +52,9 @@ nginx_proxy_cache_match:
 # Set to True to add X-Proxy-Cache* headers for debugging
 nginx_proxy_debug_cache_headers: False
 
+# Headers to be ignored, e.g. '"Set-Cookie" "Vary" "Expires"'
+nginx_proxy_ignore_headers:
+
 # EXPERIMENTAL: Example caching parameters for public OMERO
 # nginx_proxy_cache_skip: "{{ nginx_proxy_cache_skip_omero }}"
 # nginx_proxy_caches: "{{ nginx_proxy_caches_omero }}"
