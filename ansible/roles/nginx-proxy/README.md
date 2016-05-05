@@ -49,6 +49,8 @@ Caching:
 - `nginx_proxy_cache_use_stale`: Situations in which stale cache results should be returned, see `defaults/main.yml` for default
 - `nginx_proxy_lock_time`: Prevent multiple backend requests to the same object (subsequent requests will wait for the first to either return or time-out), default 1 minute
 
+Warning: `max_size` is not set on any disk caches, so you should put `nginx_proxy_cache_parent_path` on a separate partition.
+
 
 Example Playbooks
 -----------------
