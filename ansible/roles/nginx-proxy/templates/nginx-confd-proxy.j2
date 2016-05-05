@@ -69,7 +69,9 @@ server {
         proxy_cache_key        "$host$request_uri";
         proxy_cache_valid      200 301 302 {{ item.cache_validity }};
         proxy_cache_methods    GET HEAD; # Only GET and HEAD methods apply
-        proxy_cache_use_stale  error timeout invalid_header updating http_500 http_502 http_503 http_504;
+{%     if nginx_proxy_cache_use_stale %}
+        proxy_cache_use_stale  {{ nginx_proxy_cache_use_stale }};
+{%     endif %}
         proxy_cache_bypass     $skip_cache;
         proxy_no_cache         $skip_cache;
 

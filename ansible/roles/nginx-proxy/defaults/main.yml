@@ -45,15 +45,23 @@ nginx_proxy_backends: []
 #  cache_validity: 1d
 
 # Caching parameters
+# Parent path of Nginx disk caches
 nginx_proxy_cache_parent_path: /var/cache/nginx
+# List of caches
 nginx_proxy_caches: []
+# Don't cache these patterns
 nginx_proxy_cache_skip: default
+# Cache these patterns
 nginx_proxy_cache_match:
 # Set to True to add X-Proxy-Cache* headers for debugging
 nginx_proxy_debug_cache_headers: False
 
 # Headers to be ignored, e.g. '"Set-Cookie" "Vary" "Expires"'
 nginx_proxy_ignore_headers:
+
+# Use stale cache if these situations are encountered
+nginx_proxy_cache_use_stale: "error timeout invalid_header updating http_500 http_502 http_503 http_504"
+
 
 # EXPERIMENTAL: Example caching parameters for public OMERO
 # nginx_proxy_cache_skip: "{{ nginx_proxy_cache_skip_omero }}"
