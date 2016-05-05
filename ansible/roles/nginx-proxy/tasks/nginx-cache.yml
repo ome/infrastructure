@@ -1,6 +1,13 @@
 ---
 # tasks file for roles/nginx-proxy cache setup
 
+# If caching is enabled for any proxies the nginx cache must be configured
+- name: nginx | check cache configuration
+  fail:
+    msg: "Caching enabled for {{ item.location }} but nginx_proxy_caches is empty"
+  when: (item.cache_validity | default(False)) and not nginx_proxy_caches
+  with_items: "{{ nginx_proxy_backends }}"
+
 - name: nginx | create cache directories
   become: yes
   file:
