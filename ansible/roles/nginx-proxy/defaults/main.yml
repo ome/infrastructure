@@ -4,6 +4,9 @@
 # Number of worker processes, use auto to set this to the number of CPUs
 nginx_proxy_worker_processes: 1
 
+# Format for access.log, see templates/nginx-conf.j2 for predefined formats
+nginx_proxy_log_format: main_timed_cache
+
 # Enable SSL?
 nginx_proxy_ssl: False
 
