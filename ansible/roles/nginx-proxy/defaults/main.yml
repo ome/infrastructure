@@ -56,6 +56,9 @@ nginx_proxy_cache_match:
 # Set to True to add X-Proxy-Cache* headers for debugging
 nginx_proxy_debug_cache_headers: False
 
+# Prevent multiple backend requests to the same objet within this time
+nginx_proxy_lock_time: 1m
+
 # Headers to be ignored, e.g. '"Set-Cookie" "Vary" "Expires"'
 nginx_proxy_ignore_headers:
 
