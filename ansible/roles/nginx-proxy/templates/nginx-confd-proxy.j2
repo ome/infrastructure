@@ -12,17 +12,17 @@ server {
 
 {% if nginx_proxy_ssl %}
     listen       443 ssl{% if nginx_proxy_http2 %} http2{% endif %};
-{%   if nginx_proxy_hsts_age is defined %}
+{%   if nginx_proxy_hsts_age %}
     add_header Strict-Transport-Security "max-age={{ nginx_proxy_hsts_age }}";
 {%   endif %}
 {% endif %}
     server_name  $hostname;
 
 {% if nginx_proxy_ssl %}
-{%   if nginx_proxy_ssl_certificate is defined %}
+{%   if nginx_proxy_ssl_certificate %}
     ssl_certificate {{ nginx_proxy_ssl_certificate }};
 {%   endif %}
-{%   if nginx_proxy_ssl_certificate_key is defined %}
+{%   if nginx_proxy_ssl_certificate_key %}
     ssl_certificate_key {{ nginx_proxy_ssl_certificate_key }};
 {%   endif %}
     ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;  # don't use SSLv3 ref: POODLE
@@ -40,12 +40,12 @@ server {
         root   /usr/share/nginx/html;
     }
 
-{% if nginx_dynamic_proxy_resolvers is defined %}
+{% if nginx_dynamic_proxy_resolvers %}
     # Nginx requires explicit DNS servers
     resolver {{ nginx_dynamic_proxy_resolvers }};
 {% endif %}
 
-{% if nginx_proxy_buffers is defined %}
+{% if nginx_proxy_buffers %}
     # Proxy buffers
     proxy_buffers {{ nginx_proxy_buffers }};
 {% endif %}
@@ -58,7 +58,7 @@ server {
 
 {% for item in nginx_proxy_backends %}
     location {{ item.location }} {
-{%   if 'dynamic' in item and item.dynamic %}
+{%   if item.dynamic | default(False) %}
         # To force dynamic DNS lookups need to use a variable
         set $backend_{{ item.name }} "{{ item.server }}";
         proxy_pass $backend_{{ item.name }};
@@ -89,6 +89,7 @@ server {
 {%     endif %}
 {%   endif %}
     }
+
 {% endfor %}
 
 }

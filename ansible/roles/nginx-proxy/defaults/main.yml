@@ -19,19 +19,19 @@ nginx_proxy_force_ssl: False
 # Optional vars:
 
 # Server path to SSL certificate
-#nginx_proxy_ssl_certificate:
+nginx_proxy_ssl_certificate:
 
 # Server path to SSL certificate key
-#nginx_proxy_ssl_certificate_key:
+nginx_proxy_ssl_certificate_key:
 
 # If defined the age to return in the Strict-Transport-Security header
-# nginx_proxy_hsts_age:
+nginx_proxy_hsts_age:
 
 # DNS servers for hostname lookups
-#nginx_dynamic_proxy_resolvers:
+nginx_dynamic_proxy_resolvers:
 
 # Number and size of proxy buffers
-#nginx_proxy_buffers:
+nginx_proxy_buffers:
 
 # List of dicts of backend servers
 # To force dynamic DNS lookups need to use a variable:
