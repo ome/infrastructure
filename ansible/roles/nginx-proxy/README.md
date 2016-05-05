@@ -27,45 +27,30 @@ Optional variables:
 
 Backend servers:
 
-- `nginx_dynamic_proxies`: List of dictionaries of backend servers (hosts/IPs will be dynamically resolved on every request)
-- `nginx_static_proxies`: List of dictionaries of backend servers (hosts/IPs will be resolved once)
-
-See example below.
+- `nginx_proxy_backends`: List of dictionaries of backend servers with fields
+  - `name`: A variable name for proxies using dynamic IP (ignored for static IPs)
+  - `location`: The URL location
+  - `server`: The backend server including scheme
+  - `dynamic`: If `True` lookup IP on every request, default `False` (only lookup at startup).
 
 
 Example Playbooks
 -----------------
 
 Proxy:
-- http://localhost/ to http://a.internal/
-- http://localhost/b to http://b.internal/subdir
-
-Dynamically, making a DNS request for `a.internal` on every request
+- http://localhost/ to http://a.internal/ statically, make a single DNS request for `a.internal` at the start
+- http://localhost/b to http://b.internal/subdir dynamically, making a DNS request for `b.internal` on every request
 
     - hosts: localhost
       roles:
       - role: nginx_proxy
-        nginx_dynamic_proxies:
-        - name: testa
-          location: /
+        nginx_proxy_backends:
+        - location: /
           server: http://a.internal
         - name: testb
           location: /b
           server: http://b.internal/subdir
-
-Statically, make a single DNS request for `a.internal` at the start
-
-    - hosts: localhost
-      roles:
-      - role: nginx_proxy
-        nginx_static_proxies:
-        - location: /
-          server: http://a.internal
-        - location: /b
-          server: http://b.internal/subdir
-
-
-Note internal communication with backend servers is currently done over plain `http`, however `https` should work for front-end connections.
+          dynamic: True
 
 
 Author Information

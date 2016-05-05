@@ -56,22 +56,17 @@ server {
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto $scheme;
 
-    # To force dynamic DNS lookups need to use a variable:
-    # https://www.jethrocarr.com/2013/11/02/nginx-reverse-proxies-and-dns-resolution/
-    # http://forum.nginx.org/read.php?2,215830,215832#msg-215832
-
-{% for item in nginx_dynamic_proxies %}
+{% for item in nginx_proxy_backends %}
     location {{ item.location }} {
+{%   if 'dynamic' in item and item.dynamic %}
+        # To force dynamic DNS lookups need to use a variable
         set $backend_{{ item.name }} "{{ item.server }}";
         proxy_pass $backend_{{ item.name }};
         proxy_redirect $backend_{{ item.name }} $scheme://$server_name;
-    }
-{% endfor %}
-
-{% for item in nginx_static_proxies %}
-    location {{ item.location }} {
+{%   else %}
         proxy_pass {{ item.server }};
         proxy_redirect {{ item.server }} $scheme://$server_name;
+{%   endif %}
     }
 {% endfor %}
 

@@ -40,7 +40,7 @@
     dest: /etc/nginx/conf.d/proxy.conf
   notify:
     - restart nginx
-  when: nginx_dynamic_proxies or nginx_static_proxies
+  when: nginx_proxy_backends
 
 - name: nginx | dynamic proxy config
   become: yes
@@ -49,7 +49,7 @@
     state: absent
   notify:
     - restart nginx
-  when: not nginx_dynamic_proxies and not nginx_static_proxies
+  when: not nginx_proxy_backends
 
 - name: nginx | Remove old proxy config
   become: yes

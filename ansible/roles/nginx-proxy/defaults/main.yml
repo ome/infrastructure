@@ -30,13 +30,12 @@ nginx_proxy_force_ssl: False
 # Number and size of proxy buffers
 #nginx_proxy_buffers:
 
-# List of dicts of backend servers with dynamic IPs
-nginx_dynamic_proxies: []
-#- name: test
+# List of dicts of backend servers
+# To force dynamic DNS lookups need to use a variable:
+# https://www.jethrocarr.com/2013/11/02/nginx-reverse-proxies-and-dns-resolution/
+# http://forum.nginx.org/read.php?2,215830,215832#msg-215832
+nginx_proxy_backends: []
+#- name: test # Required if dynamic: True
 #  location: /prefix
 #  server: http://example.org
-
-# List of dicts of backend servers with static IPs
-nginx_static_proxies: []
-#- location: /prefix
-#  server: http://example.org
+#  dynamic: False
