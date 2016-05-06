@@ -48,6 +48,7 @@ Caching:
 
 - `nginx_proxy_debug_cache_headers`: If `True` add extra headers for debugging (not for production), default `False`
 - `nginx_proxy_ignore_headers`: Headers to be ignored, e.g. `'"Set-Cookie" "Vary" "Expires"'`
+- `nginx_proxy_cache_key`: Override the default Nginx cache key, for example `"$host$request_uri"` to ignore session cookies
 - `nginx_proxy_cache_use_stale`: Situations in which stale cache results should be returned, see `defaults/main.yml` for default
 - `nginx_proxy_lock_time`: Prevent multiple backend requests to the same object (subsequent requests will wait for the first to either return or time-out), default 1 minute
 

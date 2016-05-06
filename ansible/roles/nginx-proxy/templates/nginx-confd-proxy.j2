@@ -66,7 +66,9 @@ server {
 
 {%   if item.cache_validity | default(False) %}
         proxy_cache            $cache_zone_name;
-        proxy_cache_key        "$host$request_uri";
+{%     if nginx_proxy_cache_key %}
+        proxy_cache_key        "{{ nginx_proxy_cache_key }}";
+{%     endif %}
         proxy_cache_valid      200 301 302 {{ item.cache_validity }};
         proxy_cache_methods    GET HEAD; # Only GET and HEAD methods apply
 {%     if nginx_proxy_cache_use_stale %}
@@ -79,7 +81,9 @@ server {
         add_header             X-Proxy-Cache $upstream_cache_status;
         add_header             X-Proxy-Cache-Skip $skip_cache;
         add_header             X-Proxy-Cache-Zone $cache_zone_name;
-        #add_header             X-Proxy-Cache-Key "$host$request_uri";
+{%       if nginx_proxy_cache_key %}
+        add_header             X-Proxy-Cache-Key "{{ nginx_proxy_cache_key }}";
+{%       endif %}
 {%     endif %}
 
 {%     if nginx_proxy_lock_time %}

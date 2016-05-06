@@ -69,6 +69,9 @@ nginx_proxy_lock_time: 1m
 # Headers to be ignored, e.g. '"Set-Cookie" "Vary" "Expires"'
 nginx_proxy_ignore_headers:
 
+# Override the default Nginx cache key
+nginx_proxy_cache_key:
+
 # Use stale cache if these situations are encountered
 nginx_proxy_cache_use_stale: "error timeout invalid_header updating http_500 http_502 http_503 http_504"
 
