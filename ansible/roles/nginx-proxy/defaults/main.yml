@@ -107,7 +107,7 @@ nginx_proxy_caches_omero:
   match:
   - '"~webclient/metadata_*"'
 - name: omeroshow
-  keysize: 300m
+  keysize: 600m
   inactive: 30d
   match:
   - '"~webclient/.*/?show=*"'
