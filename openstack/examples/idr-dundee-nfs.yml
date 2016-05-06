@@ -14,6 +14,13 @@
 
   tasks:
 
+  - name: Install NFS mount utility
+    become: yes
+    yum:
+      name: nfs-utils
+      state: present
+    when: not use_samba
+
   # Do not create mountpoint using file, the mount module will create it
   # automatically. This avoids problems where the module tries to change
   # permissions on an existing directory
