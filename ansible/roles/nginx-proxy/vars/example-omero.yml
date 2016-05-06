@@ -1,0 +1,45 @@
+---
+# EXPERIMENTAL: Example caching parameters for public OMERO
+# If you include these vars they should override the defaults.
+# Alternatively copy them into your own playbooks
+
+# Cache the request path but not the host so that cache can be copied to
+# other servers
+nginx_proxy_cache_key: "$request_uri"
+
+nginx_proxy_ignore_headers: '"Set-Cookie" "Vary" "Expires"'
+
+nginx_proxy_cache_match_uri:
+- '"~webclient/api/paths_to_object*"'
+- '"~web(client|gateway)/(metadata|render)_*"'
+
+nginx_proxy_cache_match_arg:
+- '"~show=*"'
+
+nginx_proxy_caches:
+- name: omero
+  keysize: 10m
+  inactive: 30d
+  match:
+  - default
+- name: omerothumbnail
+  keysize: 200m
+  inactive: 30d
+  match:
+  - '"~web(client|gateway)/render_thumbnail/*"'
+- name: omerorender
+  keysize: 4000m
+  inactive: 30d
+  match:
+  - '"~web(client|gateway)/render_image/*"'
+- name: omerometadata
+  keysize: 300m
+  inactive: 30d
+  match:
+  - '"~webclient/metadata_*"'
+- name: omeroshow
+  keysize: 600m
+  inactive: 30d
+  match:
+  - '"~webclient/.*/?show=*"'
+  - '"~webclient/api/paths_to_object/*"'
