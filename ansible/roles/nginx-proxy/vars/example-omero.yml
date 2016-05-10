@@ -16,6 +16,7 @@ nginx_proxy_cache_match_uri:
 nginx_proxy_cache_match_arg:
 - '"~show=*"'
 
+# Order is important, the first match will be used
 nginx_proxy_caches:
 - name: omero
   keysize: 10m
@@ -31,7 +32,7 @@ nginx_proxy_caches:
   keysize: 4000m
   inactive: 30d
   match:
-  - '"~web(client|gateway)/render_image/*"'
+  - '"~web(client|gateway)/render_*/*"'
 - name: omerometadata
   keysize: 300m
   inactive: 30d
