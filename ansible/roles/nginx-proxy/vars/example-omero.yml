@@ -12,6 +12,7 @@ nginx_proxy_ignore_headers: '"Set-Cookie" "Vary" "Expires"'
 nginx_proxy_cache_match_uri:
 - '"~webclient/api/paths_to_object*"'
 - '"~web(client|gateway)/(metadata|render)_*"'
+- '"~static/*"'
 
 nginx_proxy_cache_match_arg:
 - '"~show=*"'
@@ -23,6 +24,11 @@ nginx_proxy_caches:
   inactive: 30d
   match:
   - default
+- name: omerostatic
+  keysize: 10m
+  inactive: 30d
+  match:
+  - '"~static/*"'
 - name: omerothumbnail
   keysize: 200m
   inactive: 30d
