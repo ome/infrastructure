@@ -2,6 +2,7 @@ Docker
 ======
 
 Setup Docker, provides options for using an advanced storage or networking configuration.
+Installs the latest official upstream Docker (**not** the distribution version).
 
 
 Role Variables
@@ -9,7 +10,6 @@ Role Variables
 
 Defaults: `defaults/main.yml`
 
-- `docker_use_upstream_repo`: If `True` use the latest official upstream Docker, default (`False`) is to install Docker from the distribution repositories
 - `docker_use_custom_storage`: If `True` use a custom storage configuration, default `False`
 - `docker_use_custom_network`: If `True` use a custom network configuration, default `False`
 
@@ -36,6 +36,7 @@ Optional variables:
 
 - `docker_lvopts`: Additional arguments to be used when creating logical volumes
 - `docker_groupmembers`: A list of users who will be added to the `docker` system group, allows docker to be run without sudo
+- `docker_use_ipv4_nic_mtu`: Force Docker to use the MTU set by the main IPV4 interface. This may be necessary on virtualised hosts, see comment in `defaults/main.yml`.
 
 
 Dependencies
