@@ -14,6 +14,11 @@ Setup your OpenStack environment variables, and run:
     ansible-playbook os-create.yml -e omero_vm_name=FOO -e omero_vm_key_name=YOURKEY
     ANSIBLE_ROLES_PATH=../../ansible/roles/ ansible-playbook -i inventory -l 'FOO' os-omero.yml
 
+Some of the more specific deployment scripts may work depending on your environment:
+
+    ANSIBLE_ROLES_PATH=../../ansible/roles/ ansible-playbook -i inventory \
+        -e omero_vm_name=FOO -e omero_vm_key_name=YOUR_KEY uod-os-idr-omero.yml
+
 
 `os-omero.yml`
 --------------
