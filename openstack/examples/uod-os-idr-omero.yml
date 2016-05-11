@@ -6,13 +6,29 @@
   vars:
     omero_vm_extra_groups: "uod-nfs,idr-hosts"
 
+- include: os-voladd.yml
+  vars:
+    os_vol_name: "db"
+    os_vol_dev:  /dev/vdb
+
+- include: os-voladd.yml
+  vars:
+    os_vol_name: "data"
+    os_vol_dev:  /dev/vdc
+
+- include: os-volmnt.yml
+  vars:
+    os_vol_dev:  /dev/vdb
+    os_vol_dir:  /var/lib/pgsql
+
+- include: os-volmnt.yml
+  vars:
+    os_vol_dev:  /dev/vdc
+    os_vol_dir:  /data
+
 - include: idr-dundee-nfs.yml
 
 # Provides git and other libraries
 - include: os-omero.yml
 
 - include: idr-metadata.yml
-
-- include: os-voladd.yml
-  vars:
-    os_vol_name: "db"

@@ -10,6 +10,7 @@
 
     os_vol_name: var
     os_vol_size: 100 # GB
+    os_vol_dev:  /dev/vdb
 
   tasks:
 
@@ -28,6 +29,7 @@
       state: present
       server: "{{omero_vm_name}}"
       volume: "{{omero_vm_name}}-{{os_vol_name}}"
+      device: "{{ os_vol_dev }}"
     register: osattachment
 
   - debug:
