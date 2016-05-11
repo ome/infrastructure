@@ -5,5 +5,10 @@
   tasks:
     - git:
         repo: git://github.com/snoopycrimecop/idr-metadata.git
-        dest: idr-metadata
+        dest: /opt/idr-metadata
         version: merge/trigger
+    - file:
+        path: /opt/idr-metadata
+        owner: omero
+        group: omero
+        recurse: yes

@@ -15,7 +15,24 @@
   become: yes
   user:
     name: "{{ omero_system_user }}"
+    skeleton: "/etc/skel"
     append: yes
+
+- name: omero | add to path
+  become: yes
+  lineinfile:
+    dest: /home/{{ omero_system_user }}/.bashrc
+    regexp: "{{ omero_server_symlink }}"
+    line: "export PATH={{ omero_serverdir }}/{{ omero_server_symlink }}/bin:$PATH"
+    state: present
+
+- name: omero | set JAVA_OPTS
+  become: yes
+  lineinfile:
+    dest: /home/{{ omero_system_user }}/.bashrc
+    regexp: "JAVA_OPTS"
+    line: "export JAVA_OPTS=-Xmx2G"
+    state: present
 
 # Explicitly include omero_basedir so that it'll be world-accessible
 - name: omero | create omero directories

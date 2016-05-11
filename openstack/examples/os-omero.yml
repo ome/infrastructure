@@ -27,6 +27,9 @@
       dest: /etc/security/limits.d/95-omero.conf
     become: yes
 
+  - yum: pkg=screen state=present
+    become: yes
+
   roles:
   - role: upgrade-distpackages
   - role: versioncontrol-utils

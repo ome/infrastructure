@@ -8,7 +8,7 @@
   vars:
 
     omero_vm_image: CentOS 7.2 1602
-    omero_vm_flavour: m1.large
+    omero_vm_flavour: m2.large
     omero_vm_groups: "ansible-managed,os-image-centos,omero-hosts"
     omero_vm_extra_groups: ""
 
