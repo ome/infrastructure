@@ -12,12 +12,33 @@
     omero_vm_groups: "ansible-managed,os-image-centos,omero-hosts"
     omero_vm_extra_groups: ""
 
+    gateway_vm_image: CentOS 7.2 1602
+    gateway_vm_flavour: m1.large
+    gateway_vm_groups: "ansible-managed,os-image-centos,proxy-hosts"
+
+    single_floating_ip: True
+
+    #vm_prefix:
+    #omero_vm_key_name:
+    ignore_internal_known_hosts: True
+
   tasks:
 
     - set_fact: omero_vm_joined_groups="{{ omero_vm_groups.split(',') | union(omero_vm_extra_groups.split(',')) | join(',')}}"
 
+    - set_fact:
+        omero_vm_name: "{{ vm_prefix }}-omero"
+      when: vm_prefix is defined and omero_vm_name is undefined
+
+    - set_fact:
+        gateway_vm_name: "{{ vm_prefix }}-gateway"
+      when: vm_prefix is defined and gateway_vm_name is undefined
+
     - fail: msg="omero_vm_name is required"
       when: omero_vm_name is undefined
+
+    - fail: msg="gateway_vm_name is required"
+      when: gateway_vm_name is undefined
 
     - fail: msg="omero_vm_key_name is required"
       when: omero_vm_key_name is undefined
@@ -44,6 +65,26 @@
         - 4063
         - 4064
 
+    - name: Gateway external access security group
+      os_security_group:
+        description: External access to Ogateway servers (managed by Ansible)
+        name: gateway-external
+        state: present
+
+    - name: Gateway external access security group rules
+      os_security_group_rule:
+        direction: ingress
+        port_range_max: "{{ item }}"
+        port_range_min: "{{ item }}"
+        protocol: tcp
+        remote_ip_prefix: 0.0.0.0/0
+        security_group: gateway-external
+        state: present
+      with_items:
+        - 22
+        - 80
+        - 443
+
     - name: OMERO VM
       os_server:
         name: "{{ omero_vm_name }}"
@@ -51,19 +92,59 @@
         image: "{{ omero_vm_image }}"
         key_name: "{{ omero_vm_key_name }}"
         flavor: "{{ omero_vm_flavour }}"
-        auto_ip: yes
+        auto_ip: "{{ not single_floating_ip }}"
         meta:
           hostname: "{{ omero_vm_name }}"
           groups: "{{ omero_vm_joined_groups }} "
         security_groups: [default, omero-external]
       register: vmomero
 
-    - add_host:
+    - name: Gateway VM
+      os_server:
+        name: "{{ gateway_vm_name }}"
+        state: present
+        image: "{{ gateway_vm_image }}"
+        key_name: "{{ omero_vm_key_name }}"
+        flavor: "{{ gateway_vm_flavour }}"
+        auto_ip: yes
+        meta:
+          hostname: "{{ gateway_vm_name }}"
+          groups: "{{ gateway_vm_groups }} "
+        security_groups: [default, gateway-external]
+      register: vmgateway
+
+    - name: Gateway VM hosts file
+      add_host:
+        name: "{{ gateway_vm_name }}"
+        groups: "{{ gateway_vm_groups }} "
+        ansible_host: "{{ vmgateway.server.public_v4 }}"
+        ansible_user: centos
+        ansible_become: true
+
+    - name: OMERO VM hosts files
+      add_host:
         name: "{{ omero_vm_name }}"
         groups: "{{ omero_vm_joined_groups }} "
         ansible_host: "{{ vmomero.server.public_v4 }}"
         ansible_user: centos
         ansible_become: true
+      when: "{{ not single_floating_ip }}"
+
+    - name: OMERO VM hosts files
+      add_host:
+        name: "{{ omero_vm_name }}"
+        groups: "{{ omero_vm_joined_groups }} "
+        ansible_host: "{{ vmomero.server.private_v4 }}"
+        ansible_user: centos
+        ansible_become: true
+        ansible_ssh_common_args: >
+            -o ProxyCommand="ssh -W %h:%p centos@{{ vmgateway.server.public_v4 }}"
+            {{ ignore_internal_known_hosts |
+                ternary("-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no", "")}}
+      when: "{{ single_floating_ip }}"
 
     - debug:
-        msg: "Floating IP: {{ vmomero.openstack.public_v4 }}"
+        msg: "IPs (OMERO) private:{{ vmomero.openstack.private_v4 }} floating:{{ vmomero.openstack.public_v4 | default('') }}"
+
+    - debug:
+        msg: "IPs (gateway) private:{{ vmgateway.openstack.private_v4 }} floating:{{ vmgateway.openstack.public_v4 | default('') }}"
