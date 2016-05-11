@@ -6,7 +6,7 @@
 # as they are required for some IDR related tasks.
 # For a standard production server you won't need these.
 
-- hosts: omero-hosts
+- hosts: "{{ omero_vm_name }}"
 
   pre_tasks:
   # This is needed for ansible to be run by cloud-init
