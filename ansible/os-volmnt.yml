@@ -2,7 +2,7 @@
 # Playbook for attaching an extra volume to
 # an openstack instance.
 
-- hosts: "{{ omero_vm_name }}"
+- hosts: omero-hosts
 
   vars:
 
