@@ -16,6 +16,9 @@
     gateway_vm_flavour: m1.large
     gateway_vm_groups: "ansible-managed,os-image-centos,proxy-hosts"
 
+    database_vm_flavour: m1.large
+    database_vm_groups: "ansible-managed,os-image-centos,database-hosts"
+
     single_floating_ip: True
 
     #vm_prefix:
@@ -40,6 +43,8 @@
     - set_fact:
         gateway_vm_name: "{{ vm_prefix }}-gateway"
 
+    - set_fact:
+        database_vm_name: "{{ vm_prefix }}-database"
 
     - name: OMERO external access security group
       os_security_group:
@@ -97,6 +102,20 @@
         security_groups: [default, omero-external]
       register: vmomero
 
+    - name: Database VM
+      os_server:
+        name: "{{ database_vm_name }}"
+        state: present
+        image: "{{ vm_image }}"
+        key_name: "{{ vm_key_name }}"
+        flavor: "{{ database_vm_flavour }}"
+        auto_ip: "{{ not single_floating_ip }}"
+        meta:
+          hostname: "{{ database_vm_name }}"
+          groups: "{{ database_vm_groups }}"
+        security_groups: [default]
+      register: vmdatabase
+
     - name: Gateway VM
       os_server:
         name: "{{ gateway_vm_name }}"
@@ -139,17 +158,20 @@
         ansible_become: true
         ansible_ssh_common_args: "{{ ssh_gateway_proxy | default(omit) }}"
 
-    - name: OMERO VM hosts files
+    - name: Database VM hosts files
       add_host:
-        name: "{{ omero_vm_name }}"
-        groups: "{{ omero_vm_joined_groups }}"
-        ansible_host: "{{ vmomero.server.private_v4 }}"
+        name: "{{ database_vm_name }}"
+        groups: "{{ database_vm_groups }}"
+        ansible_host: "{{ single_floating_ip | ternary(vmdatabase.server.private_v4, vmdatabase.server.public_v4) }}"
         ansible_user: centos
         ansible_become: true
         ansible_ssh_common_args: "{{ ssh_gateway_proxy | default(omit) }}"
 
     - debug:
         msg: "IPs (OMERO) private:{{ vmomero.openstack.private_v4 }} floating:{{ vmomero.openstack.public_v4 | default('') }}"
+
+    - debug:
+        msg: "IPs (database) private:{{ vmdatabase.openstack.private_v4 }} floating:{{ vmdatabase.openstack.public_v4 | default('') }}"
 
     - debug:
         msg: "IPs (gateway) private:{{ vmgateway.openstack.private_v4 }} floating:{{ vmgateway.openstack.public_v4 | default('') }}"
