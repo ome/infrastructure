@@ -16,15 +16,17 @@
     os_vol_name: "data"
     os_vol_dev:  /dev/vdc
 
-- include: os-volmnt.yml
-  vars:
-    os_vol_dev:  /dev/vdb
-    os_vol_dir:  /var/lib/pgsql
 
-- include: os-volmnt.yml
-  vars:
-    os_vol_dev:  /dev/vdc
-    os_vol_dir:  /data
+- hosts: omero-hosts
+  roles:
+  - role: storage-volume-initialise
+    storage_volume_initialise_device: /dev/vdb
+    storage_volume_initialise_mount: /var/lib/pgsql
+
+  - role: storage-volume-initialise
+    storage_volume_initialise_device: /dev/vdc
+    storage_volume_initialise_mount: /data
+
 
 - include: idr-dundee-nfs.yml
 
