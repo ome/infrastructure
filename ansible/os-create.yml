@@ -7,12 +7,12 @@
 
   vars:
 
-    omero_vm_image: CentOS 7.2 1602
+    vm_image: CentOS 7.2 1602
+
     omero_vm_flavour: m2.large
     omero_vm_groups: "ansible-managed,os-image-centos,omero-hosts"
     omero_vm_extra_groups: ""
 
-    gateway_vm_image: CentOS 7.2 1602
     gateway_vm_flavour: m1.large
     gateway_vm_groups: "ansible-managed,os-image-centos,proxy-hosts"
 
@@ -26,22 +26,20 @@
 
     - set_fact: omero_vm_joined_groups="{{ omero_vm_groups.split(',') | union(omero_vm_extra_groups.split(',')) | join(',')}}"
 
+    - fail:
+        msg: "omero_vm_key_name is required"
+      when: omero_vm_key_name is undefined or not omero_vm_key_name
+
+    - fail:
+        msg: "vm_prefix is required"
+      when: vm_prefix is undefined or not vm_prefix
+
     - set_fact:
         omero_vm_name: "{{ vm_prefix }}-omero"
-      when: vm_prefix is defined and omero_vm_name is undefined
 
     - set_fact:
         gateway_vm_name: "{{ vm_prefix }}-gateway"
-      when: vm_prefix is defined and gateway_vm_name is undefined
 
-    - fail: msg="omero_vm_name is required"
-      when: omero_vm_name is undefined
-
-    - fail: msg="gateway_vm_name is required"
-      when: gateway_vm_name is undefined
-
-    - fail: msg="omero_vm_key_name is required"
-      when: omero_vm_key_name is undefined
 
     - name: OMERO external access security group
       os_security_group:
@@ -89,7 +87,7 @@
       os_server:
         name: "{{ omero_vm_name }}"
         state: present
-        image: "{{ omero_vm_image }}"
+        image: "{{ vm_image }}"
         key_name: "{{ omero_vm_key_name }}"
         flavor: "{{ omero_vm_flavour }}"
         auto_ip: "{{ not single_floating_ip }}"
@@ -103,7 +101,7 @@
       os_server:
         name: "{{ gateway_vm_name }}"
         state: present
-        image: "{{ gateway_vm_image }}"
+        image: "{{ vm_image }}"
         key_name: "{{ omero_vm_key_name }}"
         flavor: "{{ gateway_vm_flavour }}"
         auto_ip: yes
@@ -125,14 +123,21 @@
         ansible_user: centos
         ansible_become: true
 
+    - name: SSH gateway proxy args
+      set_fact:
+        ssh_gateway_proxy: >
+          -o ProxyCommand="ssh -W %h:%p centos@{{ vmgateway.server.public_v4 }}"
+          {{ ignore_internal_known_hosts |
+          ternary("-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no", "")}}
+
     - name: OMERO VM hosts files
       add_host:
         name: "{{ omero_vm_name }}"
         groups: "{{ omero_vm_joined_groups }}"
-        ansible_host: "{{ vmomero.server.public_v4 }}"
+        ansible_host: "{{ single_floating_ip | ternary(vmomero.server.private_v4, vmomero.server.public_v4) }}"
         ansible_user: centos
         ansible_become: true
-      when: "{{ not single_floating_ip }}"
+        ansible_ssh_common_args: "{{ ssh_gateway_proxy | default(omit) }}"
 
     - name: OMERO VM hosts files
       add_host:
@@ -141,11 +146,7 @@
         ansible_host: "{{ vmomero.server.private_v4 }}"
         ansible_user: centos
         ansible_become: true
-        ansible_ssh_common_args: >
-            -o ProxyCommand="ssh -W %h:%p centos@{{ vmgateway.server.public_v4 }}"
-            {{ ignore_internal_known_hosts |
-                ternary("-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no", "")}}
-      when: "{{ single_floating_ip }}"
+        ansible_ssh_common_args: "{{ ssh_gateway_proxy | default(omit) }}"
 
     - debug:
         msg: "IPs (OMERO) private:{{ vmomero.openstack.private_v4 }} floating:{{ vmomero.openstack.public_v4 | default('') }}"
