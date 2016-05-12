@@ -10,21 +10,27 @@
   vars:
     os_vol_name: "db"
     os_vol_dev:  /dev/vdb
+    os_voladd_vm_name: "{{ database_vm_name }}"
 
 - include: os-voladd.yml
   vars:
     os_vol_name: "data"
-    os_vol_dev:  /dev/vdc
+    os_vol_dev:  /dev/vdb
+    os_voladd_vm_name: "{{ omero_vm_name }}"
+
+
+- hosts: database-hosts
+  roles:
+  - role: storage-volume-initialise
+    storage_volume_initialise_device: /dev/vdb
+    storage_volume_initialise_mount: /var/lib/pgsql
+    omero_vm_name: "{{ database_vm_name }}"
 
 
 - hosts: omero-hosts
   roles:
   - role: storage-volume-initialise
     storage_volume_initialise_device: /dev/vdb
-    storage_volume_initialise_mount: /var/lib/pgsql
-
-  - role: storage-volume-initialise
-    storage_volume_initialise_device: /dev/vdc
     storage_volume_initialise_mount: /data
 
 
