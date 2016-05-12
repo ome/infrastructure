@@ -50,3 +50,15 @@
     omero_upgrade: True
     omero_release: 5.2.0
     omero_systemd_setup: True
+
+
+- hosts: proxy-hosts
+
+  roles:
+  - role: nginx-proxy
+
+  vars:
+    nginx_dynamic_proxies:
+    - name: omero
+      location: /
+      server: "{{ hostvars[groups['omero-hosts'][0]]['ansible_host'] }}"
