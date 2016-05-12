@@ -7,16 +7,42 @@
 
   tasks:
 
-    - fail: msg="omero_vm_name is required"
-      when: omero_vm_name is undefined
+    - fail:
+        msg: "vm_prefix is required"
+      when: vm_prefix is undefined or not vm_prefix
 
-    - name: Remove OMERO VM
+    - name: Remove instances
       os_server:
-        name: '{{ omero_vm_name }}'
+        name: "{{ vm_prefix }}-{{ item }}"
         state: absent
+      with_items:
+        - database
+        - gateway
+        - omero
+
+    - name: Remove instances
+      os_server:
+        name: "{{ vm_prefix }}-{{ item }}"
+        state: absent
+      with_items:
+        - database
+        - gateway
+        - omero
+
+    # We've deleted the instances, so no need to dettach them
+    - name: Remove volume
+      os_volume:
+        display_name: "{{ item }}"
+        state: absent
+      with_items:
+        - "{{ vm_prefix }}-omero-data"
+        - "{{ vm_prefix }}-database-db"
 
     # Can't remove security group unless nothing is using it
     - name: Remove OMERO external access security group
       os_security_group:
-        name: omero-external
+        name: "{{ item }}"
         state: absent
+      with_items:
+        - omero-external
+        - gateway-external
