@@ -22,7 +22,7 @@
     single_floating_ip: True
 
     #vm_prefix:
-    #omero_vm_key_name:
+    #vm_key_name:
     ignore_internal_known_hosts: True
 
   tasks:
@@ -30,8 +30,8 @@
     - set_fact: omero_vm_joined_groups="{{ omero_vm_groups.split(',') | union(omero_vm_extra_groups.split(',')) | join(',')}}"
 
     - fail:
-        msg: "omero_vm_key_name is required"
-      when: omero_vm_key_name is undefined or not omero_vm_key_name
+        msg: "vm_key_name is required"
+      when: vm_key_name is undefined or not vm_key_name
 
     - fail:
         msg: "vm_prefix is required"
@@ -93,7 +93,7 @@
         name: "{{ omero_vm_name }}"
         state: present
         image: "{{ vm_image }}"
-        key_name: "{{ omero_vm_key_name }}"
+        key_name: "{{ vm_key_name }}"
         flavor: "{{ omero_vm_flavour }}"
         auto_ip: "{{ not single_floating_ip }}"
         meta:
@@ -121,7 +121,7 @@
         name: "{{ gateway_vm_name }}"
         state: present
         image: "{{ vm_image }}"
-        key_name: "{{ omero_vm_key_name }}"
+        key_name: "{{ vm_key_name }}"
         flavor: "{{ gateway_vm_flavour }}"
         auto_ip: yes
         meta:
