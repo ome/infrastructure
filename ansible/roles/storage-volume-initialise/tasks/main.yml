@@ -1,24 +1,23 @@
 ---
-# Playbook for attaching an extra volume to
-# an openstack instance.
+# Format and mount openstack volume
 
-- hosts: omero-hosts
+- name: storage volume | install xfs
+  become: yes
+  yum:
+    pkg: xfsprogs
+    state: present
 
-  vars:
+- name: storage volume | format
+  become: yes
+  filesystem:
+    fstype: xfs
+    dev: "{{ storage_volume_initialise_device }}"
 
-    os_vol_dev:  /dev/vdb
-    os_vol_dir:  /var/lib/psql
-
-  tasks:
-
-  - name: install xfsprogs
-    action: yum pkg=xfsprogs state=latest
-    become: yes
-
-  - name: format new volume
-    filesystem: fstype=xfs dev={{ os_vol_dev }}
-    become: yes
-
-  - name: edit fstab and mount the vol
-    action: mount name={{ os_vol_dir }} src={{ os_vol_dev }} opts=noatime fstype=xfs state=mounted
-    become: yes
+- name: storage volume | mount
+  become: yes
+  mount:
+    fstype: xfs
+    name: "{{ storage_volume_initialise_mount }}"
+    opts: noatime
+    src: "{{ storage_volume_initialise_device }}"
+    state: mounted
