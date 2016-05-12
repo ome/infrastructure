@@ -1,5 +1,5 @@
 ---
-# vars file for roles/postgres
+# vars file for roles/postgresql
 
 postgresql_external:
   repourl:
