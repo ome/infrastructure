@@ -1,5 +1,5 @@
 ---
-# defaults file for roles/postgres
+# defaults file for roles/postgresql
 
 # Version of postgres (see vars)
 postgresql_version: "9.4"
@@ -9,3 +9,12 @@ postgresql_install_server: True
 
 # List of dictionaries containing user and databases information
 postgresql_users_databases: []
+
+# Network interfaces to listen on
+postgresql_server_listen: localhost
+
+# Whether to enable the default local authentication methods
+postgresql_server_auth_local: True
+
+# List of dictionaries of client authorisation lines
+postgresql_server_auth: []
