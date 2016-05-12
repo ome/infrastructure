@@ -6,6 +6,22 @@
 # as they are required for some IDR related tasks.
 # For a standard production server you won't need these.
 
+
+- hosts: database-hosts
+
+  roles:
+  - role: postgresql
+    postgresql_server_listen: "'*'"
+    postgresql_server_auth:
+    - database: omero
+      user: omero
+      address: 0.0.0.0/0
+    postgresql_users_databases:
+    - user: omero
+      password: omero
+      databases: [omero]
+
+
 - hosts: omero-hosts
 
   pre_tasks:
@@ -17,6 +33,7 @@
       state: absent
       validate: "visudo -cf %s"
     become: yes
+
   # Increase open files and processes (alternatively use the pam_limits module)
   - copy:
       content: |
@@ -37,11 +54,7 @@
   - role: python-pydata
 
   vars:
-    postgresql_users_databases:
-    - user: omero
-      password: omero
-      databases: [omero]
-    omero_dbhost: localhost
+    omero_dbhost: "{{ hostvars[groups['database-hosts'][0]]['ansible_host'] }}"
     omero_dbuser: omero
     omero_dbname: omero
     omero_dbpassword: omero
@@ -50,14 +63,13 @@
     omero_upgrade: True
     omero_release: 5.2.0
     omero_systemd_setup: True
+    omero_db_create: False
 
 
 - hosts: proxy-hosts
 
   roles:
   - role: nginx-proxy
-
-  vars:
     nginx_dynamic_proxies:
     - name: omero
       location: /
