@@ -1,5 +1,5 @@
 ---
-# tasks file for roles/postgres
+# tasks file for roles/postgresql
 
 - name: postgres | setup repository
   become: yes
@@ -27,6 +27,30 @@
     creates: "{{ postgresql_datadir }}/PG_VERSION"
   environment:
     PGSETUP_INITDB_OPTIONS: --encoding=UTF8 --locale=en_US.UTF-8 --auth-host=md5
+  when: postgresql_install_server
+
+- name: postgres | set listen interfaces directory
+  become: yes
+  lineinfile:
+    backup: yes
+    dest: "{{ postgresql_datadir }}/postgresql.conf"
+    group: postgres
+    line: "listen_addresses = {{ postgresql_server_listen }}"
+    owner: postgres
+    regexp: "^listen_addresses\\s*="
+    state: present
+  notify:
+    - restart postgresql
+  when: postgresql_install_server
+
+- name: postgres | configure client authorisation
+  become: yes
+  template:
+    backup: yes
+    dest: "{{ postgresql_datadir }}/pg_hba.conf"
+    src: pg_hba-conf.j2
+  notify:
+    - restart postgresql
   when: postgresql_install_server
 
 - name: postgres | start service
