@@ -12,11 +12,11 @@ Role Variables
   - `user`: username (required)
   - `uid`: user-ID (required)
   - `groups`: optional list of groups to be appended to the user's default groups
-  - `password`: optional password hash, only used if user was created only be set if the user is created in this invocation
+  - `password`: optional password hash, only set if the user is created in this invocation
   - `sshpubkey`: optional SSH public key, will be appended to any existing keys if not already present
+  - `require_first_password`: optional, if `True` attempt to force a newly created user to change their password on first login, default `False`.
 
-This role will attempt to force a newly created user to change their password on first login (note this will fail if the user creation task fails part way since if the playbook is rerun the user will already exist).
-For example, if you set `sshpubkey` but omit `password` the user should be able to log in over SSH using their key, and should be prompted to set a password immediately.
+For example, if you set `sshpubkey`, omit `password` and set `require_first_password: True` the user should be able to log in over SSH using their key, and should be prompted to set a password immediately.
 However, failing to set a password will also allow any existing user to `su` to the new users without a password.
 
 - `local_users_delete`: List of usernames to be deleted (default: empty). Home directories will not be removed.

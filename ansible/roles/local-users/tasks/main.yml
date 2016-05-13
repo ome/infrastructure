@@ -6,9 +6,9 @@
   user:
     append: yes
     createhome: yes
-    groups: "{{ item.groups | default() }}"
+    groups: "{{ item.groups | default(omit) }}"
     name: "{{ item.user }}"
-    password: "{{ item.password | default() }}"
+    password: "{{ item.password | default(omit) }}"
     state: present
     uid: "{{ item.uid }}"
     update_password: on_create
@@ -19,7 +19,7 @@
   become: yes
   command: chage -d 0 {{ item.item.user }}
   with_items: "{{ changes.results }}"
-  when: "{{ item.changed }}"
+  when: "{{ item.item.require_first_password | default(False) and item.changed }}"
 
 - name: users | ssh authorised keys
   become: yes
