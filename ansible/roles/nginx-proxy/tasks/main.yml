@@ -11,7 +11,7 @@
   become: yes
   yum:
     name: nginx
-    state: presentt
+    state: present
 
 - name: nginx | remove default config
   become: yes
