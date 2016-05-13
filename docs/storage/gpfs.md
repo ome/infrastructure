@@ -35,6 +35,13 @@ To list existing filesets:
 
 Add `-L` to see additional information include any inode limits.
 
+To delete a fileset:
+
+    mmunlinkfileset gpfs-1 downloads
+    mmdelfileset gpfs-1 downloads
+
+If the fileset was not empty pass `-f` to `mmdelfileset`.
+
 
 GPFS Snapshots
 --------------
