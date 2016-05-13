@@ -1,0 +1,4 @@
+[os-image-centos]
+
+[os-image-centos:vars]
+ansible_ssh_user=centos

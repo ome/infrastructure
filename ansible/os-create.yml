@@ -2,17 +2,25 @@
 # Playbook for creating OpenStack IDR VMs
 
 - hosts: localhost
+  connection: local
+  gather_facts: false
 
   vars:
 
-    omero_vm_name: test-idr-omero
-    omero_vm_key_name: SSH keypair name
     omero_vm_image: CentOS 7.2 1602
-    omero_vm_flavour: m1.medium
-
-    setup_script: idr-example-omero-bootstrap.sh
+    omero_vm_flavour: m2.large
+    omero_vm_groups: "ansible-managed,os-image-centos,omero-hosts"
+    omero_vm_extra_groups: ""
 
   tasks:
+
+    - set_fact: omero_vm_joined_groups="{{ omero_vm_groups.split(',') | union(omero_vm_extra_groups.split(',')) | join(',')}}"
+
+    - fail: msg="omero_vm_name is required"
+      when: omero_vm_name is undefined
+
+    - fail: msg="omero_vm_key_name is required"
+      when: omero_vm_key_name is undefined
 
     - name: OMERO external access security group
       os_security_group:
@@ -44,19 +52,18 @@
         key_name: "{{ omero_vm_key_name }}"
         flavor: "{{ omero_vm_flavour }}"
         auto_ip: yes
-#        boot_from_volume: yes
         meta:
           hostname: "{{ omero_vm_name }}"
+          groups: "{{ omero_vm_joined_groups }} "
         security_groups: [default, omero-external]
-#        terminate_volume: yes
-#        volume_size: 40
-        userdata: "{{ lookup('file', setup_script) }}"
       register: vmomero
-      # Note this should run setup_script but will not wait for it to complete
+
+    - add_host:
+        name: "{{ omero_vm_name }}"
+        groups: "{{ omero_vm_joined_groups }} "
+        ansible_host: "{{ vmomero.server.public_v4 }}"
+        ansible_user: centos
+        ansible_become: true
 
     - debug:
         msg: "Floating IP: {{ vmomero.openstack.public_v4 }}"
-
-    - debug:
-        msg: "OMERO VM changed, it may take a while for setup_script to complete"
-      when: vmomero.changed

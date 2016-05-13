@@ -1,0 +1,27 @@
+---
+# Playbook for attaching an extra volume to
+# an openstack instance.
+
+- hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+
+    os_vol_name: var
+
+  tasks:
+
+  - fail: msg="omero_vm_name is required"
+    when: omero_vm_name is undefined
+
+  - name: deattach volume from host
+    os_server_volume:
+      server: "{{omero_vm_name}}"
+      volume: "{{omero_vm_name}}-{{os_vol_name}}"
+      state: absent
+
+  - name: remove volume
+    os_volume:
+      display_name: "{{omero_vm_name}}-{{os_vol_name}}"
+      state: absent

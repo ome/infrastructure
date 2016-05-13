@@ -1,13 +1,14 @@
 ---
-# Delete VMs and security groups created by idr-os-playbook.yml
+# Delete VMs and security groups created by os-create.yml
 
 - hosts: localhost
-
-  vars:
-    # This must match the value in idr-os-playbook.yml
-    omero_vm_name: test-idr-omero
+  connection: local
+  gather_facts: false
 
   tasks:
+
+    - fail: msg="omero_vm_name is required"
+      when: omero_vm_name is undefined
 
     - name: Remove OMERO VM
       os_server:

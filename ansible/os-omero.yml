@@ -6,10 +6,7 @@
 # as they are required for some IDR related tasks.
 # For a standard production server you won't need these.
 
-# Set hosts to all so this can be run locally, or pushed out to any testing VM.
-# If you are going to use this as part of a production playbook you should
-# change this to a host-group to avoid accidents.
-- hosts: localhost, all
+- hosts: "{{ omero_vm_name }}"
 
   pre_tasks:
   # This is needed for ansible to be run by cloud-init
@@ -30,8 +27,12 @@
       dest: /etc/security/limits.d/95-omero.conf
     become: yes
 
+  - yum: pkg=screen state=present
+    become: yes
+
   roles:
   - role: upgrade-distpackages
+  - role: versioncontrol-utils
   - role: samba-client
   - role: omero-server
   - role: python-pydata
@@ -45,7 +46,7 @@
     omero_dbuser: omero
     omero_dbname: omero
     omero_dbpassword: omero
-    omero_datadir: /OMERO
+    omero_datadir: /data/OMERO
     omero_selinux_setup: True
     omero_upgrade: True
     omero_release: 5.2.0
