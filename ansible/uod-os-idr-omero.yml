@@ -19,6 +19,14 @@
     os_voladd_vm_name: "{{ omero_vm_name }}"
 
 
+- hosts: database-hosts, omero-hosts, proxy-hosts
+  roles:
+  - role: sudoers
+#    sudoers_individual_commands:
+  - role: local-users
+#    local_users_create:
+
+
 - hosts: database-hosts
   roles:
   - role: storage-volume-initialise
