@@ -134,13 +134,9 @@
     # If other instances also have a floating IP we can connect directly to
     # them, otherwise we need to connect via the gateway
 
-    - name: Gateway VM hosts file
-      add_host:
-        name: "{{ gateway_vm_name }}"
-        groups: "{{ gateway_vm_groups }}"
-        ansible_host: "{{ vmgateway.server.public_v4 }}"
-        ansible_user: centos
-        ansible_become: true
+    - name: SSH public or private IP
+      set_fact:
+        ssh_public_private: "{{ single_floating_ip | ternary('private_v4', 'public_v4') }}"
 
     - name: SSH gateway proxy args
       set_fact:
@@ -148,12 +144,22 @@
           -o ProxyCommand="ssh -W %h:%p centos@{{ vmgateway.server.public_v4 }}"
           {{ ignore_internal_known_hosts |
           ternary("-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no", "")}}
+      when: single_floating_ip
+
+    - name: Gateway VM hosts file
+      add_host:
+        name: "{{ gateway_vm_name }}"
+        groups: "{{ gateway_vm_groups }}"
+        ansible_host: "{{ vmgateway.server[ssh_public_private] }}"
+        ansible_user: centos
+        ansible_become: true
+        ansible_ssh_common_args: "{{ ssh_gateway_proxy | default(omit) }}"
 
     - name: OMERO VM hosts files
       add_host:
         name: "{{ omero_vm_name }}"
         groups: "{{ omero_vm_joined_groups }}"
-        ansible_host: "{{ single_floating_ip | ternary(vmomero.server.private_v4, vmomero.server.public_v4) }}"
+        ansible_host: "{{ vmomero.server[ssh_public_private] }}"
         ansible_user: centos
         ansible_become: true
         ansible_ssh_common_args: "{{ ssh_gateway_proxy | default(omit) }}"
@@ -162,7 +168,7 @@
       add_host:
         name: "{{ database_vm_name }}"
         groups: "{{ database_vm_groups }}"
-        ansible_host: "{{ single_floating_ip | ternary(vmdatabase.server.private_v4, vmdatabase.server.public_v4) }}"
+        ansible_host: "{{ vmdatabase.server[ssh_public_private] }}"
         ansible_user: centos
         ansible_become: true
         ansible_ssh_common_args: "{{ ssh_gateway_proxy | default(omit) }}"
