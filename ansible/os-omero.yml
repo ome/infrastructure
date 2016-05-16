@@ -25,14 +25,6 @@
 - hosts: omero-hosts
 
   pre_tasks:
-  # This is needed for ansible to be run by cloud-init
-  - lineinfile:
-      backup: yes
-      dest: /etc/sudoers
-      regexp: "^Defaults\\s+requiretty"
-      state: absent
-      validate: "visudo -cf %s"
-    become: yes
 
   # Increase open files and processes (alternatively use the pam_limits module)
   - copy:
