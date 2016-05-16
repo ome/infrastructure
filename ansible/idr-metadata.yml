@@ -2,6 +2,7 @@
 # Playbook for accessing idr metadata
 
 - hosts: idr-hosts
+  become: yes
   tasks:
     - git:
         repo: git://github.com/snoopycrimecop/idr-metadata.git
