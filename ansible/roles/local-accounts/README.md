@@ -15,6 +15,12 @@ Role Variables
   - `password`: optional password hash, only set if the user is created in this invocation
   - `sshpubkey`: optional SSH public key, will be appended to any existing keys if not already present
   - `require_first_password`: optional, if `True` attempt to force a newly created user to change their password on first login, default `False`.
+- `local_accounts_groups`: A list of dictionaries containing information on the group to be created (default: empty).
+  Each item must contain the following fields:
+  - `gid`: group-ID
+  - `group`: group-name
+
+UIDs and GIDs are currently required since this role is intended for use across multiple connected nodes.
 
 For example, if you set `sshpubkey`, omit `password` and set `require_first_password: True` the user should be able to log in over SSH using their key, and should be prompted to set a password immediately.
 However, failing to set a password will also allow any existing user to `su` to the new users without a password.

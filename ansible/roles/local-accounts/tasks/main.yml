@@ -1,6 +1,15 @@
 ---
 # tasks file for roles/local-accounts
 
+- name: users | create local groups
+  become: yes
+  group:
+    gid: "{{ item.gid }}"
+    name: "{{ item.group }}"
+    state: present
+    system: no
+  with_items: "{{ local_accounts_groups | default([]) }}"
+
 - name: users | create local users
   become: yes
   user:
