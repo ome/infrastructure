@@ -8,6 +8,16 @@
   when: (item.cache_validity | default(False)) and not nginx_proxy_caches
   with_items: "{{ nginx_proxy_backends }}"
 
+# In case the nginx cache directory is on a different partition
+- name: nginx | fix cache directory permissions
+  become: yes
+  file:
+    dest: /var/cache/nginx
+    group: nginx
+    mode: 0750
+    owner: nginx
+    state: directory
+
 - name: nginx | create cache directories
   become: yes
   file:
