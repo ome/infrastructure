@@ -56,8 +56,9 @@
 # Provides git and other libraries
 - include: os-omero.yml
   vars:
-    omero_release: OMERO-build
-    omero_omego_additional_args: "--ci 10.0.51.113:58080"
     omero_server_config: {"omero.jvmcfg.heap_size.blitz": "16G"}
+    omero_release: latest
+    omero_omego_additional_args: "--downloadurl http://users.openmicroscopy.org.uk/~spli"
+
 
 - include: idr-metadata.yml
