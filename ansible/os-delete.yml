@@ -37,6 +37,7 @@
       with_items:
         - "{{ vm_prefix }}-omero-data"
         - "{{ vm_prefix }}-database-db"
+        - "{{ vm_prefix }}-gateway-nginxcache"
 
     # Can't remove security group unless nothing is using it
     - name: Remove OMERO external access security group

@@ -18,6 +18,12 @@
     os_vol_dev:  /dev/vdb
     os_voladd_vm_name: "{{ omero_vm_name }}"
 
+- include: os-voladd.yml
+  vars:
+    os_vol_name: "nginxcache"
+    os_vol_dev:  /dev/vdb
+    os_voladd_vm_name: "{{ gateway_vm_name }}"
+    os_vol_size: 20
 
 - hosts: database-hosts, omero-hosts, proxy-hosts
   roles:
@@ -32,8 +38,6 @@
   - role: storage-volume-initialise
     storage_volume_initialise_device: /dev/vdb
     storage_volume_initialise_mount: /var/lib/pgsql
-    omero_vm_name: "{{ database_vm_name }}"
-
 
 - hosts: omero-hosts
   roles:
@@ -41,6 +45,11 @@
     storage_volume_initialise_device: /dev/vdb
     storage_volume_initialise_mount: /data
 
+- hosts: proxy-hosts
+  roles:
+  - role: storage-volume-initialise
+    storage_volume_initialise_device: /dev/vdb
+    storage_volume_initialise_mount: /var/cache/nginx
 
 - include: idr-dundee-nfs.yml
 
