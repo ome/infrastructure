@@ -25,6 +25,7 @@
     os_voladd_vm_name: "{{ gateway_vm_name }}"
     os_vol_size: 20
 
+# Variables for this section are in a private file
 - hosts: database-hosts, omero-hosts, proxy-hosts
   roles:
   - role: sudoers
