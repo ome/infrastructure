@@ -1,5 +1,5 @@
 ---
-# tasks file for roles/local-users
+# tasks file for roles/local-accounts
 
 - name: users | create local users
   become: yes
@@ -12,7 +12,7 @@
     state: present
     uid: "{{ item.uid }}"
     update_password: on_create
-  with_items: "{{ local_users_create | default([]) }}"
+  with_items: "{{ local_accounts_create | default([]) }}"
   register: changes
 
 - name: users | force password change for new users
@@ -30,7 +30,7 @@
     manage_dir: no
     state: present
     user: "{{ item.user }}"
-  with_items: "{{ local_users_create | default([]) }}"
+  with_items: "{{ local_accounts_create | default([]) }}"
   when: item.sshpubkey is defined
 
 - name: users | delete local users
@@ -38,4 +38,4 @@
   user:
     name: "{{ item }}"
     state: absent
-  with_items: "{{ local_users_delete | default([]) }}"
+  with_items: "{{ local_accounts_delete | default([]) }}"
