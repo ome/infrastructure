@@ -1,4 +1,6 @@
 ---
 dependencies:
-- { role: basedeps }
-- { role: ice }
+- role: basedeps
+- role: ice
+- role: redis
+  when: omero_web_runtime_redis

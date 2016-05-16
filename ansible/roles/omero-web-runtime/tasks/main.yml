@@ -27,3 +27,10 @@
   with_items:
     - "django>=1.8,<1.9"
     - "gunicorn>=19.3"
+
+- name: omero-web | install django redis requirements
+  become: yes
+  pip:
+    name: "django-redis-cache>=1.6.5"
+    state: present
+  when: omero_web_runtime_redis
