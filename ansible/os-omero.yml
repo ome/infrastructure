@@ -46,7 +46,8 @@
   - role: python-pydata
 
   vars:
-    omero_dbhost: "{{ hostvars[groups['database-hosts'][0]]['ansible_host'] }}"
+    # inventory/openstack.py still uses the deprecated ansible_ssh_host
+    omero_dbhost: "{{ hostvars[groups['database-hosts'][0]]['ansible_ssh_host'] }}"
     omero_dbuser: omero
     omero_dbname: omero
     omero_dbpassword: omero
@@ -65,4 +66,5 @@
     nginx_dynamic_proxies:
     - name: omero
       location: /
-      server: "{{ hostvars[groups['omero-hosts'][0]]['ansible_host'] }}"
+      # inventory/openstack.py still uses the deprecated ansible_ssh_host
+      server: "{{ hostvars[groups['omero-hosts'][0]]['ansible_ssh_host'] }}"
