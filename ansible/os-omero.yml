@@ -62,8 +62,17 @@
 
   roles:
   - role: nginx-proxy
-    nginx_dynamic_proxies:
+    nginx_proxy_worker_processes: 4
+    #nginx_proxy_ssl: True
+    #nginx_proxy_ssl_certificate: /etc/nginx/ssl/idr-fullchain.pem
+    #nginx_proxy_ssl_certificate_key: /etc/nginx/ssl/idr-privkey.pem
+    #nginx_proxy_http2: True
+    nginx_proxy_buffers: 32 16k
+    nginx_proxy_backends:
     - name: omero
       location: /
       # inventory/openstack.py still uses the deprecated ansible_ssh_host
-      server: "{{ hostvars[groups['omero-hosts'][0]]['ansible_ssh_host'] }}"
+      server: "http://{{ hostvars[groups['omero-hosts'][0]]['ansible_ssh_host'] }}"
+      cache_validity: 30d
+  vars_files:
+  - roles/nginx-proxy/vars/example-omero.yml
