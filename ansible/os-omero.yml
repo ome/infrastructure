@@ -20,6 +20,7 @@
     - user: omero
       password: omero
       databases: [omero]
+    postgresql_server_chown_datadir: True
 
 
 - hosts: omero-hosts
