@@ -87,6 +87,7 @@
         image: "{{ vm_image }}"
         key_name: "{{ vm_key_name }}"
         flavor: "{{ omero_vm_flavour }}"
+        nics: "{{ omero_vm_private_network | default(omit) }}"
         auto_ip: "{{ not single_floating_ip }}"
         meta:
           hostname: "{{ omero_vm_name }}"
@@ -101,6 +102,7 @@
         image: "{{ vm_image }}"
         key_name: "{{ vm_key_name }}"
         flavor: "{{ database_vm_flavour }}"
+        nics: "{{ vm_private_network | default(omit) }}"
         auto_ip: "{{ not single_floating_ip }}"
         meta:
           hostname: "{{ database_vm_name }}"
@@ -114,6 +116,7 @@
         state: present
         image: "{{ vm_image }}"
         key_name: "{{ vm_key_name }}"
+        nics: "{{ vm_private_network | default(omit) }}"
         flavor: "{{ gateway_vm_flavour }}"
         auto_ip: yes
         meta:
