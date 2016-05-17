@@ -6,6 +6,7 @@
   file:
     path: "{{ item | dirname }}"
     state: directory
+  when: item
   with_items:
     - "{{ nginx_proxy_ssl_certificate }}"
     - "{{ nginx_proxy_ssl_certificate_key }}"
