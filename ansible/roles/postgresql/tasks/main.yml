@@ -20,6 +20,16 @@
     state: present
   when: postgresql_install_server
 
+- name: postgres | set permissions on data directory
+  become: yes
+  file:
+    owner: postgres
+    group: postgres
+    path: "{{ postgresql_datadir }}"
+    recurse: yes
+    state: directory
+  when: postgresql_install_server and postgresql_server_chown_datadir
+
 - name: postgres | initialise data directory
   become: yes
   command: "{{ postgresql_bindir }}/{{ postgresql_basename }}-setup initdb"

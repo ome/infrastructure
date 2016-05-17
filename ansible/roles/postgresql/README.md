@@ -20,6 +20,7 @@ Defaults: `defaults/main.yml`
   - `user`: Username
   - `address`: Address from which connections will be made
   - `method`: Ignore this unless you really know what you are doing
+- `postgresql_server_chown_datadir`: If `True` recursively reset the owner and group of the postgres datadir, default `False`, use this when you have an existing datadir with incorrect owner/group
 
 
 Example Playbook

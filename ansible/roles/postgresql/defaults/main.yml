@@ -18,3 +18,6 @@ postgresql_server_auth_local: True
 
 # List of dictionaries of client authorisation lines
 postgresql_server_auth: []
+
+# Recursively reset the owner/group of the postgres datadir?
+postgresql_server_chown_datadir: False
