@@ -1,0 +1,35 @@
+---
+# tasks file for roles/nginx-proxy ssl certificate copy
+
+- name: nginx | create proxy ssl certificate directory
+  become: yes
+  file:
+    path: "{{ item | dirname }}"
+    state: directory
+  with_items:
+    - "{{ nginx_proxy_ssl_certificate }}"
+    - "{{ nginx_proxy_ssl_certificate_key }}"
+
+- name: nginx | copy proxy ssl certificate
+  become: yes
+  copy:
+    dest: "{{ nginx_proxy_ssl_certificate }}"
+    group: root
+    owner: root
+    mode: 0400
+    src: "{{ nginx_proxy_ssl_certificate_source_path }}"
+  when: nginx_proxy_ssl_certificate_source_path
+  notify:
+    - restart nginx
+
+- name: nginx | copy proxy ssl certificate key
+  become: yes
+  copy:
+    dest: "{{ nginx_proxy_ssl_certificate_key }}"
+    group: root
+    owner: root
+    mode: 0400
+    src: "{{ nginx_proxy_ssl_certificate_key_source_path }}"
+  when: nginx_proxy_ssl_certificate_key_source_path
+  notify:
+    - restart nginx

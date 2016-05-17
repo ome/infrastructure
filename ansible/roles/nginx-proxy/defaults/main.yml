@@ -24,6 +24,12 @@ nginx_proxy_ssl_certificate:
 # Server path to SSL certificate key
 nginx_proxy_ssl_certificate_key:
 
+# Local path to the SSL certificate
+nginx_proxy_ssl_certificate_source_path:
+
+# Local path to the SSL certificate key
+nginx_proxy_ssl_certificate_key_source_path:
+
 # If defined the age to return in the Strict-Transport-Security header
 nginx_proxy_hsts_age:
 

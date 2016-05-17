@@ -38,6 +38,8 @@
 
 - include: nginx-cache.yml
 
+- include: nginx-ssl-certs.yml
+
 - name: nginx | start service
   become: yes
   service:
