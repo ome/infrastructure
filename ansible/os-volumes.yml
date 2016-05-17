@@ -1,0 +1,30 @@
+---
+# Playbook for creating OpenStack IDR volumes
+
+- hosts: localhost
+  connection: local
+  #gather_facts: false
+
+  vars_files:
+  #- vars/os-create-{{ os_cloud_provider | default(dundee) }}.yml
+  - vars/os-create-{{ os_cloud_provider }}.yml
+
+  roles:
+
+  - role: openstack-volume-storage
+    openstack_volume_size: 100
+    openstack_volume_vmname: "{{ database_vm_name }}"
+    openstack_volume_name: db
+    openstack_volume_device: /dev/vdb
+
+  - role: openstack-volume-storage
+    openstack_volume_size: 100
+    openstack_volume_vmname: "{{ omero_vm_name }}"
+    openstack_volume_name: data
+    openstack_volume_device: /dev/vdb
+
+  - role: openstack-volume-storage
+    openstack_volume_size: 20
+    openstack_volume_vmname: "{{ gateway_vm_name }}"
+    openstack_volume_name: nginxcache
+    openstack_volume_device: /dev/vdb

@@ -6,24 +6,8 @@
   vars:
     omero_vm_extra_groups: "uod-nfs,idr-hosts"
 
-- include: os-voladd.yml
+- include: os-volumes.yml
   vars:
-    os_vol_name: "db"
-    os_vol_dev:  /dev/vdb
-    os_voladd_vm_name: "{{ database_vm_name }}"
-
-- include: os-voladd.yml
-  vars:
-    os_vol_name: "data"
-    os_vol_dev:  /dev/vdb
-    os_voladd_vm_name: "{{ omero_vm_name }}"
-
-- include: os-voladd.yml
-  vars:
-    os_vol_name: "nginxcache"
-    os_vol_dev:  /dev/vdb
-    os_voladd_vm_name: "{{ gateway_vm_name }}"
-    os_vol_size: 20
 
 # Variables for this section are in a private file
 - hosts: database-hosts, omero-hosts, proxy-hosts
