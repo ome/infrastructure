@@ -138,6 +138,9 @@
           ternary("-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no", "")}}
       when: single_floating_ip
 
+    # To prevent duplicates with the dynamic inventory only add_host if
+    # the VM was created in this run
+
     - name: Gateway VM hosts file
       add_host:
         name: "{{ gateway_vm_name }}"
@@ -146,6 +149,7 @@
         ansible_user: centos
         ansible_become: true
         ansible_ssh_common_args: "{{ ssh_gateway_proxy | default(omit) }}"
+      when: vmgateway.changed
 
     - name: OMERO VM hosts files
       add_host:
@@ -155,6 +159,7 @@
         ansible_user: centos
         ansible_become: true
         ansible_ssh_common_args: "{{ ssh_gateway_proxy | default(omit) }}"
+      when: vmomero.changed
 
     - name: Database VM hosts files
       add_host:
@@ -164,6 +169,7 @@
         ansible_user: centos
         ansible_become: true
         ansible_ssh_common_args: "{{ ssh_gateway_proxy | default(omit) }}"
+      when: vmdatabase.changed
 
     - debug:
         msg: "IPs (OMERO) private:{{ vmomero.openstack.private_v4 }} floating:{{ vmomero.openstack.public_v4 | default('') }}"
