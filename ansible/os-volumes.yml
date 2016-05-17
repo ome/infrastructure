@@ -6,8 +6,7 @@
   #gather_facts: false
 
   vars_files:
-  #- vars/os-create-{{ os_cloud_provider | default(dundee) }}.yml
-  - vars/os-create-{{ os_cloud_provider }}.yml
+  - vars/os-create-{{ os_cloud_provider | default('uod') }}.yml
 
   roles:
 

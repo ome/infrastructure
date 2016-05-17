@@ -21,7 +21,7 @@
     ignore_internal_known_hosts: True
 
   vars_files:
-    - vars/os-create-{{ os_cloud_provider | default(dundee) }}.yml
+    - vars/os-create-{{ os_cloud_provider | default('uod') }}.yml
 
   pre_tasks:
 
