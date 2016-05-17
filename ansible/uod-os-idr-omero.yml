@@ -54,8 +54,7 @@
 
 - include: idr-dundee-nfs.yml
 
-# Provides git and other libraries
 - include: os-omero.yml
 # Vars are in os-omero.yml so that the playbook can be run independently
 
-- include: idr-metadata.yml
+- include: idr-user-utils.yml

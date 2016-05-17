@@ -1,0 +1,33 @@
+---
+# Playbook for accessing idr metadata
+
+- hosts: idr-hosts
+
+  roles:
+  - role: versioncontrol-utils
+  - role: python-pydata
+
+  tasks:
+
+  - name: Install screen
+    become: yes
+    yum:
+      pkg: screen
+      state: present
+
+  - name: Create metadata directory
+    become: yes
+    file:
+      path: /opt/idr-metadata
+      owner: omero
+      group: omero
+      recurse: yes
+      state: directory
+
+  - name: Clone metadata repo
+    become: yes
+    become_user: omero
+    git:
+      repo: git://github.com/snoopycrimecop/idr-metadata.git
+      dest: /opt/idr-metadata
+      version: merge/trigger
