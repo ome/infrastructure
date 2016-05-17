@@ -57,6 +57,14 @@
     omero_systemd_setup: True
     omero_db_create: False
 
+    omero_web_runtime_redis: True
+    omero_release: latest
+    omero_omego_additional_args: "--downloadurl http://users.openmicroscopy.org.uk/~spli"
+    omero_server_config:
+      omero.jvmcfg.heap_size.blitz: 16G
+      omero.web.session_engine: django.contrib.sessions.backends.cache
+      omero.web.caches: '{"default": {"BACKEND": "redis_cache.RedisCache", "LOCATION": "127.0.0.1:6379"}}'
+
 
 - hosts: proxy-hosts
 

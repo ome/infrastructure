@@ -56,13 +56,6 @@
 
 # Provides git and other libraries
 - include: os-omero.yml
-  vars:
-    omero_web_runtime_redis: True
-    omero_release: latest
-    omero_omego_additional_args: "--downloadurl http://users.openmicroscopy.org.uk/~spli"
-    omero_server_config:
-      omero.jvmcfg.heap_size.blitz: 16G
-      omero.web.session_engine: django.contrib.sessions.backends.cache
-      omero.web.caches: '{"default": {"BACKEND": "redis_cache.RedisCache", "LOCATION": "127.0.0.1:6379"}}'
+# Vars are in os-omero.yml so that the playbook can be run independently
 
 - include: idr-metadata.yml
