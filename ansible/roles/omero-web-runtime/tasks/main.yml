@@ -5,10 +5,17 @@
   become: yes
   yum:
     name: "{{ item }}"
-    state: latest
+    state: present
   with_items:
     - python-pip
     - python-pillow
+
+- name: omero web | install python redis package
+  become: yes
+  yum:
+    name: python-redis
+    state: present
+  when: omero_web_runtime_redis
 
 # Uninstall python module rpms that will be replaced with a pip installed version
 - name: omero web | remove python packages
