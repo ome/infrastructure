@@ -113,8 +113,19 @@ def get_host_groups(inventory, refresh=False):
 
 
 def append_hostvars(hostvars, groups, key, server, namegroup=False):
+    ansible_ssh_host = None
+    for network, ports in server['addresses'].iteritems():
+        for port in ports:
+            if port['OS-EXT-IPS:type'] == 'fixed':
+                ansible_ssh_host = port['addr']
+                break
+        if ansible_ssh_host:
+            break
+    if not ansible_ssh_host:
+        ansible_ssh_host = server['interface_ip']
+
     hostvars[key] = dict(
-        ansible_ssh_host=server['interface_ip'],
+        ansible_ssh_host=ansible_ssh_host,
         openstack=server)
     for group in get_groups_from_server(server, namegroup=namegroup):
         groups[group].append(key)
@@ -185,9 +196,6 @@ def to_json(in_dict):
 
 def parse_args():
     parser = argparse.ArgumentParser(description='OpenStack Inventory Module')
-    parser.add_argument('--private',
-                        action='store_true',
-                        help='Use private address for ansible host')
     parser.add_argument('--refresh', action='store_true',
                         help='Refresh cached information')
     parser.add_argument('--debug', action='store_true', default=False,
@@ -208,7 +216,7 @@ def main():
         inventory_args = dict(
             refresh=args.refresh,
             config_files=config_files,
-            private=args.private,
+            private=True,
         )
         if hasattr(shade.inventory.OpenStackInventory, 'extra_config'):
             inventory_args.update(dict(
