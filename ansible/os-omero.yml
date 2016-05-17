@@ -36,6 +36,10 @@
       dest: /etc/security/limits.d/95-omero.conf
     become: yes
 
+  # Ansible uses ansible_host but inventory/openstack.py uses the deprecated ansible_ssh_host
+  - set_fact:
+      omero_db_host_ansible: "{{ hostvars[groups['database-hosts'][0]]['ansible_ssh_host'] | default(hostvars[groups['database-hosts'][0]]['ansible_host']) }}"
+
   roles:
   - role: upgrade-distpackages
   - role: versioncontrol-utils
@@ -43,8 +47,7 @@
   - role: python-pydata
 
   vars:
-    # inventory/openstack.py still uses the deprecated ansible_ssh_host
-    omero_dbhost: "{{ hostvars[groups['database-hosts'][0]]['ansible_ssh_host'] }}"
+    omero_dbhost: "{{ omero_db_host_ansible }}"
     omero_dbuser: omero
     omero_dbname: omero
     omero_dbpassword: omero
@@ -65,6 +68,12 @@
 
 - hosts: proxy-hosts
 
+  pre_tasks:
+
+  # Ansible uses ansible_host but inventory/openstack.py uses the deprecated ansible_ssh_host
+  - set_fact:
+      omero_omero_host_ansible: "{{ hostvars[groups['omero-hosts'][0]]['ansible_ssh_host'] | default(hostvars[groups['omero-hosts'][0]]['ansible_host']) }}"
+
   roles:
   - role: nginx-proxy
     nginx_proxy_worker_processes: 4
@@ -76,8 +85,7 @@
     nginx_proxy_backends:
     - name: omero
       location: /
-      # inventory/openstack.py still uses the deprecated ansible_ssh_host
-      server: "http://{{ hostvars[groups['omero-hosts'][0]]['ansible_ssh_host'] }}"
+      server: "http://{{ omero_omero_host_ansible }}"
       cache_validity: 30d
   vars_files:
   - roles/nginx-proxy/vars/example-omero.yml
