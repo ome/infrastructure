@@ -3,6 +3,13 @@ Nginx Proxy
 
 Install Nginx for use as a front-end proxy.
 
+
+Dependencies
+------------
+
+Requires the `nginx` role (automatically included).
+
+
 Role Variables
 --------------
 

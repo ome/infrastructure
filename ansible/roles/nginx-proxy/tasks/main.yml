@@ -1,29 +1,6 @@
 ---
 # tasks file for roles/nginx-proxy
 
-- name: system packages | setup upstream nginx repo
-  become: yes
-  yum:
-    name: http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
-    state: present
-
-- name: system packages | install nginx
-  become: yes
-  yum:
-    name: nginx
-    state: present
-
-- name: nginx | remove default config
-  become: yes
-  copy:
-    content: "# This file is intentionally blank (Ansible)"
-    dest: /etc/nginx/conf.d/{{ item }}
-  with_items:
-    - example_ssl.conf
-    - default.conf
-  notify:
-    - restart nginx
-
 - name: nginx | main config
   become: yes
   template:
