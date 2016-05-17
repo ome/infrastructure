@@ -1,5 +1,7 @@
 ---
 # Playbook for creating OpenStack IDR VMs
+# TODO: Consider making some of this into a role, so that it's easier to
+# switch variables for different clouds
 
 - hosts: localhost
   connection: local
@@ -7,16 +9,9 @@
 
   vars:
 
-    vm_image: CentOS 7.2 1602
-
-    omero_vm_flavour: m2.large
     omero_vm_groups: "ansible-managed,os-image-centos,omero-hosts"
     omero_vm_extra_groups: ""
-
-    gateway_vm_flavour: m1.large
     gateway_vm_groups: "ansible-managed,os-image-centos,proxy-hosts"
-
-    database_vm_flavour: m1.large
     database_vm_groups: "ansible-managed,os-image-centos,database-hosts"
 
     single_floating_ip: True
@@ -25,9 +20,10 @@
     #vm_key_name:
     ignore_internal_known_hosts: True
 
-  tasks:
+  vars_files:
+    - vars/os-create-{{ os_cloud_provider | default(dundee) }}.yml
 
-    - set_fact: omero_vm_joined_groups="{{ omero_vm_groups.split(',') | union(omero_vm_extra_groups.split(',')) | join(',')}}"
+  pre_tasks:
 
     - fail:
         msg: "vm_key_name is required"
@@ -37,14 +33,10 @@
         msg: "vm_prefix is required"
       when: vm_prefix is undefined or not vm_prefix
 
-    - set_fact:
-        omero_vm_name: "{{ vm_prefix }}-omero"
 
-    - set_fact:
-        gateway_vm_name: "{{ vm_prefix }}-gateway"
+  tasks:
 
-    - set_fact:
-        database_vm_name: "{{ vm_prefix }}-database"
+    - set_fact: omero_vm_joined_groups="{{ omero_vm_groups.split(',') | union(omero_vm_extra_groups.split(',')) | join(',')}}"
 
     - name: OMERO external access security group
       os_security_group:
