@@ -58,6 +58,7 @@ Caching:
 - `nginx_proxy_cache_skip_arg`: List of query patterns that shouldn't be cached (default for this is always the result of `nginx_proxy_cache_*_url`)
 - `nginx_proxy_cache_match_arg`: List of query patterns that should be cached (default for this is always the result of `nginx_proxy_cache_*_url`)
 
+- `nginx_proxy_forward_scheme_header`: A header to be set containing the scheme (e.g. `http`, `https`) that will be passed to the backend
 - `nginx_proxy_debug_cache_headers`: If `True` add extra headers for debugging (not for production), default `False`
 - `nginx_proxy_ignore_headers`: Headers to be ignored, e.g. `'"Set-Cookie" "Vary" "Expires"'`
 - `nginx_proxy_cache_key`: Override the default Nginx cache key, for example `"$host$request_uri"` to ignore session cookies

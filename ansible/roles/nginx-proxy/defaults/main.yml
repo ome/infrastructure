@@ -66,6 +66,9 @@ nginx_proxy_cache_skip_arg: []
 nginx_proxy_cache_match_arg: []
 
 
+# Set a trusted header containing the scheme to be passed to the backend
+nginx_proxy_forward_scheme_header:
+
 # Set to True to add X-Proxy-Cache* headers for debugging
 nginx_proxy_debug_cache_headers: False
 
