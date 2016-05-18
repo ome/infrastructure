@@ -48,6 +48,22 @@
       src: 10.35.106.250:/ivol_bioimage_sm
       state: mounted
 
+  - name: Create filesets parent dir
+    become: yes
+    file:
+      path: "{{ local_filesets_sym | dirname }}"
+      state: directory
+
+  - name: Create filesets symlink
+    become: yes
+    file:
+      force: yes
+      path: "{{ local_filesets_sym }}"
+      src: "{{ nfs_filesets_dir }}"
+      state: link
+
 
   vars:
     nfs_mountpoint: /nfs/bioimage
+    nfs_filesets_dir: /nfs/bioimage/drop/complete
+    local_filesets_sym: /uod/idr/filesets
