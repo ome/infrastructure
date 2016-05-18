@@ -28,6 +28,13 @@ You are advised to change this to an actual release version.
 If a remote database server is used a user and empty database must already exist.
 
 
+Warning
+-------
+
+If you modify your configuration without upgrading OMERO.server your web configuration will not be automatically regenerated.
+You can force regeneration by deleting it.
+
+
 Example Playbooks
 -----------------
 
