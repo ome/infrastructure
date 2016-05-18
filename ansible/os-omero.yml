@@ -49,22 +49,12 @@
 
   vars:
     omero_dbhost: "{{ omero_db_host_ansible }}"
-    omero_dbuser: omero
-    omero_dbname: omero
-    omero_dbpassword: omero
-    omero_datadir: /data/OMERO
     omero_selinux_setup: True
     omero_upgrade: True
     omero_systemd_setup: True
     omero_db_create: False
 
-    omero_web_runtime_redis: True
-    omero_release: latest
-    omero_omego_additional_args: "--downloadurl http://users.openmicroscopy.org.uk/~spli"
-    omero_server_config:
-      omero.jvmcfg.heap_size.blitz: 16G
-      omero.web.session_engine: django.contrib.sessions.backends.cache
-      omero.web.caches: '{"default": {"BACKEND": "redis_cache.RedisCache", "LOCATION": "127.0.0.1:6379"}}'
+  # Additional vars are in group_vars/omero-hosts.yml
 
 
 - hosts: proxy-hosts
@@ -78,10 +68,6 @@
   roles:
   - role: nginx-proxy
     nginx_proxy_worker_processes: 4
-    #nginx_proxy_ssl: True
-    #nginx_proxy_ssl_certificate: /etc/nginx/ssl/idr-fullchain.pem
-    #nginx_proxy_ssl_certificate_key: /etc/nginx/ssl/idr-privkey.pem
-    #nginx_proxy_http2: True
     nginx_proxy_buffers: 32 16k
     nginx_proxy_backends:
     - name: omero
@@ -90,3 +76,5 @@
       cache_validity: 30d
   vars_files:
   - roles/nginx-proxy/vars/example-omero.yml
+
+  # Additional vars are in group_vars/proxy-hosts.yml
