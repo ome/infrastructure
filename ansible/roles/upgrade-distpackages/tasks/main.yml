@@ -6,4 +6,4 @@
   yum:
     name: "{{ item }}"
     state: latest
-  with_items: upgrade_distpackages
+  with_items: "{{ upgrade_distpackages }}"
