@@ -50,7 +50,7 @@
   vars:
     omero_dbhost: "{{ omero_db_host_ansible }}"
     omero_selinux_setup: True
-    omero_upgrade: True
+    #omero_upgrade: True
     omero_systemd_setup: True
     omero_db_create: False
 
