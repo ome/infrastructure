@@ -1,0 +1,46 @@
+---
+# Playbook for starting an IDR-like OMERO in the UoD
+# openstack cloud.
+
+- include: os-create.yml
+  vars:
+    omero_vm_extra_groups: "uod-nfs,idr-hosts"
+    os_cloud_provider: uod
+
+- include: os-volumes.yml
+  vars:
+    os_cloud_provider: uod
+
+# Variables for this section are in a private file
+- hosts: database-hosts, omero-hosts, proxy-hosts
+  roles:
+  - role: sudoers
+#    sudoers_individual_commands:
+  - role: local-accounts
+#    local_accounts_create:
+
+
+- hosts: database-hosts
+  roles:
+  - role: storage-volume-initialise
+    storage_volume_initialise_device: /dev/vdb
+    storage_volume_initialise_mount: /var/lib/pgsql
+
+- hosts: omero-hosts
+  roles:
+  - role: storage-volume-initialise
+    storage_volume_initialise_device: /dev/vdb
+    storage_volume_initialise_mount: /data
+
+- hosts: proxy-hosts
+  roles:
+  - role: storage-volume-initialise
+    storage_volume_initialise_device: /dev/vdb
+    storage_volume_initialise_mount: /var/cache/nginx
+
+- include: idr-dundee-nfs.yml
+
+- include: os-omero.yml
+# Vars are in os-omero.yml so that the playbook can be run independently
+
+- include: idr-user-utils.yml
