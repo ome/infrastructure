@@ -1,15 +1,15 @@
 ---
-# Playbook for starting an IDR-like OMERO in the UoD
+# Playbook for starting an IDR-like OMERO in the EBI Embassy
 # openstack cloud.
 
 - include: os-create.yml
   vars:
-    omero_vm_extra_groups: "uod-nfs,idr-hosts"
-    os_cloud_provider: uod
+    omero_vm_extra_groups: "ebi-nfs,idr-hosts"
+    os_cloud_provider: ebi
 
 - include: os-volumes.yml
   vars:
-    os_cloud_provider: uod
+    os_cloud_provider: ebi
 
 # Variables for this section are in a private file
 - hosts: database-hosts, omero-hosts, proxy-hosts
@@ -26,10 +26,12 @@
     storage_volume_initialise_device: /dev/vdb
     storage_volume_initialise_mount: /var/lib/pgsql
 
+# TODO: At present the existing volume has one partition instead of being a
+# raw disk image
 - hosts: omero-hosts
   roles:
   - role: storage-volume-initialise
-    storage_volume_initialise_device: /dev/vdb
+    storage_volume_initialise_device: /dev/vdb1
     storage_volume_initialise_mount: /data
 
 - hosts: proxy-hosts
@@ -38,7 +40,7 @@
     storage_volume_initialise_device: /dev/vdb
     storage_volume_initialise_mount: /var/cache/nginx
 
-- include: idr-dundee-nfs.yml
+- include: idr-ebi-nfs.yml
 
 - include: os-omero.yml
 # Vars are in os-omero.yml so that the playbook can be run independently
