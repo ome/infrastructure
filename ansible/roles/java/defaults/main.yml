@@ -6,5 +6,4 @@ javajreversions:
   - 1.8.0
 
 # List of JDK versions to install
-#javajdkversions:
-#  - 1.8.0
+javajdkversions: []

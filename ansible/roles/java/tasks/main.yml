@@ -6,13 +6,11 @@
   yum:
     name: "java-{{ item }}-openjdk"
     state: present
-  with_items: javajreversions
-  when: javajreversions.0 is defined
+  with_items: "{{ javajreversions | default([]) }}"
 
 - name: system packages | install java jdk
   become: yes
   yum:
     name: "java-{{ item }}-openjdk-devel"
     state: present
-  with_items: javajdkversions
-  when: javajdkversions.0 is defined
+  with_items: "{{ javajdkversions | default([]) }}"
