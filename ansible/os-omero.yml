@@ -13,7 +13,7 @@
   - role: postgresql
     postgresql_server_listen: "'*'"
     postgresql_server_auth:
-    - database: omero
+    - database: all
       user: omero
       address: 0.0.0.0/0
     postgresql_users_databases:
