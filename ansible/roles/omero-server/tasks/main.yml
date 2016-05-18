@@ -89,6 +89,16 @@
     state: directory
   when: omero_datadir_create and not stdd.stat.exists
 
+- name: omero | override omero data owner
+  become: yes
+  file:
+    owner: "{{ omero_system_user }}"
+    path: "{{ omero_datadir }}"
+    recurse: yes
+    state: directory
+  when: omero_datadir_chown
+
+
 # OMERO.server
 
 # TODO: omero_reinstall_on_error

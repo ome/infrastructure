@@ -42,6 +42,10 @@ omero_datadir: /OMERO
 # Create the OMERO data directory, set to False if storage is externally managed
 omero_datadir_create: True
 
+# Recursively set the owner on the OMERO data directory, use if the directory
+# has been copied with an incorrect owner
+omero_datadir_chown: False
+
 # Path of the omego virtualenv
 omero_omego_venv: "{{ omero_basedir }}/omego"
 
