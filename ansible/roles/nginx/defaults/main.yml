@@ -1,0 +1,8 @@
+---
+# defaults file for roles/nginx
+
+# Rotate log files at this interval
+nginx_logrotate_interval: daily
+
+# Number of backlog files to keep
+nginx_logrotate_backlog_size: 366

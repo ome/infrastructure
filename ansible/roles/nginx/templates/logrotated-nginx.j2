@@ -1,7 +1,8 @@
+# Managed by Ansible
 /var/log/nginx/*.log {
-    daily
+    {{ nginx_logrotate_interval }}
     missingok
-    rotate 52
+    rotate {{ nginx_logrotate_backlog_size }}
     compress
     delaycompress
     notifempty
