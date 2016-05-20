@@ -16,6 +16,9 @@ server {
     add_header Strict-Transport-Security "max-age={{ nginx_proxy_hsts_age }}";
 {%   endif %}
 {% endif %}
+{% if nginx_proxy_cachebuster_port %}
+    listen       {{ nginx_proxy_cachebuster_port }};
+{% endif %}
     server_name  $hostname;
 
 {% if nginx_proxy_ssl %}
@@ -76,7 +79,7 @@ server {
 {%     if nginx_proxy_cache_use_stale %}
         proxy_cache_use_stale  {{ nginx_proxy_cache_use_stale }};
 {%     endif %}
-        proxy_cache_bypass     $skip_cache;
+        proxy_cache_bypass     $cache_refresh;
         proxy_no_cache         $skip_cache;
 
 {%     if nginx_proxy_debug_cache_headers %}

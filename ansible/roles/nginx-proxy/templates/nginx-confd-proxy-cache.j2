@@ -25,6 +25,14 @@ map $args $skip_cache
 {% endfor %}
 }
 
+map $server_port $cache_refresh
+{
+    default $skip_cache;
+{% if nginx_proxy_cachebuster_port %}
+    {{ nginx_proxy_cachebuster_port }} 1;
+{% endif %}
+}
+
 # Use different caches for different URLs
 map $request_uri $cache_zone_name
 {

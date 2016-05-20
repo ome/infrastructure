@@ -83,3 +83,6 @@ nginx_proxy_cache_key:
 
 # Use stale cache if these situations are encountered
 nginx_proxy_cache_use_stale: "error timeout invalid_header updating http_500 http_502 http_503 http_504"
+
+# Requests on this port will force a cache refresh
+nginx_proxy_cachebuster_port:
