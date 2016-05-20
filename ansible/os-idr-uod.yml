@@ -29,7 +29,7 @@
 - hosts: omero-hosts
   roles:
   - role: storage-volume-initialise
-    storage_volume_initialise_device: /dev/vdb
+    storage_volume_initialise_device: /dev/vdb1
     storage_volume_initialise_mount: /data
 
 - hosts: proxy-hosts
