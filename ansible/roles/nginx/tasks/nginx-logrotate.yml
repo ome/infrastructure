@@ -1,0 +1,9 @@
+---
+# tasks file for roles/nginx-proxy logroate config
+
+- name: logrotate | configure main file
+  become: yes
+  template:
+    backup: no
+    dest: /etc/logrotate.d/nginx
+    src: logrotated-nginx.j2

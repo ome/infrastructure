@@ -26,3 +26,5 @@
   when: not (nginx_keep_default_configs | default(False))
   notify:
     - restart nginx
+
+- include: nginx-logrotate.yml
