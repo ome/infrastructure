@@ -14,8 +14,6 @@
     gateway_vm_groups: "ansible-managed,os-image-centos,proxy-hosts"
     database_vm_groups: "ansible-managed,os-image-centos,database-hosts"
 
-    single_floating_ip: True
-
     #vm_prefix:
     #vm_key_name:
     ignore_internal_known_hosts: True
@@ -35,6 +33,12 @@
 
 
   tasks:
+
+    # If True (default) a single gateway will be setup
+    # Set this to False if every instance has a floating IP
+    - set_fact:
+        single_floating_ip: True
+      when: single_floating_ip is not defined
 
     - set_fact: omero_vm_joined_groups="{{ omero_vm_groups.split(',') | union(omero_vm_extra_groups.split(',')) | join(',')}}"
 
