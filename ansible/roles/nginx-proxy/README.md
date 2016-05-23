@@ -48,11 +48,19 @@ Backend servers:
 Redirection:
 
 - `nginx_proxy_redirect_map`: List of dictionaries of URL redirects with fields:
-  - `match`: The request uri to match (operators such as ~ are allowed)
+  - `match`: The request uri to match (operators such as ~ are allowed, matching can include query arguments)
   - `dest`: The new uri
-- `nginx_proxy_redirect_locations`: List of dictionaries of locations to be mapped using `nginx_proxy_redirect_map`
+- `nginx_proxy_redirect_map_locations`: List of dictionaries of locations to be mapped using `nginx_proxy_redirect_map`
   - `location`: An nginx location to be mapped
   - `code`: Optional HTTP redirect status code, default `302` (use `301` for a permanent redirect)
+- `nginx_proxy_redirect_direct_locations`: List of dictionaries of locations to be mapped directly with fields:
+  - `location`: An nginx location to be mapped
+  - `dest`: The new uri
+  - `code`: Optional HTTP redirect status code, default `302`
+
+Use `nginx_proxy_redirect_direct_locations` if you need to redirect based on Nginx `location` only, use `nginx_proxy_redirect_map` with `nginx_proxy_redirect_map_locations` if you also want to redirect based on query arguments.
+
+
 
 Caching:
 

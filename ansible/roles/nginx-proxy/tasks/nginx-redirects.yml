@@ -6,7 +6,7 @@
 - name: nginx | check redirect configuration
   fail:
     msg: "nginx_proxy_redirect_locations and nginx_proxy_redirect_map must be used together"
-  when: (nginx_proxy_redirect_locations and not nginx_proxy_redirect_map) or (not nginx_proxy_redirect_locations and nginx_proxy_redirect_map)
+  when: (nginx_proxy_redirect_map_locations and not nginx_proxy_redirect_map) or (not nginx_proxy_redirect_map_locations and nginx_proxy_redirect_map)
 
 - name: nginx | proxy redirects config
   become: yes

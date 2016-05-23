@@ -56,8 +56,14 @@ nginx_proxy_redirect_map: []
 #  dest: /new/url
 
 # List of locations to be passed to nginx_proxy_redirect_map, and http status
-nginx_proxy_redirect_locations: []
+nginx_proxy_redirect_map_locations: []
 #- location: /old
+#  code: 302
+
+# List of locations to be redirected without using the map (no query $args)
+nginx_proxy_redirect_direct_locations: []
+#- location: /old
+#  dest: /new/url
 #  code: 302
 
 # Caching parameters
