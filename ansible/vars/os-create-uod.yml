@@ -1,7 +1,7 @@
 ---
 # Dundee variables for os-create.yml
 
-vm_image: CentOS 7.2 1602
+vm_image: CentOS 7 1604
 
 omero_vm_flavour: m2.large
 gateway_vm_flavour: m1.large
