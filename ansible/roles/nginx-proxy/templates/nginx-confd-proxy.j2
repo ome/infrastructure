@@ -57,6 +57,12 @@ server {
     proxy_set_header {{ nginx_proxy_forward_scheme_header }} $scheme;
 {% endif %}
 
+{% for item in nginx_proxy_redirect_locations %}
+    location {{ item.location }} {
+        return {{ item.code | default('302') }} $redirect_uri;
+    }
+{% endfor %}
+
 {% for item in nginx_proxy_backends %}
     location {{ item.location }} {
 {%   if item.dynamic | default(False) %}

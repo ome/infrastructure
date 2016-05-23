@@ -45,6 +45,15 @@ Backend servers:
   - `dynamic`: If `True` lookup IP on every request, default `False` (only lookup at startup).
   - `cache_validity`: The time that an object should be cached for, if omitted caching is disabled for this backend
 
+Redirection:
+
+- `nginx_proxy_redirect_map`: List of dictionaries of URL redirects with fields:
+  - `match`: The request uri to match (operators such as ~ are allowed)
+  - `dest`: The new uri
+- `nginx_proxy_redirect_locations`: List of dictionaries of locations to be mapped using `nginx_proxy_redirect_map`
+  - `location`: An nginx location to be mapped
+  - `code`: Optional HTTP redirect status code, default `302` (use `301` for a permanent redirect)
+
 Caching:
 
 - `nginx_proxy_cache_parent_path`: The parent directory for the nginx caches (optional)

@@ -1,0 +1,7 @@
+# Nginx redirection map
+map $request_uri $redirect_uri
+{
+{% for item in nginx_proxy_redirect_map %}
+    {{ item.match }} {{ item.dest }};
+{% endfor %}
+}

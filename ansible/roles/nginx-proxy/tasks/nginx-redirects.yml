@@ -1,0 +1,27 @@
+---
+# tasks file for roles/nginx-proxy redirection
+
+# Redirection requires two variables to be set
+# (check both lists are empty, or both are non-empty)
+- name: nginx | check redirect configuration
+  fail:
+    msg: "nginx_proxy_redirect_locations and nginx_proxy_redirect_map must be used together"
+  when: (nginx_proxy_redirect_locations and not nginx_proxy_redirect_map) or (not nginx_proxy_redirect_locations and nginx_proxy_redirect_map)
+
+- name: nginx | proxy redirects config
+  become: yes
+  template:
+    src: nginx-confd-proxy-redirect.j2
+    dest: /etc/nginx/conf.d/proxy-redirect.conf
+  when: nginx_proxy_redirect_map
+  notify:
+    - restart nginx
+
+- name: nginx | proxy redirects config
+  become: yes
+  file:
+    dest: /etc/nginx/conf.d/proxy-redirect.conf
+    state: absent
+  notify:
+    - restart nginx
+  when: not nginx_proxy_redirect_map

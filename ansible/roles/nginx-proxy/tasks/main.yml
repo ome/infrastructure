@@ -9,6 +9,10 @@
   notify:
     - restart nginx
 
+- include: nginx-cache.yml
+
+- include: nginx-redirects.yml
+
 # See http://serverfault.com/a/337893
 - name: nginx | proxy config
   become: yes
@@ -35,8 +39,6 @@
     state: absent
   notify:
     - restart nginx
-
-- include: nginx-cache.yml
 
 - include: nginx-ssl-certs.yml
 

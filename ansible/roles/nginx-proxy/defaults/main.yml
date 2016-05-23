@@ -50,6 +50,16 @@ nginx_proxy_backends: []
 #  dynamic: False
 #  cache_validity: 1d
 
+# List of redirections
+nginx_proxy_redirect_map: []
+#- match: /old/url
+#  dest: /new/url
+
+# List of locations to be passed to nginx_proxy_redirect_map, and http status
+nginx_proxy_redirect_locations: []
+#- location: /old
+#  code: 302
+
 # Caching parameters
 # Parent path of Nginx disk caches
 nginx_proxy_cache_parent_path: /var/cache/nginx
