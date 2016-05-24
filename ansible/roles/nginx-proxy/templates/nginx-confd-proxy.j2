@@ -39,6 +39,12 @@ server {
         root   /usr/share/nginx/html;
     }
 
+{% for item in nginx_proxy_block_locations %}
+    location {{ item }} {
+        return 404;
+    }
+{% endfor %}
+
 {% if nginx_dynamic_proxy_resolvers %}
     # Nginx requires explicit DNS servers
     resolver {{ nginx_dynamic_proxy_resolvers }};

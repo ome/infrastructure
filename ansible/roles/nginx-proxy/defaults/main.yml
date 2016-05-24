@@ -66,6 +66,10 @@ nginx_proxy_redirect_direct_locations: []
 #  dest: /new/url
 #  code: 302
 
+# Locations which should be blocked
+nginx_proxy_block_locations: []
+
+
 # Caching parameters
 # Parent path of Nginx disk caches
 nginx_proxy_cache_parent_path: /var/cache/nginx

@@ -57,6 +57,7 @@ Redirection:
   - `location`: An nginx location to be mapped
   - `dest`: The new uri
   - `code`: Optional HTTP redirect status code, default `302`
+- `nginx_proxy_block_locations`: List of locations which should be blocked (404)
 
 Use `nginx_proxy_redirect_direct_locations` if you need to redirect based on Nginx `location` only, use `nginx_proxy_redirect_map` with `nginx_proxy_redirect_map_locations` if you also want to redirect based on query arguments.
 
