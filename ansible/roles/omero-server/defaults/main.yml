@@ -17,6 +17,9 @@ omero_reinstall_on_error: False
 # OMERO system user
 omero_system_user: omero
 
+# OMERO system user ID (If not defined one is chosen automatically)
+#omero_system_uid:
+
 omero_basedir: /home/omero
 #omero_serverdir: "{{ omero_basedir }}/server"
 omero_serverdir: "{{ omero_basedir }}"

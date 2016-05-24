@@ -18,7 +18,9 @@
     home: "{{ omero_basedir }}"
     append: yes
     state: present
+    #system: yes
     shell: /bin/bash
+    uid: "{{ omero_system_uid | default(omit) }}"
 
 # Explicitly include omero_basedir so that it'll be world-accessible
 - name: omero | create omero directories
