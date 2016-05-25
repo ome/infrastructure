@@ -86,6 +86,9 @@ nginx_proxy_cache_skip_arg: []
 nginx_proxy_cache_match_arg: []
 
 
+# Pass this hostname to the backend proxy, default is automatic
+nginx_proxy_set_header_host: "$host"
+
 # Set a trusted header containing the scheme to be passed to the backend
 nginx_proxy_forward_scheme_header:
 
