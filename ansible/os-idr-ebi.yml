@@ -11,14 +11,8 @@
   vars:
     os_cloud_provider: ebi
 
+- include: os-local-users.yml
 # Variables for this section are in a private file
-- hosts: database-hosts, omero-hosts, proxy-hosts
-  roles:
-  - role: sudoers
-#    sudoers_individual_commands:
-  - role: local-accounts
-#    local_accounts_create:
-
 
 - hosts: database-hosts
   roles:
