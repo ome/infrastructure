@@ -4,7 +4,8 @@ proxy_cache_path {{ nginx_proxy_cache_parent_path }}/{{ item.name }} levels=1:2 
 {% endfor %}
 
 # Disable/enable caching for particular URLs
-map $request_uri $uri_skip_cache
+#map $request_uri $uri_skip_cache
+map $request_uri $skip_cache
 {
 {% for item in nginx_proxy_cache_skip_uri %}
     {{ item }} 1;
@@ -14,16 +15,16 @@ map $request_uri $uri_skip_cache
 {% endfor %}
 }
 
-map $args $skip_cache
-{
-    default $uri_skip_cache;
-{% for item in nginx_proxy_cache_skip_arg %}
-    {{ item }} 1;
-{% endfor %}
-{% for item in nginx_proxy_cache_match_arg %}
-    {{ item }} 0;
-{% endfor %}
-}
+#map $args $skip_cache
+#{
+#    default $uri_skip_cache;
+#{% for item in nginx_proxy_cache_skip_arg %}
+#    {{ item }} 1;
+#{% endfor %}
+#{% for item in nginx_proxy_cache_match_arg %}
+#    {{ item }} 0;
+#{% endfor %}
+#}
 
 map $server_port $cache_refresh
 {

@@ -10,12 +10,12 @@ nginx_proxy_cache_key: "$request_uri"
 nginx_proxy_ignore_headers: '"Set-Cookie" "Vary" "Expires"'
 
 nginx_proxy_cache_match_uri:
-- '"~webclient/api/paths_to_object*"'
+#- '"~webclient/api/paths_to_object*"'
 - '"~web(client|gateway)/(metadata|render)_*"'
 - '"~static/*"'
 
-nginx_proxy_cache_match_arg:
-- '"~show=*"'
+#nginx_proxy_cache_match_arg:
+#- '"~show=*"'
 
 # Order is important, the first match will be used
 nginx_proxy_caches:
@@ -44,9 +44,9 @@ nginx_proxy_caches:
   inactive: 30d
   match:
   - '"~webclient/metadata_*"'
-- name: omeroshow
-  keysize: 600m
-  inactive: 30d
-  match:
-  - '"~webclient/.*/?show=*"'
-  - '"~webclient/api/paths_to_object/*"'
+#- name: omeroshow
+#  keysize: 600m
+#  inactive: 30d
+#  match:
+#  - '"~webclient/.*/?show=*"'
+#  - '"~webclient/api/paths_to_object/*"'
