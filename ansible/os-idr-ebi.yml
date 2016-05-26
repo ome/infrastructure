@@ -39,4 +39,6 @@
 - include: os-omero.yml
 # Vars are in os-omero.yml so that the playbook can be run independently
 
+- include: os-local-files.yml
+
 - include: idr-user-utils.yml

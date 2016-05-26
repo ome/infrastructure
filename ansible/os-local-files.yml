@@ -1,0 +1,26 @@
+---
+# Playbook for copying local files
+
+# TODO: This si a temporary palybook for copying ad-hoc files
+# This should be cleaned up and moved/combined into an appropriate role
+
+# Variables should be in a private group_vars file
+- hosts: proxy-hosts
+
+  tasks:
+
+  - name: Create IDR landing page directory
+    become: yes
+    file:
+      path: /srv/www/html
+#      recurse: yes
+      serole: _default
+      setype: _default
+      seuser: _default
+      state: directory
+
+  - name: Create IDR landing page
+    become: yes
+    copy:
+      dest: /srv/www/html/
+      src: inventory/group_vars/files/html/
