@@ -69,11 +69,19 @@
   - role: nginx-proxy
     nginx_proxy_worker_processes: 4
     nginx_proxy_buffers: 32 16k
+    # TODO: This needs to match the cache configuration in nginx-proxy, so should be combined in one place
     nginx_proxy_backends:
+    - name: omerocached
+      location: ~ /web(client|gateway)/(metadata|render)_*
+      server: "http://{{ omero_omero_host_ansible }}"
+      cache_validity: 30d
+    - name: omerostatic
+      location: ~ /static/*
+      server: "http://{{ omero_omero_host_ansible }}"
+      cache_validity: 30d
     - name: omero
       location: /
       server: "http://{{ omero_omero_host_ansible }}"
-      cache_validity: 30d
   vars_files:
   - roles/nginx-proxy/vars/example-omero.yml
 
