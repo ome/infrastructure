@@ -106,7 +106,7 @@ server {
 {%     if nginx_proxy_cache_key %}
         proxy_cache_key        "{{ nginx_proxy_cache_key }}";
 {%     endif %}
-        proxy_cache_valid      200 301 {{ item.cache_validity }};
+        proxy_cache_valid      200 {{ item.cache_validity }};
         proxy_cache_methods    GET HEAD; # Only GET and HEAD methods apply
 {%     if nginx_proxy_cache_use_stale %}
         proxy_cache_use_stale  {{ nginx_proxy_cache_use_stale }};
