@@ -7,7 +7,9 @@
 # other servers
 nginx_proxy_cache_key: "$request_uri"
 
-nginx_proxy_ignore_headers: '"Set-Cookie" "Vary" "Expires"'
+nginx_proxy_cache_ignore_headers: '"Set-Cookie" "Vary" "Expires"'
+nginx_proxy_cache_hide_headers:
+- Set-Cookie
 
 nginx_proxy_cache_match_uri:
 #- '"~webclient/api/paths_to_object*"'
