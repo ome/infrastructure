@@ -99,8 +99,11 @@ nginx_proxy_debug_cache_headers: False
 # Prevent multiple backend requests to the same object within this time
 nginx_proxy_cache_lock_time: 1m
 
-# Headers to be ignored, e.g. '"Set-Cookie" "Vary" "Expires"'
-nginx_proxy_ignore_headers:
+# Headers to be ignored in cache, e.g. '"Set-Cookie" "Vary" "Expires"'
+nginx_proxy_cache_ignore_headers:
+
+# Headers to be hidden from clients in cached responses, list
+nginx_proxy_cache_hide_headers: []
 
 # Override the default Nginx cache key
 nginx_proxy_cache_key:

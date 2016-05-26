@@ -129,9 +129,12 @@ server {
         proxy_cache_lock_timeout  {{ nginx_proxy_cache_lock_time }};
 {%     endif %}
 
-{%     if nginx_proxy_ignore_headers %}
-        proxy_ignore_headers   {{ nginx_proxy_ignore_headers }};
+{%     if nginx_proxy_cache_ignore_headers %}
+        proxy_ignore_headers   {{ nginx_proxy_cache_ignore_headers }};
 {%     endif %}
+{%     for item in nginx_proxy_cache_hide_headers %}
+        proxy_hide_header {{ item }};
+{%     endfor %}
 {%   endif %}
     }
 

@@ -82,7 +82,8 @@ Caching:
 - `nginx_proxy_set_header_host`: Override the hostname seen by the backend proxy, default is to use the Nginx `$host` variable (recommended for most cases)
 - `nginx_proxy_forward_scheme_header`: A header to be set containing the scheme (e.g. `http`, `https`) that will be passed to the backend
 - `nginx_proxy_debug_cache_headers`: If `True` add extra headers for debugging (not for production), default `False`
-- `nginx_proxy_ignore_headers`: Headers to be ignored, e.g. `'"Set-Cookie" "Vary" "Expires"'`
+- `nginx_proxy_cache_ignore_headers`: Headers to be ignored, e.g. `'"Set-Cookie" "Vary" "Expires"'`
+- `nginx_proxy_cache_hide_headers`: Headers to be hidden from clients in cached responses, must be a list e.g. `[Set-Cookie]`
 - `nginx_proxy_cache_key`: Override the default Nginx cache key, for example `"$host$request_uri"` to ignore session cookies
 - `nginx_proxy_cache_use_stale`: Situations in which stale cache results should be returned, see `defaults/main.yml` for default
 - `nginx_proxy_cache_lock_time`: Prevent multiple backend requests to the same object (subsequent requests will wait for the first to either return or time-out), default 1 minute
