@@ -69,9 +69,23 @@ server {
     }
 {% endfor %}
 
-{% for item in nginx_proxy_redirect_direct_locations %}
+{% for item in nginx_proxy_direct_locations %}
     location {{ item.location }} {
-        return {{ item.code | default('302') }} {{ item.dest }};
+{%   if 'redirect301' in item %}
+        return 301 {{ item.redirect301 }};
+{%   endif %}
+{%   if 'redirect302' in item %}
+        return 302 {{ item.redirect302 }};
+{%   endif %}
+{%   if 'index' in item %}
+        index {{ item.index }};
+{%   endif %}
+{%   if 'root' in item %}
+        root {{ item.root }};
+{%   endif %}
+{%   if 'alias' in item %}
+        alias {{ item.alias }};
+{%   endif %}
     }
 {% endfor %}
 

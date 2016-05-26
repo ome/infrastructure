@@ -60,11 +60,12 @@ nginx_proxy_redirect_map_locations: []
 #- location: /old
 #  code: 302
 
-# List of locations to be redirected without using the map (no query $args)
-nginx_proxy_redirect_direct_locations: []
+# List of locations to be handled without using the map (no query $args)
+nginx_proxy_direct_locations: []
 #- location: /old
-#  dest: /new/url
-#  code: 302
+#  redirect301: /new/url
+#  redirect302: /new/url
+#  index: index.html
 
 # Locations which should be blocked
 nginx_proxy_block_locations: []
