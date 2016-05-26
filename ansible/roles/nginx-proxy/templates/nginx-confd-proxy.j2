@@ -109,10 +109,10 @@ server {
 {%       endif %}
 {%     endif %}
 
-{%     if nginx_proxy_lock_time %}
+{%     if nginx_proxy_cache_lock_time %}
         proxy_cache_lock          on;
-        proxy_cache_lock_age      {{ nginx_proxy_lock_time }};
-        proxy_cache_lock_timeout  {{ nginx_proxy_lock_time }};
+        proxy_cache_lock_age      {{ nginx_proxy_cache_lock_time }};
+        proxy_cache_lock_timeout  {{ nginx_proxy_cache_lock_time }};
 {%     endif %}
 
 {%     if nginx_proxy_ignore_headers %}

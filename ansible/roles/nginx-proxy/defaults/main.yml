@@ -96,7 +96,7 @@ nginx_proxy_forward_scheme_header:
 nginx_proxy_debug_cache_headers: False
 
 # Prevent multiple backend requests to the same object within this time
-nginx_proxy_lock_time: 1m
+nginx_proxy_cache_lock_time: 1m
 
 # Headers to be ignored, e.g. '"Set-Cookie" "Vary" "Expires"'
 nginx_proxy_ignore_headers:
