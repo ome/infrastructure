@@ -19,8 +19,13 @@
       seuser: _default
       state: directory
 
+# TODO: Consider synchronize, though this requires sudo tty
   - name: Create IDR landing page
     become: yes
+    #synchronize:
     copy:
       dest: /srv/www/html/
       src: inventory/group_vars/files/html/
+      #delete: yes
+      #owner: no
+      #recursive: yes
