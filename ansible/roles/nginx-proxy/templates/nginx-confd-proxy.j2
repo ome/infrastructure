@@ -1,0 +1,103 @@
+server {
+    listen       80 default_server;
+
+{% if nginx_proxy_ssl and nginx_proxy_force_ssl %}
+    server_name  $hostname;
+    # Redirect all http to https
+    return 301 https://$host$request_uri;
+}
+
+server {
+{% endif %}
+
+{% if nginx_proxy_ssl %}
+    listen       443 ssl{% if nginx_proxy_http2 %} http2{% endif %};
+{%   if nginx_proxy_hsts_age %}
+    add_header Strict-Transport-Security "max-age={{ nginx_proxy_hsts_age }}";
+{%   endif %}
+{% endif %}
+    server_name  $hostname;
+
+{% if nginx_proxy_ssl %}
+    ssl_certificate {{ nginx_proxy_ssl_certificate }};
+    ssl_certificate_key {{ nginx_proxy_ssl_certificate_key }};
+    ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;  # don't use SSLv3 ref: POODLE
+{% endif %}
+
+    #charset koi8-r;
+    #access_log  /var/log/nginx/log/host.access.log  main;
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+{% if nginx_dynamic_proxy_resolvers %}
+    # Nginx requires explicit DNS servers
+    resolver {{ nginx_dynamic_proxy_resolvers }};
+{% endif %}
+
+{% if nginx_proxy_buffers %}
+    # Proxy buffers
+    proxy_buffers {{ nginx_proxy_buffers }};
+{% endif %}
+
+    # Common proxy headers
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+
+{% for item in nginx_proxy_backends %}
+    location {{ item.location }} {
+{%   if item.dynamic | default(False) %}
+        # To force dynamic DNS lookups need to use a variable
+        set $backend_{{ item.name }} "{{ item.server }}";
+        proxy_pass $backend_{{ item.name }};
+        proxy_redirect $backend_{{ item.name }} $scheme://$server_name;
+{%   else %}
+        proxy_pass {{ item.server }};
+        proxy_redirect {{ item.server }} $scheme://$server_name;
+{%   endif %}
+
+{%   if item.cache_validity | default(False) %}
+        proxy_cache            $cache_zone_name;
+{%     if nginx_proxy_cache_key %}
+        proxy_cache_key        "{{ nginx_proxy_cache_key }}";
+{%     endif %}
+        proxy_cache_valid      200 301 302 {{ item.cache_validity }};
+        proxy_cache_methods    GET HEAD; # Only GET and HEAD methods apply
+{%     if nginx_proxy_cache_use_stale %}
+        proxy_cache_use_stale  {{ nginx_proxy_cache_use_stale }};
+{%     endif %}
+        proxy_cache_bypass     $skip_cache;
+        proxy_no_cache         $skip_cache;
+
+{%     if nginx_proxy_debug_cache_headers %}
+        add_header             X-Proxy-Cache $upstream_cache_status;
+        add_header             X-Proxy-Cache-Skip $skip_cache;
+        add_header             X-Proxy-Cache-Zone $cache_zone_name;
+{%       if nginx_proxy_cache_key %}
+        add_header             X-Proxy-Cache-Key "{{ nginx_proxy_cache_key }}";
+{%       endif %}
+{%     endif %}
+
+{%     if nginx_proxy_lock_time %}
+        proxy_cache_lock          on;
+        proxy_cache_lock_age      {{ nginx_proxy_lock_time }};
+        proxy_cache_lock_timeout  {{ nginx_proxy_lock_time }};
+{%     endif %}
+
+{%     if nginx_proxy_ignore_headers %}
+        proxy_ignore_headers   {{ nginx_proxy_ignore_headers }};
+{%     endif %}
+{%   endif %}
+    }
+
+{% endfor %}
+
+}
