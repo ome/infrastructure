@@ -25,5 +25,4 @@
     dest: /etc/sudoers.d/sudoers-individual_commands
     backup: no
     validate: visudo -cf %s
-  with_items: sudoers_individual_commands
   when: sudoers_individual_commands | default([])

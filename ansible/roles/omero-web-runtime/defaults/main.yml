@@ -1,0 +1,5 @@
+---
+# defaults file for roles/omero-web-runtime
+
+# Whether to install redis requirements
+omero_web_runtime_redis: False

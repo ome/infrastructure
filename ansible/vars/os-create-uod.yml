@@ -1,0 +1,14 @@
+---
+# Dundee variables for os-create.yml
+
+vm_image: CentOS 7 1604
+
+omero_vm_flavour: m2.large
+gateway_vm_flavour: m1.large
+database_vm_flavour: m1.large
+
+omero_vm_name: "{{ vm_prefix }}-omero"
+gateway_vm_name: "{{ vm_prefix }}-gateway"
+database_vm_name: "{{ vm_prefix }}-database"
+
+# Assume there's only one network in this tenancy so no need to specify network

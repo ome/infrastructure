@@ -1,0 +1,10 @@
+---
+# Playbook for creating local user accounts on Openstack instances
+
+# Variables should be in a private group_vars file
+- hosts: database-hosts, omero-hosts, proxy-hosts
+  roles:
+  - role: sudoers
+#    sudoers_individual_commands:
+  - role: local-accounts
+#    local_accounts_create:

@@ -6,17 +6,27 @@
 # as they are required for some IDR related tasks.
 # For a standard production server you won't need these.
 
-- hosts: "{{ omero_vm_name }}"
+
+- hosts: database-hosts
+
+  roles:
+  - role: postgresql
+    postgresql_server_listen: "'*'"
+    postgresql_server_auth:
+    - database: all
+      user: omero
+      address: 0.0.0.0/0
+    postgresql_users_databases:
+    - user: omero
+      password: omero
+      databases: [omero]
+    postgresql_server_chown_datadir: True
+
+
+- hosts: omero-hosts
 
   pre_tasks:
-  # This is needed for ansible to be run by cloud-init
-  - lineinfile:
-      backup: yes
-      dest: /etc/sudoers
-      regexp: "^Defaults\\s+requiretty"
-      state: absent
-      validate: "visudo -cf %s"
-    become: yes
+
   # Increase open files and processes (alternatively use the pam_limits module)
   - copy:
       content: |
@@ -27,27 +37,52 @@
       dest: /etc/security/limits.d/95-omero.conf
     become: yes
 
-  - yum: pkg=screen state=present
-    become: yes
+  # Ansible uses ansible_host but inventory/openstack.py uses the deprecated ansible_ssh_host
+  - set_fact:
+      omero_db_host_ansible: "{{ hostvars[groups['database-hosts'][0]]['ansible_ssh_host'] | default(hostvars[groups['database-hosts'][0]]['ansible_host']) }}"
 
   roles:
   - role: upgrade-distpackages
   - role: versioncontrol-utils
-  - role: samba-client
   - role: omero-server
   - role: python-pydata
 
   vars:
-    postgresql_users_databases:
-    - user: omero
-      password: omero
-      databases: [omero]
-    omero_dbhost: localhost
-    omero_dbuser: omero
-    omero_dbname: omero
-    omero_dbpassword: omero
-    omero_datadir: /data/OMERO
+    omero_dbhost: "{{ omero_db_host_ansible }}"
     omero_selinux_setup: True
-    omero_upgrade: True
-    omero_release: 5.2.0
+    #omero_upgrade: True
     omero_systemd_setup: True
+    omero_db_create: False
+
+  # Additional vars are in group_vars/omero-hosts.yml
+
+
+- hosts: proxy-hosts
+
+  pre_tasks:
+
+  # Ansible uses ansible_host but inventory/openstack.py uses the deprecated ansible_ssh_host
+  - set_fact:
+      omero_omero_host_ansible: "{{ hostvars[groups['omero-hosts'][0]]['ansible_ssh_host'] | default(hostvars[groups['omero-hosts'][0]]['ansible_host']) }}"
+
+  roles:
+  - role: nginx-proxy
+    nginx_proxy_worker_processes: 4
+    nginx_proxy_buffers: 32 16k
+    # TODO: This needs to match the cache configuration in nginx-proxy, so should be combined in one place
+    nginx_proxy_backends:
+    - name: omerocached
+      location: ~ /web(client|gateway)/(metadata|render)_*
+      server: "http://{{ omero_omero_host_ansible }}"
+      cache_validity: 30d
+    - name: omerostatic
+      location: ~ /static/*
+      server: "http://{{ omero_omero_host_ansible }}"
+      cache_validity: 30d
+    - name: omero
+      location: /
+      server: "http://{{ omero_omero_host_ansible }}"
+  vars_files:
+  - roles/nginx-proxy/vars/example-omero.yml
+
+  # Additional vars are in group_vars/proxy-hosts.yml

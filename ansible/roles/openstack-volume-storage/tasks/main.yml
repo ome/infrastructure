@@ -1,0 +1,15 @@
+---
+# tasks file for roles/openstack-volume-storage
+
+- name: openstack volume | create volume
+  os_volume:
+    state: present
+    size: "{{ openstack_volume_size }}"
+    display_name: "{{ openstack_volume_vmname }}-{{ openstack_volume_name }}"
+
+- name: openstack volume | attach volume to host
+  os_server_volume:
+    state: present
+    server: "{{ openstack_volume_vmname }}"
+    volume: "{{ openstack_volume_vmname }}-{{ openstack_volume_name }}"
+    device: "{{ openstack_volume_device | default(omit) }}"

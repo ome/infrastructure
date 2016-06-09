@@ -1,0 +1,14 @@
+# Managed by Ansible
+/var/log/nginx/*.log {
+    {{ nginx_logrotate_interval }}
+    missingok
+    rotate {{ nginx_logrotate_backlog_size }}
+    compress
+    delaycompress
+    notifempty
+    create 640 nginx adm
+    sharedscripts
+    postrotate
+        [ -f /var/run/nginx.pid ] && kill -USR1 `cat /var/run/nginx.pid`
+    endscript
+}
