@@ -3,7 +3,7 @@
 # Note you should reboot after changing the network configuration, and
 # manually verify that the configuration is correct
 
-- hosts: ci
+- hosts: all
   roles:
   - role: upgrade-distpackages
   - role: network
