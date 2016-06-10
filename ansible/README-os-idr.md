@@ -1,7 +1,8 @@
 Openstack IDR Playbooks
 =======================
 
-To setup the IDR create a group_vars file if necessary in `inventory/group_vars/`, e.g. `inventory/group_vars/os-image-centos.yml`
+To setup the IDR create a group_vars file if necessary in `inventory/group_vars/`, e.g. `inventory/group_vars/idr.yml`
+This should match the value of the `idr_environment` variable
 
 Decide on your openstack dynamic inventory.
 If you are using a single floating IP use `inventory/openstack-private.py`.

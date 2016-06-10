@@ -9,10 +9,12 @@
 
   vars:
 
-    omero_vm_groups: "ansible-managed,os-image-centos,omero-hosts"
+    # idr_environment: All VMs will be put into this group, which should have
+    # a matching group_vars file
+    omero_vm_groups: "ansible-managed,os-image-centos,omero-hosts,{{ idr_environment | default('os-idr') }}"
     omero_vm_extra_groups: ""
-    gateway_vm_groups: "ansible-managed,os-image-centos,proxy-hosts"
-    database_vm_groups: "ansible-managed,os-image-centos,database-hosts"
+    gateway_vm_groups: "ansible-managed,os-image-centos,proxy-hosts,{{ idr_environment | default('os-idr') }}"
+    database_vm_groups: "ansible-managed,os-image-centos,database-hosts,{{ idr_environment | default('os-idr') }}"
 
     #vm_prefix:
     #vm_key_name:
