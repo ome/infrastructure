@@ -3,5 +3,15 @@
 
 - hosts: prod-web-proxies
   roles:
+  - role: lvm-partition
+    lvm_lvname: root
+    lvm_lvmount: /
+    lvm_lvsize: "{{ root_size }}"
+    lvm_lvfilesystem: "{{ root_filesystem }}"
+  - role: lvm-partition
+    lvm_lvname: var_log
+    lvm_lvmount: /var/log
+    lvm_lvsize: "{{ varlog_size }}"
+    lvm_lvfilesystem: "{{ root_filesystem }}"
+  - role: system-monitor-agent
   - role: nginx-proxy
-
