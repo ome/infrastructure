@@ -19,7 +19,7 @@
     postgresql_users_databases:
     - user: omero
       password: omero
-      databases: [omero]
+      databases: [idr]
     postgresql_server_chown_datadir: True
 
 
