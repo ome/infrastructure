@@ -6,7 +6,6 @@
   roles:
   - role: server-swap
   - role: network
-  - role: docker-storage
 # TODO: lvm_lvfilesystem: root?
   - role: lvm-partition
     lvm_lvname: scratch
@@ -17,3 +16,6 @@
     lvm_lvname: idrdata1
     lvm_lvmount: /idr
     lvm_lvsize: "{{ idrvolumesize }}"
+  - role: system-monitor-agent
+  - role: basedeps
+  - role: docker
