@@ -9,4 +9,5 @@ fi
 NAME=$1
 FILE=$2
 # Upload
+#exec openstack image create --file="$FILE" "$NAME"
 exec glance image-create --name "$NAME" --disk-format=qcow2 --container-format=bare --file="$FILE" --progress
