@@ -3,7 +3,7 @@
 
 # Initial networking and basic system configuration
 # A reboot may be required after this playbook
-- include: ci-initial.yml
+- include: all-initial.yml
 
 # Jenkins CI servers
 - include: ci-jenkins-linux.yml
