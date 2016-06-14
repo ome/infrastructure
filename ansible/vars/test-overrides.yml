@@ -1,0 +1,7 @@
+nginx_proxy_ssl_certificate_source_path: ~/ansible-data/letsencrypt/fullchain.pem
+nginx_proxy_ssl_certificate_key_source_path: ~/ansible-data/letsencrypt/privkey.pem
+
+# Uncomment to enable X-Proxy headers for testing
+nginx_proxy_debug_cache_headers: True
+
+nginx_proxy_set_header_host: '$host'
