@@ -16,18 +16,20 @@ Role Variables
 
 Required variables:
 
+- `omero_logmonitor_slack_name`: Slack bot name
+- `omero_logmonitor_slack_token`: Slack secret token
+- `omero_logmonitor_slack_channel`: Slack #channel for notifications
+
 - `omero_logmonitor_jabber_user`: Jabber account id
 - `omero_logmonitor_jabber_password`: Jabber account password
 - `omero_logmonitor_jabber_room`: Multi-user chatroom to send notifications to
 
 Recommended variables:
 
-- `omero_logmonitor_jabber_nick`: Jabber nickname
 - `omero_logmonitor_server_name`: String used to identify alerts from this server
 
 Optional variables:
 
-- `omero_logmonitor_jabber_server`: The jabber server if it doesn't match the Jabber account id (e.g. Google Talk)
 - `omero_logmonitor_email_oom`: Whether to enable email notifications of out-of-memory errors, if `True` the `omero_logmonitor_email_*` properties must be defined, default `False`.
 - `omero_logmonitor_email_smtp`: SMTP server
 - `omero_logmonitor_email_from`: From address for email alerts

@@ -1,14 +1,7 @@
 [main]
-jid = {{ omero_logmonitor_jabber_user }}
-password = {{ omero_logmonitor_jabber_password }}
-# Specify the server if it's different from the JID, e.g. talk.google.com:5222
-{% if omero_logmonitor_jabber_server %}
-server = {{ omero_logmonitor_jabber_server }}
-{% endif %}
-
-room = {{ omero_logmonitor_jabber_room }}
-nick = {{ omero_logmonitor_jabber_nick }}
-botadmins = {{ omero_logmonitor_jabber_admins | join(",") }}
+botname = {{ omero_logmonitor_slack_name }}
+token = {{ omero_logmonitor_slack_token }}
+channel = {{ omero_logmonitor_slack_channel }}
 
 # Log reporting options, can be overridden in individual log configs
 

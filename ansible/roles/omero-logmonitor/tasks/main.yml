@@ -13,8 +13,8 @@
 - name: omero logmonitor | setup virtualenv
   become: yes
   pip:
-    name: sleekxmpp
-    state: latest
+    name: slackclient
+    state: present
     virtualenv: "{{ omero_logmonitor_venv }}"
     virtualenv_site_packages: yes
 
