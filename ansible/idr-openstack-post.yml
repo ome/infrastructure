@@ -7,8 +7,7 @@
 
   roles:
   - role: network
+  - role: logrotate
 
   vars:
     network_interfaces: "{{ post_network_ifaces }}"
-
-
