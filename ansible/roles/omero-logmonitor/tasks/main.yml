@@ -21,7 +21,9 @@
 - name: omero logmonitor | get logmonitor
   become: yes
   git:
-    depth: 1
+    # TODO: Ansible bug, which returns the error "Could not determine remote revision for HEAD"
+    # on subsequent runs
+    # depth: 1
     dest: "{{ omero_logmonitor_logbotdir }}"
     repo: https://github.com/manics/omero-fenton.git
 
