@@ -23,3 +23,4 @@
   - role: system-monitor-agent
   - role: basedeps
   - role: docker
+  - role: versioncontrol-utils
