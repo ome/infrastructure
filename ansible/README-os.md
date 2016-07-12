@@ -1,7 +1,7 @@
-OMERO VM Deployment
-===================
+OMERO OpenStack VM Deployment
+=============================
 
-This contains example files for provisioning an OpenStack VM from scratch with OMERO using Ansible.
+This repository contains example files for provisioning an OpenStack VM from scratch with OMERO using Ansible.
 Most of these scripts should also work on other platforms, providing the VM is brought up by some other method.
 The guest must be running CentOS 7.
 
