@@ -11,7 +11,7 @@
   vars:
     os_cloud_provider: ebi
 
-- include: os-local-users.yml
+- include: idr-playbooks/idr-local-users.yml
 # Variables for this section are in a private file
 
 - hosts: database-hosts
@@ -34,11 +34,11 @@
     storage_volume_initialise_device: /dev/vdb
     storage_volume_initialise_mount: /var/cache/nginx
 
-- include: idr-ebi-nfs.yml
+- include: idr-playbooks/idr-ebi-nfs.yml
 
 - include: os-omero.yml
 # Vars are in os-omero.yml so that the playbook can be run independently
 
-- include: os-local-files.yml
+- include: idr-playbooks/idr-local-files.yml
 
-- include: idr-user-utils.yml
+- include: idr-playbooks/idr-user-utils.yml
