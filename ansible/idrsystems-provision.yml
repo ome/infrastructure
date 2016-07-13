@@ -1,5 +1,5 @@
 ---
-# Playbook for running all IDR provisioning playbooks
+# Playbook for running all IDR playbooks
 
 # Initial networking and basic system configuration
 # A reboot may be required after this playbook
@@ -9,8 +9,5 @@
 # A reboot may be required after this playbook
 - include: idrsystems-playbooks/idr-upgrade.yml
 
-# Install GPFS client
-- include: idrsystems-playbooks/idr-gpfs-client.yml
-
-# Install docker
-- include: idrsystems-playbooks/idr-docker-localstorage.yml
+# Install everything else
+- include: idrsystems-deployment.yml
