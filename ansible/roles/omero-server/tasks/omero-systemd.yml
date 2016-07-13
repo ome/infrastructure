@@ -24,14 +24,14 @@
   command: systemctl daemon-reload
   when: omero_systemd_server.changed or (omero_systemd_web is defined and omero_systemd_web.changed)
 
-- name: omero | enable server systemd
+- name: omero | enable and start server systemd
   become: yes
   service:
     enabled: yes
     name: omero.service
     state: started
 
-- name: omero | enable web systemd
+- name: omero | enable and start web systemd
   become: yes
   service:
     enabled: yes
@@ -39,7 +39,7 @@
     state: started
   when: omero_web_install
 
-- name: omero | enable nginx service
+- name: omero | enable and start nginx service
   become: yes
   service:
     enabled: yes

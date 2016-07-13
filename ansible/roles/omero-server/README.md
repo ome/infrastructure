@@ -41,7 +41,7 @@ Example Playbooks
     # Install the latest release, including PostgreSQL on the same server
     - hosts: localhost
       roles:
-      - omero-server
+      - role: omero-server
         postgresql_users_databases:
         - user: omero
           password: omero
