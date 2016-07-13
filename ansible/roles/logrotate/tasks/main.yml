@@ -1,0 +1,15 @@
+---
+# Configure sudo
+
+- name: system packages | install logrotate
+  become: yes
+  yum:
+    pkg: logrotate
+    state: present
+
+- name: logrotate | configure main file
+  become: yes
+  template:
+    backup: yes
+    dest: /etc/logrotate.conf
+    src: logrotate.conf.j2
