@@ -3,7 +3,6 @@
 
 - include: idrsystems-playbooks/idr-analysis.yml
 - include: idrsystems-playbooks/idr-docker-localstorage.yml
-- include: idrsystems-playbooks/idr-dundee-nfs.yml
 - include: idrsystems-playbooks/idr-gpfs-build.yml
 - include: idrsystems-playbooks/idr-gpfs-client.yml
 - include: idrsystems-playbooks/idr-nfs-hosts.yml

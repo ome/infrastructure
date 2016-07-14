@@ -32,7 +32,7 @@
     storage_volume_initialise_device: /dev/vdb
     storage_volume_initialise_mount: /var/cache/nginx
 
-- include: idr-dundee-nfs.yml
+- include: idr-playbooks/idr-dundee-nfs.yml
 
 - include: os-omero.yml
 # Vars are in os-omero.yml so that the playbook can be run independently
