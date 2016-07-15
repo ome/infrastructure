@@ -1,0 +1,35 @@
+---
+# Run a Dell driver update
+
+- name: dell update | create directory
+  become: yes
+  file:
+    path: dell-updates
+    state: directory
+
+- name: dell update | copy package
+  become: yes
+  copy:
+    dest: "dell-updates/{{ dell_update_filename }}"
+    src: "{{ dell_update_package_dir | default('files') }}/{{ dell_update_filename }}"
+    mode: 0555
+
+- name: dell update | check update can be applied
+  become: yes
+  command: dell-updates/{{ dell_update_filename }} -c -q
+  register: check
+  failed_when: check.rc not in [0, 3]
+  # Return codes
+  # 0: success
+  # 3: current version is equal to or more recent than this one
+  # Others: See http://mirrors.vbi.vt.edu/mirrors/vbi/hardware/dell/tools/suu/om_5.5.2/docs/dup/dup261_Lin_UG_HTML/3cliref.htm
+
+- name: dell update | not required
+  debug:
+    msg: "Current version is equal to or newer than {{ dell_update_filename }}"
+  when: check.rc == 3
+
+- name: dell update | run update
+  become: yes
+  command: dell-updates/{{ dell_update_filename }} -q -r
+  when: check.rc == 0
