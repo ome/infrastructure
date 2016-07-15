@@ -13,7 +13,6 @@
     vm_image: "CentOS 7 1604"
     vm_flavour: m2.large
     vm_groups: "ansible-managed,os-image-centos,docker-hosts"
-    vm_extra_groups: ""
     ignore_internal_known_hosts: True
 
   pre_tasks:
@@ -28,8 +27,6 @@
 
 
   tasks:
-
-    - set_fact: vm_joined_groups="{{ vm_groups.split(',') | union(vm_extra_groups.split(',')) | join(',')}}"
 
     - name: Docker external access security group
       os_security_group:
@@ -65,7 +62,7 @@
         auto_ip: yes
         meta:
           hostname: "{{ vm_name }}"
-          groups: "{{ vm_joined_groups }}"
+          groups: "{{ vm_groups }}"
         security_groups: [default, docker-external]
       register: vmdocker
 
@@ -75,11 +72,10 @@
     - name: Docker VM hosts files
       add_host:
         name: "{{ vm_name }}"
-        groups: "{{ vm_joined_groups }}"
+        groups: "{{ vm_groups }}"
         ansible_host: "{{ vmdocker.server.public_v4 }}"
         ansible_user: "centos"
         ansible_become: true
-      when: vmdocker.changed
 
     - debug:
         msg: "IPs (Docker) private:{{ vmdocker.openstack.private_v4 }} floating:{{ vmdocker.openstack.public_v4 | default('') }}"
