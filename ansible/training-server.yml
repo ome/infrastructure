@@ -19,6 +19,13 @@
     - user: omero
       password: omero
       databases: [omero]
+  - users_to_control_omero:
+      - "centos"
+  - users_to_be_added:
+      - "fm1"
+      - "fm2"
+  - users_password: "invalid"
+  - fm_groupname: "facility-managers"
 
   tasks:
   - name: training-server | add operating system group for trainers

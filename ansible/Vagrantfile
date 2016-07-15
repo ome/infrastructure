@@ -40,12 +40,6 @@ Vagrant.configure(2) do |config|
     training.vm.provision "ansible" do |ansible|
       ansible.verbose = "v"
       ansible.playbook = "training-server.yml"
-      ansible.extra_vars = {
-        users_to_control_omero: ["centos"],
-        users_to_be_added: ["fm1", "fm2"],
-        users_password: "invalid",
-        fm_groupname: "facility-managers"
-      }
     end
   end
 
