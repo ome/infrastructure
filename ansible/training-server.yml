@@ -22,7 +22,9 @@
   tasks:
   - name: training-server | add operating system group for trainers
     become: true
-    group: name=trainers state=present
+    group:
+      name: trainers
+      state: present
 
   - name: training-server | add sample images folder
     become: true
@@ -35,7 +37,9 @@
 
   - name: training-server | add operating system group for facility managers
     become: true
-    group: name=facility-managers state=present
+    group:
+      name: facility-managers
+      state: present
 
   - name: training-server | add facility manager operating system users
     become: true
