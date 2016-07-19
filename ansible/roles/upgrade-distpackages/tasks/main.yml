@@ -7,3 +7,41 @@
     name: "{{ item }}"
     state: latest
   with_items: "{{ upgrade_distpackages }}"
+
+- name: system | current running kernel
+  command: uname -r
+  register: running_kernel_version
+  always_run: True
+
+# http://serverfault.com/a/601432
+- name: system | latest installed kernel
+  shell: rpm -q kernel --qf '%{BUILDTIME} %{VERSION}-%{RELEASE}.%{ARCH}\n' | tail -n 1 | cut -f 2 -d ' '
+  register: latest_kernel_version
+  always_run: True
+
+- name: system | check if reboot needed
+  set_fact:
+    system_reboot_needed: "{{ running_kernel_version.stdout != latest_kernel_version.stdout }}"
+
+- debug:
+    msg: "Reboot needed (kernel): Current:{{ running_kernel_version.stdout }} Latest:{{ latest_kernel_version.stdout }}"
+  when: system_reboot_needed
+
+# https://support.ansible.com/hc/en-us/articles/201958037-Reboot-a-server-and-wait-for-it-to-come-back
+- name: system | reboot
+  become: yes
+  shell: "sleep 2 && shutdown -r now 'Rebooting (Ansible kernel update)'"
+  async: 1
+  poll: 0
+  ignore_errors: True
+  when: upgrade_distpackages_reboot_kernel and system_reboot_needed
+
+- name: system | wait for server to reboot
+  local_action:
+    module: wait_for
+    delay: 15
+    host: "{{ ansible_host | default(inventory_hostname) }}"
+    port: "{{ ansible_port | default(22) }}"
+    state: "started"
+    timeout: "{{ upgrade_distpackages_reboot_timeout }}"
+  when: upgrade_distpackages_reboot_kernel and system_reboot_needed
