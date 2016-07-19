@@ -1,0 +1,15 @@
+---
+# Update the iDRAC and BIOS on Dell FC630 servers
+# The BIOS update requires a reboot so put it last
+# The dell-update role expect to find the required files in the `files/`
+# sub-directory of the role. Set dell_update_package_dir to override it.
+
+- hosts: all
+  roles:
+  - role: dell-update
+    dell_update_filename: iDRAC-with-Lifecycle-Controller_Firmware_5GCHC_LN_2.30.30.30_A00.BIN
+  - role: dell-update
+    dell_update_filename: BIOS_DC9XJ_LN_2.1.7.BIN
+
+  # vars:
+  # - dell_update_package_dir: ~/ansible-data/dell-fc630/

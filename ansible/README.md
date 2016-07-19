@@ -30,3 +30,10 @@ This primarily involves maintaining the servers and storage underlying the virtu
 - `idrsystems-provision.yml`: Use this playbook for ensuring all servers are provisioned and up to date.
   This includes provisioning new servers, running system upgrades, and everything in `idrsystems-deployment.yml`.
   Since this attempts to install updates there may be changes even if the repository or inventory are unchanged.
+
+
+Dell Hardware (`hardware-dell`)
+===============================
+
+The playbooks in the `hardware-dell` directory can be used to help with installing Dell hardware maintenance, for instance DRAC and BIOS updates.
+Given the nature of these updates these playbooks should only be run when required, and consideration given to running against one host at a time.
