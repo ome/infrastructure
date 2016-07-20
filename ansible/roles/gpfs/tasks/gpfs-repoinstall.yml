@@ -1,0 +1,65 @@
+---
+# Install GPFS from an internal repo, compile and install kernel module
+
+- name: gpfs | setup repository
+  become: yes
+  template:
+    backup: no
+    dest: /etc/yum.repos.d/gpfs.repo
+    src: gpfs-repo.j2
+
+- name: gpfs | install kernel module build requirements
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - kernel-devel
+  - cpp
+  - gcc
+  - gcc-c++
+  - rpm-build
+  - kernel-headers
+
+- name: gpfs | install rpms
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - gpfs.base
+  - gpfs.docs
+  - gpfs.ext
+  - gpfs.gpl
+  - gpfs.gskit
+  - gpfs.msg.en_US
+
+# Autodetect the GPFS kernel and patch version
+
+- name: gpfs | current kernel version
+  command: uname -r
+  register: running_kernel_version
+  always_run: True
+
+- name: gpfs | latest installed gpfs.gpl
+  command: rpm -q gpfs.gpl --qf '%{VERSION}-%{RELEASE}'
+  register: gpfs_gpl_version
+  always_run: True
+
+- name: gpfs | expected kernel module rpm
+  set_fact:
+    gpfs_kernel_rpm: /root/rpmbuild/RPMS/x86_64/gpfs.gplbin-{{ running_kernel_version.stdout }}-{{ gpfs_gpl_version.stdout }}.x86_64.rpm
+
+- name: gpfs | build kernel module
+  become: yes
+  command: /usr/lpp/mmfs/bin/mmbuildgpl --buildrpm
+  args:
+    creates: "{{ gpfs_kernel_rpm }}"
+  environment:
+    LINUX_DISTRIBUTION: REDHAT_AS_LINUX
+
+- name: gpfs | install kernel module
+  become: yes
+  yum:
+    name: " {{ gpfs_kernel_rpm }}"
+    state: present

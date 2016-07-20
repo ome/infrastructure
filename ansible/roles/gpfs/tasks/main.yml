@@ -5,12 +5,16 @@
 - name: gpfs | check gpfs_local_rpm_dir defined
   assert:
     that: gpfs_local_rpm_dir is defined and gpfs_local_rpm_dir
+  when: gpfs_build or gpfs_install
 
 - include: gpfs-build.yml
   when: gpfs_build
 
 - include: gpfs-install.yml
   when: gpfs_install
+
+- include: gpfs-repoinstall.yml
+  when: gpfs_repoinstall
 
 - include: gpfs-configure.yml
   when: gpfs_configure

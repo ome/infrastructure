@@ -4,8 +4,43 @@ GPFS
 Extracts GPFS RPMs from the distributed installer package and compiles a kernel module.
 Installs RPMs and kernel module on a GPFS client.
 
-This role is designed to allow GPFS RPMs to be extracted, and the kernel module built, on a single node, and for the RPMs and kernel module to be installed on other nodes.
+The easiest and default way to use this role is with a GPFS yum repository (there are no public repositories so you must find your own).
+This will install the base GPFS RPMs, install the build-dependencies for the kernel GPFS module, compile it for the current running kernel and install it.
+
+If you have more complex requirements, including applying custom patches, installing additional GPFS server protocols such CES, or do not have a yum repository, see the advanced instructions.
+
+
+Requirements
+------------
+
+If you have access to a GPFS yum repository and are happy for a development toolchain to be installed on all your GPFS nodes set `gpfs_repo_url_base` and `gpfs_repo_url_updates` to point to your repositories.
+
+
+Role Variables
+--------------
+
+These are required when using a yum repository:
+
+- `gpfs_repo_url_base`: URL to the base packages in a GPFS yum repository
+- `gpfs_repo_url_updates`: URL to the updates packages in a GPFS yum repository
+
+
+Example Playbook
+----------------
+
+    - hosts: gpfs-client-nodes
+      roles:
+      - role: gpfs
+        gpfs_repo_url_base: http://example.org/pub/gpfs/x86_64/4.2.0/base
+        gpfs_repo_url_updates: http://example.org/pub/gpfs/x86_64/4.2.0/updates
+
+
+Advanced Instructions
+=====================
+
+Advanced users can use this role to allow GPFS RPMs to be extracted, and the kernel module built, on a single node, and for the RPMs and kernel module to be installed on other nodes.
 This means only one node needs to contain a kernel development environment, and this node does not need to be an active GPFS client node (for example a plain CentOS 7 virtual machine is sufficient).
+You must set `gpfs_repoinstall: False`.
 
 After extracting and building the RPMs and kernel module they will be copied to the local machine (the one that's running Ansible).
 The install part of this role will take the locally copied RPMs, send them to the nodes on which GPFS should be deployed, and install them.
@@ -17,7 +52,7 @@ This role will enable root access in `/etc/ssh/sshd_config`, and you should prov
 Requirements (Building)
 -----------------------
 
-Set `gpfs_build: True`.
+Set `gpfs_build: True` and `gpfs_repoinstall: False`.
 Ensure all system packages are updated.
 The GPFS kernel module will be compiled for the kernel currently running on the machine (so reboot if it has been updated).
 This role will attempt to install the following kernel-related packages if they are missing:
@@ -37,7 +72,7 @@ The extracted and built RPMs will be copied into `gpfs_local_rpm_dir` which must
 Requirements (Installing)
 -------------------------
 
-Set `gpfs_install: True` (this is the default).
+Set `gpfs_install: True` and `gpfs_repoinstall: False`.
 Ensure the kernel corresponding to the built GPFS module is installed.
 Ensure `gpfs_local_rpm_dir` contains the extracted and built RPMs.
 
@@ -70,6 +105,7 @@ Example Playbook
       vars:
       - gpfs_build: True
       - gpfs_install: False
+      - gpfs_repoinstall: False
       - gpfs_local_rpm_dir: /data/gpfs/rpms
 
     # Install and configure GPFS on client nodes:
@@ -78,7 +114,8 @@ Example Playbook
       - gpfs
       vars:
       #(Default) gpfs_build: False
-      #(Default) gpfs_install: True
+      - gpfs_install: True
+      - gpfs_repoinstall: False
       - gpfs_local_rpm_dir: /data/gpfs/rpms
       - gpfs_public_keys:
           - ssh-rsa AAAA1...
@@ -90,8 +127,9 @@ Example Playbook
       - gpfs
       vars:
       #(Default) gpfs_build: False
-      gpfs_install: False
-      gpfs_configure: True
+      - gpfs_install: False
+      - gpfs_repoinstall: False
+      - gpfs_configure: True
     - gpfs_public_keys:
         - ssh-rsa AAAA1...
         - ssh-rsa AAAA2...
@@ -123,7 +161,7 @@ Commands will be sent from the admin nodes to the other cluster nodes, this is w
 4. Run `mmchlicense {client|server} -N new.node.hostname` to assign a license
 5. Run `mmlscluster` and `mmlslicense` to check the cluster
 6. Run `mmstartup -N new.node.hostname` to start GPFS on the new node
-7. Run `mmmount filesystem-name -N new.node.hostname` to enable the mount on the new node (this will automatically add an entry to `/etc/fstab`)
+7. Wait a few minutes for the node to initialise. GPFS may be mounted automatically in which case you do not need to do anything, otherwise run `mmmount filesystem-name -N new.node.hostname` to enable the mount on the new node (this will automatically add an entry to `/etc/fstab`)
 8. You can check the state of all nodes by running `mmgetstate -a`
 
 Note do not edit `/etc/fstab` directly (it is managed centrally by GPFS), instead use `gpfs_node_specific_mount_options`.
