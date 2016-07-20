@@ -40,11 +40,13 @@
   command: uname -r
   register: running_kernel_version
   always_run: True
+  changed_when: False
 
 - name: gpfs | latest installed gpfs.gpl
   command: rpm -q gpfs.gpl --qf '%{VERSION}-%{RELEASE}'
   register: gpfs_gpl_version
   always_run: True
+  changed_when: False
 
 - name: gpfs | expected kernel module rpm
   set_fact:

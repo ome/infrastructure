@@ -12,12 +12,14 @@
   command: uname -r
   register: running_kernel_version
   always_run: True
+  changed_when: False
 
 # http://serverfault.com/a/601432
 - name: system | latest installed kernel
   shell: rpm -q kernel --qf '%{BUILDTIME} %{VERSION}-%{RELEASE}.%{ARCH}\n' | tail -n 1 | cut -f 2 -d ' '
   register: latest_kernel_version
   always_run: True
+  changed_when: False
 
 - name: system | check if reboot needed
   set_fact:
