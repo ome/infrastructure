@@ -3,8 +3,6 @@
 
 - hosts: idr-docker-localstorage
   roles:
-  - role: server-swap
-  - role: network
   - role: lvm-partition
     lvm_lvname: root
     lvm_lvmount: /
