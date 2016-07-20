@@ -65,5 +65,5 @@
     name: "{{ item }}"
     groups: docker
     append: yes
-  with_items: docker_groupmembers
+  with_items: "{{ docker_groupmembers }}"
   when: docker_groupmembers is defined
