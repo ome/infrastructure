@@ -37,6 +37,7 @@ Optional variables:
 - `docker_lvopts`: Additional arguments to be used when creating logical volumes
 - `docker_groupmembers`: A list of users who will be added to the `docker` system group, allows docker to be run without sudo
 - `docker_use_ipv4_nic_mtu`: Force Docker to use the MTU set by the main IPV4 interface. This may be necessary on virtualised hosts, see comment in `defaults/main.yml`.
+- `docker_repo_version`: Use a different upstream Docker release branch e.g. `testing`, do not change this unless you know what you are doing
 
 
 Dependencies
