@@ -28,10 +28,10 @@
   - name: Mount NFS share
     become: yes
     mount:
-      fstype: nfs
+      fstype: nfs4
       name: "{{ idr_mountpoint }}"
       opts: rsize=8192,wsize=8192,timeo=14,intr,ro
-      src: idr-data.openmicroscopy.org:/uod/idr
+      src: idr-data.openmicroscopy.org:/idr
       state: mounted
     when: not use_samba
 
