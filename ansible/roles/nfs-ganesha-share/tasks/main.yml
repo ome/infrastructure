@@ -1,0 +1,33 @@
+---
+# tasks file for roles/nfs-ganesha-share
+
+- name: system packages | install epel repo
+  become: yes
+  yum:
+    name: epel-release
+    state: present
+
+- name: nfs ganesha | install ganesha packages
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - nfs-ganesha
+  - nfs-ganesha-vfs
+
+- name: nfs ganesha | configure shares
+  become: yes
+  template:
+    backup: yes
+    dest: /etc/ganesha/ganesha.conf
+    src: ganesha-conf.j2
+  notify:
+    - restart nfs-ganesha
+
+- name: nfs ganesha | enable nfs-ganesha
+  become: yes
+  service:
+    enabled: yes
+    name: nfs-ganesha
+    state: started

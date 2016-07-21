@@ -3,4 +3,4 @@
 
 - hosts: idr-nfs-hosts
   roles:
-  - role: nfs-share
+  - role: nfs-ganesha-share
