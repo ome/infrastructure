@@ -19,4 +19,4 @@
     opts: "{{ item.opts | default(nfs_mount_opts) }}"
     src: "{{ item.location }}"
     state: mounted
-  with_items: nfs_share_mounts
+  with_items: "{{ nfs_share_mounts }}"
