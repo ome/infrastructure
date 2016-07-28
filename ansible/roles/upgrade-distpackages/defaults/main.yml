@@ -3,3 +3,9 @@
 
 # List of packages to upgrade
 upgrade_distpackages: "*"
+
+# Automatically reboot if running kernel is different from the latest installed?
+upgrade_distpackages_reboot_kernel: False
+
+# Maximum time to wait for a reboot
+upgrade_distpackages_reboot_timeout: 600

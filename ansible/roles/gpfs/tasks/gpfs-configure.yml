@@ -45,7 +45,7 @@
     content: "{{ item.value }}"
     dest: /var/mmfs/etc/localMountOptions.{{ item.key }}
   when: item.value
-  with_dict: gpfs_node_specific_mount_options | default ({})
+  with_dict: "{{ gpfs_node_specific_mount_options | default ({}) }}"
 
 - name: gpfs | clear mount options
   become: yes
@@ -53,4 +53,4 @@
     path: /var/mmfs/etc/localMountOptions.{{ item.key }}
     state: absent
   when: not item.value
-  with_dict: gpfs_node_specific_mount_options | default ({})
+  with_dict: "{{ gpfs_node_specific_mount_options | default ({}) }}"

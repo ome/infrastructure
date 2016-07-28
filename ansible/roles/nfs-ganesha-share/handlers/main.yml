@@ -1,0 +1,8 @@
+---
+# Handlers for nfs-ganesha-share
+
+- name: restart nfs-ganesha
+  become: yes
+  service:
+    name: nfs-ganesha
+    state: restarted

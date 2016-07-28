@@ -4,9 +4,15 @@
 # If true extract and build GPFS RPMs
 gpfs_build: False
 # If true install GPFS using RPMs
-gpfs_install: True
+gpfs_install: False
+# If true install GPFS from a yum repo and compile/install kernel module locally
+gpfs_repoinstall: True
 # If true configure system for GPFS
-gpfs_configure: gpfs_install
+gpfs_configure: gpfs_install or gpfs_repoinstall
+# URL to the base packages in a GPFS yum repository
+#gpfs_repo_url_base:
+# URL to the updates packages in a GPFS yum repository
+#gpfs_repo_url_updates:
 
 # Build/Install a GPFS module for this kernel version
 gpfs_kernel_version: 3.10.0-327.10.1.el7.x86_64

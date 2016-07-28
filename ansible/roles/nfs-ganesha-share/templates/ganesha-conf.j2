@@ -1,0 +1,37 @@
+# Managed by Ansible
+
+{% if nfs_ganesha_default_log_level %}
+LOG
+{
+    default_log_level = {{ nfs_ganesha_default_log_level }};
+}
+{% endif %}
+
+{% for item in nfs_ganesha_shares %}
+EXPORT
+{
+    # Export Id (mandatory, each EXPORT must have a unique Export_Id)
+    Export_Id = {{ loop.index }};
+
+    # Exported path (mandatory)
+    Path = {{ item.path }};
+
+    # Pseudo Path (required for NFS v4)
+    Pseudo = {{ item.pseudopath | default(item.path) }};
+
+    # Required for access (default is None)
+{%     for client in item.clients %}
+    CLIENT
+    {
+        Clients = {{ client.host }};
+        Access_Type = {{ client.access | default('RO') }};
+        Squash = {{ client.squash | default('All') }};
+    }
+{%     endfor %}
+
+    # Exporting FSAL
+    FSAL {
+        Name = {{ item.fs | default('VFS') }};
+    }
+}
+{% endfor %}

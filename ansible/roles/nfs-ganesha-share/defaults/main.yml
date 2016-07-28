@@ -1,0 +1,8 @@
+---
+# defaults file for roles/nfs-gaensha-share
+
+# A list of shares, see README.md
+nfs_ganesha_shares: []
+
+# Logging level, leave unset for default
+nfs_ganesha_default_log_level:
