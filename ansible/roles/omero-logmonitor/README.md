@@ -20,10 +20,6 @@ Required variables:
 - `omero_logmonitor_slack_token`: Slack secret token
 - `omero_logmonitor_slack_channel`: Slack #channel for notifications
 
-- `omero_logmonitor_jabber_user`: Jabber account id
-- `omero_logmonitor_jabber_password`: Jabber account password
-- `omero_logmonitor_jabber_room`: Multi-user chatroom to send notifications to
-
 Recommended variables:
 
 - `omero_logmonitor_server_name`: String used to identify alerts from this server
@@ -49,10 +45,9 @@ Including an example of how to use your role (for instance, with variables passe
     - hosts: localhost
       roles:
       - role: omero-logmonitor
-        omero_logmonitor_jabber_user: omero-logmonitor@jabber.example.org
-        omero_logmonitor_jabber_password: secret-password
-        omero_logmonitor_jabber_room: alerts@conference.example.org
-        omero_logmonitor_jabber_nick omero-logmonitor
+        omero_logmonitor_slack_name: omero-logmonitor
+        omero_logmonitor_slack_token: SLACK-TOKEN
+        omero_logmonitor_slack_channel: "#alerts"
         omero_logmonitor_server_name: omero test instance
         # Include the follow variables to setup email OOM alerts
         omero_logmonitor_email_oom: True

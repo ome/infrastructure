@@ -5,17 +5,6 @@ omero_logmonitor_basedir: /home/omero/logmonitor
 omero_logmonitor_venv: "{{ omero_logmonitor_basedir }}/venv"
 omero_logmonitor_logbotdir: "{{ omero_logmonitor_basedir }}/omero-fenton"
 
-#omero_logmonitor_jabber_user: user@example.org
-#omero_logmonitor_jabber_password: password
-# Specify the server if it's different from the JID, e.g. talk.google.com:5222
-omero_logmonitor_jabber_server:
-
-#omero_logmonitor_jabber_room: monitoring@conference.example.org
-# Nickname
-omero_logmonitor_jabber_nick: omero-logmonitor
-# Chatroom users who have admin control of this bot
-omero_logmonitor_jabber_admins: []
-
 omero_logmonitor_default_levels:
   - ERROR
   - FATAL
