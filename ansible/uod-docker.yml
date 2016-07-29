@@ -1,0 +1,18 @@
+---
+# Playbook for managing a docker instance in the
+# openstack cloud.
+
+- hosts: docker-hosts
+  vars:
+    ansible_user: centos
+  roles:
+  - role: storage-volume-initialise
+    storage_volume_initialise_device: /dev/vdb
+    storage_volume_initialise_mount: /var/lib/docker
+  - role: basedeps
+  - role: system-monitor-agent
+  - role: versioncontrol-utils
+  - role: docker
+    docker_groupmembers: [centos]
+  - role: sudoers
+  - role: local-accounts

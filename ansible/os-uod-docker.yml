@@ -1,0 +1,91 @@
+---
+# Playbook for starting a docker instance in the
+# openstack cloud.
+
+## See os-create.yml
+
+- hosts: localhost
+  connection: local
+  #gather_facts: false
+
+  vars:
+
+    vm_image: "CentOS 7 1604"
+    vm_flavour: m2.large
+    vm_groups: "ansible-managed,os-image-centos,docker-hosts"
+    ignore_internal_known_hosts: True
+
+  pre_tasks:
+
+    - fail:
+        msg: "vm_key_name is required"
+      when: vm_key_name is undefined or not vm_key_name
+
+    - fail:
+        msg: "vm_name is required"
+      when: vm_name is undefined or not vm_name
+
+
+  tasks:
+
+    - name: Docker external access security group
+      os_security_group:
+        description: External access to Docker servers (managed by Ansible)
+        name: docker-external
+        state: present
+
+    - name: Docker external access security group rules
+      os_security_group_rule:
+        direction: ingress
+        port_range_max: "{{ item }}"
+        port_range_min: "{{ item }}"
+        protocol: tcp
+        remote_ip_prefix: 0.0.0.0/0
+        security_group: docker-external
+        state: present
+      with_items:
+        - 22
+        - 80
+        - 443
+        - 4063
+        - 4064
+        - 8008
+        - 8888
+
+    - name: Docker VM
+      os_server:
+        name: "{{ vm_name }}"
+        state: present
+        image: "{{ vm_image }}"
+        key_name: "{{ vm_key_name }}"
+        flavor: "{{ vm_flavour }}"
+        auto_ip: yes
+        meta:
+          hostname: "{{ vm_name }}"
+          groups: "{{ vm_groups }}"
+        security_groups: [default, docker-external]
+      register: vmdocker
+
+    # To prevent duplicates with the dynamic inventory only add_host if
+    # the VM was created in this run
+
+    - name: Docker VM hosts files
+      add_host:
+        name: "{{ vm_name }}"
+        groups: "{{ vm_groups }}"
+        ansible_host: "{{ vmdocker.server.public_v4 }}"
+        ansible_user: "centos"
+        ansible_become: true
+
+    - debug:
+        msg: "IPs (Docker) private:{{ vmdocker.openstack.private_v4 }} floating:{{ vmdocker.openstack.public_v4 | default('') }}"
+
+- hosts: localhost
+  connection: local
+  #gather_facts: false
+  roles:
+  - role: openstack-volume-storage
+    openstack_volume_size: 100
+    openstack_volume_vmname: "{{ vm_name }}"
+    openstack_volume_name: varlibdocker
+    openstack_volume_device: /dev/vdb

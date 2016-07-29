@@ -1,0 +1,48 @@
+---
+- name: OME Website Setup
+  hosts: web-linux # TODO?
+  vars:
+    ansible_user: centos
+    site_owner: centos
+    site_group: centos
+    dev_website_root: /var/www/www-dev.openmicroscopy.org/html
+    dev_site_name: www-dev.openmicroscopy.org
+    dev_site_aliases:
+      - web-test.openmicroscopy.org
+    live_website_root: /var/www/www.openmicroscopy.org/html
+    live_site_name: www-live.openmicroscopy.org
+    live_site_aliases:
+      - openmicroscopy.org
+  roles:
+    - nginx
+  pre_tasks:
+    - name: install rubygems for jekyll
+      yum: name=rubygems state=present
+      become: yes
+    - name: install ruby-devel
+      yum: name=ruby-devel state=present
+      become: yes
+  tasks:
+    - name: Install jekyll
+      gem: name=jekyll state=present user_install=no
+      become: yes
+
+    - name: dev website deploy directory
+      file: state=directory dest="{{ dev_website_root }}" owner="{{ site_owner }}" group="{{ site_group }}" mode=0755
+      become: yes
+    - name: nginx configuration for {{ dev_site_name }}
+      template: src=templates/{{ dev_site_name }}.nginx.conf dest=/etc/nginx/conf.d/{{ dev_site_name }}.conf
+      become: yes
+      notify:
+        - reload nginx
+
+    - name: live website deploy directory
+      file: state=directory dest="{{ live_website_root }}" owner="{{ site_owner }}" group="{{ site_group }}" mode=0755
+      become: yes
+    - name: nginx configuration for {{ live_site_name }}
+      template: src=templates/{{ live_site_name }}.nginx.conf dest=/etc/nginx/conf.d/01-{{ live_site_name }}.conf
+      become: yes
+      notify:
+        - reload nginx
+
+  post_tasks:
