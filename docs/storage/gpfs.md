@@ -9,6 +9,27 @@ Some commands can be run as root from any node in the GPFS cluster including cli
 Depending on how the cluster is configured some commands can only be run from a limited number of administrative nodes.
 
 
+Adding a node to a GPFS cluster
+-------------------------------
+
+Install the GPFS packages on the new node, for example using the [`gpfs` Ansible role](/ansible/roles/gpfs/README.md) in this repository.
+You can then manually add the node to the GPFS cluster using these instructions as a guide.
+
+First log into a root shell on one of the GPFS admin nodes.
+Commands will be sent from the admin nodes to the other cluster nodes, this is why password-less ssh root access is required.
+
+1. Check you can ssh as root without a password into the new node
+2. Check the reverse IP of the new node matches it's hostname
+3. Run `mmaddnode -N new.node.hostname` to add the node
+4. Run `mmchlicense {client|server} --accept -N new.node.hostname` to assign a license
+5. Run `mmlscluster` and `mmlslicense` to check the cluster
+6. Run `mmstartup -N new.node.hostname` to start GPFS on the new node
+7. Wait a few minutes for the node to initialise. GPFS may be mounted automatically in which case you do not need to do anything, otherwise run `mmmount filesystem-name -N new.node.hostname` to enable the mount on the new node (this will automatically add an entry to `/etc/fstab`)
+8. You can check the state of all nodes by running `mmgetstate -a`
+
+Note do not edit `/etc/fstab` directly (it is managed centrally by GPFS).
+
+
 GPFS Filesets
 -------------
 
