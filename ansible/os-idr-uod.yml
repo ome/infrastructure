@@ -40,3 +40,5 @@
 - include: idr-playbooks/idr-local-files.yml
 
 - include: idr-playbooks/idr-user-utils.yml
+
+#- include: idr-playbooks/idr-monitoring.yml

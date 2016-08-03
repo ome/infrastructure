@@ -1,0 +1,20 @@
+# Monitoring playbook
+
+- hosts: omero-hosts
+
+  pre_tasks:
+  - name: Get short hostname (not the same as the Ansible hostname vars)
+    command: hostname -s
+    register: short_hostname
+    always_run: True
+    changed_when: False
+
+  - name: Set omero logmonitor bot-name
+    set_fact:
+      omero_logmonitor_slack_name: "{{ short_hostname.stdout }}-logbot"
+      omero_logmonitor_server_name: "{{ short_hostname.stdout }}"
+
+  roles:
+  - role: omero-logmonitor
+    # omero_logmonitor_slack_token:
+    # omero_logmonitor_slack_channel:
