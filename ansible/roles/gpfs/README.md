@@ -91,6 +91,8 @@ You will need to override many of the variables in `defaults/main.yml`, dependin
 - `gpfs_install_check_kernel_version`: If True check that the currently running kernel version matches that of the compiled GPFS kernel module. Set to False if you are upgrading the kernel and GPFS kernel module at the same time.
 - `gpfs_public_keys`: A list of the SSH public keys belonging to the root users on the NSD nodes, needed so that the NSD nodes can connect to this GPFS client node (default: don't configure)
 - `gpfs_node_specific_mount_options`: A dictionary of special mount options for a specific node only, for example to make one node mount GPFS as read-only: `gpfs-name: ro`, to remove custom mount options set the dictionary value to empty: `gpfs-name: `.
+Never edit `/etc/fstab` directly.
+
 - `gpfs_enable_systemd_workaround`: Workaround a bug in GPFS v4.1 when used with systemd-219, (default False)
 
 For convenience you may want to define some variables on the command line, e.g. `-e gpfs_local_rpm_dir=/data/gpfs/rpms -e gpfs_package_source_dir=/data/gpfs/src`.
@@ -151,20 +153,7 @@ Additional Notes
 Adding a node to the GPFS cluster (interactive)
 -----------------------------------------------
 
-Once this role has been applied you must manually add the node to the GPFS cluster using these instructions as a guide (this is not handled by Ansible).
-First log into a root shell on one of the GPFS admin nodes.
-Commands will be sent from the admin nodes to the other cluster nodes, this is why password-less ssh root access is required.
-
-1. Check you can ssh as root without a password into the new node
-2. Check the reverse IP of the new node matches it's hostname
-3. Run `mmaddnode -N new.node.hostname` to add the node
-4. Run `mmchlicense {client|server} -N new.node.hostname` to assign a license
-5. Run `mmlscluster` and `mmlslicense` to check the cluster
-6. Run `mmstartup -N new.node.hostname` to start GPFS on the new node
-7. Wait a few minutes for the node to initialise. GPFS may be mounted automatically in which case you do not need to do anything, otherwise run `mmmount filesystem-name -N new.node.hostname` to enable the mount on the new node (this will automatically add an entry to `/etc/fstab`)
-8. You can check the state of all nodes by running `mmgetstate -a`
-
-Note do not edit `/etc/fstab` directly (it is managed centrally by GPFS), instead use `gpfs_node_specific_mount_options`.
+See [/docs/storage/gpfs.md](/docs/storage/gpfs.md) for instructions on adding a node to an existing GPFS cluster.
 
 
 Author Information
