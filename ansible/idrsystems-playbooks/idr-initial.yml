@@ -8,6 +8,7 @@
   - role: upgrade-distpackages
   - role: server-swap
   - role: network
+  - role: system-monitor-agent
 
   post_tasks:
   - debug:
