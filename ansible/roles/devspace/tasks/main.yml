@@ -1,0 +1,138 @@
+---
+# Setup a devspace
+
+- name: add user {{ devuser }} to docker group
+  become: yes
+  user:
+      name: "{{ devuser }}"
+      comment: "Devspace manintener"
+      uid: "{{ user_id }}"
+      groups: docker
+      append: yes
+
+- name: ensures /home/{{ devuser }}/.ssh dir exists
+  become: yes
+  become_user: "{{ devuser }}"
+  file:
+      path=/home/{{ devuser }}/.ssh
+      state=directory
+      owner={{ devuser }}
+      group={{ devuser }}
+      mode=0700
+
+- name: allow {{ devuser }} to ssh directly
+  become: yes
+  copy: remote_src=yes
+      src={{ ansible_env.HOME }}/.ssh/authorized_keys
+      dest=/home/{{ devuser }}/.ssh/authorized_keys
+      owner={{ devuser }} group={{ devuser }}
+
+- name: install python tools
+  become: yes
+  yum:
+      name: "{{ item }}"
+      state: present
+  with_items:
+    - python-devel
+    - python-pip
+
+- name: install python packages
+  become: yes
+  pip:
+      name: "{{ item }}"
+      #extra_args: "--upgrade"
+      state: latest
+  with_items:
+    - pip
+    - pyyaml
+    - docker-compose
+
+# TEMP: Error: docker-py version is 1.10.2. Minimum version required is 1.7.0.
+# see https://github.com/ansible/ansible/issues/17495
+- name: TODO install docker-py
+  become: yes
+  pip:
+      name: "{{ item }}"
+      state: latest
+  with_items:
+    - docker-py==1.9.0
+
+- name: clone devspace
+  become: yes
+  become_user: "{{ devuser }}"
+  git:
+      repo="{{ git_repo }}"
+      dest={{ devhome }}
+      update=no
+      refspec=+refs/pull/*:refs/heads/*
+      version={{ version }}
+
+- name: ensures .ssh dir exists
+  become: yes
+  become_user: "{{ devuser }}"
+  file:
+      path={{ devhome }}/slave/.ssh
+      state=directory
+      owner={{ devuser }}
+      group={{ devuser }}
+      mode=0700
+
+- name: copy snoopy
+  become: yes
+  become_user: "{{ devuser }}"
+  copy:
+       src={{ snoopy_dir_path }}/{{ item.srcfile }}
+       dest={{ devhome }}/slave/{{ item.dest }}
+       owner={{ devuser }}
+       group={{ devuser }}
+       mode=0700
+  with_items:
+    - { srcfile: ".ssh/config", dest: ".ssh/config" }
+    - { srcfile: ".ssh/snoopycrimecop_github", dest: ".ssh/snoopycrimecop_github" }
+    - { srcfile: ".ssh/snoopycrimecop_github.pub", dest: ".ssh/snoopycrimecop_github.pub" }
+    - { srcfile: ".gitconfig", dest: ".gitconfig" }
+
+- name: known_hosts
+  become: yes
+  become_user: "{{ devuser }}"
+  shell: ssh-keyscan github.com >> {{ devhome }}/slave/.ssh/known_hosts
+- name: chmod known_hosts
+  become: yes
+  become_user: "{{ devuser }}"
+  file:
+      path={{ devhome }}/slave/.ssh/known_hosts
+      mode=0700
+
+- name: change USER_ID
+  become: yes
+  become_user: "{{ devuser }}"
+  replace:
+      dest="{{ devhome }}/{{ item.file }}"
+      regexp='^ARG USER_ID=1000'
+      replace='ARG USER_ID={{ user_id }}' # how to find out UID?
+  with_items:
+    - { file: nginx/Dockerfile }
+    - { file: slave/Dockerfile }
+    - { file: server/Dockerfile }
+    - { file: web/Dockerfile }
+
+- name: ssl cert for jenkins
+  become: yes
+  become_user: "{{ devuser }}"
+  shell: "{{ devhome }}/sslcert /home/{{ devuser }}/devspace/jenkins/sslcert {{ openstack_ip }}"
+  args:
+      chdir: "{{ devhome }}"
+
+- name: ssl cert for nginx
+  become: yes
+  become_user: "{{ devuser }}"
+  shell: "{{ devhome }}/sslcert /home/{{ devuser }}/devspace/nginx/sslcert {{ openstack_ip }}"
+  args:
+      chdir: "{{ devhome }}"
+
+- name: Rrename to {{ omero_branch }}...
+  become: yes
+  become_user: "{{ devuser }}"
+  shell: "{{ devhome }}/rename.py {{ omero_branch }}"
+  args:
+      chdir: "{{ devhome }}"

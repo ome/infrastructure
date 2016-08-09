@@ -1,0 +1,10 @@
+---
+# Playbook for provisioning Devspace
+
+- hosts: devspace
+
+  roles:
+    - role: upgrade-distpackages
+    - role: docker
+    - role: versioncontrol-utils
+    - role: devspace
