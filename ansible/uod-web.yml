@@ -14,17 +14,23 @@
     live_site_aliases:
       - openmicroscopy.org
   roles:
-    - nginx
+    - role: versioncontrol-utils
+    - role: nginx
+    - role: jenkinsslave
   pre_tasks:
-    - name: install rubygems for jekyll
-      yum: name=rubygems state=present
+    - name: install required packages
       become: yes
-    - name: install ruby-devel
-      yum: name=ruby-devel state=present
-      become: yes
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+       - rubygems
+       - ruby-devel
+       - make
+       - gcc
   tasks:
     - name: Install jekyll
-      gem: name=jekyll state=present user_install=no
+      gem: name=jekyll state=present user_install=no include_doc=no
       become: yes
 
     - name: dev website deploy directory
