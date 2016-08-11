@@ -38,15 +38,27 @@
       become: yes
 
     - name: dev website deploy directory
-      file: state=directory dest="{{ dev_website_root }}" owner="{{ site_owner }}" group="{{ site_group }}" mode=0755 serole=_default setype=_default seuser=_default
+      file:
+        state: directory
+        dest: "{{ dev_website_root }}"
+        owner: "{{ site_owner }}"
+        group: "{{ site_group }}"
+        mode: 0755
+        serole: _default
+        setype: _default
+        seuser: _default
       become: yes
 
-    - git: repo=https://github.com/openmicroscopy/www.openmicroscopy.org dest=/home/{{ site_owner }}/{{ dev_site_name }}
+    - git:
+        repo: https://github.com/openmicroscopy/www.openmicroscopy.org
+        dest: /home/{{ site_owner }}/{{ dev_site_name }}
 
     - command: jekyll build --config _dev.yml chdir=/home/{{ site_owner }}/{{ dev_site_name }}
 
     - name: nginx configuration for {{ dev_site_name }}
-      template: src=templates/{{ dev_site_name }}.nginx.conf dest=/etc/nginx/conf.d/{{ dev_site_name }}.conf
+      template:
+        src: templates/{{ dev_site_name }}.nginx.conf
+        dest: /etc/nginx/conf.d/{{ dev_site_name }}.conf
       become: yes
       notify: restart nginx
 
