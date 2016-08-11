@@ -29,6 +29,10 @@
        - make
        - gcc
   tasks:
+    - name: Install Bundler
+      gem: name=bundler state=present user_install=no
+      become: yes
+
     - name: Install jekyll
       gem: name=jekyll state=present user_install=no include_doc=no
       become: yes
