@@ -7,3 +7,4 @@
     lvm_lvname: jenkins-workdir
     lvm_lvmount: "{{ jenkinsworkdir }}"
     lvm_lvsize: "{{ jenkinssize }}"
+  - role: sudoers
