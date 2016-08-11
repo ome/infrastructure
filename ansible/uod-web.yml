@@ -43,10 +43,7 @@
     - name: nginx configuration for {{ dev_site_name }}
       template: src=templates/{{ dev_site_name }}.nginx.conf dest=/etc/nginx/conf.d/{{ dev_site_name }}.conf
       become: yes
-
-    - name: restart nginx
-      service: name=nginx state=restarted enabled=yes
-      become: yes
+      notify: reload nginx
 
     # - name: live website deploy directory
     #   file: state=directory dest="{{ live_website_root }}" owner="{{ site_owner }}" group="{{ site_group }}" mode=0755
@@ -56,5 +53,10 @@
     #   become: yes
     #   notify:
     #     - reload nginx
+
+  handlers:
+    - name: reload nginx
+      service: name=nginx state=reloaded enabled=yes
+      become: yes
 
   post_tasks:
