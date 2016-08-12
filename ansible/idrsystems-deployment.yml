@@ -5,6 +5,7 @@
 - include: idrsystems-playbooks/idr-docker-localstorage.yml
 - include: idrsystems-playbooks/idr-gpfs-build.yml
 - include: idrsystems-playbooks/idr-gpfs-client.yml
+- include: idrsystems-playbooks/idr-gpfs-scratch.yml
 - include: idrsystems-playbooks/idr-nfs-hosts.yml
 - include: idrsystems-playbooks/idr-nfs-clients.yml
 - include: idrsystems-playbooks/idr-samba-hosts.yml
