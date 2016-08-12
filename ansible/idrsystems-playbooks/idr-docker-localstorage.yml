@@ -21,4 +21,5 @@
   - role: basedeps
   - role: logrotate
   - role: docker
+  - role: sudoers
   - role: versioncontrol-utils
