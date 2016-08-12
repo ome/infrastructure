@@ -17,31 +17,31 @@ for full installation instructions.
 
 ### Installation
 
-- Create a virtual environment:
+- Create a virtual environment and install Ansible:
 
         virtualenv ~/venvs/ansible
-
-- Install dependencies listed in `setup.py`:
-
         ~/venvs/ansible/bin/pip install ansible
+
+- If using Ansible with OpenStack, you might want to install `shade`:
+
+        ~/venvs/ansible/bin/pip install shade
 
 - Clone this repository:
 
         git clone https://github.com/openmicroscopy/infrastructure.git
 
--  Clone the repository containing the inventory, host and group vars files.
-   Ansible will automatically look for `host_vars` and `group_vars` directories in the parent directory of the inventory file.
+-   Clone the repository containing the inventory, host and group vars files.
+    Ansible will automatically look for `host_vars` and `group_vars`
+    directories in the parent directory of the inventory file.
 
 
 ### Running the development ansible
 
-- Activate the virtualenv:
+-   Activate the virtualenv:
 
-    source venvs/ansible/bin/activate
+        source venvs/ansible/bin/activate
 
-All Ansible tools should now be in your path.
-
-Alternatively adjust the paths in this script as necessary:
+All Ansible tools should now be in your path. Alternatively adjust the paths in this script as necessary:
 
     shell
     #!/bin/sh
