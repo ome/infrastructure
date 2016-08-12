@@ -58,7 +58,7 @@
 
     - name: nginx configuration for {{ dev_site_name }}
       template:
-        src: templates/{{ dev_site_name }}.nginx.conf
+        src: templates/www-nginx.j2
         dest: /etc/nginx/conf.d/{{ dev_site_name }}.conf
       become: yes
       notify: restart nginx
