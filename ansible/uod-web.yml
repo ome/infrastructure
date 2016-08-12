@@ -54,7 +54,7 @@
         version: ome-redesign-master
         dest: /home/{{ site_owner }}/{{ dev_site_name }}
 
-    - command: jekyll build --config _dev.yml chdir=/home/{{ site_owner }}/{{ dev_site_name }}
+    - command: jekyll build chdir=/home/{{ site_owner }}/{{ dev_site_name }} --destination {{ dev_website_root }}
 
     - name: nginx configuration for {{ dev_site_name }}
       template:
