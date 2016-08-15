@@ -34,24 +34,7 @@ for full installation instructions.
     Ansible will automatically look for `host_vars` and `group_vars`
     directories in the parent directory of the inventory file.
 
-
-### Running the development ansible
-
--   Activate the virtualenv:
-
-        source venvs/ansible/bin/activate
-
-All Ansible tools should now be in your path. Alternatively adjust the paths in this script as necessary:
-
-    shell
-    #!/bin/sh
-    source ~/venvs/ansible/bin/activate
-    exec "$(basename $0)" "$@"
-
-
-And copy/symlink it into a directory on your `PATH` as `ansible`, `ansible-playbook`, etc (the script should automatically run the ansible command corresponding to it's file name).
-
-#### Examples
+### Examples
 
 In the following examples replace example-hosts with the private host inventory file
 
