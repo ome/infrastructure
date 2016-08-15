@@ -11,59 +11,30 @@ If you are interested in this work please be aware it is a relatively new initia
 ## OME Ansible repository
 
 
-This playbook uses Ansible 2.0 features (which is still in development), do not use `pip install ansible`.
-See http://docs.ansible.com/ansible/intro_installation.html for full installation instructions.
+This playbook uses Ansible 2.0 features. See
+[the Ansible documentation](http://docs.ansible.com/ansible/intro_installation.html)
+for full installation instructions.
 
 ### Installation
 
-- Create a virtualenv:
+- Create a virtual environment and install Ansible:
 
-        virtualenv venvs/ansible
+        virtualenv ~/venvs/ansible
+        ~/venvs/ansible/bin/pip install ansible
 
-- Clone ansible and submodules:
+- If using Ansible with OpenStack, you might want to install `shade`:
 
-        git clone git://github.com/ansible/ansible.git --recursive
-
-- Install dependencies listed in `setup.py`:
-
-        venvs/ansible/bin/pip install paramiko jinja2 PyYAML pycrypto six
+        ~/venvs/ansible/bin/pip install shade
 
 - Clone this repository:
 
         git clone https://github.com/openmicroscopy/infrastructure.git
 
--  Clone the repository containing the inventory, host and group vars files.
-   Ansible will automatically look for `host_vars` and `group_vars` directories in the parent directory of the inventory file.
+-   Clone the repository containing the inventory, host and group vars files.
+    Ansible will automatically look for `host_vars` and `group_vars`
+    directories in the parent directory of the inventory file.
 
-
-### Running the development ansible
-
-- Activate the virtualenv:
-
-        source venvs/ansible/bin/activate
-
-- Activate the Ansible development environment:
-
-        source ansible/hacking/env-setup -q
-
-All ansible tools should now be in your path.
-
-Alternatively adjust the paths in this script as necessary:
-
-    shell
-    #!/bin/sh
-    source ~/venvs/ansible/bin/activate
-    source ~/github/ansible/hacking/env-setup -q
-    exec "$(basename $0)" "$@"
-
-
-And copy/symlink it into a directory on your `PATH` as `ansible`, `ansible-playbook`, etc (the script should automatically run the ansible command corresponding to it's file name).
-
-As another alternative you can probably install ansible into your virtualenv (untested):
-
-        venvs/ansible/bin/python setup.py install --help
-
-#### Examples
+### Examples
 
 In the following examples replace example-hosts with the private host inventory file
 
