@@ -1,0 +1,18 @@
+---
+# tasks file for roles/redis
+
+- name: system packages | install epel repo
+  become: yes
+  yum:
+    name: epel-release
+    state: present
+
+- name: virtualenv | install python tools
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - python-pip
+    - python-setuptools
+    - python-virtualenv
