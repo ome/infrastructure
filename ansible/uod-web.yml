@@ -17,8 +17,10 @@
     - role: versioncontrol-utils
     - role: nginx
     - role: jenkinsslave
-  pre_tasks:
-    - name: install required packages
+
+  tasks:
+
+    - name: Install required packages
       become: yes
       yum:
         name: "{{ item }}"
@@ -28,7 +30,7 @@
        - ruby-devel
        - make
        - gcc
-  tasks:
+
     - name: Install Bundler
       gem:
         name: bundler
@@ -36,7 +38,7 @@
         user_install: no
       become: yes
 
-    - name: Install jekyll
+    - name: Install Jekyll
       gem:
         name: jekyll
         state: present
@@ -44,7 +46,7 @@
         include_doc: no
       become: yes
 
-    - name: dev website deploy directory
+    - name: Create {{ dev_site_name }} root directory
       file:
         state: directory
         dest: "{{ dev_website_root }}"
@@ -56,14 +58,16 @@
         seuser: _default
       become: yes
 
-    - git:
+    - name: Clone {{ dev_site_name }} source code repository
+      git:
         repo: https://github.com/lunson/www.openmicroscopy.org
         version: ome-redesign-master
         dest: /home/{{ site_owner }}/{{ dev_site_name }}
 
-    - command: jekyll build chdir=/home/{{ site_owner }}/{{ dev_site_name }} --destination {{ dev_website_root }}
+    - name: Build the website using Jekyll
+      command: jekyll build chdir=/home/{{ site_owner }}/{{ dev_site_name }} --destination {{ dev_website_root }}
 
-    - name: nginx configuration for {{ dev_site_name }}
+    - name: Update Nginx configuration for {{ dev_site_name }}
       template:
         src: templates/www-nginx.j2
         dest: /etc/nginx/conf.d/{{ dev_site_name }}.conf
