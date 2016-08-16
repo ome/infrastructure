@@ -1,6 +1,12 @@
 ---
 # tasks file for roles/python-devel
 
+- name: system packages | install epel repo
+  become: yes
+  yum:
+    name: epel-release
+    state: present
+
 - name: install python-devel
   become: yes
   yum:
@@ -9,3 +15,13 @@
   with_items:
     - python-devel
     - gcc
+
+- name: virtualenv | install python tools
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - python-pip
+    - python-setuptools
+    - python-virtualenv
