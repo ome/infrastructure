@@ -1,7 +1,7 @@
 ---
 # Playbook for provisioning IDR Docker nodes with local docker storage
 
-- hosts: idr-docker-localstorage
+- hosts: idr-docker
   roles:
   - role: lvm-partition
     lvm_lvname: root
