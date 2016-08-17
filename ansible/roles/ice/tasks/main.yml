@@ -35,8 +35,7 @@
 - name: zeroc ice | pip install packages
   become: yes
   pip:
-    name: "{{ item.name }}"
+    name: "{{ item }}"
     state: present
-    version: "{{ item.version }}"
   with_items: "{{ ice_pip_packages }}"
   when: ice_pip_packages
