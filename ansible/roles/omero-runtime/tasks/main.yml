@@ -9,8 +9,25 @@
   with_items:
     - Cython
     - numpy
-    - python-pillow
     - python-matplotlib
     - python-numexpr
     - python-tables
+    - python-pip
     - scipy
+
+# Uninstall python module rpms that will be replaced with a pip installed version
+- name: omero | remove python packages
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - python-pillow
+
+- name: omero | pip install packages
+  become: yes
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "Pillow==2.9"
