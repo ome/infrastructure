@@ -26,6 +26,7 @@ This defaults to `latest`, but due to the broken registry a proper upgrade check
 You are advised to change this to an actual release version.
 - `postgresql_users_databases`: Used by the `postgres` role, if the PostgreSQL server is on the same node as the OMERO.server define this variable to create the local databases and users.
 If a remote database server is used a user and empty database must already exist.
+- `ice_version`: This variable originates from the `ice` role, leave unset for the default.
 
 
 Warning

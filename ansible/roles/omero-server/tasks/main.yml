@@ -96,6 +96,7 @@
       --sym {{ omero_server_symlink }}
       --prestartfile {{ omero_basedir }}/config/omero-base.config
       --prestartfile {{ omero_basedir }}/config/omero-additional.config
+      --ice {{ ice_version }}
       {{ omero_omego_verbosity }}
       {{ omero_omego_additional_args }}
       {{ omero_systemd_setup | ternary('--no-start', '') }}
