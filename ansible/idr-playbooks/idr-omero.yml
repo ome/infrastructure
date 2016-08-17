@@ -83,6 +83,6 @@
       location: /
       server: "http://{{ omero_omero_host_ansible }}"
   vars_files:
-  - roles/nginx-proxy/vars/example-omero.yml
+  - "{{ playbook_dir }}/../roles/nginx-proxy/vars/example-omero.yml"
 
   # Additional vars are in group_vars/proxy-hosts.yml

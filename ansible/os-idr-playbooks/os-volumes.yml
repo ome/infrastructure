@@ -5,10 +5,11 @@
   connection: local
   #gather_facts: false
 
-  # If os_cloud_provider.yml exists load it, otherwise default to uod.yml
-  # Note that if an invalid os_cloud_provider is given this will default to uod
+  # If os_cloud_provider.yml exists load it, otherwise default to default.yml
+  # Note that if an invalid os_cloud_provider is given this will fallback
+  # to default.yml
   vars_files:
-    - [ "vars/os-create-{{ os_cloud_provider }}.yml", "vars/os-create-uod.yml" ]
+    - [ "{{ inventory_dir }}/vars/os-create-{{ os_cloud_provider }}.yml", "vars/os-create-default.yml" ]
 
   roles:
 
