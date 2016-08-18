@@ -7,6 +7,12 @@
 # For a standard production server you won't need these.
 
 
+# Testing vars. Set:
+# - `idr_nginx_ssl_self_signed=True` to generate a self-signed https cert
+# - `idr_net_iface=iface` if your servers use a network interface other
+#   then eth0 for inter-machine networking
+
+
 - hosts: database-hosts
 
   roles:
@@ -37,9 +43,9 @@
       dest: /etc/security/limits.d/95-omero.conf
     become: yes
 
-  # Ansible uses ansible_host but inventory/openstack.py uses the deprecated ansible_ssh_host
   - set_fact:
-      omero_db_host_ansible: "{{ hostvars[groups['database-hosts'][0]]['ansible_ssh_host'] | default(hostvars[groups['database-hosts'][0]]['ansible_host']) }}"
+      # omero_db_host_ansible: "{{ hostvars[groups['database-hosts'][0]]['ansible_ssh_host'] | default(hostvars[groups['database-hosts'][0]]['ansible_host']) }}"
+      omero_db_host_ansible: "{{ hostvars[groups['database-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
 
   roles:
   - role: upgrade-distpackages
@@ -49,6 +55,7 @@
 
   vars:
     omero_dbhost: "{{ omero_db_host_ansible }}"
+    omero_dbname: idr
     omero_selinux_setup: True
     #omero_upgrade: True
     omero_systemd_setup: True
@@ -61,11 +68,15 @@
 
   pre_tasks:
 
-  # Ansible uses ansible_host but inventory/openstack.py uses the deprecated ansible_ssh_host
   - set_fact:
-      omero_omero_host_ansible: "{{ hostvars[groups['omero-hosts'][0]]['ansible_ssh_host'] | default(hostvars[groups['omero-hosts'][0]]['ansible_host']) }}"
+      # omero_omero_host_ansible: "{{ hostvars[groups['omero-hosts'][0]]['ansible_ssh_host'] | default(hostvars[groups['omero-hosts'][0]]['ansible_host']) }}"
+      omero_omero_host_ansible: "{{ hostvars[groups['omero-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
 
   roles:
+  - role: nginx-ssl-selfsigned
+    nginx_ssl_certificate: "{{ nginx_proxy_ssl_certificate }}"
+    nginx_ssl_certificate_key: "{{ nginx_proxy_ssl_certificate_key }}"
+    when: idr_nginx_ssl_self_signed | default(False) | bool
   - role: nginx-proxy
     nginx_proxy_worker_processes: 4
     nginx_proxy_buffers: 32 16k
@@ -82,7 +93,15 @@
     - name: omero
       location: /
       server: "http://{{ omero_omero_host_ansible }}"
+
   vars_files:
   - "{{ playbook_dir }}/../roles/nginx-proxy/vars/example-omero.yml"
+
+  vars:
+    nginx_proxy_ssl: True
+    nginx_proxy_ssl_certificate: /etc/nginx/ssl/idr-fullchain.pem
+    nginx_proxy_ssl_certificate_key: /etc/nginx/ssl/idr-privkey.pem
+    nginx_proxy_http2: True
+
 
   # Additional vars are in group_vars/proxy-hosts.yml

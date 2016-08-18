@@ -45,7 +45,15 @@
         single_floating_ip: True
       when: single_floating_ip is not defined
 
+    - set_fact:
+        assign_floating_ip: "{{ not (single_floating_ip | bool) }}"
+
     - set_fact: omero_vm_joined_groups="{{ omero_vm_groups.split(',') | union(omero_vm_extra_groups.split(',')) | join(',')}}"
+
+    # The rules on conversion to booleans are confusing, check
+    - debug:
+        msg: "single_floating_ip:{{ single_floating_ip | bool }} assign_floating_ip:{{ assign_floating_ip }}"
+        verbosity: 1
 
     - name: OMERO external access security group
       os_security_group:
@@ -97,7 +105,7 @@
         key_name: "{{ vm_key_name }}"
         flavor: "{{ omero_vm_flavour }}"
         nics: "{{ omero_vm_private_network | default(omit) }}"
-        auto_ip: "{{ not single_floating_ip }}"
+        auto_ip: "{{ assign_floating_ip }}"
         meta:
           hostname: "{{ omero_vm_name }}"
           groups: "{{ omero_vm_joined_groups }}"
@@ -112,7 +120,7 @@
         key_name: "{{ vm_key_name }}"
         flavor: "{{ database_vm_flavour }}"
         nics: "{{ vm_private_network | default(omit) }}"
-        auto_ip: "{{ not single_floating_ip }}"
+        auto_ip: "{{ assign_floating_ip }}"
         meta:
           hostname: "{{ database_vm_name }}"
           groups: "{{ database_vm_groups }}"
@@ -140,7 +148,7 @@
 
     - name: SSH public or private IP
       set_fact:
-        ssh_public_private: "{{ single_floating_ip | ternary('private_v4', 'public_v4') }}"
+        ssh_public_private: "{{ (single_floating_ip | bool ) | ternary('private_v4', 'public_v4') }}"
 
     - name: SSH gateway proxy args
       set_fact:
@@ -148,7 +156,7 @@
           -o ProxyCommand="ssh -W %h:%p centos@{{ vmgateway.server.public_v4 }}"
           {{ ignore_internal_known_hosts |
           ternary("-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no", "")}}
-      when: single_floating_ip
+      when: (single_floating_ip | bool)
 
     # To prevent duplicates with the dynamic inventory only add_host if
     # the VM was created in this run
