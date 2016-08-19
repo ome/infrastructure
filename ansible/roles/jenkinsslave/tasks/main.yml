@@ -30,6 +30,26 @@
     insertbefore: "-:ALL EXCEPT root:ALL"
   when: not spacewalk
 
+- name: jenkins | sudo passwordless
+  become: yes
+  lineinfile:
+    dest: /etc/sudoers
+    backup: yes
+    line: "{{ jenkinsuser }}    ALL=(omero:omero)    NOPASSWD: ALL"
+    insertafter: "^## Same thing without a password"
+    state: present
+    validate: 'visudo -cf %s'
+  when: not spacewalk
+
+- name: "jenkins | fix sudo: sorry, you must have a tty to run sudo"
+  become: yes
+  replace:
+    dest: /etc/sudoers
+    regexp: '^Defaults    requiretty'
+    replace: 'Defaults:{{ jenkinsuser }} !requiretty'
+    backup: yes
+  when: not spacewalk
+
 - name: jenkins | git config
   become: yes
   template:
