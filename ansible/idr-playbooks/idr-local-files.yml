@@ -1,7 +1,7 @@
 ---
 # Playbook for copying local files
 
-# TODO: This si a temporary palybook for copying ad-hoc files
+# TODO: This is a temporary playbook for copying ad-hoc files
 # This should be cleaned up and moved/combined into an appropriate role
 
 # Variables should be in a private group_vars file
@@ -25,7 +25,7 @@
     #synchronize:
     copy:
       dest: /srv/www/html/
-      src: inventory/group_vars/files/html/
+      src: "{{ inventory_dir }}/files/html/"
       #delete: yes
       #owner: no
       #recursive: yes

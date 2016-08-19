@@ -1,0 +1,153 @@
+# Example playbook for installing OMERO.server into a VM
+#
+# This is initially aimed at testing a mini-IDR, so some production tuning is
+# required (limits.d).
+# In addition the samba-client and python-pydata roles are also installed
+# as they are required for some IDR related tasks.
+# For a standard production server you won't need these.
+
+
+# Testing vars. Set:
+# - `idr_nginx_ssl_self_signed=True` to generate a self-signed https cert
+# - `idr_net_iface=iface` if your servers use a network interface other
+#   then eth0 for inter-machine networking
+
+
+- hosts: database-hosts
+
+  roles:
+  - role: postgresql
+    postgresql_server_listen: "'*'"
+    postgresql_server_auth:
+    - database: all
+      user: omero
+      address: 0.0.0.0/0
+    postgresql_users_databases:
+    - user: omero
+      password: omero
+      databases: [idr]
+    postgresql_server_chown_datadir: True
+
+
+- hosts: omero-hosts
+
+  pre_tasks:
+
+  # Increase open files and processes (alternatively use the pam_limits module)
+  - copy:
+      content: |
+        omero hard nofile 16384
+        omero soft nofile 16384
+        omero hard noproc 8192
+        omero soft noproc 8192
+      dest: /etc/security/limits.d/95-omero.conf
+    become: yes
+
+  - set_fact:
+      # omero_db_host_ansible: "{{ hostvars[groups['database-hosts'][0]]['ansible_ssh_host'] | default(hostvars[groups['database-hosts'][0]]['ansible_host']) }}"
+      omero_db_host_ansible: "{{ hostvars[groups['database-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
+
+  roles:
+  - role: upgrade-distpackages
+  - role: versioncontrol-utils
+  - role: omero-server
+  - role: python-pydata
+  - role: omero-web-apps
+
+  vars:
+    omero_dbhost: "{{ omero_db_host_ansible }}"
+    omero_dbname: idr
+    omero_selinux_setup: True
+    #omero_upgrade: True
+    omero_systemd_setup: True
+    omero_db_create: False
+
+    omero_web_app_packages:
+    - "git+git://github.com/aleksandra-tarkowska/mapannotations.git#egg=mapr"
+    omero_web_apps_add:
+    - mapr
+    omero_web_app_add_top_links:
+      # This should be a list of lists, but Ansible will automatically
+      # flatten it, so convert it to a dictionary with dummy keys instead
+      dummy_idr:
+        - IDR
+        - viewname: webindex
+          query_string: { experimenter: -1 }
+        - title: Image Data Repository
+      dummy_genes:
+        - Genes
+        - viewname: maprindex_gene
+          query_string: { experimenter: -1 }
+        - title: Genes browser
+      dummy_phenotype:
+        - Phenotypes
+        - viewname: maprindex_phenotype
+          query_string: { experimenter: -1 }
+        - title: Phenotypes browser
+      dummy_sirna:
+        - siRNA
+        - viewname: maprindex_sirna
+          query_string: { experimenter: -1 }
+        - title: siRNA browser
+      dummy_compound:
+        - Compound
+        - viewname: maprindex_compound
+          query_string: {"experimenter": -1}
+        - title: Compound browser
+#      dummy_history:
+#        - History
+#        - history
+#        - title: History
+#      dummy_about:
+#        - About
+#        - /about/
+#      dummy_help:
+#        - Help
+#        - http://help.openmicroscopy.org/
+#        - title: Open OMERO user guide in a new tab
+#          target: new
+
+  # Additional vars are in group_vars/omero-hosts.yml
+
+
+- hosts: proxy-hosts
+
+  pre_tasks:
+
+  - set_fact:
+      # omero_omero_host_ansible: "{{ hostvars[groups['omero-hosts'][0]]['ansible_ssh_host'] | default(hostvars[groups['omero-hosts'][0]]['ansible_host']) }}"
+      omero_omero_host_ansible: "{{ hostvars[groups['omero-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
+
+  roles:
+  - role: nginx-ssl-selfsigned
+    nginx_ssl_certificate: "{{ nginx_proxy_ssl_certificate }}"
+    nginx_ssl_certificate_key: "{{ nginx_proxy_ssl_certificate_key }}"
+    when: idr_nginx_ssl_self_signed | default(False) | bool
+  - role: nginx-proxy
+    nginx_proxy_worker_processes: 4
+    nginx_proxy_buffers: 32 16k
+    # TODO: This needs to match the cache configuration in nginx-proxy, so should be combined in one place
+    nginx_proxy_backends:
+    - name: omerocached
+      location: ~ /web(client|gateway)/(metadata|render)_*
+      server: "http://{{ omero_omero_host_ansible }}"
+      cache_validity: 30d
+    - name: omerostatic
+      location: ~ /static/*
+      server: "http://{{ omero_omero_host_ansible }}"
+      cache_validity: 30d
+    - name: omero
+      location: /
+      server: "http://{{ omero_omero_host_ansible }}"
+
+  vars_files:
+  - "{{ playbook_dir }}/../roles/nginx-proxy/vars/example-omero.yml"
+
+  vars:
+    nginx_proxy_ssl: True
+    nginx_proxy_ssl_certificate: /etc/nginx/ssl/idr-fullchain.pem
+    nginx_proxy_ssl_certificate_key: /etc/nginx/ssl/idr-privkey.pem
+    nginx_proxy_http2: True
+
+
+  # Additional vars are in group_vars/proxy-hosts.yml

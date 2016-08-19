@@ -2,12 +2,12 @@
 # Playbook for starting an IDR-like OMERO in the UoD
 # openstack cloud.
 
-- include: os-create.yml
+- include: os-idr-playbooks/os-create.yml
   vars:
     omero_vm_extra_groups: "uod-nfs,idr-hosts"
     os_cloud_provider: uod
 
-- include: os-volumes.yml
+- include: os-idr-playbooks/os-volumes.yml
   vars:
     os_cloud_provider: uod
 
@@ -34,7 +34,7 @@
 
 - include: idr-playbooks/idr-dundee-nfs.yml
 
-- include: os-omero.yml
+- include: idr-playbooks/idr-omero.yml
 # Vars are in os-omero.yml so that the playbook can be run independently
 
 - include: idr-playbooks/idr-local-files.yml

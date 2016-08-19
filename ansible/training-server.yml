@@ -11,9 +11,6 @@
     # Taking this from the openstack playbook os-omero.yml, to install the systemd config.
     omero_systemd_setup: True
 
-    # Variable to tell OMEGO to get Ice 3.5, not the 'latest ice'. Ice role doesn't install latest at the moment, but Ice 3.5.
-    omero_omego_additional_args: "--ice 3.5"
-
   vars:
   - postgresql_users_databases:
     - user: omero
