@@ -1,0 +1,9 @@
+---
+# Handler for omero-web
+
+- name: restart omero-web
+  become: yes
+  service:
+    name: omero-web
+    state: restarted
+  when: omero_systemd_setup
