@@ -10,7 +10,9 @@ ice_devel_packages:
 ice_pip_dependencies:
   - gcc
   - gcc-c++
+  - libdb-utils
   - bzip2-devel
+  - expat-devel
   - openssl-devel
   - python-devel
   - python-pip
