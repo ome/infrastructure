@@ -20,6 +20,8 @@
       state: present
   with_items:
     - scc
-    - sphinx
+    - omego
+    - genshi yaclifw pytest PyYAML
+    - Sphinx==1.2.3 epydoc
     - "django>=1.8,<1.9"
 
