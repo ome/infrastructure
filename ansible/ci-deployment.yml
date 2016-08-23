@@ -24,9 +24,6 @@
         password: omero
         databases: [omero]
       postgresql_server_chown_datadir: True
-  vars:
-    - javajdkversions:
-      - 1.8.0
 
 # Deploy OMERO build and runtime prerequisites
 - hosts: ci-omero-web
@@ -34,11 +31,6 @@
     - role: omero-runtime
     - role: omero-web-runtime
     - role: nginx
-  vars:
-    - omero_selinux_setup: True
-    - omero_web_runtime_redis: True
-    - javajdkversions:
-      - 1.8.0
 
 # Deploy Documentation prerequisites
 - hosts: ci-docs
