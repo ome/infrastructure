@@ -31,10 +31,9 @@
     group={{ jenkinsuser }}
     mode=0700
   with_items:
-    - { srcfile: ".ssh/config", dest: ".ssh/config" }
-    - { srcfile: ".ssh/snoopycrimecop_github", dest: ".ssh/snoopycrimecop_github" }
-    - { srcfile: ".ssh/snoopycrimecop_github.pub", dest: ".ssh/snoopycrimecop_github.pub" }
-    - { srcfile: ".gitconfig", dest: ".gitconfig" }
+    - { srcfile: "config", dest: ".ssh/config" }
+    - { srcfile: "snoopycrimecop_github", dest: ".ssh/snoopycrimecop_github" }
+    - { srcfile: "snoopycrimecop_github.pub", dest: ".ssh/snoopycrimecop_github.pub" }
   when: not spacewalk and snoopy_dir_path|length>0
 
 - name: generate known_hosts
