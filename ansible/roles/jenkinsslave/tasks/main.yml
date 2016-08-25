@@ -14,6 +14,10 @@
     state: directory
     owner: "{{ jenkinsuser }}"
     group: "{{ jenkinsuser }}"
+    mode: "0755"
+    serole: "_default"
+    setype: "_default"
+    seuser: "_default"
 
 - name: jenkins | ssh key
   become: yes
