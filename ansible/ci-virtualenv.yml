@@ -1,0 +1,5 @@
+---
+
+- hosts: ci-jenkins-linux
+  roles:
+    - role: jenkinsslave
