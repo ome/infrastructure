@@ -1,0 +1,27 @@
+---
+# Playbook for starting a Jenkins slave in the UoD
+# openstack cloud.
+#
+# Usage:
+#   $ source openrc.sh
+#   $ ansible-playbook -i {inventory_dir} os-uod-slave.yml -e vm_name=web-server
+#   $ ansible-playbook -i {inventory_dir} uod-slave.yml -l web-server
+
+# Re-using the docker playbook so that we have the option
+# of starting docker services as a part of a Jenkins job.
+- include: os-uod-docker.yml
+  vars:
+      vm_groups: "ansible-managed,os-image-centos,docker-hosts,ci-jenkins-linux,ci-omero,ci-omero-web"
+      vm_key_name: "jenkins"
+      # We're hard-coding the key since it must match the rest of the
+      # jenkins infrastructure.
+
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  roles:
+  - role: openstack-volume-storage
+    openstack_volume_size: 100
+    openstack_volume_vmname: "{{ vm_name }}"
+    openstack_volume_name: opthudson
+    openstack_volume_device: /dev/vdb
