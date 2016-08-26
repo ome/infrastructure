@@ -22,31 +22,8 @@
 
   tasks:
 
-    - name: Install required packages
-      become: yes
-      yum:
-        name: "{{ item }}"
-        state: present
-      with_items:
-       - rubygems
-       - ruby-devel
-       - make
-       - gcc
-
-    - name: Install Bundler
-      gem:
-        name: bundler
-        state: present
-        user_install: no
-      become: yes
-
-    - name: Install Jekyll
-      gem:
-        name: jekyll
-        state: present
-        user_install: no
-        include_doc: no
-      become: yes
+    - include: jekyll_install.yml
+      tags: jekyll_install
 
     - name: Create {{ dev_site_name }} root directory
       file:
