@@ -9,6 +9,8 @@
     dev_site_name: www-dev.openmicroscopy.org
     dev_site_aliases:
       - web-test.openmicroscopy.org
+    dev_site_account: lunson
+    dev_site_branch: ome-redesign-master
     live_website_root: /var/www/www.openmicroscopy.org/html
     live_site_name: www-live.openmicroscopy.org
     live_site_aliases:
@@ -60,12 +62,16 @@
 
     - name: Clone {{ dev_site_name }} source code repository
       git:
-        repo: https://github.com/lunson/www.openmicroscopy.org
-        version: ome-redesign-master
+        repo: https://github.com/{{ dev_site_account }}/www.openmicroscopy.org
+        version: "{{ dev_site_branch }}"
         dest: /home/{{ site_owner }}/{{ dev_site_name }}
+      tags:
+        - quickdeploy
 
     - name: Build the website using Jekyll
       command: jekyll build chdir=/home/{{ site_owner }}/{{ dev_site_name }} --destination {{ dev_website_root }}
+      tags:
+        - quickdeploy
 
     - name: Update Nginx configuration for {{ dev_site_name }}
       template:
@@ -73,6 +79,8 @@
         dest: /etc/nginx/conf.d/{{ dev_site_name }}.conf
       become: yes
       notify: restart nginx
+      tags:
+        - quickdeploy
 
     # - name: live website deploy directory
     #   file: state=directory dest="{{ live_website_root }}" owner="{{ site_owner }}" group="{{ site_group }}" mode=0755 serole=_default setype=_default seuser=_default
