@@ -1,0 +1,33 @@
+- name: Create {{ site_name }} root directory
+  file:
+    state: directory
+    dest: "{{ site_root }}"
+    owner: "{{ site_owner }}"
+    group: "{{ site_group }}"
+    mode: 0755
+    serole: _default
+    setype: _default
+    seuser: _default
+  become: yes
+
+- name: Clone {{ site_name }} source code repository
+  git:
+    repo: https://github.com/{{ github_user }}/{{ github_repo }}
+    version: "{{ github_branch }}"
+    dest: /home/{{ site_owner }}/{{ site_name }}
+  tags:
+    - quickdeploy
+
+- name: Build the website using Jekyll
+  command: jekyll build chdir=/home/{{ site_owner }}/{{ site_name }} --destination {{ site_root }}
+  tags:
+    - quickdeploy
+
+- name: Update Nginx configuration for {{ site_name }}
+  template:
+    src: templates/www-nginx.j2
+    dest: /etc/nginx/conf.d/{{ site_name }}.conf
+  become: yes
+  notify: restart nginx
+  tags:
+    - quickdeploy
