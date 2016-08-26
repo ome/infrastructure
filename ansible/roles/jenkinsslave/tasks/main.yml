@@ -14,12 +14,45 @@
     state: directory
     owner: "{{ jenkinsuser }}"
     group: "{{ jenkinsuser }}"
+    mode: "0755"
+    serole: "_default"
+    setype: "_default"
+    seuser: "_default"
 
 - name: jenkins | ssh key
   become: yes
   authorized_key:
     user: "{{ jenkinsuser }}"
     key: "{{ authorized_key }}"
+
+- name: copy snoopy keys
+  become: yes
+  become_user: "{{ jenkinsuser }}"
+  copy:
+    src={{ snoopy_dir_path }}/{{ item.srcfile }}
+    dest=/home/{{ jenkinsuser }}/{{ item.dest }}
+    owner={{ jenkinsuser }}
+    group={{ jenkinsuser }}
+    mode=0700
+  with_items:
+    - { srcfile: "config", dest: ".ssh/config" }
+    - { srcfile: "snoopycrimecop_github", dest: ".ssh/snoopycrimecop_github" }
+    - { srcfile: "snoopycrimecop_github.pub", dest: ".ssh/snoopycrimecop_github.pub" }
+  when: not spacewalk and snoopy_dir_path|length>0
+
+- name: generate known_hosts
+  become: yes
+  become_user: "{{ jenkinsuser }}"
+  shell: ssh-keyscan github.com >> /home/{{ jenkinsuser }}/.ssh/known_hosts
+  when: not spacewalk and snoopy_dir_path|length>0
+
+- name: chmod known_hosts
+  become: yes
+  become_user: "{{ jenkinsuser }}"
+  file:
+    path=/home/{{ jenkinsuser }}/.ssh/known_hosts
+    mode=0700
+  when: not spacewalk and snoopy_dir_path|length>0
 
 - name: jenkins | ssh access
   become: yes
@@ -28,6 +61,26 @@
     backup: yes
     line: "+:{{ jenkinsuser }}:ALL"
     insertbefore: "-:ALL EXCEPT root:ALL"
+  when: not spacewalk
+
+- name: jenkins | sudo passwordless
+  become: yes
+  lineinfile:
+    dest: /etc/sudoers
+    backup: yes
+    line: "{{ jenkinsuser }}    ALL=(omero:omero)    NOPASSWD: ALL"
+    insertafter: "^## Same thing without a password"
+    state: present
+    validate: 'visudo -cf %s'
+  when: not spacewalk
+
+- name: "jenkins | fix sudo: sorry, you must have a tty to run sudo"
+  become: yes
+  replace:
+    dest: /etc/sudoers
+    regexp: '^Defaults    requiretty'
+    replace: 'Defaults:{{ jenkinsuser }} !requiretty'
+    backup: yes
   when: not spacewalk
 
 - name: jenkins | git config

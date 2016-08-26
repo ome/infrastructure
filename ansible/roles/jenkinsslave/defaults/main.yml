@@ -4,6 +4,7 @@
 jenkinsuser: hudson
 jenkinsworkdir: /opt/hudson
 authorized_key: "ssh-rsa KEY"
+snoopy_dir_path:
 gitconfig:
   user: email@example.org
   name: Firstname Lastname

@@ -8,10 +8,20 @@
   with_items:
     - python-pip
     - python-virtualenv
-    
-- name: virtualenv | scc
+
+- name: install python packages
   become: yes
   become_user: "{{ jenkinsuser }}"
   pip:
-    virtualenv: /home/{{ jenkinsuser }}/virtualenv
-    name: scc
+      name: "{{ item }}"
+      virtualenv: "/home/{{ jenkinsuser }}/virtualenv"
+      virtualenv_command: "virtualenv"
+      virtualenv_site_packages: "yes"
+      state: present
+  with_items:
+    - scc
+    - omego
+    - genshi yaclifw pytest PyYAML
+    - Sphinx==1.2.3 epydoc
+    - "django>=1.8,<1.9"
+

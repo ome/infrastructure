@@ -1,0 +1,16 @@
+---
+# Playbook for managing a Jenkins slave in the
+# openstack cloud.
+
+- include: os-uod-docker.yml
+
+# Duplicate of part of uod-docker.yml for the /opt/hudson directory
+- hosts: ci-jenkins-linux
+  vars:
+    ansible_user: centos
+  roles:
+  - role: storage-volume-initialise
+    storage_volume_initialise_device: /dev/vdc
+    storage_volume_initialise_mount: /opt/hudson
+
+- include: ci-deployment.yml

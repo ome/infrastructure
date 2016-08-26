@@ -8,7 +8,6 @@
     state: present
   with_items:
     - python-pip
-    - python-pillow
 
 - name: omero web | install python redis package
   become: yes
@@ -25,6 +24,7 @@
     state: absent
   with_items:
     - python-gunicorn
+    - python-pillow
 
 - name: omero web | pip install packages
   become: yes
@@ -32,6 +32,7 @@
     name: "{{ item }}"
     state: present
   with_items:
+    - "Pillow==2.9"
     - "django>=1.8,<1.9"
     - "gunicorn>=19.3"
 
@@ -41,3 +42,33 @@
     name: "django-redis-cache>=1.6.5"
     state: present
   when: omero_web_runtime_redis
+
+
+# selinux
+- name: omero | install selinux utilities
+  become: yes
+  yum:
+    name: libselinux-python
+    state: present
+  when: omero_selinux_setup
+
+- name: omero web | selinux booleans
+  become: yes
+  seboolean:
+    name: "{{ item }}"
+    state: yes
+    persistent: yes
+  with_items:
+    - httpd_read_user_content
+    - httpd_enable_homedirs
+  when: omero_selinux_setup
+
+# Alternatively set httpd_can_network_connect=yes to allow all ports
+- name: omero web | selinux ports
+  become: yes
+  seport:
+    ports: "4080"
+    proto: tcp
+    setype: http_port_t
+    state: present
+  when: omero_selinux_setup

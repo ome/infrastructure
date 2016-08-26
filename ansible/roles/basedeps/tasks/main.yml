@@ -20,3 +20,4 @@
     - unzip
     - wget
     - zip
+    - gcc

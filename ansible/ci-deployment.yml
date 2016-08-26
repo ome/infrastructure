@@ -4,6 +4,7 @@
 - hosts: ci-jenkins-linux
   roles:
     - role: jenkinsslave
+    - role: sudoers
     - role: versioncontrol-utils
 
 # Deploy OMERO build and runtime prerequisites
@@ -11,12 +12,25 @@
   roles:
     - role: omero-build
     - role: omero-runtime
-    - role: omero-build-cpp
+#    - role: omero-build-cpp
     - role: postgresql
+      postgresql_server_listen: "'*'"
+      postgresql_server_auth:
+      - database: all
+        user: omero
+        address: 0.0.0.0/0
+      postgresql_users_databases:
+      - user: omero
+        password: omero
+        databases: [omero]
+      postgresql_server_chown_datadir: True
+
+# Deploy OMERO build and runtime prerequisites
+- hosts: ci-omero-web
+  roles:
+    - role: omero-runtime
+    - role: omero-web-runtime
     - role: nginx
-  vars:
-    - javajdkversions:
-      - 1.8.0
 
 # Deploy Documentation prerequisites
 - hosts: ci-docs
