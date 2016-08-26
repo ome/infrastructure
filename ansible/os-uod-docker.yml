@@ -10,7 +10,7 @@
 
   vars:
 
-    vm_image: "CentOS 7 1604"
+    vm_image: "CentOS 7 1607"
     vm_flavour: m2.large
     vm_groups: "ansible-managed,os-image-centos,docker-hosts"
     ignore_internal_known_hosts: True
