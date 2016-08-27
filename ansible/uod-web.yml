@@ -3,24 +3,13 @@
   hosts: web-linux # TODO?
   vars:
     ansible_user: centos
-    site_owner: centos
-    site_group: centos
-    site_root: /var/www/www-dev.openmicroscopy.org/html
-    site_name: www-dev.openmicroscopy.org
-    site_aliases:
-      - web-test.openmicroscopy.org
-    github_user: lunson
-    github_repo: www.openmicroscopy.org
-    github_branch: ome-redesign-master
+
   roles:
     - role: versioncontrol-utils
-    - role: nginx
     - role: jenkinsslave
 
-  tasks:
+- include: jekyll-playbooks/jekyll-install.yml
+  tags: jekyll-install
 
-    - include: jekyll-playbooks/jekyll-install.yml
-      tags: jekyll-install
-
-    - include: jekyll-playbooks/jekyll-deploy.yml
-      tags: jekyll-deploy
+- include: jekyll-playbooks/jekyll-deploy.yml
+  tags: jekyll-deploy
