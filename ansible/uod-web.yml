@@ -19,8 +19,8 @@
 
   tasks:
 
-    - include: jekyll_install.yml
-      tags: jekyll_install
+    - include: jekyll-playbooks/jekyll-install.yml
+      tags: jekyll-install
 
-    - include: jekyll_deploy.yml
-      tags: jekyll_deploy
+    - include: jekyll-playbooks/jekyll-deploy.yml
+      tags: jekyll-deploy
