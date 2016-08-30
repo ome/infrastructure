@@ -1,0 +1,33 @@
+# Playbook for installing Jekyll and its prerequisites
+- name: Jekyll installation
+  hosts: web-linux # TODO
+  vars:
+    ansible_user: centos
+
+  tasks:
+
+  - name: Install required packages
+    become: yes
+    yum:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - rubygems
+      - ruby-devel
+      - make
+      - gcc
+
+  - name: Install Bundler
+    gem:
+      name: bundler
+      state: present
+      user_install: no
+    become: yes
+
+  - name: Install Jekyll
+    gem:
+      name: jekyll
+      state: present
+      user_install: no
+      include_doc: no
+    become: yes
