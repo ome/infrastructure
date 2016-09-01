@@ -45,7 +45,7 @@
 
   - set_fact:
       # omero_db_host_ansible: "{{ hostvars[groups['database-hosts'][0]]['ansible_ssh_host'] | default(hostvars[groups['database-hosts'][0]]['ansible_host']) }}"
-      omero_db_host_ansible: "{{ hostvars[groups['database-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
+      # omero_db_host_ansible: "{{ hostvars[groups['database-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
 
   roles:
   - role: upgrade-distpackages
@@ -116,7 +116,7 @@
 
   - set_fact:
       # omero_omero_host_ansible: "{{ hostvars[groups['omero-hosts'][0]]['ansible_ssh_host'] | default(hostvars[groups['omero-hosts'][0]]['ansible_host']) }}"
-      omero_omero_host_ansible: "{{ hostvars[groups['omero-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
+      # omero_omero_host_ansible: "{{ hostvars[groups['omero-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
 
   roles:
   - role: nginx-ssl-selfsigned
