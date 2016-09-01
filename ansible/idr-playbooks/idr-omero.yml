@@ -48,11 +48,11 @@
       # omero_db_host_ansible: "{{ hostvars[groups['database-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
 
   roles:
-  - role: upgrade-distpackages
-  - role: versioncontrol-utils
-  - role: omero-server
-  - role: python-pydata
-  - role: omero-web-apps
+  - { role: upgrade-distpackages, tags: "upgrade-distpackages" }
+  - { role: versioncontrol-utils, tags: "versioncontrol-utils" }
+  - { role: omero-server, tags: "omero-server" }
+  - { role: python-pydata, tags: "python-pydata" }
+  - { role: omero-web-apps, tags: "omero-web-apps" }
 
   vars:
     omero_dbhost: "{{ omero_db_host_ansible }}"
