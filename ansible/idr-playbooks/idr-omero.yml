@@ -63,7 +63,7 @@
     omero_db_create: False
 
     omero_web_app_packages:
-    - "git+git://github.com/aleksandra-tarkowska/mapannotations.git#egg=mapr"
+      - "omero-mapr==0.1.1"
     omero_web_apps_add:
     - mapr
     omero_web_app_add_top_links:
