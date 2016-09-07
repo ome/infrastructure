@@ -1,0 +1,41 @@
+---
+# tasks file for roles/omero-web-apps
+
+- name: omero web apps | omero location
+  set_fact:
+    omero_web_omero: "{{ omero_serverdir }}/{{ omero_server_symlink }}/bin/omero"
+
+- name: system pip | install webapp
+  become: yes
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ omero_web_app_packages | default([]) }}"
+  notify:
+    - restart omero-web
+
+- name: omero web config | add application
+  become: yes
+  become_user: "{{ omero_system_user }}"
+  command: >
+    {{ omero_web_omero }} config append --set --report
+    omero.web.apps
+    {{ item | to_json | quote }}
+  register: out
+  changed_when: "'Changed:' in out.stdout"
+  with_items: "{{ omero_web_apps_add | default([]) }}"
+  notify:
+    - restart omero-web
+
+- name: omero web config | add top links
+  become: yes
+  become_user: "{{ omero_system_user }}"
+  command: >
+    {{ omero_web_omero }} config append --set --report
+    omero.web.ui.top_links
+    {{ item.value | to_json | quote }}
+  register: out
+  changed_when: "'Changed:' in out.stdout"
+  with_dict: "{{ omero_web_app_add_top_links | default({}) }}"
+  notify:
+    - restart omero-web
