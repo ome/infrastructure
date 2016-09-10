@@ -38,15 +38,26 @@
     - python-pip
     - python-virtualenv
 
-- name: system packages | install epel packages
+- name: system packages | define epel packages
+  set_fact: 
+    omero_build_epel_packages="['hdf5-devel', 'GraphicsMagick']"
+
+- name: system packages | install epel packages, server not spacewalk/satellite managed
   become: yes
   yum:
     name: "{{ item }}"
     state: present
     enablerepo: epel
-  with_items:
-    - hdf5-devel
-    - GraphicsMagick
+  with_items: "{{ omero_build_epel_packages }}"
+  when: not spacewalk 
+
+- name: system packages | install epel packages, server spacewalk/satellite managed
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ omero_build_epel_packages }}"
+  when: spacewalk
 
 # Ansible doesn't always detect when a downloaded file has been extracted,
 # so use `creates` in `unarchive`

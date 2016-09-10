@@ -6,6 +6,7 @@
     - role: jenkinsslave
     - role: sudoers
     - role: versioncontrol-utils
+    - role: system-monitor-agent
 
 # Deploy OMERO build and runtime prerequisites
 - hosts: ci-omero

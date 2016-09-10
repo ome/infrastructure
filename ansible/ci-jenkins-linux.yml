@@ -3,6 +3,13 @@
 
 - hosts: ci-jenkins-linux
   roles:
+  # Root LV Size 
+  - role: lvm-partition
+    lvm_lvname: root
+    lvm_lvmount: /
+    lvm_lvsize: "{{ provision_rootsize }}"
+    lvm_lvfilesystem: "{{ provision_root_filesystem }}"
+  # Jenkins work dir
   - role: lvm-partition
     lvm_lvname: jenkins-workdir
     lvm_lvmount: "{{ jenkinsworkdir }}"
