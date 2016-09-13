@@ -5,9 +5,11 @@ postgresql_external:
   repourl:
     "9.3": http://yum.postgresql.org/9.3/redhat/rhel-7-x86_64/pgdg-redhat93-9.3-1.noarch.rpm
     "9.4": http://yum.postgresql.org/9.4/redhat/rhel-7-x86_64/pgdg-redhat94-9.4-1.noarch.rpm
+    "9.5": http://yum.postgresql.org/9.5/redhat/rhel-7-x86_64/pgdg-redhat95-9.5-1.noarch.rpm
   basename:
     "9.3": postgresql93
     "9.4": postgresql94
+    "9.5": postgresql95
 
 # Internal role variables, do not modify
 postgresql_bindir: /usr/pgsql-{{ postgresql_version }}/bin
