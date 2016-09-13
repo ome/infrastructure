@@ -17,6 +17,7 @@
     vm_image: "CentOS 7 1607"
     vm_key_name: "jenkins"
     vm_flavour: m2.large
+    vm_size: 50
     vm_groups: "ansible-managed,os-image-centos,docker-hosts,devspace"
     ignore_internal_known_hosts: True
 
@@ -64,6 +65,9 @@
         name: "{{ vm_name }}"
         state: present
         image: "{{ vm_image }}"
+        boot_from_volume: True
+        volume_size: "{{ vm_size }}"
+        terminate_volume: true
         key_name: "{{ vm_key_name }}"
         flavor: "{{ vm_flavour }}"
         auto_ip: yes
