@@ -119,14 +119,14 @@
 - name: ssl cert for jenkins
   become: yes
   become_user: "{{ devuser }}"
-  shell: "{{ devhome }}/sslcert /home/{{ devuser }}/devspace/jenkins/sslcert {{ openstack_ip }}"
+  shell: "{{ devhome }}/sslcert {{ devhome }}/jenkins/sslcert {{ openstack_ip }}"
   args:
       chdir: "{{ devhome }}"
 
 - name: ssl cert for nginx
   become: yes
   become_user: "{{ devuser }}"
-  shell: "{{ devhome }}/sslcert /home/{{ devuser }}/devspace/nginx/sslcert {{ openstack_ip }}"
+  shell: "{{ devhome }}/sslcert {{ devhome }}/nginx/sslcert {{ openstack_ip }}"
   args:
       chdir: "{{ devhome }}"
 
