@@ -13,10 +13,10 @@ git_repo: "https://github.com/openmicroscopy/devspace.git"
 version: "master"
 
 # devspace user
-devuser: centos
+devuser: omero
 
 # devspace user id
-user_id: "1000"
+user_id: "1001"
 
 # path where devspace will be installed
 devhome: /home/{{ devuser }}/devspace
