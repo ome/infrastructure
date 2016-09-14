@@ -26,3 +26,7 @@ openstack_ip: 127.0.0.1
 
 # rename to:
 omero_branch: develop
+
+# jenkins credentials:
+jenkins_nginx_username: devspace
+jenkins_nginx_password:
