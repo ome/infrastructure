@@ -91,6 +91,7 @@
     - { srcfile: ".ssh/snoopycrimecop_github", dest: ".ssh/snoopycrimecop_github" }
     - { srcfile: ".ssh/snoopycrimecop_github.pub", dest: ".ssh/snoopycrimecop_github.pub" }
     - { srcfile: ".gitconfig", dest: ".gitconfig" }
+  when: snoopy_dir_path|length>0
 
 - name: known_hosts
   become: yes
