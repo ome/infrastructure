@@ -98,16 +98,16 @@
   become: yes
   unarchive:
     copy: no
-    creates: /opt/findbugs-3.0.1/bin/findbugs
+    creates: /opt/findbugs-3.0.0/bin/findbugs
     dest: /opt/
-    src: http://prdownloads.sourceforge.net/findbugs/findbugs-3.0.1.tar.gz?download
+    src: http://prdownloads.sourceforge.net/findbugs/findbugs-3.0.0.tar.gz?download
 
 - name: findbugs | symlink
   become: yes
   file:
     force: yes
     path: /opt/findbugs
-    src: findbugs-3.0.1
+    src: findbugs-3.0.0
     state: link
 
 - name: ninja | create parent dir
