@@ -1,0 +1,28 @@
+---
+
+# Force Docker to use the MTU set by the main IPV4 interface.
+# This may be necessary on virtualised hosts, see comment in `docker/defaults/main.yml`.
+docker_use_ipv4_nic_mtu: True
+
+# path to snoopy keys
+snoopy_dir_path: "/path/to/snoopy_keys"
+
+# devspace source
+git_repo: "https://github.com/openmicroscopy/devspace.git"
+# devspace branch
+version: "master"
+
+# devspace user
+devuser: centos
+
+# devspace user id
+user_id: "1000"
+
+# path where devspace will be installed
+devhome: /home/{{ devuser }}/devspace
+
+# openstack IP
+openstack_ip: 127.0.0.1
+
+# rename to:
+omero_branch: develop
