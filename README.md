@@ -30,9 +30,14 @@ for full installation instructions.
 
         git clone https://github.com/openmicroscopy/infrastructure.git
 
--   Clone the repository containing the inventory, host and group vars files.
-    Ansible will automatically look for `host_vars` and `group_vars`
-    directories in the parent directory of the inventory file.
+- Execute the following commands from the `ansible` subdirectory of the
+  infrastructure repository.
+
+- Clone the repository containing the inventory, host and group vars files.
+  Ansible will automatically look for `host_vars` and `group_vars`
+  directories in the parent directory of the inventory file. This should be
+  located at `../../ansible/inventory` such that `-i ../../ansible/inventory`
+  would be correct.
 
 ### Examples
 
@@ -46,19 +51,19 @@ Dry-run `ci-provision.yml` for all hosts listed in `ci-provision.yml`:
 
 Note this may fail since some tasks are dependent on others being completed:
 
-    ansible-playbook -i example-hosts -u $USERNAME --ask-become-pass -C -v ci-provision.yml
+    ansible-playbook -u $USERNAME --ask-become-pass -C -v ci-provision.yml
 
 Run `provision.yml`:
 
-    ansible-playbook -i example-hosts -u $USERNAME --ask-become-pass ci-provision.yml
+    ansible-playbook -u $USERNAME --ask-become-pass ci-provision.yml
 
 Run `provision.yml` for all subset of the hosts or groups listed in `provision.yml`:
 
-    ansible-playbook -i example-hosts -u $USERNAME --ask-become-pass ci-provision.yml --limit $HOST_OR_GROUP_NAME
+    ansible-playbook -u $USERNAME --ask-become-pass ci-provision.yml --limit $HOST_OR_GROUP_NAME
 
 List the hosts that would be targeted by a command, don't do anything else:
 
-    ansible-playbook -i example-hosts ci-provision.yml --list-hosts
+    ansible-playbook ci-provision.yml --list-hosts
 
 
 Playbooks which do not alter hardware can often be tested in Docker instead of a full VM, for example by using the [omero-ssh](https://github.com/manics/ome-docker/blob/omero-ssh/omero-ssh/Dockerfile) image:
