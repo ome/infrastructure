@@ -48,8 +48,12 @@
 - name: omero | install selinux utilities
   become: yes
   yum:
-    name: libselinux-python
+    name: "{{ item }}"
     state: present
+  with_items:
+    - libselinux-python
+    - libsemanage-python
+    - policycoreutils-python
   when: omero_selinux_setup
 
 - name: omero web | selinux booleans
