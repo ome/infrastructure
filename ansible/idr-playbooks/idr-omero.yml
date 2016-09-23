@@ -12,8 +12,7 @@
 # - `idr_net_iface=iface` if your servers use a network interface other
 #   then eth0 for inter-machine networking
 
-
-- hosts: database-hosts
+- hosts: "{{ idr_environment | default('idr') }}-database-hosts"
 
   roles:
   - role: postgresql
@@ -29,7 +28,7 @@
     postgresql_server_chown_datadir: True
 
 
-- hosts: omero-hosts
+- hosts: "{{ idr_environment | default('idr') }}-omero-hosts"
 
   pre_tasks:
 
@@ -44,8 +43,7 @@
     become: yes
 
   - set_fact:
-      # omero_db_host_ansible: "{{ hostvars[groups['database-hosts'][0]]['ansible_ssh_host'] | default(hostvars[groups['database-hosts'][0]]['ansible_host']) }}"
-      # omero_db_host_ansible: "{{ hostvars[groups['database-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
+      omero_db_host_ansible: "{{ hostvars[groups[idr_environment | default('idr') + '-database-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
 
   roles:
   - { role: upgrade-distpackages, tags: "upgrade-distpackages" }
@@ -110,13 +108,12 @@
   # Additional vars are in group_vars/omero-hosts.yml
 
 
-- hosts: proxy-hosts
+- hosts: "{{ idr_environment | default('idr') }}-proxy-hosts"
 
   pre_tasks:
 
   - set_fact:
-      # omero_omero_host_ansible: "{{ hostvars[groups['omero-hosts'][0]]['ansible_ssh_host'] | default(hostvars[groups['omero-hosts'][0]]['ansible_host']) }}"
-      # omero_omero_host_ansible: "{{ hostvars[groups['omero-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
+      omero_omero_host_ansible: "{{ hostvars[groups[idr_environment | default('idr') + '-omero-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
 
   roles:
   - role: nginx-ssl-selfsigned
