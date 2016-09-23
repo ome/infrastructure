@@ -5,7 +5,7 @@
 # This should be cleaned up and moved/combined into an appropriate role
 
 # Variables should be in a private group_vars file
-- hosts: proxy-hosts
+- hosts: "{{ idr_environment | default('idr') }}-proxy-hosts"
 
   tasks:
 

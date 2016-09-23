@@ -1,7 +1,7 @@
 ---
 # Playbook for accessing idr metadata
 
-- hosts: idr-hosts
+- hosts: "{{ idr_environment | default('idr') }}-omero-hosts"
 
   roles:
   - role: versioncontrol-utils
