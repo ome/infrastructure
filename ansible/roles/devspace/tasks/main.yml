@@ -4,34 +4,36 @@
 - name: add user {{ devuser }} to docker group
   become: yes
   user:
-      name: "{{ devuser }}"
-      comment: "Devspace manintener"
-      uid: "{{ user_id }}"
-      groups: docker
-      append: yes
+    name: "{{ devuser }}"
+    comment: "Devspace maintainer"
+    uid: "{{ user_id }}"
+    groups: docker
+    append: yes
 
 - name: ensures /home/{{ devuser }}/.ssh dir exists
   become: yes
   become_user: "{{ devuser }}"
   file:
-      path=/home/{{ devuser }}/.ssh
-      state=directory
-      owner={{ devuser }}
-      group={{ devuser }}
-      mode=0700
+    path: "/home/{{ devuser }}/.ssh"
+    state: "directory"
+    owner: "{{ devuser }}"
+    group: "{{ devuser }}"
+    mode: 0700
 
 - name: allow {{ devuser }} to ssh directly
   become: yes
-  copy: remote_src=yes
-      src={{ ansible_env.HOME }}/.ssh/authorized_keys
-      dest=/home/{{ devuser }}/.ssh/authorized_keys
-      owner={{ devuser }} group={{ devuser }}
+  copy:
+    remote_src: yes
+    src: "{{ ansible_env.HOME }}/.ssh/authorized_keys"
+    dest: "/home/{{ devuser }}/.ssh/authorized_keys"
+    owner: "{{ devuser }}"
+    group: "{{ devuser }}"
 
 - name: install python tools
   become: yes
   yum:
-      name: "{{ item }}"
-      state: present
+    name: "{{ item }}"
+    state: present
   with_items:
     - python-devel
     - python-pip
@@ -39,9 +41,9 @@
 - name: install python packages
   become: yes
   pip:
-      name: "{{ item }}"
-      #extra_args: "--upgrade"
-      state: latest
+    name: "{{ item }}"
+    #extra_args: "--upgrade"
+    state: latest
   with_items:
     - pip
     - passlib
@@ -53,8 +55,8 @@
 - name: TODO install docker-py
   become: yes
   pip:
-      name: "{{ item }}"
-      state: latest
+    name: "{{ item }}"
+    state: latest
   with_items:
     - docker-py==1.9.0
 
@@ -62,31 +64,31 @@
   become: yes
   become_user: "{{ devuser }}"
   git:
-      repo="{{ git_repo }}"
-      dest={{ devhome }}
-      update=no
-      refspec=+refs/pull/*:refs/heads/*
-      version={{ version }}
+    repo: "{{ git_repo }}"
+    dest: "{{ devhome }}"
+    update: no
+    refspec: "+refs/pull/*:refs/heads/*"
+    version: "{{ version }}"
 
 - name: ensures .ssh dir exists
   become: yes
   become_user: "{{ devuser }}"
   file:
-      path={{ devhome }}/slave/.ssh
-      state=directory
-      owner={{ devuser }}
-      group={{ devuser }}
-      mode=0700
+    path: "{{ devhome }}/slave/.ssh"
+    state: directory
+    owner: "{{ devuser }}"
+    group: "{{ devuser }}"
+    mode: 0700
 
 - name: copy snoopy
   become: yes
   become_user: "{{ devuser }}"
   copy:
-       src={{ snoopy_dir_path }}/{{ item.srcfile }}
-       dest={{ devhome }}/slave/{{ item.dest }}
-       owner={{ devuser }}
-       group={{ devuser }}
-       mode=0700
+     src: "{{ snoopy_dir_path }}/{{ item.srcfile }}"
+     dest: "{{ devhome }}/slave/{{ item.dest }}"
+     owner: "{{ devuser }}"
+     group: "{{ devuser }}"
+     mode: 0700
   with_items:
     - { srcfile: ".ssh/config", dest: ".ssh/config" }
     - { srcfile: ".ssh/snoopycrimecop_github", dest: ".ssh/snoopycrimecop_github" }
@@ -102,21 +104,21 @@
   become: yes
   become_user: "{{ devuser }}"
   file:
-      path={{ devhome }}/slave/.ssh/known_hosts
-      mode=0700
+    path: "{{ devhome }}/slave/.ssh/known_hosts"
+    mode: 0700
 
 - name: change USER_ID
   become: yes
   become_user: "{{ devuser }}"
   replace:
-      dest="{{ devhome }}/{{ item.file }}"
-      regexp='^ARG USER_ID=1000'
-      replace='ARG USER_ID={{ user_id }}' # how to find out UID?
+    dest: "{{ devhome }}/{{ item }}"
+    regexp: '^ARG USER_ID=1000'
+    replace: 'ARG USER_ID={{ user_id }}' # how to find out UID?
   with_items:
-    - { file: nginx/Dockerfile }
-    - { file: slave/Dockerfile }
-    - { file: server/Dockerfile }
-    - { file: web/Dockerfile }
+    - nginx/Dockerfile
+    - slave/Dockerfile
+    - server/Dockerfile
+    - web/Dockerfile
 
 - name: set basic auth password for jenkins
   become: yes
@@ -132,28 +134,30 @@
   become: yes
   become_user: "{{ devuser }}"
   htpasswd:
-    path="{{ devhome }}/jenkins/conf.d/passwdfile"
-    name={{ jenkins_nginx_username }}
-    password={{ jenkins_nginx_password }}
+    path: "{{ devhome }}/jenkins/conf.d/passwdfile"
+    name: "{{ jenkins_nginx_username }}"
+    password: "{{ jenkins_nginx_password }}"
   when: jenkins_nginx_username|length>0 and jenkins_nginx_password|length>0
 
 - name: ssl cert for jenkins
   become: yes
   become_user: "{{ devuser }}"
-  shell: "{{ devhome }}/sslcert {{ devhome }}/jenkins/sslcert {{ openstack_ip }}"
+  command: "{{ devhome }}/sslcert {{ devhome }}/jenkins/sslcert {{ openstack_ip }}"
   args:
-      chdir: "{{ devhome }}"
+    chdir: "{{ devhome }}"
+    creates: "{{ devhome }}/jenkins/sslcert"
 
 - name: ssl cert for nginx
   become: yes
   become_user: "{{ devuser }}"
-  shell: "{{ devhome }}/sslcert {{ devhome }}/nginx/sslcert {{ openstack_ip }}"
+  command: "{{ devhome }}/sslcert {{ devhome }}/nginx/sslcert {{ openstack_ip }}"
   args:
-      chdir: "{{ devhome }}"
+    chdir: "{{ devhome }}"
+    creates: "{{ devhome }}/nginx/sslcert"
 
 - name: Rrename to {{ omero_branch }}...
   become: yes
   become_user: "{{ devuser }}"
-  shell: "{{ devhome }}/rename.py {{ omero_branch }}"
+  command: "{{ devhome }}/rename.py {{ omero_branch }}"
   args:
-      chdir: "{{ devhome }}"
+    chdir: "{{ devhome }}"

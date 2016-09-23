@@ -12,6 +12,8 @@
       docker_service:
         project_src: "{{ devhome }}"
         state: absent
+      when: devspace_force_restar
+
     - name: Devspace up
       docker_service:
         project_src: "{{ devhome }}"
@@ -34,3 +36,6 @@
         - "seleniumhub.devspace_seleniumhub_1.state.running"
         - "seleniumfirefox.devspace_seleniumfirefox_1.state.running"
         - "seleniumchrome.devspace_seleniumchrome_1.state.running"
+
+  vars:
+    devspace_force_restar: false

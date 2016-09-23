@@ -4,8 +4,8 @@
 # This may be necessary on virtualised hosts, see comment in `docker/defaults/main.yml`.
 docker_use_ipv4_nic_mtu: True
 
-# path to snoopy keys
-snoopy_dir_path: "/path/to/snoopy_keys"
+# path to snoopy keys like "/path/to/snoopy_keys"
+snoopy_dir_path:
 
 # devspace source
 git_repo: "https://github.com/openmicroscopy/devspace.git"
@@ -21,8 +21,8 @@ user_id: "1001"
 # path where devspace will be installed
 devhome: /home/{{ devuser }}/devspace
 
-# openstack IP
-openstack_ip: 127.0.0.1
+# openstack IP e.g. 10.0.50.100
+openstack_ip:
 
 # rename to:
 omero_branch: develop
