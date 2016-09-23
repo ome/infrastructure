@@ -15,7 +15,9 @@ Guide for the Impatient
 
 Setup your OpenStack environment variables, and run:
 
-    ansible-playbook -i inventory -e omero_vm_name=FOO -e omero_vm_key_name=YOUR_KEY os-idr-uod.yml
+    ansible-playbook -i inventory -e idr_environment=idr -e omero_vm_key_name=YOUR_KEY os-idr-uod.yml
+
+If `idr_environment` is not defined on the command line it will default to `idr`, but you should almost always set this to your own value.
 
 
 `os-idr-playbooks/os-omero.yml`
@@ -34,7 +36,7 @@ The Ansible modules in this playbook require the `shade` Python module.
 Before running the playbook you must [setup your OpenStack environment variables](http://docs.openstack.org/user-guide/common/cli_set_environment_variables_using_openstack_rc.html).
 You can override variables at the command line, for example (note double quoting is necessary if spaces are present):
 
-    ansible-playbook os-idr-playbooks/os-create.yml -e omero_vm_name=FOO \
+    ansible-playbook os-idr-playbooks/os-create.yml -e idr_environment=idr \
         -e omero_vm_key_name=YOURKEY -e "omero_vm_flavour='m2.xxlarge'"
 
 If this step fails it could be due to an incorrect variable, the Ansible `os_server` module usually gives an uninformative "Error in creating instance" message.
@@ -42,7 +44,7 @@ If the VM was created the floating IP of the VM will be printed out.
 
 To delete the VM and related security group:
 
-    ansible-playbook os-idr-playbooks/os-delete.yml -e omero_vm_name=FOO
+    ansible-playbook os-idr-playbooks/os-delete.yml -e idr_environment=idr
 
 If another instance is using the OMERO security group, the task will fail but can be safely ignored.
 
@@ -67,7 +69,7 @@ Deploying the IDR
 The production IDR is setup using a private configuration repository.
 Replace `{{ inventory_dir }}` with the path to the inventory directory.
 You can use `inventory` in this directory if you have configured the required variables, such as by creating a group_vars file if necessary in `{{ inventory_dir }}/group_vars/`, e.g. `{{ inventory_dir }}/group_vars/os-idr.yml`
-This should match the value of the `idr_environment` variable (default `os-idr`), and can be used to support multiple deployment environments with different variables.
+This should match the value of the `idr_environment` variable, and can be used to support multiple deployment environments with different variables.
 
 Decide on your openstack dynamic inventory.
 If you are using a single floating IP use `{{ inventory_dir }}/openstack-private.py`.
@@ -79,13 +81,13 @@ Select your playbook, for instance `os-idr-uod.yml` for the Dundee cloud.
 For example (using the default `os-idr` host-group and variables):
 
     ansible-playbook -i {{ inventory_dir }}/openstack-private.py os-idr-uod.yml
-        -e vm_key_name="KEY_NAME" -e vm_prefix=PREFIX
+        -e vm_key_name="KEY_NAME" -e idr_environment=os-idr
 
 Or using a custom group called `os-idrstaging` with additional variable overrides:
 
     ansible-playbook -i {{ inventory_dir }}/openstack-private.py os-idr-uod.yml
-        -e vm_key_name="KEY_NAME" -e vm_prefix=PREFIX
-        -e @vars/test-overrides.yml -e idr_environment=os-idrstaging
+        -e vm_key_name="KEY_NAME" -e idr_environment=os-idrstaging
+        -e @vars/test-overrides.yml
 
 
 Component playbooks
