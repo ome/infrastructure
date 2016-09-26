@@ -46,6 +46,9 @@
       omero_db_host_ansible: "{{ hostvars[groups[idr_environment | default('idr') + '-database-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
 
   roles:
+  - role: basedeps
+    basedeps_user_utils: True
+    tags: "basedeps"
   - { role: upgrade-distpackages, tags: "upgrade-distpackages" }
   - { role: versioncontrol-utils, tags: "versioncontrol-utils" }
   - { role: omero-server, tags: "omero-server" }
