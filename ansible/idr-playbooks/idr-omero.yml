@@ -49,10 +49,14 @@
   - role: basedeps
     basedeps_user_utils: True
     tags: "basedeps"
-  - { role: versioncontrol-utils, tags: "versioncontrol-utils" }
-  - { role: omero-server, tags: "omero-server" }
-  - { role: python-pydata, tags: "python-pydata" }
-  - { role: omero-web-apps, tags: "omero-web-apps" }
+  - role: versioncontrol-utils
+    tags: "versioncontrol-utils"
+  - role: omero-server
+    tags: "omero-server"
+  - role: python-pydata
+    tags: "python-pydata"
+  - role: omero-web-apps
+    tags: "omero-web-apps"
 
   vars:
     omero_dbhost: "{{ omero_db_host_ansible }}"
