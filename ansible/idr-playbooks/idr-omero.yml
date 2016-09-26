@@ -49,7 +49,6 @@
   - role: basedeps
     basedeps_user_utils: True
     tags: "basedeps"
-  - { role: upgrade-distpackages, tags: "upgrade-distpackages" }
   - { role: versioncontrol-utils, tags: "versioncontrol-utils" }
   - { role: omero-server, tags: "omero-server" }
   - { role: python-pydata, tags: "python-pydata" }
