@@ -20,11 +20,14 @@ Setup your OpenStack environment variables, and run:
 If `idr_environment` is not defined on the command line it will default to `idr`, but you should almost always set this to your own value.
 
 
-`os-idr-playbooks/os-omero.yml`
--------------------------------
+`idr-playbooks/idr-omero.yml`
+-----------------------------
 
 This is the Ansible playbook that will be run to setup OMERO.
-You can also run it manually to install OMERO on localhost.
+This can be run independently of the openstack playbooks providing you have an inventory with groups:
+- `{{ idr_environment }}-data-hosts`
+- `{{ idr_environment }}-omero-hosts`
+- `{{ idr_environment }}-proxy-hosts`
 
 
 `os-idr-playbooks/os-create.yml`
@@ -78,7 +81,7 @@ If you are using floating IPs for all instances you can optionally use `{{ inven
 
 Select your playbook, for instance `os-idr-uod.yml` for the Dundee cloud.
 
-For example (using the default `os-idr` host-group and variables):
+For example (using the `os-idr` host-group and variables):
 
     ansible-playbook -i {{ inventory_dir }}/openstack-private.py os-idr-uod.yml
         -e vm_key_name="KEY_NAME" -e idr_environment=os-idr
