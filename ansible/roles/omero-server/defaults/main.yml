@@ -61,8 +61,8 @@ omero_omego_additional_args: ""
 # Dictionary of additional OMERO configuration options
 omero_server_config: {}
 
-# Optional path to an additional file to be passed to `omero load ...`
-# before starting the server
+# Optional path to an additional template-file to be passed to
+# `omero load ...` before starting the server
 omero_prestart_file:
 
 # Setup OMERO.web

@@ -83,7 +83,7 @@
 
 - name: omero | copy additional configuration file
   become: yes
-  copy:
+  template:
     dest: "{{ omero_basedir }}/config/omero-additional.config"
     force: yes
     src: "{{ omero_prestart_file }}"
