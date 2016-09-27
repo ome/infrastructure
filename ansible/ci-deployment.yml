@@ -7,7 +7,6 @@
     - role: sudoers
     - role: versioncontrol-utils
     - role: system-monitor-agent
-    - role: ansible
 
 # Deploy OMERO build and runtime prerequisites
 - hosts: ci-omero
@@ -37,4 +36,5 @@
 # Deploy Documentation prerequisites
 - hosts: ci-docs
   roles:
+    - role: ansible
     - role: texlive
