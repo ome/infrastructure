@@ -7,6 +7,7 @@
     - role: sudoers
     - role: versioncontrol-utils
     - role: system-monitor-agent
+    - role: ansible
 
 # Deploy OMERO build and runtime prerequisites
 - hosts: ci-omero
