@@ -6,3 +6,8 @@
   service:
     name: nginx
     state: restarted
+
+- name: update config
+  become: yes
+  become_user: omero
+  shell: "{{ omero_serverdir }}/{{ omero_server_symlink }}/bin/omero load < {{ omero_basedir }}/config/omero-base.config"

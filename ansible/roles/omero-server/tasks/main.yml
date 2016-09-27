@@ -72,6 +72,7 @@
     dest: "{{ omero_basedir }}/config/omero-base.config"
     force: yes
     src: omero-base.config.j2
+  notify: update config
 
 - name: omero | empty additional configuration file
   become: yes
@@ -88,6 +89,7 @@
     force: yes
     src: "{{ omero_prestart_file }}"
   when: omero_prestart_file | default(None) != None
+  notify: update config
 
 - name: omero | set omego options
   set_fact:
