@@ -15,7 +15,6 @@
   vars:
 
     vm_image: "CentOS 7 1607"
-    vm_key_name: "jenkins"
     vm_flavour: m2.large
     vm_size: 50
     vm_groups: "ansible-managed,os-image-centos,docker-hosts,devspace"
