@@ -1,0 +1,21 @@
+---
+# Initialise openstack volumes from inside VMs if necessary
+
+- hosts: "{{ idr_environment | default('idr') }}-database-hosts"
+  roles:
+  - role: storage-volume-initialise
+    storage_volume_initialise_device: "{{ database_db_vol_dev | default('/dev/vdb') }}"
+    storage_volume_initialise_mount: /var/lib/pgsql
+
+- hosts: "{{ idr_environment | default('idr') }}-omero-hosts"
+  roles:
+  - role: storage-volume-initialise
+    storage_volume_initialise_device: "{{ omero_data_vol_dev | default('/dev/vdb') }}"
+    storage_volume_initialise_mount: /data
+
+- hosts: "{{ idr_environment | default('idr') }}-proxy-hosts"
+  roles:
+  - role: storage-volume-initialise
+    storage_volume_initialise_device: "{{ gateway_nginxcache_vol_dev | default('/dev/vdb') }}"
+    storage_volume_initialise_mount: /var/cache/nginx
+
