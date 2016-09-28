@@ -167,7 +167,7 @@
     chdir: "{{ devhome }}"
     creates: "{{ devhome }}/nginx/sslcert"
 
-- name: Rrename to {{ omero_branch }}...
+- name: rename to {{ omero_branch }}...
   become: yes
   become_user: "{{ devuser }}"
   command: "{{ devhome }}/rename.py {{ omero_branch }}"
