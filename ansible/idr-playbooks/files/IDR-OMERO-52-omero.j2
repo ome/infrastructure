@@ -26,7 +26,7 @@ config set omero.web.secure_proxy_ssl_header '["HTTP_X_FORWARDED_PROTO_OMERO_WEB
 config set omero.web.public.enabled True
 config set omero.web.public.server_id 1
 config set omero.web.public.user public
-config set omero.web.public.password {{ idr_secret_omero_web_public_password | default("") }}
+config set omero.web.public.password {{ omero_web_public_password }}
 config set omero.web.public.url_filter ^/(webadmin/myphoto/|webclient/(?!(action|annotate_(file|tags|comment|rating|map)|script_ui|ome_tiff|figure_script))|webgateway/(?!(archived_files|download_as)))
 
 # Group/User drop down menu
