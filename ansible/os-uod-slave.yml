@@ -13,8 +13,6 @@
   vars:
       vm_groups: "ansible-managed,os-image-centos,docker-hosts,ci-jenkins-linux,ci-omero,ci-omero-web"
       vm_flavour: "m1.medium"
-      # We're hard-coding the key since it must match the rest of the
-      # jenkins infrastructure.
 
 - hosts: localhost
   connection: local
