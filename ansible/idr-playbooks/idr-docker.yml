@@ -8,26 +8,9 @@
   - role: basedeps
   - role: docker
     docker_use_ipv4_nic_mtu: True
+  - role: docker-tools
 
   tasks:
-
-  - name: docker swarm | install python tools
-    become: yes
-    yum:
-      name: "{{ item }}"
-      state: present
-    with_items:
-    - python-devel
-    - python-pip
-
-  - name: docker swarm | install python packages
-    become: yes
-    pip:
-      name: "{{ item }}"
-      state: present
-    with_items:
-    - docker-py==1.9.0
-    - docker-compose==1.8.0
 
   - name: docker swarm | check active
     become: yes
