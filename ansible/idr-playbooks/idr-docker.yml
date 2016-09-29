@@ -3,9 +3,39 @@
 
 - hosts: "{{ idr_environment | default('idr') }}-dockermanager-hosts,{{ idr_environment | default('idr') }}-dockerworker-hosts"
 
-#  roles:
-#  - role: docker
-#    docker_use_ipv4_nic_mtu: True
+  roles:
+
+  - role: basedeps
+  - role: docker
+    docker_use_ipv4_nic_mtu: True
+
+  tasks:
+
+  - name: docker swarm | install python tools
+    become: yes
+    yum:
+      name: "{{ item }}"
+      state: present
+    with_items:
+    - python-devel
+    - python-pip
+
+  - name: docker swarm | install python packages
+    become: yes
+    pip:
+      name: "{{ item }}"
+      state: present
+    with_items:
+    - docker-py==1.9.0
+    - docker-compose==1.8.0
+
+  - name: docker swarm | check active
+    become: yes
+    shell: "docker info 2> /dev/null | sed -n 's/^Swarm: //p'"
+    always_run: yes
+    ignore_errors: yes
+    register: docker_swarm_active
+    changed_when: False
 
 
 - hosts: "{{ idr_environment | default('idr') }}-dockermanager-hosts"
@@ -15,23 +45,15 @@
   - set_fact:
       docker_swarm_manager_ip: "{{ hostvars[groups[idr_environment | default('idr') + '-dockermanager-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
 
-  - block:
+  - name: docker swarm | initialise
+    become: yes
+    command: docker swarm init --advertise-addr {{ docker_swarm_manager_ip }}
+    when: docker_swarm_active.stdout != 'active'
 
-    - name: docker swarm | get worker token
-      become: yes
-      command: docker swarm join-token worker -q
-      register: docker_swarm_worker_token_out
-
-    rescue:
-
-    - name: docker swarm | initialise
-      become: yes
-      command: docker swarm init --advertise-addr {{ docker_swarm_manager_ip }}
-
-    - name: docker swarm | get worker token
-      become: yes
-      command: docker swarm join-token worker -q
-      register: docker_swarm_worker_token_out
+  - name: docker swarm | get worker token
+    become: yes
+    command: docker swarm join-token worker -q
+    register: docker_swarm_worker_token_out
 
   - set_fact:
       docker_swarm_worker_token: "{{ docker_swarm_worker_token_out.stdout }}"
@@ -44,7 +66,30 @@
   - name: docker swarm | join worker
     become: yes
     command: docker swarm join --token {{ token }} {{ manager_ip }}
+    when: docker_swarm_active.stdout != 'active'
 
   vars:
     token: "{{ hostvars[groups[idr_environment | default('idr') + '-dockermanager-hosts'][0]]['docker_swarm_worker_token'] }}"
     manager_ip: "{{ hostvars[groups[idr_environment | default('idr') + '-dockermanager-hosts'][0]]['docker_swarm_manager_ip'] }}"
+
+
+- hosts: "{{ idr_environment | default('idr') }}-dockermanager-hosts[0]"
+
+  tasks:
+
+  - name: docker swarm | start jupyter
+    become: yes
+    docker_service:
+      project_name: omero-jupyter
+      state: present
+      definition:
+        version: "2"
+        volumes:
+          jupyter-notebooks:
+        services:
+          jupyter:
+            image: manics/jupyter-docker
+            ports:
+            - "8888:8888"
+            volumes:
+            - jupyter-notebooks:/notebooks
