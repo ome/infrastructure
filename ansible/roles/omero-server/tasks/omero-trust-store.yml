@@ -1,0 +1,28 @@
+---
+# Configure trust store for OMERO. This might be needed for LDAPS connection.
+
+# The trust store file is built from scratch every time, to make sure it
+# has the exact set of CA certificates configured. For the configuration change
+# to take effect, OMERO must be restarted. To avoid unnecessary restarts, once
+# you have a working setup, set "omero_trust_store_setup: False".
+
+- name: remove existing trust store
+  file: path={{ omero_trust_store }} state=absent
+
+- name: create directory for certificates
+  file: path={{ omero_basedir }}/cacerts state=directory owner={{ omero_system_user }}
+
+- name: download certificates
+  sudo_user: "{{ omero_system_user }}"
+  get_url: url={{ item.url }} dest={{ omero_basedir }}/cacerts/{{ item.name }}
+  with_items:
+    - "{{ omero_trust_store_certificates }}"
+
+- name: import certificates in a trust store file
+  sudo_user: "{{ omero_system_user }}"
+  command: keytool -importcert -noprompt -keystore {{ omero_trust_store }} -storepass {{ omero_trust_store_passwd }} -storetype JKS -providername SUN -file {{ item.name }} -alias {{ item.name }}
+  args:
+    chdir: "{{ omero_basedir }}/cacerts"
+  with_items:
+    - "{{ omero_trust_store_certificates }}"
+  notify: restart OMERO

@@ -206,3 +206,6 @@
 
 - include: omero-systemd.yml
   when: omero_systemd_setup
+
+- include: omero-trust-store.yml
+  when: omero_trust_store_setup
