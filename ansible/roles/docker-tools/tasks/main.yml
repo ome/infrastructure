@@ -1,6 +1,12 @@
 ---
 # Install additional docker tools globally
 
+- name: system packages | install epel repo
+  become: yes
+  yum:
+    name: epel-release
+    state: present
+
 # Install as many python dependencies using RPMs if possible to reduce risk
 # of future conflicts
 - name: docker | Install docker python tools
