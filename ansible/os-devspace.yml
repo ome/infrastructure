@@ -21,9 +21,6 @@
     vm_groups: "ansible-managed,os-image-centos,docker-hosts,devspace"
     ignore_internal_known_hosts: True
 
-  roles:
-    - role: samba-client
-
   pre_tasks:
 
     - fail:
@@ -93,14 +90,3 @@
 
     - debug:
         msg: "IPs (Docker) private:{{ vmdocker.openstack.private_v4 }} floating:{{ vmdocker.openstack.public_v4 | default('') }}"
-
-  
-    - name: Mount samba share
-      become: yes
-      mount:
-        fstype: cifs
-        name: /data_repo/
-        opts: "credentials={{ samba_credentials_file }},ro"
-        src: //squig.openmicroscopy.org.uk/ome-data-repo/
-        state: mounted
-      when: use_samba

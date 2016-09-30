@@ -8,3 +8,15 @@
     - role: docker
     - role: versioncontrol-utils
     - role: devspace
+    - role: samba-client
+
+  tasks:
+
+    - name: Mount samba share
+      become: yes
+      mount:
+        fstype: cifs
+        name: /data_repo
+        opts: "credentials=/etc/fstab.datarepo.creds,ro"
+        src: \\squig.openmicroscopy.org.uk\ome-data-repo
+        state: mounted
