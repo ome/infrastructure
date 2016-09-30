@@ -66,13 +66,22 @@
     msg: "OMERO.server found but unable to get version, you may have a corrupt installation"
   when: omero_server_symlink_st.stat.exists and omero_server_version is undefined
 
+- name: omero | create configuration reset file
+  become: yes
+  shell: "touch config/omero-empty.config; cat config/omero-*|grep config|cut -d' ' -f 1,2,3 > config/reset.config"
+  args:
+    chdir: "{{ omero_basedir }}"
+
 - name: omero | create common configuration file
   become: yes
   template:
     dest: "{{ omero_basedir }}/config/omero-base.config"
     force: yes
     src: omero-base.config.j2
-  notify: update config
+  notify:
+    - reset config
+    - update config
+    - restart OMERO
 
 - name: omero | empty additional configuration file
   become: yes
@@ -89,7 +98,10 @@
     force: yes
     src: "{{ omero_prestart_file }}"
   when: omero_prestart_file | default(None) != None
-  notify: update config
+  notify:
+    - reset config
+    - update config
+    - restart OMERO
 
 - name: omero | set omego options
   set_fact:

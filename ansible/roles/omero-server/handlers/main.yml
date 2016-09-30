@@ -1,13 +1,27 @@
 ---
-# Handler for nginx
 
+# Handler for nginx
 - name: restart nginx
   become: yes
   service:
     name: nginx
     state: restarted
 
+- name: reset config
+  become: yes
+  become_user: omero
+  shell: "{{ omero_serverdir }}/{{ omero_server_symlink }}/bin/omero load < config/reset.config"
+  args:
+    chdir: "{{ omero_basedir }}"
+
 - name: update config
   become: yes
   become_user: omero
   shell: "{{ omero_serverdir }}/{{ omero_server_symlink }}/bin/omero load < {{ omero_basedir }}/config/omero-base.config"
+
+# Handler for OMERO
+- name: restart OMERO
+  become: yes
+  service:
+    name: omero
+    state: restarted
