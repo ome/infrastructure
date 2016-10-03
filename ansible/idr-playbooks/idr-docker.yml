@@ -4,6 +4,11 @@
 
 - hosts: "{{ idr_environment | default('idr') }}-docker-hosts"
 
+  pre_tasks:
+  - name: enable/disable docker swarm
+    set_fact:
+      docker_swarm_enabled: False
+
   roles:
 
   - role: docker
@@ -44,6 +49,7 @@
 
   - role: nfs-share
     nfs_shares: "{{ {'/data': docker_nfs_clients } }}"
+    when: docker_swarm_enabled
 
   tasks:
 
@@ -53,15 +59,18 @@
   - name: docker swarm | initialise
     become: yes
     command: docker swarm init --advertise-addr {{ docker_swarm_manager_ip }}
-    when: docker_swarm_active.stdout != 'active'
+    when: docker_swarm_active.stdout != 'active' and docker_swarm_enabled
 
   - name: docker swarm | get worker token
     become: yes
     command: docker swarm join-token worker -q
     register: docker_swarm_worker_token_out
+    when: docker_swarm_enabled
+
 
   - set_fact:
       docker_swarm_worker_token: "{{ docker_swarm_worker_token_out.stdout }}"
+    when: docker_swarm_enabled
 
 
 - hosts: "{{ idr_environment | default('idr') }}-dockerworker-hosts"
