@@ -94,6 +94,11 @@
     name: http://download-aws.ej-technologies.com/exe4j/exe4j_linux_5_0_1.rpm
     state: present
 
+- name: exe4j packages | install license
+  become: yes
+  command: exe4jc -L="{{ exe4j_license_key }}"
+  when: exe4j_license_key is defined
+
 - name: findbugs | download and extract
   become: yes
   unarchive:
@@ -107,6 +112,7 @@
   file:
     force: yes
     path: /opt/findbugs
+    
     src: findbugs-3.0.0
     state: link
 
