@@ -1,0 +1,5 @@
+---
+# defaults file for roles/ubuntu-rdp
+
+rdp_user: ubuntu
+rdp_user_password: ""

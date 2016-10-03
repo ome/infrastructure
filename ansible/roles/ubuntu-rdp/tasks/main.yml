@@ -1,0 +1,72 @@
+---
+# Setup a RDP
+
+- name: Get aptitude for upgrade
+  apt:
+    pkg: aptitude
+    state: present
+
+- name: Safe system upgrade via aptitude
+  become: yes
+  apt:
+    update_cache: yes
+    upgrade: safe
+
+- name: Install ubuntu-desktop
+  become: yes
+  apt:
+    pkg: ubuntu-desktop
+    install_recommends: no
+    state: present
+
+- name: Install base packages
+  become: yes
+  apt:
+    pkg: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+    - firefox
+    - xrdp
+    - unity-lens-applications
+    - unity-lens-files
+
+- name: Allow using RDP
+  become: yes
+  apt:
+    pkg: "{{ item }}"
+    state: present
+  with_items:
+    - xfce4
+    - gnome-icon-theme-full
+    - tango-icon-theme
+
+- name: Create .xsession
+  become: yes
+  file:
+    path: /home/{{ rdp_user }}/.xsession
+    state: touch
+    owner: "{{ rdp_user }}"
+    mode: 0644
+
+- name: Set xfce4-session
+  become: yes
+  lineinfile:
+    dest: /home/{{ rdp_user }}/.xsession
+    line: "xfce4-session"
+
+# https://support.ansible.com/hc/en-us/articles/201958037-Reboot-a-server-and-wait-for-it-to-come-back
+- name: system | reboot
+  become: yes
+  shell: "sleep 2 && shutdown -r now 'Rebooting (Ansible update)'"
+  async: 1
+  poll: 0
+  ignore_errors: True
+
+- name: system | wait for server to reboot
+  local_action:
+    module: wait_for
+    delay: 15
+    host: "{{ inventory_hostname }}"
+    state: "started"
+    timeout: 300
