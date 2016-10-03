@@ -97,7 +97,7 @@
 - name: exe4j packages | install license
   become: yes
   command: exe4jc -L="{{ exe4j_license_key }}"
-  when: exe4j_license_key is defined
+  when: exe4j_license_key
 
 - name: findbugs | download and extract
   become: yes
