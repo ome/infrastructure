@@ -100,20 +100,19 @@
 
   tasks:
 
-  #- name: docker swarm | start jupyter
-  - name: docker | create jupyter working directory
+  - name: jupyterhub | create jupyter working directory
     become: yes
     file:
       path: /srv/jupyterhub
       state: directory
 
-  - name: docker | copy jupyter configuration file
+  - name: jupyterhub | copy jupyter configuration file
     become: yes
     template:
       src: files/jupyterhub_config-py.j2
       dest: /srv/jupyterhub/jupyterhub_config.py
 
-  - name: docker | pull images
+  - name: jupyterhub | pull images
     become: yes
     docker_image:
       name: "{{ item }}"
@@ -122,19 +121,26 @@
     - "{{ idr_jupyter_notebook_image }}"
     - manics/jupyterhub-githubauth
 
-  - name: docker | create systemd service
+  - name: jupyterhub | create systemd service
     become: yes
     template:
       src: files/jupyterhub-docker.j2
       dest: /etc/systemd/system/docker-jupyterhub.service
     register: systemdjupyter
 
-  - name: docker | reload systemd
+  - name: jupyterhub | reload systemd
     become: yes
     command: systemctl daemon-reload
     when: systemdjupyter.changed
 
-  - name: docker swarm | start jupyter
+  - name: jupyterhub | enable jupyterhub
+    become: yes
+    service:
+      enabled: yes
+      name: docker-jupyterhub.service
+      state: started
+
+  - name: jupyterhub | start jupyterhub
     become: yes
     # TODO: Find out why this doesn't work, or delete
     when: False
