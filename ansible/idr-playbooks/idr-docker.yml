@@ -100,19 +100,72 @@
 
   tasks:
 
+  #- name: docker swarm | start jupyter
+  - name: docker | create jupyter working directory
+    become: yes
+    file:
+      path: /srv/jupyterhub
+      state: directory
+
+  - name: docker | copy jupyter configuration file
+    become: yes
+    template:
+      src: files/jupyterhub_config-py.j2
+      dest: /srv/jupyterhub/jupyterhub_config.py
+
+  - name: docker | pull images
+    become: yes
+    docker_image:
+      name: "{{ item }}"
+      state: present
+    with_items:
+    - "{{ idr_jupyter_notebook_image }}"
+    - manics/jupyterhub-githubauth
+
+  - name: docker | create systemd service
+    become: yes
+    template:
+      src: files/jupyterhub-docker.j2
+      dest: /etc/systemd/system/docker-jupyterhub.service
+    register: systemdjupyter
+
+  - name: docker | reload systemd
+    become: yes
+    command: systemctl daemon-reload
+    when: systemdjupyter.changed
+
   - name: docker swarm | start jupyter
     become: yes
+    # TODO: Find out why this doesn't work, or delete
+    when: False
     docker_service:
       project_name: omero-jupyter
-      state: present
+      state: absent
       definition:
         version: "2"
         volumes:
           jupyter-notebooks:
         services:
+          # This should be equivalent to:
+          # docker run -it --rm -p 8000:8000 -p 8081:8081 -e DOCKER_HOST=unix://var/run/docker.sock -v /var/run/docker.sock:/var/run/docker.sock -v /srv/jupyterhub/jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py:ro manics/jupyterhub-githubauth jupyterhub --no-ssl --base-url=/simon -f /srv/jupyterhub/jupyterhub_config.py --log-level=DEBUG
+          # but for some reason it doesn't work, the auth callback times out
           jupyter:
-            image: manics/jupyter-docker
+            image: manics/jupyterhub-githubauth
+            command: "jupyterhub --no-ssl --base-url={{ idr_jupyter_prefix }} -f /srv/jupyterhub/jupyterhub_config.py --log-level=DEBUG"
+            environment:
+            - DOCKER_HOST=unix://var/run/docker.sock
             ports:
-            - "8888:8888"
+            - "8000:8000"
+            - "8081:8081"
             volumes:
-            - jupyter-notebooks:/notebooks
+            #- jupyter-notebooks:/notebooks
+            - /var/run/docker.sock:/var/run/docker.sock
+            - /srv/jupyterhub/jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py:ro
+
+  vars:
+  - idr_jupyter_notebook_image: jupyter/singleuser
+  #- idr_jupyter_notebook_image: manics/jupyter-docker
+  - idr_jupyter_ip: "{{ hostvars[inventory_hostname]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address'] }}"
+
+  vars_files:
+  - secret/idr-jupyter-vars.yml

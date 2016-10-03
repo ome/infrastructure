@@ -1,0 +1,28 @@
+[Unit]
+Description=IDR JupyterHub
+Requires=docker.service
+After=docker.service
+
+[Service]
+#Restart=on-failure
+Restart=no
+RestartSec=10
+ExecStartPre=-/usr/bin/docker kill omero-jupyter
+ExecStartPre=-/usr/bin/docker rm omero-jupyter
+ExecStart=/usr/bin/docker run \
+    --name omero-jupyter \
+    -p 8000:8000 \
+    -p 8081:8081 \
+    -e DOCKER_HOST=unix://var/run/docker.sock \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -v /srv/jupyterhub/jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py:ro \
+    manics/jupyterhub-githubauth \
+    jupyterhub \
+    --no-ssl \
+    --base-url={{ idr_jupyter_prefix }} \
+    -f /srv/jupyterhub/jupyterhub_config.py \
+    --log-level=DEBUG
+ExecStop=/usr/bin/docker stop omero-jupyter
+
+[Install]
+WantedBy=multi-user.target
