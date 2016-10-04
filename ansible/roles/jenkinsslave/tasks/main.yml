@@ -25,34 +25,42 @@
     user: "{{ jenkinsuser }}"
     key: "{{ authorized_key }}"
 
-- name: copy snoopy keys
+- name: jenkins | prepare .ssh
+  become: yes
+  become_user: "{{ jenkinsuser }}"
+  file:
+    path: "/home/{{ jenkinsuser }}/.ssh"
+    state: directory
+    mode: 0700
+
+- name: jenkins | copy snoopy keys
   become: yes
   become_user: "{{ jenkinsuser }}"
   copy:
-    src={{ snoopy_dir_path }}/{{ item.srcfile }}
-    dest=/home/{{ jenkinsuser }}/{{ item.dest }}
-    owner={{ jenkinsuser }}
-    group={{ jenkinsuser }}
-    mode=0700
+    content: "{{ lookup('pass', item.pass_path) }}"
+    dest: "/home/{{ jenkinsuser }}/{{ item.dest }}"
+    owner: "{{ jenkinsuser }}"
+    group: "{{ jenkinsuser }}"
+    mode: 0600
   with_items:
-    - { srcfile: "config", dest: ".ssh/config" }
-    - { srcfile: "snoopycrimecop_github", dest: ".ssh/snoopycrimecop_github" }
-    - { srcfile: "snoopycrimecop_github.pub", dest: ".ssh/snoopycrimecop_github.pub" }
-  when: not spacewalk and snoopy_dir_path|length>0
+    - { pass_path: "ci/snoopy/sshconfig", dest: ".ssh/config" }
+    - { pass_path: "ci/snoopy/id_rsa", dest: ".ssh/snoopycrimecop_github" }
+    - { pass_path: "ci/snoopy/id_rsa.pub", dest: ".ssh/snoopycrimecop_github.pub" }
+  when: not spacewalk
 
-- name: generate known_hosts
+- name: jenkins | generate known_hosts
   become: yes
   become_user: "{{ jenkinsuser }}"
   shell: ssh-keyscan github.com >> /home/{{ jenkinsuser }}/.ssh/known_hosts
-  when: not spacewalk and snoopy_dir_path|length>0
+  when: not spacewalk
 
-- name: chmod known_hosts
+- name: jenkins | chmod known_hosts
   become: yes
   become_user: "{{ jenkinsuser }}"
   file:
     path=/home/{{ jenkinsuser }}/.ssh/known_hosts
     mode=0700
-  when: not spacewalk and snoopy_dir_path|length>0
+  when: not spacewalk
 
 - name: jenkins | ssh access
   become: yes
