@@ -22,6 +22,6 @@
     - scc
     - omego
     - genshi yaclifw pytest PyYAML
-    - Sphinx==1.2.3 epydoc
+    - Sphinx==1.2.3 epydoc Pygments>=1.2
     - "django>=1.8,<1.9"
 
