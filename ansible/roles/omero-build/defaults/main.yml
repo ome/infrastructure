@@ -1,0 +1,5 @@
+---
+# defaults file for roles/omero-build
+
+# A license key (default null)
+exe4j_license_key:
