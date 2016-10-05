@@ -1,0 +1,62 @@
+---
+# IDR security groups
+
+- name: OMERO external access security group
+  os_security_group:
+    description: External access to OMERO servers (managed by Ansible)
+    name: idr-omero-external
+    state: present
+
+- name: OMERO external access security group rules
+  os_security_group_rule:
+    direction: ingress
+    port_range_max: "{{ item }}"
+    port_range_min: "{{ item }}"
+    protocol: tcp
+    remote_ip_prefix: 0.0.0.0/0
+    security_group: idr-omero-external
+    state: present
+  with_items:
+    # TODO: Remove port 22 to restrict access to gateways only
+    - 22
+    - 80
+    - 443
+    - 4063
+    - 4064
+
+- name: Web external access security group
+  os_security_group:
+    description: External access to web servers (managed by Ansible)
+    name: idr-web-external
+    state: present
+
+- name: Web external access security group rules
+  os_security_group_rule:
+    direction: ingress
+    port_range_max: "{{ item }}"
+    port_range_min: "{{ item }}"
+    protocol: tcp
+    remote_ip_prefix: 0.0.0.0/0
+    security_group: idr-web-external
+    state: present
+  with_items:
+    - 80
+    - 443
+
+- name: Bastion external access security group
+  os_security_group:
+    description: External access to bastion servers (managed by Ansible)
+    name: idr-bastion-external
+    state: present
+
+- name: Bastion external access security group rules
+  os_security_group_rule:
+    direction: ingress
+    port_range_max: "{{ item }}"
+    port_range_min: "{{ item }}"
+    protocol: tcp
+    remote_ip_prefix: 0.0.0.0/0
+    security_group: idr-bastion-external
+    state: present
+  with_items:
+    - 22
