@@ -16,12 +16,12 @@ ExecStart=/usr/bin/docker run \
     -e DOCKER_HOST=unix://var/run/docker.sock \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v /srv/jupyterhub/jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py:ro \
-    manics/jupyterhub-githubauth \
+    {{ idr_jupyter_hub_image }} \
     jupyterhub \
     --no-ssl \
     --base-url={{ idr_jupyter_prefix }} \
     -f /srv/jupyterhub/jupyterhub_config.py \
-    --log-level=DEBUG
+    --log-level={{ idr_jupyter_hub_log_level }}
 ExecStop=/usr/bin/docker stop omero-jupyter
 
 [Install]
