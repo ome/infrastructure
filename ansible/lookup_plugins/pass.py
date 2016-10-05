@@ -5,11 +5,12 @@
 # To change the default password store set ANSIBLE_PASS_PASSWORD_STORE_DIR
 # environment variable.
 #
-# If the pass doesn't exist in the store it's generated. It accepts two extra
-# parameters: length and symbols (if symbols is True or yes -n is appended to
-# the pass generate command).
+# It accepts two extra parameters: length and symbols
+# (if symbols is True or yes -n is appended to the pass generate command).
 #
-# example: {{ lookup('pass', 'path/to/site lenght=20 symbols=False) }}
+# If the pass doesn't exist in the store and lenght > 0, it's generated.
+#
+# example: {{ lookup('pass', 'path/to/site length=20 symbols=False) }}
 #
 # [0] https://www.passwordstore.org/
 #
@@ -37,7 +38,7 @@ if os.getenv('ANSIBLE_PASS_PASSWORD_STORE_DIR') is not None:
 
 PASS_EXEC = 'PASSWORD_STORE_DIR=%s pass' % PASSWORD_STORE_DIR
 
-DEFAULT_LENGTH = 32
+DEFAULT_LENGTH = 0
 VALID_PARAMS = frozenset(('length', 'symbols'))
 
 def _parse_parameters(term):
@@ -116,6 +117,10 @@ class LookupModule(LookupBase):
             try:
                 password = get_password(term)
             except:
+                if not params['length']:
+                    raise AnsibleError((
+                        "lookup_plugin.pass(%s) not found "
+                        "- set length > 0 to create" ) % term)
                 try:
                     generate_password(name, params['length'], params['symbols'])
                     display.vvv('Generated password for %s' % name)
