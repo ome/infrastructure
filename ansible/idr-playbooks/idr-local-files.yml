@@ -25,7 +25,7 @@
     #synchronize:
     copy:
       dest: /srv/www/html/
-      src: "{{ inventory_dir }}/files/html/"
+      src: "{{ playbook_dir }}/files/html/"
       #delete: yes
       #owner: no
       #recursive: yes

@@ -1,0 +1,23 @@
+omero_dbuser: omero
+omero_dbname: idr
+omero_dbpassword: omero
+omero_datadir: /data/OMERO
+
+# TODO: change this to a lower system uid
+omero_system_uid: "{{ idr_secret_omero_system_uid | default(546) }}"
+
+omero_web_runtime_redis: True
+# This refers to a custom IDR release URL, not an official OMERO version
+omero_release: "0.0.7-rc1"
+omero_omego_additional_args: "--downloadurl https://downloads.openmicroscopy.org/idr"
+
+# Disable database backups
+omero_database_backupdir:
+omero_upgrade: True
+# Recursively chown data dir (this may take a very long time)
+#omero_datadir_chown: True
+
+omero_prestart_file: "{{ playbook_dir }}/files/IDR-OMERO-52-omero.j2"
+
+omero_logmonitor_slack_token: "{{ idr_secret_omero_logmonitor_slack_token | default(None) }}"
+omero_logmonitor_slack_channel: "#logs"
