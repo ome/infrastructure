@@ -3,3 +3,5 @@
 
 # A license key (default null)
 exe4j_license_key:
+
+spacewalk: False
