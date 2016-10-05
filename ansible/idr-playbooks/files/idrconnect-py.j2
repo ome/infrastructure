@@ -1,0 +1,8 @@
+def connection():
+    import omero
+    from omero.gateway import BlitzGateway
+    c = omero.client("{{ idr_jupyter_omero_host }}")
+    c.enableKeepAlive(300)
+    sf = c.createSession("{{ idr_jupyter_omero_user }}", "{{ idr_jupyter_omero_pass | quote }}")
+    conn = BlitzGateway(client_obj=c)
+    return conn

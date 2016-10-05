@@ -1,4 +1,10 @@
+# Jupyterhub configuration file
+
 c = get_config()
+
+
+######################################################################
+# JupyterHub
 
 # Hub service listens on this interface:
 c.JupyterHub.hub_ip = "0.0.0.0"
@@ -6,6 +12,13 @@ c.JupyterHub.hub_ip = "0.0.0.0"
 
 c.JupyterHub.spawner_class = "dockerspawner.DockerSpawner"
 c.JupyterHub.authenticator_class = "oauthenticator.GitHubOAuthenticator"
+{% if idr_jupyter_proxy_token | default(None) %}
+c.JupyterHub.proxy_auth_token = "{{ idr_jupyter_proxy_token }}"
+{% endif %}
+
+
+######################################################################
+# DockerSpawner
 
 # https://github.com/jupyterhub/dockerspawner/blob/master/dockerspawner/dockerspawner.py
 c.DockerSpawner.tls_verify = False
@@ -16,8 +29,17 @@ c.DockerSpawner.tls_verify = False
 c.DockerSpawner.hub_ip_connect = "{{ idr_jupyter_ip }}"
 c.DockerSpawner.container_image = "{{ idr_jupyter_notebook_image }}"
 
-c.DockerSpawner.remove_containers = True
+# c.DockerSpawner.remove_containers = True
 c.DockerSpawner.use_internal_ip = True
+{% if idr_jupyter_notebook_host_volume | default(None) %}
+c.DockerSpawner.volumes = {
+    "{{ idr_jupyter_notebook_host_volume }}": "/notebooks"
+}
+{% endif %}
+
+
+######################################################################
+# Authenticator
 
 c.Authenticator.whitelist = {{ idr_jupyter_users | to_json }}
 c.Authenticator.admin_users = {{ idr_jupyter_admins | to_json }}
