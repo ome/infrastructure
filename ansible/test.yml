@@ -9,6 +9,7 @@
 - hosts: docker
   roles:
   - role: docker
+  - role: docker-tools
 
 - hosts: redis
   roles:
