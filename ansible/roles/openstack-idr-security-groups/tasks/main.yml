@@ -17,8 +17,6 @@
     security_group: idr-omero-external
     state: present
   with_items:
-    # TODO: Remove port 22 to restrict access to gateways only
-    - 22
     - 80
     - 443
     - 4063

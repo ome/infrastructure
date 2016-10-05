@@ -1,0 +1,24 @@
+---
+# Playbook for creating OpenStack IDR VMs
+
+- fail:
+    msg: "idr_vm_keyname is required"
+  when: idr_vm_keyname is undefined or not idr_vm_keyname
+
+- name: idr vm | create VM
+  os_server:
+    name: "{{ idr_vm_name }}"
+    state: present
+    image: "{{ idr_vm_image }}"
+    key_name: "{{ idr_vm_keyname }}"
+    flavor: "{{ idr_vm_flavour }}"
+    nics: "{{ idr_vm_private_network | default(omit) }}"
+    auto_ip: "{{ idr_vm_assign_floating_ip }}"
+    meta:
+      hostname: "{{ idr_vm_name }}"
+      groups: "{{ (idr_vm_groups + idr_vm_extra_groups) | join(',') }}"
+    security_groups: "{{ idr_vm_security_groups | join(',') }}"
+  register: vm
+
+- debug:
+    msg: "{{ idr_vm_name }} IP private:{{ vm.openstack.private_v4 | default('') }} floating:{{ vm.openstack.public_v4 | default('') }}"

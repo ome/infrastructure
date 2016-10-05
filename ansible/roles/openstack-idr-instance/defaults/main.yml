@@ -1,0 +1,63 @@
+---
+# defaults file for roles/openstack-idr-instance
+
+
+# Required vars:
+#idr_vm_name
+#idr_vm_image
+#idr_vm_key_name
+#idr_vm_flavour
+
+# Optional, default(omit)
+#idr_vm_private_network
+
+idr_vm_assign_floating_ip: False
+
+# idr_environment: All VMs will be put into this group
+idr_environment: idr
+
+# Booleans indicating the purpose of this server (multiple may be True)
+idr_vm_database: False
+idr_vm_omero: False
+idr_vm_proxy: False
+idr_vm_bastion: False
+
+# Default groups depend on the purpose of this server
+idr_vm_groups: >
+  {{
+    (idr_vm_database | ternary(idr_vm_default_groups_database, [])) +
+    (idr_vm_omero | ternary(idr_vm_default_groups_omero, [])) +
+    (idr_vm_proxy | ternary(idr_vm_default_groups_proxy, [])) +
+    (idr_vm_bastion | ternary(idr_vm_default_groups_bastion, []))
+  }}
+
+idr_vm_extra_groups: []
+
+# Default security groups depend on the purpose of this server
+idr_vm_security_groups: >
+  {{
+    ['default'] +
+    (idr_vm_omero | ternary(['idr-omero-external'], [])) +
+    (idr_vm_proxy | ternary(['idr-web-external'], [])) +
+    (idr_vm_bastion | ternary(['idr-bastion-external'], []))
+  }}
+
+idr_vm_default_groups_database:
+- database-hosts
+- "{{ idr_environment }}-database-hosts"
+- "{{ idr_environment }}-hosts"
+
+idr_vm_default_groups_omero:
+- omero-hosts
+- "{{ idr_environment }}-omero-hosts"
+- "{{ idr_environment }}-hosts"
+
+idr_vm_default_groups_proxy:
+- proxy-hosts
+- "{{ idr_environment }}-proxy-hosts"
+- "{{ idr_environment }}-hosts"
+
+idr_vm_default_groups_bastion:
+- bastion-hosts
+- "{{ idr_environment }}-bastion-hosts"
+- "{{ idr_environment }}-hosts"
