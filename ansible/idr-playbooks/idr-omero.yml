@@ -47,8 +47,9 @@
 
   roles:
   - role: basedeps
-    basedeps_user_utils: True
     tags: "basedeps"
+  - role: cli-utils
+    tags: "cli-utils"
   - role: versioncontrol-utils
     tags: "versioncontrol-utils"
   - role: omero-server
