@@ -49,6 +49,7 @@ nginx_proxy_backends: []
 #  server: http://example.org
 #  dynamic: False
 #  cache_validity: 1d
+#  websockets: False
 
 # List of redirections
 nginx_proxy_redirect_map: []
@@ -70,6 +71,11 @@ nginx_proxy_direct_locations: []
 # Locations which should be blocked
 nginx_proxy_block_locations: []
 
+# Set this to True if any proxies require websockets
+nginx_proxy_websockets_enable: False
+
+# Read timeout for proxied websocket connections
+nginx_proxy_websockets_timeout:
 
 # Caching parameters
 # Parent path of Nginx disk caches

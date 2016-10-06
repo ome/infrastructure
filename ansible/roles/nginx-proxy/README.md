@@ -44,6 +44,7 @@ Backend servers:
   - `server`: The backend server including scheme
   - `dynamic`: If `True` lookup IP on every request, default `False` (only lookup at startup).
   - `cache_validity`: The time that an object should be cached for, if omitted caching is disabled for this backend
+  - `websockets`: If `True` enable proxying of websockets, default `False`
 
 Redirection:
 
@@ -64,7 +65,10 @@ Redirection:
 
 Use `nginx_proxy_direct_locations` with `redirect*` if you need to redirect based on Nginx `location` only, use `nginx_proxy_redirect_map` with `nginx_proxy_redirect_map_locations` if you also want to redirect based on query arguments.
 
+Websockets:
 
+- `nginx_proxy_websockets_enable`: This must be `True` if any proxies require proxying of websockets, default `False`
+- `nginx_proxy_websockets_timeout`: The proxy read timeout for websocket connections
 
 Caching:
 

@@ -11,6 +11,8 @@
 
 - include: nginx-cache.yml
 
+- include: nginx-websockets.yml
+
 - include: nginx-redirects.yml
 
 # See http://serverfault.com/a/337893
