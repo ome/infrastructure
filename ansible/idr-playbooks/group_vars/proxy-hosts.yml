@@ -54,4 +54,4 @@ nginx_proxy_direct_locations:
 #nginx_proxy_block_locations:
 #- "^~ /login"
 
-nginx_proxy_set_header_host: 'idr-demo.openmicroscopy.org'
+#nginx_proxy_set_header_host: 'idr-demo.openmicroscopy.org'
