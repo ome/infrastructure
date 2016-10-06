@@ -3,7 +3,8 @@ Base Dependencies
 
 Base dependencies for most servers.
 
-Mostly basic system utilities.
+These dependencies should be suitable for installation on a minimal production server.
+
 
 Author Information
 ------------------

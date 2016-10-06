@@ -31,3 +31,8 @@
         comment: Read-write share
         readonly: False
         users: [root]
+
+- hosts: cliutils
+  roles:
+  - role: cli-utils
+    # Should automatically bring in basedeps
