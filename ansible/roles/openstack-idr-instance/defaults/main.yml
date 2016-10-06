@@ -1,6 +1,8 @@
 ---
 # defaults file for roles/openstack-idr-instance
-
+# This contains a lot of the logic for setting the host and security
+# groups based on the purpose of the VM, and is specific to the IDR
+# playbooks
 
 # Required vars:
 #idr_vm_name
@@ -20,6 +22,8 @@ idr_environment: idr
 idr_vm_database: False
 idr_vm_omero: False
 idr_vm_proxy: False
+idr_vm_dockermanager: False
+idr_vm_dockerworker: False
 idr_vm_bastion: False
 
 # Default groups depend on the purpose of this server
@@ -28,6 +32,8 @@ idr_vm_groups: >
     (idr_vm_database | ternary(idr_vm_default_groups_database, [])) +
     (idr_vm_omero | ternary(idr_vm_default_groups_omero, [])) +
     (idr_vm_proxy | ternary(idr_vm_default_groups_proxy, [])) +
+    (idr_vm_dockermanager | ternary(idr_vm_default_groups_dockermanager, [])) +
+    (idr_vm_dockerworker | ternary(idr_vm_default_groups_dockerworker, [])) +
     (idr_vm_bastion | ternary(idr_vm_default_groups_bastion, []))
   }}
 
@@ -60,4 +66,17 @@ idr_vm_default_groups_proxy:
 idr_vm_default_groups_bastion:
 - bastion-hosts
 - "{{ idr_environment }}-bastion-hosts"
+- "{{ idr_environment }}-hosts"
+
+idr_vm_default_groups_dockermanager:
+- dockermanager-hosts
+- "{{ idr_environment }}-dockermanager-hosts"
+- "{{ idr_environment }}-docker-hosts"
+- "{{ idr_environment }}-hosts"
+- "{{ idr_environment }}-data-hosts"
+
+idr_vm_default_groups_dockerworker:
+- dockerworker-hosts
+- "{{ idr_environment }}-dockerworker-hosts"
+- "{{ idr_environment }}-docker-hosts"
 - "{{ idr_environment }}-hosts"

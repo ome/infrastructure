@@ -16,7 +16,7 @@ Required variables:
 - `idr_vm_flavour`: Openstack flavour
 
 Optional variables:
-- `idr_vm_private_network`: Use this network instead of the default one
+- `idr_vm_private_networks`: Use this network instead of the default one
 - `idr_vm_assign_floating_ip`: Assign a floating IP, default `False`
 - `idr_environment`: Use this as a group prefix. You should almost always set this to something other than the default `idr`
 
@@ -30,6 +30,12 @@ Advanced settings:
 - `idr_vm_groups`: A list of host-groups, default depends on the above booleans
 - `idr_vm_extra_groups`: A list of host-groups in addition to the above default
 - `idr_vm_security_groups`: A list of security groups, default depends on the above booleans
+
+
+Development
+-----------
+
+See the warning in `tasks/main.yml` before making changes.
 
 
 Author Information
