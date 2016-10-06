@@ -6,6 +6,7 @@
     state: present
     size: "{{ openstack_volume_size }}"
     display_name: "{{ openstack_volume_vmname }}-{{ openstack_volume_name }}"
+    snapshot_id: "{{ openstack_volume_snapshot | default(omit) }}"
 
 - name: openstack volume | attach volume to host
   os_server_volume:
