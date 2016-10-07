@@ -117,6 +117,7 @@
     template:
       src: files/jupyterhub_config-py.j2
       dest: /srv/jupyterhub/jupyterhub_config.py
+    register: jupyterconfig
 
   - name: jupyterhub | pull images
     become: yes
@@ -139,6 +140,13 @@
     become: yes
     command: systemctl daemon-reload
     when: systemdjupyter.changed
+
+  - name: jupyterhub | restart
+    become: yes
+    service:
+      name: docker-jupyterhub.service
+      state: restarted
+    when: jupyterconfig.changed
 
   - name: jupyterhub | enable jupyterhub
     become: yes
@@ -198,6 +206,9 @@
   # You must ensure it has the correct permissions for writing
   # idr_jupyter_notebook_host_volume: "/data/{username}"
   - idr_jupyter_notebook_host_volume: /data/idr-notebooks
+  # In theory it should be possible to have container survive a restart of
+  # the hub. In practice it seems to lead to permission problems.
+  - idr_jupyter_notebook_remove_containers: True
   - idr_jupyter_notebook_repo: https://github.com/IDR/idr-notebooks.git
   - idr_jupyter_notebook_repo_version: "0.1.0"
   - idr_jupyter_omero_host: "{{ hostvars[groups[idr_environment | default('idr') + '-omero-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address'] }}"

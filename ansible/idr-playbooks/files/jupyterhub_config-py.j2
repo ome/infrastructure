@@ -29,7 +29,7 @@ c.DockerSpawner.tls_verify = False
 c.DockerSpawner.hub_ip_connect = "{{ idr_jupyter_ip }}"
 c.DockerSpawner.container_image = "{{ idr_jupyter_notebook_image }}"
 
-# c.DockerSpawner.remove_containers = True
+c.DockerSpawner.remove_containers = {{ idr_jupyter_notebook_remove_containers | default(False) }}
 c.DockerSpawner.use_internal_ip = True
 {% if idr_jupyter_notebook_host_volume | default(None) %}
 c.DockerSpawner.volumes = {
