@@ -161,12 +161,12 @@
       force: no
     when: not idr_notebook_st.stat.exists
 
-  - name: jupyterhub | create user notebooks directory
+  - name: jupyterhub | create scratch notebooks directory
     become: yes
     file:
       mode: "0755"
       owner: 1000
-      path: "{{ idr_jupyter_notebook_host_volume }}/user"
+      path: "{{ idr_jupyter_notebook_host_volume }}/scratch"
       state: directory
 
   - name: jupyterhub | update jupyter omero connection file
