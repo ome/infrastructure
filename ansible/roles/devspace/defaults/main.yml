@@ -31,4 +31,4 @@ omero_branch: develop
 jenkins_nginx_username: devspace
 jenkins_nginx_password:
 
-devspace_force_restart: false
+devspace_force_restart: true

@@ -66,7 +66,8 @@
   git:
     repo: "{{ git_repo }}"
     dest: "{{ devhome }}"
-    update: no
+    update: yes
+    force: yes
     refspec: "+refs/pull/*:refs/heads/*"
     version: "{{ version }}"
 
