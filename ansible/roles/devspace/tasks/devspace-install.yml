@@ -70,6 +70,7 @@
     force: yes
     refspec: "+refs/pull/*:refs/heads/*"
     version: "{{ version }}"
+  notify: restart devspace
 
 - name: ensures .ssh dir exists
   become: yes

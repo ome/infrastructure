@@ -1,0 +1,8 @@
+---
+
+- name: restart devspace
+  environment:
+    USER_ID: "{{ user_id }}"
+  become: yes
+  become_user: "{{ devuser }}"
+  include: devspace-runtime.yml

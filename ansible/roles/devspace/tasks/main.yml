@@ -1,9 +1,3 @@
 ---
 
 - include: devspace-install.yml
-
-- include: devspace-runtime.yml
-  environment:
-    USER_ID: "{{ user_id }}"
-  become: yes
-  become_user: "{{ devuser }}"
