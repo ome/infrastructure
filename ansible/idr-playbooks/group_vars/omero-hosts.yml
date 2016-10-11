@@ -13,7 +13,6 @@ omero_omego_additional_args: "--downloadurl https://downloads.openmicroscopy.org
 
 # Disable database backups
 omero_database_backupdir:
-omero_upgrade: True
 # Recursively chown data dir (this may take a very long time)
 #omero_datadir_chown: True
 
