@@ -14,7 +14,9 @@ nginx_proxy_cache_hide_headers:
 nginx_proxy_cache_match_uri:
 #- '"~webclient/api/paths_to_object*"'
 - '"~web(client|gateway)/(metadata|render)_*"'
+- '"~webclient/api/*"'
 - '"~static/*"'
+- '"~mapr/*"'
 
 #nginx_proxy_cache_match_arg:
 #- '"~show=*"'
@@ -52,3 +54,13 @@ nginx_proxy_caches:
 #  match:
 #  - '"~webclient/.*/?show=*"'
 #  - '"~webclient/api/paths_to_object/*"'
+- name: omeroapi
+  keysize: 10m
+  inactive: 30d
+  match:
+  - '"~webclient/api/*"'
+- name: omeromapr
+  keysize: 10m
+  inactive: 30d
+  match:
+  - '"~mapr/*"'
