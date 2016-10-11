@@ -129,15 +129,7 @@
     # TODO: This needs to match the cache configuration in nginx-proxy, so should be combined in one place
     nginx_proxy_backends:
     - name: omerocached
-      location: ~ /web(client|gateway)/(metadata|render)_*
-      server: "http://{{ omero_omero_host_ansible }}"
-      cache_validity: 30d
-    - name: omerocached2
-      location: ~ /webclient/api/*
-      server: "http://{{ omero_omero_host_ansible }}"
-      cache_validity: 30d
-    - name: omeromaprcached
-      location: ~ /mapr/*
+      location: ~ /(mapr/|(webclient/api/)|(web(client|gateway)/(metadata|render)_)*
       server: "http://{{ omero_omero_host_ansible }}"
       cache_validity: 30d
     - name: omerostatic
