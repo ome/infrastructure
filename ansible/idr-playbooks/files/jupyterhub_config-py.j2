@@ -31,10 +31,8 @@ c.DockerSpawner.container_image = "{{ idr_jupyter_notebook_image }}"
 
 c.DockerSpawner.remove_containers = {{ idr_jupyter_notebook_remove_containers | default(False) }}
 c.DockerSpawner.use_internal_ip = True
-{% if idr_jupyter_notebook_host_volume | default(None) %}
-c.DockerSpawner.volumes = {
-    "{{ idr_jupyter_notebook_host_volume }}": "/notebooks"
-}
+{% if idr_jupyter_notebook_volumes | default(None) %}
+c.DockerSpawner.volumes = {{ idr_jupyter_notebook_volumes }}
 {% endif %}
 
 

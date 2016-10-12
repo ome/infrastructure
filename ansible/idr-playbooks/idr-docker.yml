@@ -216,6 +216,11 @@
   - idr_jupyter_omero_pass: public
   # This must match the userid of the idr_jupyter_notebook_image user
   - idr_jupyter_notebook_system_uid: 1000
+  - idr_jupyter_notebook_volumes: >
+      {
+        '{{ idr_jupyter_notebook_host_volume }}': '/notebooks',
+        '/uod/idr/features': {'bind': '/uod/idr/features', 'mode': 'ro'},
+      }
 
   vars_files:
   - secret/idr-jupyter-vars.yml
