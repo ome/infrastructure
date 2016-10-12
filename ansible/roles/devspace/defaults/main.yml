@@ -10,7 +10,7 @@ snoopy_dir_path: ""
 # devspace source
 git_repo: "https://github.com/openmicroscopy/devspace.git"
 # devspace branch
-version: "master"
+version: "0.3.0"
 
 # devspace user
 devuser: omero
@@ -30,3 +30,7 @@ omero_branch: develop
 # jenkins credentials:
 jenkins_nginx_username: devspace
 jenkins_nginx_password:
+
+devspace_handler_tasks: "devspace-runtime.yml"
+
+devspace_force_restart: true
