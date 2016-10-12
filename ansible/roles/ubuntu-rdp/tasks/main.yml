@@ -53,7 +53,7 @@
   become: yes
   file:
     path: /home/{{ rdp_user }}/.xsession
-    state: file
+    state: touch
     owner: "{{ rdp_user }}"
     mode: 0644
 
