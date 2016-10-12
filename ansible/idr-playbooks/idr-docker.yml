@@ -129,6 +129,23 @@
     - "{{ idr_jupyter_hub_image }}"
     - "{{ idr_jupyter_notebook_image }}"
 
+  # TODO: The above `docker_image` only pulls latest
+  # Should be fixed in Ansible 2.2
+  # https://github.com/ansible/ansible/pull/16680
+  # idr_jupyter_hub_image is automatically pulled since the systemd service
+  # runs docker, but docker-py won't pull idr_jupyter_notebook_image
+  - name: jupyterhub | check if notebook image present (ansible 2.1 bug)
+    become: yes
+    command: docker images -q "{{ idr_jupyter_notebook_image }}"
+    register: docker_image_jhnote
+    always_run: yes
+    changed_when: "{{ docker_image_jhnote.stdout | length }} < 1"
+
+  - name: jupyterhub | pull notebook image (ansible 2.1 bug)
+    become: yes
+    command: docker pull "{{ idr_jupyter_notebook_image }}"
+    when: docker_image_jhnote.changed
+
   - name: jupyterhub | create systemd service
     become: yes
     template:
