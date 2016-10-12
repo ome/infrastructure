@@ -117,6 +117,7 @@
     regexp: '^ARG USER_ID=1000'
     replace: 'ARG USER_ID={{ user_id }}' # how to find out UID?
   with_items:
+    - bf/Dockerfile
     - nginx/Dockerfile
     - slave/Dockerfile
     - server/Dockerfile

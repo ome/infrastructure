@@ -10,7 +10,7 @@ snoopy_dir_path: ""
 # devspace source
 git_repo: "https://github.com/openmicroscopy/devspace.git"
 # devspace branch
-version: "0.3.0"
+version: "0.3.1"
 
 # devspace user
 devuser: omero
