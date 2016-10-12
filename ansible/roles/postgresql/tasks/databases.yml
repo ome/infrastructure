@@ -29,7 +29,7 @@
     encrypted: yes
     name: "{{ item.0.user }}"
     password: "{{ item.0.password }}"
-    role_attr_flags: "CREATEDB,NOSUPERUSER"
+    role_attr_flags: "{{ item.0.roles | default(omit) }}"
     state: present
   with_subelements:
     - "{{ postgresql_users_databases }}"

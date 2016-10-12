@@ -36,3 +36,40 @@
   roles:
   - role: cli-utils
     # Should automatically bring in basedeps
+
+- hosts: postgres
+  roles:
+  - postgresql
+  vars:
+  - postgresql_server_listen: "'*'"
+  - postgresql_server_auth:
+    - database: publicdb
+      user: alice123
+      address: 192.168.1.0/24
+  - postgresql_users_databases:
+    - user: alice
+      password: alice123
+      databases: [publicdb, secretdb]
+    - user: bob
+      password: bob123
+      databases: [publicdb]
+      roles: "CREATEDB,NOSUPERUSER"
+
+  # Testing
+
+  tasks:
+  - command: psql postgres -c "SELECT * FROM pg_roles WHERE rolname='alice'" -At
+    become: yes
+    become_user: postgres
+    register: pg_alice
+
+  - command: psql postgres -c "SELECT * FROM pg_roles WHERE rolname='bob'" -At
+    become: yes
+    become_user: postgres
+    register: pg_bob
+
+  - assert:
+      that:
+      # Everything except the UID
+      - "pg_alice.stdout.startswith('alice|f|t|f|f|f|t|f|-1|********|||')"
+      - "pg_bob.stdout.startswith('bob|f|t|f|t|f|t|f|-1|********|||')"
