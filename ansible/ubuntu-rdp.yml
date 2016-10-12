@@ -7,7 +7,12 @@
     - name: "rdp_user_password"
       prompt: Enter password
       private: yes
-      when: rdp_user_password|length>0
+      confirm: yes
+      encrypt: "md5_crypt"
+      salt_size: 7
 
   roles:
-    - role: ubuntu-rdp
+    - role: "{{ rdp_user }}-rdp"
+
+  vars:
+    rdp_user: ubuntu

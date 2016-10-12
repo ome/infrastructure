@@ -1,6 +1,13 @@
 ---
 # Setup a RDP
 
+- name: Change ubuntu password
+  become: yes
+  user:
+    name: "{{ rdp_user }}"
+    update_password: always
+    password: "{{ rdp_user_password }}"
+
 - name: Get aptitude for upgrade
   apt:
     pkg: aptitude
@@ -38,6 +45,7 @@
     state: present
   with_items:
     - xfce4
+    - xfce4-terminal
     - gnome-icon-theme-full
     - tango-icon-theme
 
@@ -45,7 +53,7 @@
   become: yes
   file:
     path: /home/{{ rdp_user }}/.xsession
-    state: touch
+    state: file
     owner: "{{ rdp_user }}"
     mode: 0644
 
