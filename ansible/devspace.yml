@@ -3,6 +3,10 @@
 
 - hosts: devspace
 
+  vars:
+    # Overrides the default value in the docker role
+    docker_use_ipv4_nic_mtu: True
+
   vars_prompt:
     - name: "jenkins_nginx_password"
       prompt: "Enter Jenkins password"
