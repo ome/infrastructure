@@ -1,17 +1,12 @@
 ---
 # tasks file for roles/nginx-proxy selinux
 
-# TODO: ansible_selinux.status == "enabled" should autodetect SELinux,
-# but may give a misleading result if a dependency is missing:
-# https://github.com/ansible/ansible/issues/16612
-
 - name: nginx | selinux allow network connect
   become: yes
   seboolean:
     name: httpd_can_network_connect
     state: yes
     persistent: yes
-  when: ansible_selinux.status == "enabled"
 
 # This may not work if the port already has a different setype assigned to it
 - name: nginx | stream selinux ports
@@ -21,5 +16,4 @@
     proto: tcp
     setype: http_port_t
     state: present
-  when: ansible_selinux.status == "enabled"
   with_items: "{{ nginx_proxy_streams }}"
