@@ -8,7 +8,7 @@
   when: (item.websockets | default(False)) and not nginx_proxy_websockets_enable
   with_items: "{{ nginx_proxy_backends }}"
 
-- name: nginx | proxy cache config
+- name: nginx | proxy websockets config
   become: yes
   copy:
     src: nginx-confd-proxy-websockets.conf
@@ -17,7 +17,7 @@
   notify:
     - restart nginx
 
-- name: nginx | proxy cache config
+- name: nginx | proxy websockets config
   become: yes
   file:
     dest: /etc/nginx/conf.d/proxy-websockets.conf
