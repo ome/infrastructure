@@ -2,7 +2,7 @@
 # The default is to use NFS, if you are using samba you must install the
 # dependencies (cifs-utils) yourself.
 
-- hosts: uod-nfs
+- hosts: "{{ idr_environment | default('idr') }}-uod-nfs"
 
   vars:
     idr_mountpoint: /uod/idr

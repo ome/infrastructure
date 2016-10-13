@@ -1,0 +1,73 @@
+---
+# Example playbook for creating OpenStack IDR VMs
+# You will need to change the variables in the `vars` section depending on
+# your openstack environment. For more fine grained control set the vars
+# directly in each role
+
+- hosts: localhost
+  connection: local
+
+  vars:
+    - idr_environment: idr
+    #- idr_vm_keyname: VM_KEYNAME
+    - vm_image: CentOS 7 1604
+    - vm_flavour: m1.large
+
+
+  roles:
+
+    ############################################################
+    # Security groups
+
+    - role: openstack-idr-security-groups
+
+
+    ############################################################
+    # Instances
+
+    # Dedicated database server
+    - role: openstack-idr-instance
+      idr_vm_name: "{{ idr_environment }}-database"
+      idr_vm_image: "{{ vm_image }}"
+      idr_vm_flavour: "{{ vm_flavour }}"
+      idr_vm_database: True
+
+    # OMERO server
+    - role: openstack-idr-instance
+      idr_vm_name: "{{ idr_environment }}-omero"
+      idr_vm_image: "{{ vm_image }}"
+      idr_vm_flavour: "{{ vm_flavour }}"
+      idr_vm_omero: True
+      #idr_vm_extra_groups:
+      #idr_vm_private_networks:
+
+    # Proxy server, doubles up as a bastion server
+    - role: openstack-idr-instance
+      idr_vm_name: "{{ idr_environment }}-proxy"
+      idr_vm_image: "{{ vm_image }}"
+      idr_vm_flavour: "{{ vm_flavour }}"
+      idr_vm_proxy: True
+      idr_vm_bastion: True
+      idr_vm_assign_floating_ip: True
+
+
+    ############################################################
+    # Volumes
+
+    - role: openstack-volume-storage
+      openstack_volume_size: 100
+      openstack_volume_vmname: "{{ idr_environment }}-database"
+      openstack_volume_name: db
+      openstack_volume_device: /dev/vdb
+
+    - role: openstack-volume-storage
+      openstack_volume_size: 100
+      openstack_volume_vmname: "{{ idr_environment }}-omero"
+      openstack_volume_name: data
+      openstack_volume_device: /dev/vdb
+
+    - role: openstack-volume-storage
+      openstack_volume_size: 20
+      openstack_volume_vmname: "{{ idr_environment }}-proxy"
+      openstack_volume_name: nginxcache
+      openstack_volume_device: /dev/vdb

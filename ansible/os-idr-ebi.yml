@@ -4,7 +4,7 @@
 
 - include: os-idr-playbooks/os-create.yml
   vars:
-    omero_vm_extra_groups: "ebi-nfs,idr-hosts"
+    omero_vm_extra_groups: "{{ idr_environment | default('idr') }}-ebi-nfs"
     os_cloud_provider: ebi
 
 - include: os-idr-playbooks/os-volumes.yml
@@ -14,19 +14,19 @@
 - include: idr-playbooks/idr-local-users.yml
 # Variables for this section are in a private file
 
-- hosts: database-hosts
+- hosts: "{{ idr_environment | default('idr') }}-database-hosts"
   roles:
   - role: storage-volume-initialise
     storage_volume_initialise_device: /dev/vdb
     storage_volume_initialise_mount: /var/lib/pgsql
 
-- hosts: omero-hosts
+- hosts: "{{ idr_environment | default('idr') }}-omero-hosts"
   roles:
   - role: storage-volume-initialise
     storage_volume_initialise_device: /dev/vdb
     storage_volume_initialise_mount: /data
 
-- hosts: proxy-hosts
+- hosts: "{{ idr_environment | default('idr') }}-proxy-hosts"
   roles:
   - role: storage-volume-initialise
     storage_volume_initialise_device: /dev/vdb
@@ -38,7 +38,5 @@
 # Vars are in os-omero.yml so that the playbook can be run independently
 
 - include: idr-playbooks/idr-local-files.yml
-
-- include: idr-playbooks/idr-user-utils.yml
 
 #- include: idr-playbooks/idr-monitoring.yml

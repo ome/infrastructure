@@ -8,12 +8,12 @@
   tasks:
 
     - fail:
-        msg: "vm_prefix is required"
-      when: vm_prefix is undefined or not vm_prefix
+        msg: "idr_environment is required"
+      when: idr_environment is undefined or not idr_environment
 
     - name: Remove instances
       os_server:
-        name: "{{ vm_prefix }}-{{ item }}"
+        name: "{{ idr_environment }}-{{ item }}"
         state: absent
       with_items:
         - database
@@ -22,7 +22,7 @@
 
     - name: Remove instances
       os_server:
-        name: "{{ vm_prefix }}-{{ item }}"
+        name: "{{ idr_environment }}-{{ item }}"
         state: absent
       with_items:
         - database
@@ -35,9 +35,9 @@
         display_name: "{{ item }}"
         state: absent
       with_items:
-        - "{{ vm_prefix }}-omero-data"
-        - "{{ vm_prefix }}-database-db"
-        - "{{ vm_prefix }}-gateway-nginxcache"
+        - "{{ idr_environment }}-omero-data"
+        - "{{ idr_environment }}-database-db"
+        - "{{ idr_environment }}-gateway-nginxcache"
 
     # Can't remove security group unless nothing is using it
     - name: Remove OMERO external access security group

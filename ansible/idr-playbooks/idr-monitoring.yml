@@ -1,6 +1,6 @@
 # Monitoring playbook
 
-- hosts: omero-hosts
+- hosts: "{{ idr_environment | default('idr') }}-omero-hosts"
 
   pre_tasks:
   - name: Get short hostname (not the same as the Ansible hostname vars)

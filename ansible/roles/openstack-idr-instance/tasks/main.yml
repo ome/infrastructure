@@ -1,0 +1,27 @@
+---
+# Playbook for creating OpenStack IDR VMs
+
+# WARNING: Do not use set_facts in this role, since it'll create a hostvar
+# on the host running the openstack client and not the VM created.
+# This means multiple invocations of this role (for multiple VMs) will fail
+# to work as expected since the hostvar is persistent across tasks.
+# See defaults/main.yml for most of the logic.
+
+- name: idr vm | create VM
+  os_server:
+    name: "{{ idr_vm_name }}"
+    state: present
+    image: "{{ idr_vm_image }}"
+    key_name: "{{ idr_vm_keyname }}"
+    flavor: "{{ idr_vm_flavour }}"
+    nics: "{{ idr_vm_private_networks | default(omit) }}"
+    auto_ip: "{{ idr_vm_assign_floating_ip }}"
+    meta:
+      hostname: "{{ idr_vm_name }}"
+      groups: "{{ (idr_vm_groups + idr_vm_extra_groups) | join(',') }}"
+    security_groups: "{{ idr_vm_security_groups | join(',') }}"
+  register: vm
+
+- debug:
+    msg: "{{ idr_vm_name }} IP private:{{ vm.openstack.private_v4 | default('') }} floating:{{ vm.openstack.public_v4 | default('') }}"
+    verbosity: 1
