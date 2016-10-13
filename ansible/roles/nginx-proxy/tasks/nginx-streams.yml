@@ -1,0 +1,27 @@
+---
+# tasks file for roles/nginx-proxy streams setup
+
+# If websockets are enabled for any proxies then it must also be enabled at the top level
+- name: nginx | stream-conf.d directory
+  become: yes
+  file:
+    path: /etc/nginx/stream-conf.d
+    state: directory
+
+- name: nginx | stream proxy config
+  become: yes
+  template:
+    src: nginx-confd-streams.j2
+    dest: /etc/nginx/stream-conf.d/proxy-streams.conf
+  notify:
+    - restart nginx
+  when: nginx_proxy_streams
+
+- name: nginx | stream proxy config
+  become: yes
+  file:
+    dest: /etc/nginx/stream-conf.d/proxy-streams.conf
+    state: absent
+  notify:
+    - restart nginx
+  when: not nginx_proxy_streams

@@ -143,7 +143,7 @@ server {
         proxy_set_header Connection $connection_upgrade;
 {%   endif %}
 
-{%   if 'readtimeout' in item %}
+{%   if 'read_timeout' in item %}
         proxy_read_timeout {{ item.read_timeout }};
 {%   endif %}
     }

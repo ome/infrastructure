@@ -9,11 +9,15 @@
   notify:
     - restart nginx
 
+- include: nginx-selinux.yml
+
 - include: nginx-cache.yml
 
 - include: nginx-websockets.yml
 
 - include: nginx-redirects.yml
+
+- include: nginx-streams.yml
 
 # See http://serverfault.com/a/337893
 - name: nginx | proxy config

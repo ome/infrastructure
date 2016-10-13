@@ -74,6 +74,8 @@ nginx_proxy_block_locations: []
 # Set this to True if any proxies require websockets
 nginx_proxy_websockets_enable: False
 
+# List of dicts of backend streaming servers
+nginx_proxy_streams: []
 
 # Caching parameters
 # Parent path of Nginx disk caches
