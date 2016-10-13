@@ -74,8 +74,6 @@ nginx_proxy_block_locations: []
 # Set this to True if any proxies require websockets
 nginx_proxy_websockets_enable: False
 
-# Read timeout for proxied websocket connections
-nginx_proxy_websockets_timeout:
 
 # Caching parameters
 # Parent path of Nginx disk caches

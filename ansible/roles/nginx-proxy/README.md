@@ -68,7 +68,6 @@ Use `nginx_proxy_direct_locations` with `redirect*` if you need to redirect base
 Websockets:
 
 - `nginx_proxy_websockets_enable`: This must be `True` if any proxies require proxying of websockets, default `False`
-- `nginx_proxy_websockets_timeout`: The proxy read timeout for websocket connections
 
 Caching:
 

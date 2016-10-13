@@ -141,9 +141,10 @@ server {
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection $connection_upgrade;
-{%     if nginx_proxy_websockets_timeout %}
-        proxy_read_timeout {{ nginx_proxy_websockets_timeout }};
-{%     endif %}
+{%   endif %}
+
+{%   if 'readtimeout' in item %}
+        proxy_read_timeout {{ item.read_timeout }};
 {%   endif %}
     }
 
