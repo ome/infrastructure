@@ -10,6 +10,8 @@
 #     docker network rm docker_gwbridge
 #     docker network create --opt com.docker.network.driver.mtu=1400 --subnet 172.18.0.0/16 docker_gwbridge
 
+# TODO: Convert this into one or more roles
+
 
 - hosts: "{{ idr_environment | default('idr') }}-docker-hosts"
 
