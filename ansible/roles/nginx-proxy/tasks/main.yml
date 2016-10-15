@@ -9,9 +9,19 @@
   notify:
     - restart nginx
 
+# TODO: ansible_selinux.status == "enabled" should autodetect SELinux,
+# but may give a misleading result if a dependency is missing:
+# https://github.com/ansible/ansible/issues/16612
+- include: nginx-selinux.yml
+  when: ansible_selinux and ansible_selinux.status == "enabled"
+
 - include: nginx-cache.yml
 
+- include: nginx-websockets.yml
+
 - include: nginx-redirects.yml
+
+- include: nginx-streams.yml
 
 # See http://serverfault.com/a/337893
 - name: nginx | proxy config

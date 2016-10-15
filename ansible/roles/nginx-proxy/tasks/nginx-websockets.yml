@@ -1,0 +1,27 @@
+---
+# tasks file for roles/nginx-proxy websockets setup
+
+# If websockets are enabled for any proxies then it must also be enabled at the top level
+- name: nginx | check websockets configuration
+  fail:
+    msg: "Websockets enabled for {{ item.location }} but nginx_proxy_websocket_enable is False"
+  when: (item.websockets | default(False)) and not nginx_proxy_websockets_enable
+  with_items: "{{ nginx_proxy_backends }}"
+
+- name: nginx | proxy websockets config
+  become: yes
+  copy:
+    src: nginx-confd-proxy-websockets.conf
+    dest: /etc/nginx/conf.d/proxy-websockets.conf
+  when: nginx_proxy_websockets_enable
+  notify:
+    - restart nginx
+
+- name: nginx | proxy websockets config
+  become: yes
+  file:
+    dest: /etc/nginx/conf.d/proxy-websockets.conf
+    state: absent
+  notify:
+    - restart nginx
+  when: not nginx_proxy_websockets_enable

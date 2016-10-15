@@ -44,6 +44,17 @@ Backend servers:
   - `server`: The backend server including scheme
   - `dynamic`: If `True` lookup IP on every request, default `False` (only lookup at startup).
   - `cache_validity`: The time that an object should be cached for, if omitted caching is disabled for this backend
+  - `websockets`: If `True` enable proxying of websockets, default `False`
+  - `read_timeout`: The proxy read timeout, optional
+
+- `nginx_proxy_streams`: List of dictionaries of backend streaming servers
+  - `name`: A variable name used for grouping multiple upstream servers
+  - `port`: The port Nginx should lsiten on
+  - `servers`: A list of backend servers, each item may include server specific parameters
+  - `timeout`: Timeout between successive reads/writes
+  - `connect_timeout`: Backend connection timeout
+
+Warning: Using non-standard http ports in `nginx_proxy_streams` may lead to SELinux failures. This role will attempt to configure SELinux but may fail.
 
 Redirection:
 
@@ -64,7 +75,9 @@ Redirection:
 
 Use `nginx_proxy_direct_locations` with `redirect*` if you need to redirect based on Nginx `location` only, use `nginx_proxy_redirect_map` with `nginx_proxy_redirect_map_locations` if you also want to redirect based on query arguments.
 
+Websockets:
 
+- `nginx_proxy_websockets_enable`: This must be `True` if any proxies require proxying of websockets, default `False`
 
 Caching:
 

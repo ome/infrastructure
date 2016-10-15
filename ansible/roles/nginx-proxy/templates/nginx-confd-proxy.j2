@@ -136,6 +136,16 @@ server {
         proxy_hide_header {{ item }};
 {%     endfor %}
 {%   endif %}
+
+{%   if item.websockets | default(False) %}
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+{%   endif %}
+
+{%   if 'read_timeout' in item %}
+        proxy_read_timeout {{ item.read_timeout }};
+{%   endif %}
     }
 
 {% endfor %}

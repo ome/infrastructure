@@ -19,16 +19,16 @@ nginx_proxy_force_ssl: False
 # Optional vars:
 
 # Server path to SSL certificate
-nginx_proxy_ssl_certificate:
+nginx_proxy_ssl_certificate: ""
 
 # Server path to SSL certificate key
-nginx_proxy_ssl_certificate_key:
+nginx_proxy_ssl_certificate_key: ""
 
 # Local path to the SSL certificate
-nginx_proxy_ssl_certificate_source_path:
+nginx_proxy_ssl_certificate_source_path: ""
 
 # Local path to the SSL certificate key
-nginx_proxy_ssl_certificate_key_source_path:
+nginx_proxy_ssl_certificate_key_source_path: ""
 
 # If defined the age to return in the Strict-Transport-Security header
 nginx_proxy_hsts_age:
@@ -49,6 +49,7 @@ nginx_proxy_backends: []
 #  server: http://example.org
 #  dynamic: False
 #  cache_validity: 1d
+#  websockets: False
 
 # List of redirections
 nginx_proxy_redirect_map: []
@@ -70,6 +71,11 @@ nginx_proxy_direct_locations: []
 # Locations which should be blocked
 nginx_proxy_block_locations: []
 
+# Set this to True if any proxies require websockets
+nginx_proxy_websockets_enable: False
+
+# List of dicts of backend streaming servers
+nginx_proxy_streams: []
 
 # Caching parameters
 # Parent path of Nginx disk caches
