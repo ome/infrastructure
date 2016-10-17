@@ -122,6 +122,7 @@
     - slave/Dockerfile
     - server/Dockerfile
     - web/Dockerfile
+  when: compose == 'v1'
 
 - name: set basic auth password for jenkins
   become: yes
