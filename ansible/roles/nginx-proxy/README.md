@@ -46,6 +46,7 @@ Backend servers:
   - `cache_validity`: The time that an object should be cached for, if omitted caching is disabled for this backend
   - `websockets`: If `True` enable proxying of websockets, default `False`
   - `read_timeout`: The proxy read timeout, optional
+  - `host_header`: Optionally set the Host header, you shouldn't need to set this unless you're trying to work around bugs in applications
 
 - `nginx_proxy_streams`: List of dictionaries of backend streaming servers
   - `name`: A variable name used for grouping multiple upstream servers
