@@ -10,8 +10,14 @@ c = get_config()
 c.JupyterHub.hub_ip = "0.0.0.0"
 #c.JupyterHub.proxy_api_ip = c.JupyterHub.hub_ip
 
+{%if docker_swarm_enabled %}
+c.JupyterHub.spawner_class = "dockerspawner.DockerServiceSpawner"
+{% else %}
 c.JupyterHub.spawner_class = "dockerspawner.DockerSpawner"
-c.JupyterHub.authenticator_class = "oauthenticator.GitHubOAuthenticator"
+{% endif %}
+{%if idr_jupyter_authenticator | default(None) %}
+c.JupyterHub.authenticator_class = "{{ idr_jupyter_authenticator }}"
+{% endif %}
 {% if idr_jupyter_proxy_token | default(None) %}
 c.JupyterHub.proxy_auth_token = "{{ idr_jupyter_proxy_token }}"
 {% endif %}
@@ -19,8 +25,8 @@ c.JupyterHub.proxy_auth_token = "{{ idr_jupyter_proxy_token }}"
 
 ######################################################################
 # DockerSpawner
-
 # https://github.com/jupyterhub/dockerspawner/blob/master/dockerspawner/dockerspawner.py
+
 c.DockerSpawner.tls_verify = False
 #c.DockerSpawner.tls_ca = "/etc/docker/ca.pem"
 #c.DockerSpawner.tls_cert = "/etc/docker/server-cert.pem"
@@ -28,9 +34,23 @@ c.DockerSpawner.tls_verify = False
 #c.DockerSpawner.container_ip = "0.0.0.0"
 c.DockerSpawner.hub_ip_connect = "{{ idr_jupyter_ip }}"
 c.DockerSpawner.container_image = "{{ idr_jupyter_notebook_image }}"
-
 c.DockerSpawner.remove_containers = {{ idr_jupyter_notebook_remove_containers | default(False) }}
 c.DockerSpawner.use_internal_ip = True
+{% if idr_jupyter_notebook_volumes | default(None) %}
+c.DockerSpawner.volumes = {{ idr_jupyter_notebook_volumes }}
+{% endif %}
+
+######################################################################
+# DockerServiceSpawner
+# https://github.com/manics/dockerspawner/blob/master/dockerspawner/dockerservicespawner.py
+
+c.DockerServiceSpawner.tls_verify = False
+#c.DockerServiceSpawner.hub_ip_connect = "{{ idr_jupyter_ip }}"
+c.DockerServiceSpawner.hub_ip_connect = "{{ idr_jupyter_service }}"
+c.DockerServiceSpawner.container_image = "{{ idr_jupyter_notebook_image }}"
+c.DockerServiceSpawner.remove_containers = {{ idr_jupyter_notebook_remove_containers | default(False) }}
+c.DockerServiceSpawner.use_internal_ip = True
+c.DockerServiceSpawner.network_name = "{{ idr_jupyter_network }}"
 {% if idr_jupyter_notebook_volumes | default(None) %}
 c.DockerSpawner.volumes = {{ idr_jupyter_notebook_volumes }}
 {% endif %}
