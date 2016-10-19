@@ -20,7 +20,8 @@
   # This sets a host_var on all docker-hosts which can be used in other plays
   - name: enable/disable docker swarm
     set_fact:
-      docker_swarm_enabled: False
+      #docker_swarm_enabled: False
+      docker_swarm_enabled: True
 
   roles:
 
@@ -199,7 +200,26 @@
     command: docker pull "{{ idr_jupyter_notebook_image }}"
     when: docker_image_jhnote.changed
 
-  # Only enable systemd service when not using docker swarm
+
+  # Docker swarm: setup network
+  # TODO: Use docker_network in Ansible 2.2
+
+  - name: jupyterhub | check docker swarm network
+    become: yes
+    command: docker network inspect "{{ idr_jupyter_network }}"
+    always_run: yes
+    register: docker_jupyter_net
+    when: docker_swarm_enabled
+    changed_when: "docker_jupyter_net.rc != 0"
+    failed_when: "docker_jupyter_net.rc > 1"
+
+  - name: jupyterhub | create docker swarm network
+    become: yes
+    command: docker network create --driver overlay "{{ idr_jupyter_network }}"
+    when: docker_swarm_enabled and docker_jupyter_net.changed
+
+
+  # Without Docker swarm: start and enable the service
 
   - name: jupyterhub | create systemd service
     become: yes
@@ -207,28 +227,33 @@
       src: files/jupyterhub-docker.j2
       dest: /etc/systemd/system/docker-jupyterhub.service
     register: systemdjupyter
+    when: not docker_swarm_enabled
 
   - name: jupyterhub | reload systemd
     become: yes
     command: systemctl daemon-reload
-    when: systemdjupyter.changed
+    when: systemdjupyter.changed and not docker_swarm_enabled
 
   - name: jupyterhub | restart
     become: yes
     service:
       name: docker-jupyterhub.service
-      state: "{{ docker_swarm_enabled | ternary('stopped', 'restarted') }}"
-    when: jupyterconfig.changed
+      state: restarted
+    when: jupyterconfig.changed and not docker_swarm_enabled
 
   - name: jupyterhub | enable jupyterhub
     become: yes
     service:
-      enabled: "{{ docker_swarm_enabled | ternary('no', 'yes') }}"
+      enabled: "yes"
       name: docker-jupyterhub.service
-      state: "{{ docker_swarm_enabled | ternary('stopped', 'started') }}"
+      state: started
+    when: not docker_swarm_enabled
 
 
-  # Docker swarm: setup network and start the service
+  # Docker swarm:
+  # - setup network
+  # - start/restart the service if necessary
+  # - don't enable it since swarm will auto-start the service
   # TODO: Use docker_network when we switch to Ansible 2.2
 
   - name: jupyterhub | check docker swarm network
@@ -242,16 +267,26 @@
 
   - name: jupyterhub | create docker swarm network
     become: yes
-    command: docker network create --driver overlay --subnet "{{ idr_jupyter_subnet }}" "{{ idr_jupyter_network }}"
+    command: docker network create --driver overlay "{{ idr_jupyter_network }}"
     when: docker_swarm_enabled and docker_jupyter_net.changed
 
-  - name: jupyterhub | stop docker jupyter service
+  - name: jupyterhub | create swarm systemd service
     become: yes
-    command: docker service rm "{{ idr_jupyter_service }}"
-    when: docker_swarm_enabled and jupyterconfig.changed
-    failed_when: False
+    template:
+      src: files/jupyterhub-docker-swarm.j2
+      dest: /etc/systemd/system/docker-jupyterhub.service
+    register: systemdjupyter
+    when: docker_swarm_enabled
 
-  - name: jupyterhub | check docker jupyter service
+  - name: jupyterhub | reload systemd
+    become: yes
+    command: systemctl daemon-reload
+    when: systemdjupyter.changed and docker_swarm_enabled
+
+  # Docker swarm may have started the service without telling systemd
+  # so only restart if the config has changed or the service isn't
+  # running
+  - name: jupyterhub | check docker swarm service
     become: yes
     command: docker service inspect "{{ idr_jupyter_service }}"
     always_run: yes
@@ -260,46 +295,16 @@
     changed_when: "docker_jupyter_service.rc != 0"
     failed_when: "docker_jupyter_service.rc > 1"
 
-  - name: jupyterhub | create docker jupyter service
+  - name: jupyterhub | restart swarm
     become: yes
-    command: >
-      docker service create
-          --name {{ idr_jupyter_service }}
-          --network {{ idr_jupyter_network }}
-          --log-driver journald
-          -p 8000:8000
-          -p 8081:8081
-          -e DOCKER_HOST=unix://var/run/docker.sock
-          --mount source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind
-          --mount source=/srv/jupyterhub/jupyterhub_config.py,target=/srv/jupyterhub/jupyterhub_config.py,type=bind,readonly=true
-          {{ idr_jupyter_hub_image }}
-          jupyterhub
-          --no-ssl
-          --base-url={{ idr_jupyter_prefix }}
-          -f /srv/jupyterhub/jupyterhub_config.py
-          --log-level={{ idr_jupyter_hub_log_level }}
-    when: docker_swarm_enabled and docker_jupyter_service.changed
+    service:
+      enabled: "no"
+      name: docker-jupyterhub.service
+      state: restarted
+    when: docker_swarm_enabled and (jupyterconfig.changed or docker_jupyter_service.changed)
 
-  - name: jupyterhub | docker jupyter service script
-    become: yes
-    copy:
-      dest: /docker-jupyter.sh
-      content: >
-            docker service create
-            --name {{ idr_jupyter_service }}
-            --network {{ idr_jupyter_network }}
-            --log-driver journald
-            -p 8000:8000
-            -p 8081:8081
-            -e DOCKER_HOST=unix://var/run/docker.sock
-            --mount source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind
-            --mount source=/srv/jupyterhub/jupyterhub_config.py,target=/srv/jupyterhub/jupyterhub_config.py,type=bind,readonly=true
-            {{ idr_jupyter_hub_image }}
-            jupyterhub
-            --no-ssl
-            --base-url={{ idr_jupyter_prefix }}
-            -f /srv/jupyterhub/jupyterhub_config.py
-            --log-level={{ idr_jupyter_hub_log_level }}
+
+  # Notebooks
 
   - name: jupyterhub | check if idr-notebooks repo exists
     stat:
@@ -339,12 +344,16 @@
   vars:
   - idr_jupyter_service: omero-jupyter
   - idr_jupyter_network: omero-jupyter-net
-  - idr_jupyter_subnet: "172.21.0.0/16"
+  # https://docs.docker.com/engine/admin/logging/overview/
+  - idr_jupyter_log_driver: journald
   - idr_jupyter_authenticator: "oauthenticator.GitHubOAuthenticator"
+  #- idr_jupyter_authenticator: "dummyauthenticator.DummyAuthenticator"
   #- idr_jupyter_urlbase: "http://example.org"
   - idr_docker_pull_latest: True
   - idr_jupyter_ip: "{{ hostvars[inventory_hostname]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address'] }}"
-  - idr_jupyter_hub_image: "imagedata/jupyterhub-githubauth:0.1.0"
+  #- idr_jupyter_hub_image: "imagedata/jupyterhub-githubauth:0.1.0"
+  #- idr_jupyter_hub_image: "manics/jupyterhub-githubauth:latest"
+  - idr_jupyter_hub_image: "manics/jupyterhub-githubauth:auth"
   - idr_jupyter_notebook_image: "imagedata/jupyter-docker:0.1.0"
   - idr_jupyter_hub_log_level: DEBUG
   #- idr_jupyter_prefix: "/jupyter"
