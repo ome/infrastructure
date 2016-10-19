@@ -146,6 +146,10 @@ server {
 {%   if 'read_timeout' in item %}
         proxy_read_timeout {{ item.read_timeout }};
 {%   endif %}
+
+{%   if 'host_header' in item %}
+        proxy_set_header Host {{ item.host_header }};
+{%   endif %}
     }
 
 {% endfor %}
