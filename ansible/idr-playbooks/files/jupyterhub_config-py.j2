@@ -52,9 +52,9 @@ c.DockerServiceSpawner.remove_containers = {{ idr_jupyter_notebook_remove_contai
 c.DockerServiceSpawner.use_internal_ip = True
 c.DockerServiceSpawner.network_name = "{{ idr_jupyter_network }}"
 {% if idr_jupyter_notebook_volumes | default(None) %}
-c.DockerSpawner.volumes = {{ idr_jupyter_notebook_volumes }}
+c.DockerServiceSpawner.volumes = {{ idr_jupyter_notebook_volumes }}
 {% endif %}
-
+c.DockerServiceSpawner.log_driver = "{{ idr_jupyter_log_driver }}"
 
 ######################################################################
 # Authenticator
