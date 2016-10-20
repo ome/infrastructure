@@ -19,7 +19,7 @@ idr_vm_assign_floating_ip: False
 idr_environment: idr
 
 # Number of VMs to create
-idr_vm_count: 0
+idr_vm_count: 1
 
 # Booleans indicating the purpose of this server (multiple may be True)
 idr_vm_database: False
