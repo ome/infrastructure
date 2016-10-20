@@ -201,24 +201,6 @@
     when: docker_image_jhnote.changed
 
 
-  # Docker swarm: setup network
-  # TODO: Use docker_network in Ansible 2.2
-
-  - name: jupyterhub | check docker swarm network
-    become: yes
-    command: docker network inspect "{{ idr_jupyter_network }}"
-    always_run: yes
-    register: docker_jupyter_net
-    when: docker_swarm_enabled
-    changed_when: "docker_jupyter_net.rc != 0"
-    failed_when: "docker_jupyter_net.rc > 1"
-
-  - name: jupyterhub | create docker swarm network
-    become: yes
-    command: docker network create --driver overlay "{{ idr_jupyter_network }}"
-    when: docker_swarm_enabled and docker_jupyter_net.changed
-
-
   # Without Docker swarm: start and enable the service
 
   - name: jupyterhub | create systemd service
@@ -267,7 +249,7 @@
 
   - name: jupyterhub | create docker swarm network
     become: yes
-    command: docker network create --driver overlay "{{ idr_jupyter_network }}"
+    command: docker network create --driver overlay "{{ idr_jupyter_network }}" --opt com.docker.network.driver.mtu={{ ansible_default_ipv4.mtu }}
     when: docker_swarm_enabled and docker_jupyter_net.changed
 
   - name: jupyterhub | create swarm systemd service
