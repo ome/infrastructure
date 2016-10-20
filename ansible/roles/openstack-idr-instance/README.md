@@ -19,6 +19,7 @@ Optional variables:
 - `idr_vm_private_networks`: Use this network instead of the default one
 - `idr_vm_assign_floating_ip`: Assign a floating IP, default `False`
 - `idr_environment`: Use this as a group prefix. You should almost always set this to something other than the default `idr`
+- `idr_vm_count`: Number of VMs to create, default `1`. The first VM will be named `idr_vm_name`, subsequent VMs will be named `idr_vm_name-N`
 
 Booleans indicating the purpose of this server:
 - If any of these are `True` they will be used to automatically set the security groups and host-groups for this VM, default `False`. Multiple may be set to `True` if a server has multiple purposes.

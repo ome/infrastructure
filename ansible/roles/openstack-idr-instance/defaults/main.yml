@@ -18,6 +18,9 @@ idr_vm_assign_floating_ip: False
 # idr_environment: All VMs will be put into this group
 idr_environment: idr
 
+# Number of VMs to create
+idr_vm_count: 0
+
 # Booleans indicating the purpose of this server (multiple may be True)
 idr_vm_database: False
 idr_vm_omero: False

@@ -9,7 +9,8 @@
 
 - name: idr vm | create VM
   os_server:
-    name: "{{ idr_vm_name }}"
+    # Only add `-N` suffix for item>1
+    name: "{{ idr_vm_name }}{{ (item | int > 1) | ternary('-' + item, '') }}"
     state: present
     image: "{{ idr_vm_image }}"
     key_name: "{{ idr_vm_keyname }}"
@@ -21,7 +22,4 @@
       groups: "{{ (idr_vm_groups + idr_vm_extra_groups) | join(',') }}"
     security_groups: "{{ idr_vm_security_groups | join(',') }}"
   register: vm
-
-- debug:
-    msg: "{{ idr_vm_name }} IP private:{{ vm.openstack.private_v4 | default('') }} floating:{{ vm.openstack.public_v4 | default('') }}"
-    verbosity: 1
+  with_sequence: "count={{ idr_vm_count }}"
