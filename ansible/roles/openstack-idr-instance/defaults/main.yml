@@ -28,6 +28,7 @@ idr_vm_proxy: False
 idr_vm_dockermanager: False
 idr_vm_dockerworker: False
 idr_vm_bastion: False
+idr_vm_management: False
 
 # Default groups depend on the purpose of this server
 idr_vm_groups: >
@@ -37,7 +38,8 @@ idr_vm_groups: >
     (idr_vm_proxy | ternary(idr_vm_default_groups_proxy, [])) +
     (idr_vm_dockermanager | ternary(idr_vm_default_groups_dockermanager, [])) +
     (idr_vm_dockerworker | ternary(idr_vm_default_groups_dockerworker, [])) +
-    (idr_vm_bastion | ternary(idr_vm_default_groups_bastion, []))
+    (idr_vm_bastion | ternary(idr_vm_default_groups_bastion, [])) +
+    (idr_vm_management | ternary(idr_vm_default_groups_management, []))
   }}
 
 idr_vm_extra_groups: []
@@ -48,7 +50,8 @@ idr_vm_security_groups: >
     ['default'] +
     (idr_vm_omero | ternary(['idr-omero-external'], [])) +
     (idr_vm_proxy | ternary(['idr-web-external'], [])) +
-    (idr_vm_bastion | ternary(['idr-bastion-external'], []))
+    (idr_vm_bastion | ternary(['idr-bastion-external'], [])) +
+    (idr_vm_management | ternary(['idr-web-external'], []))
   }}
 
 idr_vm_default_groups_database:
@@ -83,3 +86,9 @@ idr_vm_default_groups_dockerworker:
 - "{{ idr_environment }}-dockerworker-hosts"
 - "{{ idr_environment }}-docker-hosts"
 - "{{ idr_environment }}-hosts"
+
+# Management nodes are special since they may cross multiple environments
+idr_vm_default_groups_management:
+- management-hosts
+# TODO: Should they also be in an idr_environment group?
+#- "{{ idr_environment }}-management-hosts"
