@@ -44,6 +44,9 @@ c.DockerSpawner.volumes = {{ idr_jupyter_notebook_volumes }}
 # DockerServiceSpawner
 # https://github.com/manics/dockerspawner/blob/master/dockerspawner/dockerservicespawner.py
 
+# Docker swarm may take a while to start a container
+c.DockerServiceSpawner.start_timeout = 180
+c.DockerServiceSpawner.debug = True
 c.DockerServiceSpawner.tls_verify = False
 #c.DockerServiceSpawner.hub_ip_connect = "{{ idr_jupyter_ip }}"
 c.DockerServiceSpawner.hub_ip_connect = "{{ idr_jupyter_service }}"
