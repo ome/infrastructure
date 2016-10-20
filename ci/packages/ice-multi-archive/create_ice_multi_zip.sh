@@ -56,33 +56,34 @@ tar -C ice-3.5.1 -zxvf Ice-3.5.1-el6-x86_64-rpm.tar.gz
 
 # Zeroc ice-3.6.0 RPMS
 # no longer work
-#wget -nd -P ice-3.6.2 -r -np -l1 -A rpm https://zeroc.com/download/rpm/el6/noarch https://zeroc.com/download/rpm/el6/x86_64
-cd ice-3.6.2
+#wget -nd -P ice-3.6.3 -r -np -l1 -A rpm https://zeroc.com/download/rpm/el6/noarch https://zeroc.com/download/rpm/el6/x86_64
+mkdir ice-3.6.3
+cd ice-3.6.3
 # retrieve the rpm one by one. general approach no longer works
 wget https://zeroc.com/download/rpm/el6/x86_64/db53-5.3.28-1ice.el6.x86_64.rpm
 wget https://zeroc.com/download/rpm/el6/x86_64/db53-utils-5.3.28-1ice.el6.x86_64.rpm
 wget https://zeroc.com/download/rpm/el6/x86_64/db53-devel-5.3.28-1ice.el6.x86_64.rpm
 wget https://zeroc.com/download/rpm/el6/x86_64/db53-java-5.3.28-1ice.el6.x86_64.rpm
-wget https://zeroc.com/download/rpm/el6/x86_64/ice-all-devel-3.6.2-1.el6.x86_64.rpm
-wget https://zeroc.com/download/rpm/el6/x86_64/ice-all-runtime-3.6.2-1.el6.x86_64.rpm
-wget https://zeroc.com/download/rpm/el6/x86_64/glacier2-3.6.2-1.el6.x86_64.rpm
-wget https://zeroc.com/download/rpm/el6/x86_64/ice-3.6.2-1.el6.x86_64.rpm
-wget https://zeroc.com/download/rpm/el6/x86_64/ice-utils-3.6.2-1.el6.x86_64.rpm
-wget https://zeroc.com/download/rpm/el6/x86_64/icebox-3.6.2-1.el6.x86_64.rpm
-wget https://zeroc.com/download/rpm/el6/x86_64/icegrid-3.6.2-1.el6.x86_64.rpm
-wget https://zeroc.com/download/rpm/el6/x86_64/icepatch2-3.6.2-1.el6.x86_64.rpm
-wget https://zeroc.com/download/rpm/el6/x86_64/libfreeze3.6-c%2B%2B-3.6.2-1.el6.x86_64.rpm
-wget https://zeroc.com/download/rpm/el6/x86_64/libice-c%2B%2B-devel-3.6.2-1.el6.x86_64.rpm
-wget https://zeroc.com/download/rpm/el6/x86_64/libice-java-3.6.2-1.el6.x86_64.rpm
-wget https://zeroc.com/download/rpm/el6/x86_64/libice3.6-c%2B%2B-3.6.2-1.el6.x86_64.rpm
-wget https://zeroc.com/download/rpm/el6/x86_64/libicestorm3.6-3.6.2-1.el6.x86_64.rpm
+wget https://zeroc.com/download/rpm/el6/x86_64/ice-all-devel-3.6.3-1.el6.x86_64.rpm
+wget https://zeroc.com/download/rpm/el6/x86_64/ice-all-runtime-3.6.3-1.el6.x86_64.rpm
+wget https://zeroc.com/download/rpm/el6/x86_64/glacier2-3.6.3-1.el6.x86_64.rpm
+wget https://zeroc.com/download/rpm/el6/x86_64/ice-3.6.3-1.el6.x86_64.rpm
+wget https://zeroc.com/download/rpm/el6/x86_64/ice-utils-3.6.3-1.el6.x86_64.rpm
+wget https://zeroc.com/download/rpm/el6/x86_64/icebox-3.6.3-1.el6.x86_64.rpm
+wget https://zeroc.com/download/rpm/el6/x86_64/icegrid-3.6.3-1.el6.x86_64.rpm
+wget https://zeroc.com/download/rpm/el6/x86_64/icepatch2-3.6.3-1.el6.x86_64.rpm
+wget https://zeroc.com/download/rpm/el6/x86_64/libfreeze3.6-c%2B%2B-3.6.3-1.el6.x86_64.rpm
+wget https://zeroc.com/download/rpm/el6/x86_64/libice-c%2B%2B-devel-3.6.3-1.el6.x86_64.rpm
+wget https://zeroc.com/download/rpm/el6/x86_64/libice-java-3.6.3-1.el6.x86_64.rpm
+wget https://zeroc.com/download/rpm/el6/x86_64/libice3.6-c%2B%2B-3.6.3-1.el6.x86_64.rpm
+wget https://zeroc.com/download/rpm/el6/x86_64/libicestorm3.6-3.6.3-1.el6.x86_64.rpm
 wget https://zeroc.com/download/rpm/el6/x86_64/mcpp-devel-2.7.2-3ice.el6.x86_64.rpm
 
-wget https://zeroc.com/download/rpm/el6/x86_64/php-ice-3.6.2-1.el6.x86_64.rpm
-wget https://zeroc.com/download/rpm/el6/x86_64/php-ice-devel-3.6.2-1.el6.x86_64.rpm
+wget https://zeroc.com/download/rpm/el6/x86_64/php-ice-3.6.3-1.el6.x86_64.rpm
+wget https://zeroc.com/download/rpm/el6/x86_64/php-ice-devel-3.6.3-1.el6.x86_64.rpm
 
-wget https://zeroc.com/download/rpm/el6/noarch/ice-slice-3.6.2-1.el6.noarch.rpm
-wget https://zeroc.com/download/rpm/el6/noarch/ice-utils-java-3.6.2-1.el6.noarch.rpm
+wget https://zeroc.com/download/rpm/el6/noarch/ice-slice-3.6.3-1.el6.noarch.rpm
+wget https://zeroc.com/download/rpm/el6/noarch/ice-utils-java-3.6.3-1.el6.noarch.rpm
 cd ..
 popd
 
@@ -94,7 +95,7 @@ for d in ../ice-rpms/ice-*/; do
 done
 
 # ice-3.6.0 requires python to be installed using pip
-for v in 3.6.2; do
+for v in 3.6.3; do
     pip_install_local $v
 done
 

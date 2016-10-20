@@ -48,7 +48,7 @@ omero_env() {
             ;;
 
         ice36 | ice362 )
-            ICE_VERSION=3.6.2
+            ICE_VERSION=3.6.3
             ;;
 
         * )
