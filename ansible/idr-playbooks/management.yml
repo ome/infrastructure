@@ -1,11 +1,13 @@
-# Deployment management servers
-
+# Configure monitoring across all IDR servers in a given tenancy irrespective
+# of idr environment, i.e. this playbook applies to all idr environments
+# simultaneously
+#
 # This must be run using the private openstack dynamic inventory since it
 # requires the internal network IPs of each host
 
-#- hosts: database-hosts,omero-hosts,proxy-hosts,bastion-hosts,dockermanager-hosts,dockerworker-hosts,management-hosts
-  # Load all host vars
 
+# There should be a single management server for each tenancy (i.e. this host
+# is shared across all idr environments in a tenancy)
 - hosts: management-hosts
 
   roles:
@@ -46,6 +48,7 @@
         state: started
         #state: restarted
 
+# Install munin client on all servers in all environments
 - hosts: >
     database-hosts
     omero-hosts
@@ -59,3 +62,23 @@
   - role: munin-node
     munin_node_allowed_ips:
     - '^192\.168\.\d+\.\d+$'
+
+
+# Install slack notifier on all OMERO servers in all environments
+- hosts: omero-hosts
+
+  pre_tasks:
+  - name: Get short hostname (not the same as the Ansible hostname vars)
+    command: hostname -s
+    register: short_hostname
+    always_run: True
+    changed_when: False
+
+  - name: Set omero logmonitor bot-name
+    set_fact:
+      omero_logmonitor_slack_name: "{{ short_hostname.stdout }}-logbot"
+      omero_logmonitor_server_name: "{{ short_hostname.stdout }}"
+
+  roles:
+  - role: omero-logmonitor
+    # omero_logmonitor_slack_token:
