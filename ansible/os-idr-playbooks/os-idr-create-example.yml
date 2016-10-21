@@ -47,7 +47,8 @@
       #idr_vm_extra_groups:
       #idr_vm_private_networks:
 
-    # Proxy server, doubles up as a bastion server
+    # Proxy server
+    # Doubles up as a bastion server
     - role: openstack-idr-instance
       idr_vm_name: "{{ idr_environment }}-proxy"
       idr_vm_image: "{{ vm_image }}"
@@ -55,6 +56,21 @@
       idr_vm_proxy: True
       idr_vm_bastion: True
       idr_vm_assign_floating_ip: True
+
+    # Docker-manager server
+    - role: openstack-idr-instance
+      idr_vm_name: "{{ idr_environment }}-dockermanager"
+      idr_vm_image: "{{ vm_image }}"
+      idr_vm_flavour: "{{ vm_flavour }}"
+      idr_vm_dockermanager: True
+
+    # Docker-worker server
+    - role: openstack-idr-instance
+      idr_vm_name: "{{ idr_environment }}-dockerworker"
+      idr_vm_image: "{{ vm_image }}"
+      idr_vm_flavour: "{{ vm_flavour }}"
+      idr_vm_dockerworker: True
+      idr_vm_count: 1
 
 
     ############################################################
@@ -67,7 +83,7 @@
       openstack_volume_device: /dev/vdb
 
     - role: openstack-volume-storage
-      openstack_volume_size: 100
+      openstack_volume_size: 500
       openstack_volume_vmname: "{{ idr_environment }}-omero"
       openstack_volume_name: data
       openstack_volume_device: /dev/vdb
@@ -76,4 +92,10 @@
       openstack_volume_size: 20
       openstack_volume_vmname: "{{ idr_environment }}-proxy"
       openstack_volume_name: nginxcache
+      openstack_volume_device: /dev/vdb
+
+    - role: openstack-volume-storage
+      openstack_volume_size: 10
+      openstack_volume_vmname: "{{ idr_environment }}-dockermanager"
+      openstack_volume_name: jupyter
       openstack_volume_device: /dev/vdb
