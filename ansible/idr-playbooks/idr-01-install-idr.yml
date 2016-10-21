@@ -1,6 +1,7 @@
 # Runs all public playbooks for setting up the IDR infrastructure in any
 # environment. This does not run any storage/networking/cloud specific
 # tasks, nor does it run playbooks requiring private configuration
+
 - include: idr-local-users.yml
 - include: idr-omero.yml
 - include: idr-local-files.yml
