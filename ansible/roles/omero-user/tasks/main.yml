@@ -1,0 +1,70 @@
+---
+# tasks file for roles/omero-server-user
+
+# Always run including in check mode
+- name: omero user | current user list
+  become: yes
+  become_user: "{{ omero_user_system }}"
+  command: >
+    {{ omero_serverdir }}/{{ omero_server_symlink }}/bin/omero user
+    -s localhost
+    -u {{ omero_user_admin_user }}
+    -w {{ omero_user_admin_pass }}
+    list
+    -q
+    --style json
+  register: usercmd
+  always_run: yes
+  changed_when: False
+
+- set_fact:
+    omero_user_list: "{{ usercmd.stdout | from_json }}"
+
+- name: omero user | create user
+  become: yes
+  become_user: "{{ omero_user_system }}"
+  command: >
+    {{ omero_serverdir }}/{{ omero_server_symlink }}/bin/omero user
+    -s localhost
+    -u {{ omero_user_admin_user }}
+    -w {{ omero_user_admin_pass }}
+    add
+    {{ item.login }}
+    {{ item.firstname }}
+    {{ item.lastname }}
+    --userpassword {{ item.password }}
+    {{ item.groups }}
+  when: >
+    {{ omero_user_list | selectattr('login', 'equalto', item.login) |
+      list | length }} < 1
+  with_items:
+  - "{{ omero_user_create }}"
+
+- name: omero user | get password update command
+  become: yes
+  become_user: "{{ omero_user_system }}"
+  command: >
+    {{ omero_serverdir }}/{{ omero_server_symlink }}/bin/omero db password
+    --user-id
+    {{ (omero_user_list |
+       selectattr('login', 'equalto', item.login) | first).id }}
+    {{ item.password }}
+  when: >
+    {{ omero_user_list | selectattr('login', 'equalto', item.login) |
+      list | length }} > 0 and
+    {{ item.force | default(False) }}
+  with_items:
+  - "{{ omero_user_create }}"
+  register: pwdupdate
+
+# WARNING: this will always run
+- name: omero user | force reset omero password
+  command: >
+    psql -h {{ omero_user_dbhost }} -U {{ omero_server_user_dbuser }}
+    -d {{ omero_user_dbname }} -w -c
+    "{{ item.stdout }}"
+  when: "{{ item | changed }}"
+  with_items: "{{ pwdupdate.results }}"
+  environment:
+    PGPASSWORD: "{{ omero_user_dbpassword }}"
+
