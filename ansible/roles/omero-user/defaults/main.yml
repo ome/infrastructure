@@ -5,7 +5,9 @@ omero_user_bin_omero: /home/omero/OMERO.server/bin/omero
 omero_user_system: omero
 omero_user_admin_user: root
 omero_user_admin_pass: omero
+
 omero_user_create: []
+omero_group_create: []
 
 omero_user_reset_root_password: ''
 
