@@ -10,6 +10,8 @@ Dependencies
 
 Assumes the `omero-server` role is installed with defaults, if not you will have to set most of the role variables below.
 
+This requires features present in OMERO 5.X.
+
 
 Role Variables
 --------------
