@@ -1,0 +1,71 @@
+---
+# IDR ansible-playbook helper
+# Run this playbook to generate the command that should be run (optionally
+# pass the Openstack dynamic inventory):
+#
+#     ansible-playbook [-i INVENTORY] os-idr-ansible-command.yml
+#
+# The command will be written out to /tmp/run-ansible-command.tmp
+
+
+- hosts: localhost
+  connection: local
+
+  pre_tasks:
+
+    # First try searching IDR_ENVIRONMENT-bastion-hosts, if there
+    # isn't one try management-hosts
+    - name: Get Bastion IP
+      set_fact:
+        idr_bastion_ip: "{{ hostvars[groups[(idr_environment | default('idr')) + '-bastion-hosts'].0].openstack.public_v4 }}"
+      ignore_errors: True
+      when: idr_bastion_ip is not defined
+
+    - name: Get Bastion IP
+      set_fact:
+        idr_bastion_ip: "{{ hostvars[groups['management-hosts'].0].openstack.public_v4 }}"
+      when: idr_bastion_ip is not defined
+
+    - fail:
+        msg: "Could not find bastion IP"
+      when: idr_bastion_ip is not defined
+
+    - debug:
+        var: idr_bastion_ip
+
+    - set_fact:
+        ansible_command: >
+          ansible-playbook
+          -i {{ inventory_file | ternary(inventory_file, inventory_dir) }}
+          --diff
+          -u centos
+          -e idr_environment={{ idr_environment | default('idr') }}
+          -e idr_nginx_ssl_self_signed=True
+          -e ansible_ssh_common_args="'-o ProxyCommand=\\\"ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -W %h:%p -q centos@{{ idr_bastion_ip }}\\\" -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'"
+          idr-playbooks/idr-00-preinstall.yml
+          idr-playbooks/idr-01-install-idr.yml
+          idr-playbooks/idr-02-install-analysis.yml
+          idr-playbooks/idr-03-postinstall.yml
+#          idr-playbooks/idr-09-monitoring.yml
+
+    - copy:
+        content: "{{ ansible_command }}"
+        dest: "/tmp/run-ansible-command.tmp"
+      delegate_to: localhost
+
+    # Warning: this prints out a JSON-quoted string, so you can't just copy
+    # and paste it into a terminal. Instead see /tmp/run-ansible-command.tmp
+    - debug:
+        var: ansible_command
+        verbosity: 1
+
+    - name: Run ansible deployment command
+      command: "{{ ansible_command }}"
+      args:
+        chdir: "{{ playbook_dir }/.."
+      register: ansibleout
+      when: run_ansible | default(False)
+
+    - debug:
+        var: ansibleout.stdout
+      when: ansibleout
