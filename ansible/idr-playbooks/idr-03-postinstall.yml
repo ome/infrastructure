@@ -1,4 +1,3 @@
 # IDR post-installation playbooks
-# Some of this requires private configuration information
 
-- include: utils-reset-public-password.yml
+- include: idr-reset-users-groups.yml
