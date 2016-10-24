@@ -1,0 +1,11 @@
+pre {
+}
+
+code {
+    background-color: #f7f7f7;
+    overflow: auto;
+    padding: 16px;
+    display: block;
+    font-family: monospace;
+    font-size: 12pt;
+}

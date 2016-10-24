@@ -86,3 +86,6 @@ from studies on human, Drosophila, budding and fission yeast, and mouse cells.
 Imaging modalities included so far include high content screens and
 histopathology, super-resolution and 3D-SIM datasets.
 
+## The IDR infrastructure
+
+Details of the infrastructure underlying the IDR, and instructions for deploying your IDR own version are on the [IDR Deployment page](/about/idr-deployment.html).

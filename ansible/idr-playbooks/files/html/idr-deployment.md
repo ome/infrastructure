@@ -54,7 +54,12 @@ Edit this command if necessary, and run it, for example:
         -u centos \
         -e idr_environment=idr \
         -e idr_nginx_ssl_self_signed=True \
-        -e ansible_ssh_common_args="'-o ProxyCommand=\\\"ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -W %h:%p -q centos@10.0.0.3\\\" -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'" \
+        -e ansible_ssh_common_args="'-o ProxyCommand=\\\"ssh \
+            -o UserKnownHostsFile=/dev/null \
+            -o StrictHostKeyChecking=no \
+            -W %h:%p -q centos@10.0.0.3\\\" \
+            -o UserKnownHostsFile=/dev/null \
+            -o StrictHostKeyChecking=no'" \
         idr-playbooks/idr-00-preinstall.yml \
         idr-playbooks/idr-01-install-idr.yml \
         idr-playbooks/idr-02-install-analysis.yml \
