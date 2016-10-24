@@ -1,7 +1,15 @@
 ---
 # defaults file for roles/omero-user
 
+omero_user_bin_omero: /home/omero/OMERO.server/bin/omero
 omero_user_system: omero
 omero_user_admin_user: root
 omero_user_admin_pass: omero
 omero_user_create: []
+
+omero_user_reset_root_password: ''
+
+omero_user_dbhost: localhost
+omero_user_dbuser: omero
+omero_user_dbname: omero
+omero_user_dbpassword: omero
