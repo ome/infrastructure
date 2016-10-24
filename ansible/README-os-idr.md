@@ -1,77 +1,93 @@
 Openstack and IDR Playbooks
 ===========================
 
+The Image data Repository (IDR) infrastructure is managed using [Ansible](https://www.ansible.com/).
+This includes provisioning virtual resources on OpenStack.
 
-OMERO OpenStack VM Deployment
------------------------------
+Initial setup
+-------------
 
-This repository contains example files for provisioning an OpenStack VM from scratch with OMERO using Ansible, as used by the Image data Repository.
-Most of these scripts should also work on other platforms, providing the VM is brought up by some other method.
-The guest must be running CentOS 7.
+The Ansible roles and playbooks are stored on [GitHub](https://github.com/openmicroscopy/infrastructure/).
+Clone this directory, and change into the `ansible` directory:
+
+    git clone --recursive https://github.com/openmicroscopy/infrastructure.git
+    cd infrastructure/ansible
+
+TODO: Link to a tag
+
+The following sections in this document describe how to create the virtual machines and storage volumes for the IDR on OpenStack, and to install the IDR.
+If you already have access to your own resources, whether physical or virtual, you can skip down to "Installing the IDR (own infrastructure)".
 
 
-Openstack: Creation of instances, volumes and security groups
+Creation of virtual machines and storage volumes on OpenStack
 -------------------------------------------------------------
 
-[Setup your OpenStack environment variables](http://docs.openstack.org/user-guide/common/cli_set_environment_variables_using_openstack_rc.html), edit the variables in `os-idr-playbooks/os-idr-create-example.yml` (especially `idr_vm_keyname` and `idr_environment`), then run:
+The playbooks used to provision the virtual hardware for the IDR contain private configuration information which is specific to our OpenStack tenancy.
+An example playbook is provided: `os-idr-playbooks/os-idr-create-example.yml`.
+Edit the variables in this playbook to correspond to your OpenStack project, and [setup your OpenStack environment variables](http://docs.openstack.org/user-guide/common/cli_set_environment_variables_using_openstack_rc.html).
+Create the IDR resources by running:
 
     ansible-playbook os-idr-playbooks/os-idr-create-example.yml
 
 
-Openstack: Installing the IDR
------------------------------
+Installing the IDR on Openstack
+-------------------------------
 
-Find the floating IP of the proxy/bastion server.
-Set `BASTION_IP` to the IP, and `IDR_ENVIRONMENT` to match the value from above.
-Run:
+The IDR OpenStack playbooks assume only one floating IP is available.
+This means it is necessary to connect to servers via a bastion host.
+This can be done by setting an SSH `ProxyCommand` in your SSH `config` file, or on the  Ansible command line.
 
-    BASTION_IP=10.0.0.0
-    IDR_ENVIRONMENT=idr
-    ansible-playbook \
-        -i inventory/openstack-private.py \
+A helper playbook `os-idr-playbooks/os-idr-ansible-command-helper.yml` is included to assist with setting the required Ansible SSH options:
+
+    ansible-playbook -i inventory/openstack-private.py \
+        os-idr-playbooks/os-idr-ansible-command-helper.yml \
+        -e idr_environment=idr
+
+`inventory/openstack-private.py` is an OpenStack dynamic inventory script that will return the private IPs of each instance. `idr_environment` is a variable intended to allow hosting of multiple IDR versions on the same tenancy, the default `idr` should work if you have only one IDR.
+
+This playbook will write the Ansible command line to `/tmp/run-ansible-command.tmp`.
+Edit this command if necessary, and run it, for example:
+
+    ansible-playbook -i \
+        idr-inventory/openstack-private.py \
+        --diff \
         -u centos \
-        -e idr_environment=$IDR_ENVIRONMENT \
+        -e idr_environment=idr \
         -e idr_nginx_ssl_self_signed=True \
-        -e ansible_ssh_common_args="'-o ProxyCommand=\\\"ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -W %h:%p -q centos@$BASTION_IP\\\" -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'" \
-        idr-playbooks/os-idr-volumes.yml \
-        idr-playbooks/idr-dundee-nfs.yml \
-        idr-playbooks/idr-ebi-nfs.yml \
-        idr-playbooks/idr.yml \
-        idr-playbooks/idr-docker.yml
+        -e ansible_ssh_common_args="'-o ProxyCommand=\\\"ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -W %h:%p -q centos@10.0.0.3\\\" -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'" \
+        idr-playbooks/idr-00-preinstall.yml \
+        idr-playbooks/idr-01-install-idr.yml \
+        idr-playbooks/idr-02-install-analysis.yml \
+        idr-playbooks/idr-03-postinstall.yml
 
 
-Deploying the IDR on existing infrastructure
---------------------------------------------
+Installing the IDR (own infrastructure)
+---------------------------------------
 
-If you have already created your servers and just wish to install a plain IDR then run:
+Create an Ansible inventory with the following groups:
+
+    # PostgreSQL server
+    [idr-database-hosts]
+    10.0.0.1
+    # OMERO server
+    [idr-omero-hosts]
+    10.0.0.2
+    # Optional: Front-end web caching proxy
+    [idr-proxy-hosts]
+    10.0.0.3
+    # Optional: analysis platform controller
+    [idr-dockermanager-hosts]
+    10.0.0.4
+    # Optional: Analysis platform slave (multiple allowed)
+    [idr-dockerworker-hosts]
+    10.0.0.5
+
+Install the IDR:
 
     ansible-playbook \
         -i inventory \
-        -u centos \
-        -e idr_environment=$IDR_ENVIRONMENT \
         -e idr_nginx_ssl_self_signed=True \
-        idr-playbooks/idr-omero.yml
+        idr-playbooks/idr-01-install-idr.yml \
+        idr-playbooks/idr-02-install-analysis.yml
 
-where `inventory` contains groups described in the following section.
-
-
-`idr-playbooks/idr-omero.yml`
------------------------------
-
-This is the Ansible playbook that will be run to setup OMERO.
-This can be run independently of the openstack playbooks providing you have an inventory with groups:
-- `{{ idr_environment }}-data-hosts`
-- `{{ idr_environment }}-omero-hosts`
-- `{{ idr_environment }}-proxy-hosts`
-
-
-TODO: explain other `idr-playbooks/*.yml` playbooks
-
-
-Deploying the IDR
-=================
-
-Component playbooks
--------------------
-
-TODO:
+Also run `idr-playbooks/idr-03-postinstall.yml` if you wish to setup or reset the IDR OMERO user accounts.
