@@ -4,6 +4,47 @@ Openstack and IDR Playbooks
 The Image data Repository (IDR) infrastructure is managed using [Ansible](https://www.ansible.com/).
 This includes provisioning virtual resources on OpenStack.
 
+Any queries should be sent to ome-devel@lists.openmicroscopy.org.uk
+
+
+Background
+----------
+
+The main production IDR (https://idr-demo.openmicroscopy.org/) consists of three servers:
+- Database:
+  A dedicated PostgreSQL server.
+- OMERO:
+  OMERO.server and OMERO.web with a highly customised configuration optimised for the data access patterns of the IDR.
+- Web proxy:
+  Front-end Nginx proxy that mediates all public access to the IDR.
+  It incorporates an aggressive caching configuration to reduce the load on OMERO.
+
+Details of the configuration for these servers are in `idr-playbooks/group_vars/`.
+
+The playbooks are designed to handle the setup of all servers together, including configuring internal network addresses so that OMERO can talk to the database, and the web proxy can talk to OMERO.
+
+In addition to the production IDR we also have playbooks for setting up the analysis platform based around [JupyterHub](https://github.com/jupyterhub/jupyterhub) and [Docker Swarm](https://docs.docker.com/engine/swarm/).
+This uses a separate copy of the IDR to ensure that heavy access loads resulting from analysis workflows do not have a detrimental impact on the production server, and requires three or more servers:
+- Database
+- OMERO:
+  API access only, OMERO.web is currently installed by default but is not required
+- Docker manager:
+  The central controlling node for a Docker Swarm running JupyterHub.
+- Docker workers:
+  In addition to the Docker manager zero or more Docker workers can be included in the analysis platform.
+  If multiple users are logged on to JupyterHub they should be automatically spread amongst all Docker servers.
+
+TODO: Access to this platform is handled by the same web proxy used for the production IDR.
+
+TODO: A diagram?
+
+These instructions assume a working knowledge of Ansible, and will setup a combined production IDR and Analysis platform.
+This should provided sufficient information for you to customise your installation to your own requirements.
+
+The playbooks are mostly tested with OpenStack since that is our deployment platform, and this is the easiest way to setup the IDR.
+They should also work with other clouds or physical infrastructure, but you will have to setup the Ansible inventory yourself.
+
+
 Initial setup
 -------------
 
@@ -64,6 +105,9 @@ Edit this command if necessary, and run it, for example:
         idr-playbooks/idr-01-install-idr.yml \
         idr-playbooks/idr-02-install-analysis.yml \
         idr-playbooks/idr-03-postinstall.yml
+
+
+TODO: The playbooks for the analysis platform are still being finalised/tested.
 
 
 Installing the IDR (own infrastructure)
