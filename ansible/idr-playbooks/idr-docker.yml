@@ -3,6 +3,13 @@
 
 # TODO: Convert this into one or more roles
 
+# TODO: Docker uses an incorrect MTU on OpenStack VMs, and it is not possible
+# to easily set it on the swarm ingress network. See this workround:
+# https://github.com/docker/docker/issues/24906#issuecomment-235894478
+# This must be done before creating the swarm
+#     docker network rm docker_gwbridge
+#     docker network create --opt com.docker.network.driver.mtu=1400 --subnet 172.18.0.0/16 docker_gwbridge
+
 
 - hosts: "{{ idr_environment | default('idr') }}-docker-hosts"
 
@@ -26,6 +33,31 @@
     ignore_errors: yes
     register: docker_swarm_active
     changed_when: False
+
+  # TODO: Maybe check docker_use_ipv4_nic_mtu?
+  # TODO: Use docker_network when we switch to Ansible 2.2
+  - name: docker swarm | check mtu
+    become: yes
+    command: docker network inspect docker_gwbridge -f "{{ '{{' }} index .Options \"com.docker.network.driver.mtu\" {{ '}}' }}"
+    always_run: yes
+    #ignore_errors: yes
+    register: docker_swarm_net_mtu
+    #changed_when: "(docker_use_ipv4_nic_mtu | default(True)) and
+    changed_when: docker_swarm_net_mtu.stdout != "{{ ansible_default_ipv4.mtu }}"
+    failed_when: "(docker_swarm_net_mtu.rc != 0) and {{ not docker_swarm_net_mtu.stderr.endswith('No such network: docker_gwbridge') }}"
+
+  - name: docker swarm | network mtu delete docker_gwbridge
+    become: yes
+    command: docker network rm docker_gwbridge
+    register: docker_swarm_net_rm
+    failed_when: "(docker_swarm_net_rm.rc != 0) and {{ not docker_swarm_net_rm.stderr.endswith('network docker_gwbridge not found') }}"
+    when: docker_swarm_net_mtu.changed
+
+  # TODO: Make subnet configurable
+  - name: docker swarm | network mtu create docker_gwbridge
+    become: yes
+    command: docker network create --opt com.docker.network.driver.mtu={{ ansible_default_ipv4.mtu }} --subnet 172.18.0.0/16 docker_gwbridge
+    when: docker_swarm_net_mtu.changed
 
 
 - hosts: "{{ idr_environment | default('idr') }}-dockermanager-hosts"
