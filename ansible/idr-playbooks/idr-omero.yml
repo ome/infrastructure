@@ -128,27 +128,6 @@
     nginx_ssl_certificate_key: "{{ nginx_proxy_ssl_certificate_key }}"
     when: idr_nginx_ssl_self_signed | default(False) | bool
   - role: nginx-proxy
-    nginx_proxy_worker_processes: 4
-    nginx_proxy_buffers: 32 16k
-    # TODO: This needs to match the cache configuration in nginx-proxy, so should be combined in one place
-    nginx_proxy_backends:
-    - name: omerocached
-      location: ~ /(mapr/|webclient/api/|web(client|gateway)/(metadata|render)_)*
-      server: "http://{{ omero_omero_host_ansible }}"
-      cache_validity: 30d
-    - name: omerostatic
-      location: ~ /static/*
-      server: "http://{{ omero_omero_host_ansible }}"
-      cache_validity: 30d
-    - name: omero
-      location: /
-      server: "http://{{ omero_omero_host_ansible }}"
-
-  vars:
-    nginx_proxy_ssl: True
-    nginx_proxy_ssl_certificate: /etc/nginx/ssl/idr-fullchain.pem
-    nginx_proxy_ssl_certificate_key: /etc/nginx/ssl/idr-privkey.pem
-    nginx_proxy_http2: True
 
 
   # Additional vars are in group_vars/proxy-hosts.yml

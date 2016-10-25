@@ -72,8 +72,11 @@ Vagrant.configure(2) do |config|
         ansible.limit = "idr"
         ansible.groups = {
           "idr-database-hosts" => ["idr-database"],
+          "database-hosts" => ["idr-database"],
           "idr-omero-hosts" => ["idr-omero"],
+          "omero-hosts" => ["idr-omero"],
           "idr-proxy-hosts" => ["idr-gateway"],
+          "proxy-hosts" => ["idr-gateway"],
           "idr:children" => ["idr-database-hosts", "idr-omero-hosts", "idr-proxy-hosts"],
           "idr:vars" => {
             # Vagrant uses eth0 for NAT, eth1 for private guest network
