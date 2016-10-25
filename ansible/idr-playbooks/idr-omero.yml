@@ -144,9 +144,6 @@
       location: /
       server: "http://{{ omero_omero_host_ansible }}"
 
-  vars_files:
-  - "{{ playbook_dir }}/../roles/nginx-proxy/vars/example-omero.yml"
-
   vars:
     nginx_proxy_ssl: True
     nginx_proxy_ssl_certificate: /etc/nginx/ssl/idr-fullchain.pem
