@@ -128,18 +128,3 @@
 #          target: new
 
   # Additional vars are in group_vars/omero-hosts.yml
-
-
-- hosts: "{{ idr_environment | default('idr') }}-proxy-hosts"
-
-  pre_tasks:
-
-  - set_fact:
-      omero_omero_host_ansible: "{{ hostvars[groups[idr_environment | default('idr') + '-omero-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
-
-  roles:
-  - role: nginx-ssl-selfsigned
-    nginx_ssl_certificate: "{{ nginx_proxy_ssl_certificate }}"
-    nginx_ssl_certificate_key: "{{ nginx_proxy_ssl_certificate_key }}"
-    when: idr_nginx_ssl_self_signed | default(False) | bool
-  - role: nginx-proxy

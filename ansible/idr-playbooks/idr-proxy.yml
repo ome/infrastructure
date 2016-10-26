@@ -1,0 +1,32 @@
+# Setup the IDR web proxy
+#
+# This must be run after all other IDR services are installed, as we need the
+# full list of backend services to be proxied
+
+# Load hostvars (production OMERO)
+- hosts: "{{ idr_environment | default('idr') }}-omero-hosts"
+
+# Load hostvars (jupyter), this should be the proxy idr_environment
+# suffixed with `-a`
+- hosts: >
+    {{ idr_environment | default('idr') }}-a-dockermanager-hosts
+
+
+- hosts: "{{ idr_environment | default('idr') }}-proxy-hosts"
+
+  pre_tasks:
+
+  - name: Get omero and optionally jupyterhub IPs
+    set_fact:
+      omero_omero_host_ansible: "{{ hostvars[groups[idr_environment | default('idr') + '-omero-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
+
+      # Optional, so that it can run in an environment where there's only
+      # an OMERO server but no analysis platform
+      omero_jupyter_host_ansible: "{{ hostvars[groups[idr_environment | default('idr') + '-a-dockermanager-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address'] + ':8000' | default('') }}"
+
+  roles:
+  - role: nginx-ssl-selfsigned
+    nginx_ssl_certificate: "{{ nginx_proxy_ssl_certificate }}"
+    nginx_ssl_certificate_key: "{{ nginx_proxy_ssl_certificate_key }}"
+    when: idr_nginx_ssl_self_signed | default(False) | bool
+  - role: nginx-proxy
