@@ -6,6 +6,7 @@
   yum:
     name: "{{ item }}"
     state: latest
+    update_cache: yes
   with_items: "{{ upgrade_distpackages }}"
 
 - name: system | current running kernel
