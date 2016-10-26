@@ -1,33 +1,33 @@
 ---
 # Setup a devspace
 
-- name: add user {{ devuser }} to docker group
+- name: add user {{ devspace_user }} to docker group
   become: yes
   user:
-    name: "{{ devuser }}"
+    name: "{{ devspace_user }}"
     comment: "Devspace maintainer"
-    uid: "{{ user_id }}"
+    uid: "{{ devspace_user_id }}"
     groups: docker
     append: yes
 
-- name: ensures /home/{{ devuser }}/.ssh dir exists
+- name: ensures /home/{{ devspace_user }}/.ssh dir exists
   become: yes
-  become_user: "{{ devuser }}"
+  become_user: "{{ devspace_user }}"
   file:
-    path: "/home/{{ devuser }}/.ssh"
+    path: "/home/{{ devspace_user }}/.ssh"
     state: "directory"
-    owner: "{{ devuser }}"
-    group: "{{ devuser }}"
+    owner: "{{ devspace_user }}"
+    group: "{{ devspace_user }}"
     mode: 0700
 
-- name: allow {{ devuser }} to ssh directly
+- name: allow {{ devspace_user }} to ssh directly
   become: yes
   copy:
     remote_src: yes
     src: "{{ ansible_env.HOME }}/.ssh/authorized_keys"
-    dest: "/home/{{ devuser }}/.ssh/authorized_keys"
-    owner: "{{ devuser }}"
-    group: "{{ devuser }}"
+    dest: "/home/{{ devspace_user }}/.ssh/authorized_keys"
+    owner: "{{ devspace_user }}"
+    group: "{{ devspace_user }}"
 
 - name: install python tools
   become: yes
@@ -62,34 +62,34 @@
 
 - name: clone devspace
   become: yes
-  become_user: "{{ devuser }}"
+  become_user: "{{ devspace_user }}"
   git:
-    repo: "{{ git_repo }}"
-    dest: "{{ devhome }}"
+    repo: "{{ devspace_git_repo }}"
+    dest: "{{ devspace_home }}"
     update: yes
     force: yes
     refspec: "+refs/pull/*:refs/heads/*"
-    version: "{{ version }}"
+    version: "{{ devspace_git_repo_version }}"
   notify: restart devspace
 
 - name: ensures .ssh dir exists
   become: yes
-  become_user: "{{ devuser }}"
+  become_user: "{{ devspace_user }}"
   file:
-    path: "{{ devhome }}/slave/.ssh"
+    path: "{{ devspace_home }}/slave/.ssh"
     state: directory
-    owner: "{{ devuser }}"
-    group: "{{ devuser }}"
+    owner: "{{ devspace_user }}"
+    group: "{{ devspace_user }}"
     mode: 0700
 
 - name: copy snoopy
   become: yes
-  become_user: "{{ devuser }}"
+  become_user: "{{ devspace_user }}"
   copy:
      src: "{{ snoopy_dir_path }}/{{ item.srcfile }}"
-     dest: "{{ devhome }}/slave/{{ item.dest }}"
-     owner: "{{ devuser }}"
-     group: "{{ devuser }}"
+     dest: "{{ devspace_home }}/slave/{{ item.dest }}"
+     owner: "{{ devspace_user }}"
+     group: "{{ devspace_user }}"
      mode: 0700
   with_items:
     - { srcfile: ".ssh/config", dest: ".ssh/config" }
@@ -100,80 +100,80 @@
 
 - name: known_hosts
   become: yes
-  become_user: "{{ devuser }}"
-  shell: ssh-keyscan github.com >> {{ devhome }}/slave/.ssh/known_hosts
+  become_user: "{{ devspace_user }}"
+  shell: ssh-keyscan github.com >> {{ devspace_home }}/slave/.ssh/known_hosts
 - name: chmod known_hosts
   become: yes
-  become_user: "{{ devuser }}"
+  become_user: "{{ devspace_user }}"
   file:
-    path: "{{ devhome }}/slave/.ssh/known_hosts"
+    path: "{{ devspace_home }}/slave/.ssh/known_hosts"
     mode: 0700
 
 - name: change USER_ID
   become: yes
-  become_user: "{{ devuser }}"
+  become_user: "{{ devspace_user }}"
   replace:
-    dest: "{{ devhome }}/{{ item }}"
+    dest: "{{ devspace_home }}/{{ item }}"
     regexp: '^ARG USER_ID=1000'
-    replace: 'ARG USER_ID={{ user_id }}' # how to find out UID?
+    replace: 'ARG USER_ID={{ devspace_user_id }}' # how to find out UID?
   with_items:
     - bf/Dockerfile
     - nginx/Dockerfile
     - slave/Dockerfile
     - server/Dockerfile
     - web/Dockerfile
-  when: compose == 'v1'
+  when: devspace_compose == 'v1'
 
 - name: set basic auth password for jenkins
   become: yes
   lineinfile:
-    dest: "{{ devhome }}/jenkins/conf.d/jenkins.conf"
+    dest: "{{ devspace_home }}/jenkins/conf.d/jenkins.conf"
     backup: yes
     regexp: "^        auth_basic \"Restricted\";"
     line: "        auth_basic \"Restricted\";"
     insertafter: "    location / {"
     state: present
-  when: jenkins_nginx_username|length>0 and jenkins_nginx_password|length>0
+  when: devspace_jenkins_nginx_username|length>0 and devspace_jenkins_nginx_password|length>0
 
 - name: set basic auth password for jenkins
   become: yes
   lineinfile:
-    dest: "{{ devhome }}/jenkins/conf.d/jenkins.conf"
+    dest: "{{ devspace_home }}/jenkins/conf.d/jenkins.conf"
     backup: yes
     regexp: "^        auth_basic_user_file /etc/nginx/conf.d/passwdfile;"
     line: "        auth_basic_user_file /etc/nginx/conf.d/passwdfile;"
     insertafter: "        auth_basic \"Restricted\";"
     state: present
-  when: jenkins_nginx_username|length>0 and jenkins_nginx_password|length>0
+  when: devspace_jenkins_nginx_username|length>0 and devspace_jenkins_nginx_password|length>0
 
 - name: set jenkins password
   become: yes
-  become_user: "{{ devuser }}"
+  become_user: "{{ devspace_user }}"
   htpasswd:
-    path: "{{ devhome }}/jenkins/conf.d/passwdfile"
-    name: "{{ jenkins_nginx_username }}"
-    password: "{{ jenkins_nginx_password }}"
-  when: jenkins_nginx_username|length>0 and jenkins_nginx_password|length>0
+    path: "{{ devspace_home }}/jenkins/conf.d/passwdfile"
+    name: "{{ devspace_jenkins_nginx_username }}"
+    password: "{{ devspace_jenkins_nginx_password }}"
+  when: devspace_jenkins_nginx_username|length>0 and devspace_jenkins_nginx_password|length>0
 
 - name: ssl cert for jenkins
   become: yes
-  become_user: "{{ devuser }}"
-  command: "{{ devhome }}/sslcert {{ devhome }}/jenkins/sslcert {{ openstack_ip }}"
+  become_user: "{{ devspace_user }}"
+  command: "{{ devspace_home }}/sslcert {{ devspace_home }}/jenkins/sslcert {{ devspace_openstack_ip }}"
   args:
-    chdir: "{{ devhome }}"
-    creates: "{{ devhome }}/jenkins/sslcert"
+    chdir: "{{ devspace_home }}"
+    creates: "{{ devspace_home }}/jenkins/sslcert"
 
 - name: ssl cert for nginx
   become: yes
-  become_user: "{{ devuser }}"
-  command: "{{ devhome }}/sslcert {{ devhome }}/nginx/sslcert {{ openstack_ip }}"
+  become_user: "{{ devspace_user }}"
+  command: "{{ devspace_home }}/sslcert {{ devspace_home }}/nginx/sslcert {{ devspace_openstack_ip }}"
   args:
-    chdir: "{{ devhome }}"
-    creates: "{{ devhome }}/nginx/sslcert"
+    chdir: "{{ devspace_home }}"
+    creates: "{{ devspace_home }}/nginx/sslcert"
 
-- name: rename to {{ omero_branch }}...
+- name: rename to {{ devspace_omero_branch }}...
   become: yes
-  become_user: "{{ devuser }}"
-  command: "{{ devhome }}/rename.py {{ omero_branch }}"
+  become_user: "{{ devspace_user }}"
+  command: "{{ devspace_home }}/rename.py {{ devspace_omero_branch }}"
   args:
-    chdir: "{{ devhome }}"
+    chdir: "{{ devspace_home }}"

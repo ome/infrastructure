@@ -8,29 +8,29 @@ docker_use_ipv4_nic_mtu: True
 snoopy_dir_path: ""
 
 # devspace source
-git_repo: "https://github.com/openmicroscopy/devspace.git"
+devspace_git_repo: "https://github.com/openmicroscopy/devspace.git"
 # devspace branch
-version: "0.3.2"
+devspace_git_repo_version: "0.3.3"
 
 # devspace user
-devuser: omero
+devspace_user: omero
 
 # devspace user id
-user_id: "1001"
-compose: "v1"
+devspace_user_id: "1001"
+devspace_compose: "v1"
 
 # path where devspace will be installed
-devhome: /home/{{ devuser }}/devspace
+devspace_home: /home/{{ devspace_user }}/devspace
 
 # openstack IP e.g. 10.0.50.100
-openstack_ip:
+devspace_openstack_ip:
 
 # rename to:
-omero_branch: develop
+devspace_omero_branch: develop
 
 # jenkins credentials:
-jenkins_nginx_username: devspace
-jenkins_nginx_password:
+devspace_jenkins_nginx_username: devspace
+devspace_jenkins_nginx_password:
 
 devspace_handler_tasks: "devspace-runtime.yml"
 
