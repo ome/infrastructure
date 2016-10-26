@@ -55,7 +55,6 @@ nginx_proxy_cache_match_uri:
 - '"~mapr/*"'
 
 #nginx_proxy_cache_match_arg:
-#- '"~show=*"'
 
 # Order is important, the first match will be used
 nginx_proxy_caches:
@@ -84,12 +83,6 @@ nginx_proxy_caches:
   inactive: 30d
   match:
   - '"~webclient/metadata_*"'
-#- name: omeroshow
-#  keysize: 600m
-#  inactive: 30d
-#  match:
-#  - '"~webclient/.*/?show=*"'
-#  - '"~webclient/api/paths_to_object/*"'
 - name: omeroapi
   keysize: 10m
   inactive: 30d
