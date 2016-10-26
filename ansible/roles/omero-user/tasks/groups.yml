@@ -17,7 +17,8 @@
   always_run: yes
   changed_when: False
 
-- set_fact:
+- name: omero user | set group list var
+  set_fact:
     omero_group_list: "{{ groupcmd.stdout | from_json }}"
 
 - name: omero user | create group

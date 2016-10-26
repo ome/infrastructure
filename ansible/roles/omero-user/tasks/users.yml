@@ -17,7 +17,8 @@
   always_run: yes
   changed_when: False
 
-- set_fact:
+- name: omero user | set user list var
+  set_fact:
     omero_user_list: "{{ usercmd.stdout | from_json }}"
 
 - name: omero user | create user
