@@ -37,4 +37,3 @@
 - hosts: ci-docs
   roles:
     - role: ansible
-    - role: texlive
