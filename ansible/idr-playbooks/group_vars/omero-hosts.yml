@@ -35,49 +35,47 @@ omero_web_apps_add:
 - omero_mapr
 
 
+# Note this is set to [] in files/IDR-OMERO-52-omero.j2 so we can define
+# everything
 omero_web_app_add_top_links:
-  # This should be a list of lists, but Ansible will automatically
-  # flatten it, so convert it to a dictionary with dummy keys instead
-  dummy_idr:
-    - Studies
-    - viewname: webindex
-      query_string: { experimenter: -1 }
-    - title: Image Data Repository
-  dummy_genes:
-    - Genes
-    - viewname: maprindex_gene
-      query_string: { experimenter: -1 }
-    - title: Genes browser
-  dummy_phenotype:
-    - Phenotypes
-    - viewname: maprindex_phenotype
-      query_string: { experimenter: -1 }
-    - title: Phenotypes browser
-  dummy_sirna:
-    - siRNA
-    - viewname: maprindex_sirna
-      query_string: { experimenter: -1 }
-    - title: siRNA browser
-  dummy_compound:
-    - Compound
-    - viewname: maprindex_compound
-      query_string: {"experimenter": -1}
-    - title: Compound browser
-  dummy_organism:
-    - Organism
-    - viewname: maprindex_organism
-      query_string: {"experimenter": -1}
-    - title: Organism browser
-  dummy_help:
-    - Help
-    - http://help.openmicroscopy.org/
-    - target: new
-      title: Open OMERO user guide in a new tab
-# TODO: disable:
-#  dummy_history:
-#    - History
-#    - history
-#    - title: History
-#  dummy_about:
-#    - About
-#    - /about/
+- label: Studies
+  link:
+    viewname: webindex
+    query_string: { experimenter: -1 }
+  attrs:
+    title: Image Data Repository
+- label: Genes
+  link:
+    viewname: maprindex_gene
+    query_string: { experimenter: -1 }
+  attrs:
+    title: Genes browser
+- label: Phenotypes
+  link:
+    viewname: maprindex_phenotype
+    query_string: { experimenter: -1 }
+  attrs:
+    title: Phenotypes browser
+- label: siRNA
+  link:
+    viewname: maprindex_sirna
+    query_string: { experimenter: -1 }
+  attrs:
+    title: siRNA browser
+- label: Compound
+  link:
+    viewname: maprindex_compound
+    query_string: {"experimenter": -1}
+  attrs:
+    title: Compound browser
+- label: Organism
+  link:
+    viewname: maprindex_organism
+    query_string: {"experimenter": -1}
+  attrs:
+    title: Organism browser
+- label: Help
+  link: http://help.openmicroscopy.org/
+  attrs:
+    target: new
+    title: Open OMERO user guide in a new tab
