@@ -30,7 +30,7 @@ omero_logmonitor_slack_channel: "#logs"
 
 omero_web_app_packages:
 #  - "omero-mapr==0.1.1"
-  - "git+git://github.com/aleksandra-tarkowska/omero-mapr.git@maps#egg=omero_mapr"
+  - "git+git://github.com/aleksandra-tarkowska/omero-mapr.git@0.1.6#egg=omero_mapr"
 omero_web_apps_add:
 - omero_mapr
 
