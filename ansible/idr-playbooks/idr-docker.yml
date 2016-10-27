@@ -19,8 +19,10 @@
   # This sets a host_var on all docker-hosts which can be used in other plays
   - name: enable/disable docker swarm
     set_fact:
-      #docker_swarm_enabled: False
-      docker_swarm_enabled: True
+      # Disable docker swarm mode until we're more confident in running
+      # JupyterHub
+      docker_swarm_enabled: False
+      #docker_swarm_enabled: True
 
   roles:
 
