@@ -16,6 +16,8 @@ nginx_proxy_http2: True
 ######################################################################
 # OMERO.web proxy
 
+nginx_proxy_websockets_enable: True
+
 nginx_proxy_backends_omero:
 - name: omerocached
   location: ~ /(mapr/|webclient/api/|web(client|gateway)/(metadata|render)_)*
@@ -34,6 +36,8 @@ nginx_proxy_backends_jupyter:
 - name: jupyter
   location: "^~ /jupyter"
   server: "http://{{ omero_jupyter_host_ansible }}"
+  websockets: True
+  read_timeout: 86400
 
 nginx_proxy_backends: >
   {{ nginx_proxy_backends_omero +
