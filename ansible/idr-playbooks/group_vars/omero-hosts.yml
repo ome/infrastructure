@@ -33,11 +33,13 @@ omero_web_app_packages:
   - "git+git://github.com/aleksandra-tarkowska/omero-mapr.git@maps#egg=omero_mapr"
 omero_web_apps_add:
 - omero_mapr
+
+
 omero_web_app_add_top_links:
   # This should be a list of lists, but Ansible will automatically
   # flatten it, so convert it to a dictionary with dummy keys instead
   dummy_idr:
-    - IDR
+    - Studies
     - viewname: webindex
       query_string: { experimenter: -1 }
     - title: Image Data Repository
@@ -61,6 +63,17 @@ omero_web_app_add_top_links:
     - viewname: maprindex_compound
       query_string: {"experimenter": -1}
     - title: Compound browser
+  dummy_organism:
+    - Organism
+    - viewname: maprindex_organism
+      query_string: {"experimenter": -1}
+    - title: Organism browser
+  dummy_help:
+    - Help
+    - http://help.openmicroscopy.org/
+    - target: new
+      title: Open OMERO user guide in a new tab
+# TODO: disable:
 #  dummy_history:
 #    - History
 #    - history
@@ -68,8 +81,3 @@ omero_web_app_add_top_links:
 #  dummy_about:
 #    - About
 #    - /about/
-#  dummy_help:
-#    - Help
-#    - http://help.openmicroscopy.org/
-#    - title: Open OMERO user guide in a new tab
-#      target: new
