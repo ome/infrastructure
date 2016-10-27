@@ -25,6 +25,10 @@ All variables are optional, see `defaults/main.yml` for the full list
 - `omero_web_apps_add`: List of web application names to be included in `omero.web.apps`
 - `omero_web_app_add_top_links`: Dictionary of lists to be included in `omero.web.ui.top_links`.
   This must be a YAML object, which will be auto-converted to JSON.
+- `omero_web_app_add_top_links`: Lists of top link dictionaries to be included in `omero.web.ui.top_links`, of the form:
+  - `label`: Label
+  - `link`: URL or a dict
+  - `attrs`: Dictionary of attributes
 
 
 Example
