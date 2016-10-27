@@ -1,0 +1,12 @@
+---
+# tasks file for roles/sphinx-build
+
+
+- name: Sphinx documentation packages | pip install packages
+  pip:
+    name: "{{ item.name }}"
+    state: present
+    version: "{{ item.version }}"
+  with_items:
+    - name: sphinx
+      version: 1.2.3
