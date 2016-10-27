@@ -33,7 +33,7 @@
   command: >
     {{ omero_web_omero }} config append --set --report
     omero.web.ui.top_links
-    {{ [item.label, item.link, item.attrs] | to_json | quote }}
+    {{ [item.label, item.link, (item.attrs | default({}))] | to_json | quote }}
   register: out
   changed_when: "'Changed:' in out.stdout"
   with_items: "{{ omero_web_app_add_top_links | default([]) }}"

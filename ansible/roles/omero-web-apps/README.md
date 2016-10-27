@@ -28,7 +28,7 @@ All variables are optional, see `defaults/main.yml` for the full list
 - `omero_web_app_add_top_links`: Lists of top link dictionaries to be included in `omero.web.ui.top_links`, of the form:
   - `label`: Label
   - `link`: URL or a dict
-  - `attrs`: Dictionary of attributes
+  - `attrs`: Dictionary of attributes (optional)
 
 
 Example
