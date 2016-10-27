@@ -27,7 +27,7 @@ config set omero.web.public.enabled True
 config set omero.web.public.server_id 1
 config set omero.web.public.user public
 config set omero.web.public.password {{ omero_web_public_password }}
-config set omero.web.public.url_filter ^/(webadmin/myphoto/|webclient/(?!(action|annotate_(file|tags|comment|rating|map)|script_ui|ome_tiff|figure_script))|webgateway/(?!(archived_files|download_as)))
+config set omero.web.public.url_filter ^/(webadmin/myphoto/|mapr/|webclient/(?!(action|annotate_(file|tags|comment|rating|map)|script_ui|ome_tiff|figure_script))|webgateway/(?!(archived_files|download_as)))
 
 # Group/User drop down menu
 config set omero.client.ui.menu.dropdown.colleagues.enabled false

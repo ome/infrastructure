@@ -7,8 +7,10 @@ omero_system_uid: 546
 
 omero_web_runtime_redis: True
 # This refers to a custom IDR release URL, not an official OMERO version
-omero_release: "0.0.7-rc1"
+omero_release: "0.0.7-rc2"
 omero_omego_additional_args: "--downloadurl https://downloads.openmicroscopy.org/idr"
+# Upgrades are normally disabled, uncomment if you want to upgrade OMERO:
+#omero_upgrade: True
 
 # Disable database backups
 omero_database_backupdir:
@@ -27,9 +29,10 @@ omero_logmonitor_slack_channel: "#logs"
 # mapr
 
 omero_web_app_packages:
-  - "omero-mapr==0.1.1"
+#  - "omero-mapr==0.1.1"
+  - "git+git://github.com/aleksandra-tarkowska/omero-mapr.git@maps#egg=omero_mapr"
 omero_web_apps_add:
-- mapr
+- omero_mapr
 omero_web_app_add_top_links:
   # This should be a list of lists, but Ansible will automatically
   # flatten it, so convert it to a dictionary with dummy keys instead
