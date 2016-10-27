@@ -177,3 +177,14 @@
   command: "{{ devspace_home }}/rename.py {{ devspace_omero_branch }}"
   args:
     chdir: "{{ devspace_home }}"
+
+- name: fix jenkinsUrl
+  become: yes
+  become_user: "{{ devspace_user }}"
+  replace:
+    dest: "{{ devspace_home }}/home/{{ item }}"
+    regexp: '^(.*)<jenkinsUrl>(.*)</jenkinsUrl>'
+    replace: '\1<jenkinsUrl>https://{{ devspace_openstack_ip }}:8443</jenkinsUrl>'
+  with_items:
+    - jenkins.model.JenkinsLocationConfiguration.xml
+  when: devspace_openstack_ip|length>0
