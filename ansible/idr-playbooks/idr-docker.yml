@@ -159,6 +159,8 @@
 
   tasks:
 
+  # This will be used to pass the config file into the server, and for the
+  # server to store persistent state
   - name: jupyterhub | create jupyter working directory
     become: yes
     file:
