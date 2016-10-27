@@ -9,7 +9,7 @@
     snapshot_id: "{{ openstack_volume_snapshot | default(omit) }}"
     # TODO: copying from a volume may be quicker than from a snapshot, but this requires
     # https://github.com/ansible/ansible-modules-core/pull/5176
-    #volume_src: "{{ openstack_volume_source | default(omit) }}"
+    volume: "{{ openstack_volume_source | default(omit) }}"
 
 - name: openstack volume | attach volume to host
   os_server_volume:
