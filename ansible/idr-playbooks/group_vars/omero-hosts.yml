@@ -21,3 +21,52 @@ omero_prestart_file: "{{ playbook_dir }}/files/IDR-OMERO-52-omero.j2"
 
 omero_logmonitor_slack_token: "{{ idr_secret_omero_logmonitor_slack_token | default(None) }}"
 omero_logmonitor_slack_channel: "#logs"
+
+
+######################################################################
+# mapr
+
+omero_web_app_packages:
+  - "omero-mapr==0.1.1"
+omero_web_apps_add:
+- mapr
+omero_web_app_add_top_links:
+  # This should be a list of lists, but Ansible will automatically
+  # flatten it, so convert it to a dictionary with dummy keys instead
+  dummy_idr:
+    - IDR
+    - viewname: webindex
+      query_string: { experimenter: -1 }
+    - title: Image Data Repository
+  dummy_genes:
+    - Genes
+    - viewname: maprindex_gene
+      query_string: { experimenter: -1 }
+    - title: Genes browser
+  dummy_phenotype:
+    - Phenotypes
+    - viewname: maprindex_phenotype
+      query_string: { experimenter: -1 }
+    - title: Phenotypes browser
+  dummy_sirna:
+    - siRNA
+    - viewname: maprindex_sirna
+      query_string: { experimenter: -1 }
+    - title: siRNA browser
+  dummy_compound:
+    - Compound
+    - viewname: maprindex_compound
+      query_string: {"experimenter": -1}
+    - title: Compound browser
+#  dummy_history:
+#    - History
+#    - history
+#    - title: History
+#  dummy_about:
+#    - About
+#    - /about/
+#  dummy_help:
+#    - Help
+#    - http://help.openmicroscopy.org/
+#    - title: Open OMERO user guide in a new tab
+#      target: new
