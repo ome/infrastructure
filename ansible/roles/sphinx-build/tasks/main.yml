@@ -3,6 +3,7 @@
 
 
 - name: Sphinx documentation packages | pip install packages
+  become: yes
   pip:
     name: "{{ item.name }}"
     state: present
