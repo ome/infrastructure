@@ -18,9 +18,19 @@ nginx_proxy_http2: True
 
 nginx_proxy_websockets_enable: True
 
+# The regex is getting complicated, so unroll it into a list and join
+_nginx_proxy_omero_locations:
+- /webclient/metadata_*
+- /webclient/render_*
+- /webgateway/metadata_*
+- /webgateway/render_*
+- /webclient/api/*
+- /webclient/search/*
+- /mapr/*
+
 nginx_proxy_backends_omero:
 - name: omerocached
-  location: ~ /(mapr/|webclient/api/|web(client|gateway)/(metadata|render)_)*
+  location: ~ {{ _nginx_proxy_omero_locations | join('|') }}
   server: "http://{{ omero_omero_host_ansible }}"
   cache_validity: 30d
 - name: omerostatic
