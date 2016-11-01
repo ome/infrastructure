@@ -1,0 +1,10 @@
+---
+# Playbook to upgrade all system packages
+
+- hosts: >
+    {{ idr_environment | default('idr') }}-hosts
+    {{ idr_environment | default('idr') }}-a-hosts
+    management-hosts
+  roles:
+  - role: upgrade-distpackages
+    upgrade_distpackages_reboot_kernel: True
