@@ -39,7 +39,7 @@ config set omero.web.login_redirect '{"redirect": ["webindex"], "viewname": "loa
 
 
 # session
-config set omero.web.session_cookie_name sessionid_demo
+config set omero.web.session_cookie_name sessionid_{{ idr_environment | default('idr') }}
 config set omero.web.session_cookie_age 3600
 
 # redis
