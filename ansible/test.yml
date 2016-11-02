@@ -73,3 +73,7 @@
       # Everything except the UID
       - "pg_alice.stdout.startswith('alice|f|t|f|f|f|t|f|-1|********|||')"
       - "pg_bob.stdout.startswith('bob|f|t|f|t|f|t|f|-1|********|||')"
+
+- hosts: docs
+  roles:
+  - role: sphinx-build
