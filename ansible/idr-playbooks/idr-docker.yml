@@ -335,9 +335,9 @@
   #- idr_jupyter_urlbase: "http://example.org"
   - idr_docker_pull_latest: True
   - idr_jupyter_ip: "{{ hostvars[inventory_hostname]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address'] }}"
-  #- idr_jupyter_hub_image: "imagedata/jupyterhub-githubauth:0.1.0"
+  - idr_jupyter_hub_image: "imagedata/jupyterhub-githubauth:0.1.0"
+  # Docker Swarm requires a modified version of DockerSpawner:
   #- idr_jupyter_hub_image: "manics/jupyterhub-githubauth:latest"
-  - idr_jupyter_hub_image: "manics/jupyterhub-githubauth:auth"
   - idr_jupyter_notebook_image: "imagedata/jupyter-docker:0.1.0"
   - idr_jupyter_hub_log_level: DEBUG
   #- idr_jupyter_prefix: "/jupyter"
