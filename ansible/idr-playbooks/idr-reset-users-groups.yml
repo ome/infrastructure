@@ -17,54 +17,44 @@
 
 # TODO: The set_fact tasks are duplicated from idr-omero.yml
 
+
 - hosts: "{{ idr_environment | default('idr') }}-omero-hosts"
-  pre_tasks:
+
+  tasks:
 
   - name: Get database host
     set_fact:
       omero_db_host_ansible: "{{ hostvars[groups[idr_environment | default('idr') + '-database-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
 
+  - name: Get omero public password
+    set_fact:
+      omero_user_web_public_password: "{{ omero_web_public_password }}"
+
   - name: Generate random OMERO root password
     command: openssl rand -base64 15
     register: random_root_pass
 
-  roles:
-  - omero-user
-
-  post_tasks:
-  - name: Print OMERO root password
-    debug:
-      msg: "OMERO root password ({{ ansible_host }}): {{ random_root_pass.stdout }}"
-
-  vars:
-  - omero_user_admin_pass: "{{ random_root_pass.stdout }}"
-  - omero_user_reset_root_password: "{{ random_root_pass.stdout }}"
-  - omero_group_create:
-    - name: demo
-      type: read-only
-  - omero_user_create:
-    - login: public
-      firstname: public
-      lastname: user
-      password: "{{ idr_secret_omero_web_public_password | default('public') }}"
-      groups: "--group-name demo"
-      force: True
-  - omero_user_dbhost: "{{ omero_db_host_ansible }}"
-  - omero_user_dbuser: "{{ omero_dbuser }}"
-  - omero_user_dbname: "{{ omero_dbname }}"
-  - omero_user_dbpassword: "{{ omero_dbpassword }}"
-
 
 - hosts: "{{ idr_environment | default('idr') }}-a-omero-hosts"
-  pre_tasks:
+
+  tasks:
 
   - name: Get database host
     set_fact:
       omero_db_host_ansible: "{{ hostvars[groups[idr_environment | default('idr') + '-a-database-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
 
+  - name: Get omero public password
+    set_fact:
+      omero_user_web_public_password: public
+
   - name: Generate random OMERO root password
     command: openssl rand -base64 15
     register: random_root_pass
+
+
+- hosts: >
+    {{ idr_environment | default('idr') }}-omero-hosts
+    {{ idr_environment | default('idr') }}-a-omero-hosts
 
   roles:
   - omero-user
@@ -92,7 +82,7 @@
     - login: public
       firstname: public
       lastname: user
-      password: public
+      password: "{{ omero_user_web_public_password }}"
       groups: "--group-name demo"
       force: True
   - omero_user_dbhost: "{{ omero_db_host_ansible }}"
