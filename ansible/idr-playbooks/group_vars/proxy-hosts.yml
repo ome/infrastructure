@@ -28,7 +28,7 @@ _nginx_proxy_omero_locations:
 - /webclient/search/*
 - /mapr/*
 
-nginx_proxy_backends_omero:
+_nginx_proxy_backends_omero:
 - name: omerocached
   location: ~ {{ _nginx_proxy_omero_locations | join('|') }}
   server: "http://{{ omero_omero_host_ansible }}"
@@ -42,17 +42,17 @@ nginx_proxy_backends_omero:
   server: "http://{{ omero_omero_host_ansible }}"
 
 # omero_jupyter_host_ansible may be empty
-nginx_proxy_backends_jupyter:
+_nginx_proxy_backends_jupyter:
 - name: jupyter
   location: "^~ /jupyter"
-  server: "http://{{ omero_jupyter_host_ansible }}"
+  server: "http://{{ omero_jupyter_host_ansible | default(None) }}"
   websockets: True
   read_timeout: 86400
 
 nginx_proxy_backends: >
-  {{ nginx_proxy_backends_omero +
-     ((omero_jupyter_host_ansible | length > 0) |
-       ternary(nginx_proxy_backends_jupyter, [])
+  {{ _nginx_proxy_backends_omero +
+     ((omero_jupyter_host_ansible is defined) |
+       ternary(_nginx_proxy_backends_jupyter, [])
      ) }}
 
 

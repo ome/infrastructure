@@ -16,13 +16,26 @@
 
   pre_tasks:
 
-  - name: Get omero and optionally jupyterhub IPs
+  - name: Get omero IP
     set_fact:
-      omero_omero_host_ansible: "{{ hostvars[groups[idr_environment | default('idr') + '-omero-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
+      omero_omero_host_ansible: >-
+        {{
+          hostvars[groups[
+            idr_environment | default('idr') + '-omero-hosts'][0]]
+            ['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']
+        }}
 
+  - name: Get jupyterhub IP
+    set_fact:
       # Optional, so that it can run in an environment where there's only
       # an OMERO server but no analysis platform
-      omero_jupyter_host_ansible: "{{ hostvars[groups[idr_environment | default('idr') + '-a-dockermanager-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address'] + ':8000' | default('') }}"
+      omero_jupyter_host_ansible: >-
+        {{
+          hostvars[groups[
+            idr_environment | default('idr') + '-a-dockermanager-hosts'][0]]
+            ['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']
+        }}:8000
+    when: "{{ groups[idr_environment | default('idr') + '-a-dockermanager-hosts'] | length > 0 }}"
 
   roles:
   - role: nginx-ssl-selfsigned
