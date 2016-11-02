@@ -17,7 +17,7 @@
     vm_image: "Ubuntu 14.04.4 LTS (trusty)"
     vm_flavour: m1.medium
     vm_size: 50
-    vm_groups: "ansible-managed,ubuntu-rdp"
+    vm_groups: "ansible-managed,desktop-rdp"
 
   pre_tasks:
 

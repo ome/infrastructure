@@ -62,19 +62,5 @@
   lineinfile:
     dest: /home/{{ rdp_user }}/.xsession
     line: "xfce4-session"
-
-# https://support.ansible.com/hc/en-us/articles/201958037-Reboot-a-server-and-wait-for-it-to-come-back
-- name: system | reboot
-  become: yes
-  shell: "sleep 2 && shutdown -r now 'Rebooting (Ansible update)'"
-  async: 1
-  poll: 0
-  ignore_errors: True
-
-- name: system | wait for server to reboot
-  local_action:
-    module: wait_for
-    delay: 15
-    host: "{{ inventory_hostname }}"
-    state: "started"
-    timeout: 300
+  notify:
+    - restart display manager

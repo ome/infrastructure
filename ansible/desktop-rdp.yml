@@ -1,7 +1,7 @@
 ---
 # Playbook adding a graphical interface to the Ubuntu Openstack instance
 
-- hosts: ubuntu-rdp
+- hosts: desktop-rdp
 
   vars_prompt:
     - name: "rdp_user_password"
@@ -12,7 +12,4 @@
       salt_size: 7
 
   roles:
-    - role: "{{ rdp_user }}-rdp"
-
-  vars:
-    rdp_user: ubuntu
+    - role: "ubuntu-rdp"
