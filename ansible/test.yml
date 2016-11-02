@@ -77,3 +77,11 @@
 - hosts: docs
   roles:
   - role: sphinx-build
+
+  tasks:
+  - command: sphinx-build --version
+    register: sphinx_version
+
+  - assert:
+      that:
+      - "sphinx_version.stdout == 'Sphinx (sphinx-build) 1.2.3'"
