@@ -318,7 +318,6 @@
     become: yes
     blockinfile:
       dest: "{{ idr_jupyter_notebook_host_volume }}/library/idr_demo.py"
-      insertafter: "### ANSIBLE MANAGED BEGIN"
       state: present
       # This ensures the code will be indented with 4 spaces
       block: |6
