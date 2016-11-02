@@ -39,7 +39,7 @@
 - name: omero-web | install django redis requirements
   become: yes
   pip:
-    name: "django-redis-cache>=1.6.5"
+    name: "django-redis>=4.4"
     state: present
   when: omero_web_runtime_redis
 
