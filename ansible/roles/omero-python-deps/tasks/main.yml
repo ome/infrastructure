@@ -1,0 +1,29 @@
+---
+# tasks file for roles/omero-runtime
+
+- name: omero python deps | check variables
+  fail:
+    msg: "Invalid value of omero_python_deps_profile: {{ omero_python_deps_profile }}"
+  when: "omero_python_deps_profile not in ['distribution', 'pypi']"
+
+# TODO: Consider installing some of these with pip if the user requests it?
+- name: omero python deps | distribution packages
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - Cython
+    - numpy
+    - python-matplotlib
+    - python-numexpr
+    - python-tables
+    - python-pip
+    - scipy
+  when: "{{ omero_python_deps_recommended }}"
+
+- include: distribution.yml
+  when: "omero_python_deps_profile == 'distribution'"
+
+- include: pypi.yml
+  when: "omero_python_deps_profile == 'pypi'"
