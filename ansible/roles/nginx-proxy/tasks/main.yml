@@ -9,11 +9,8 @@
   notify:
     - restart nginx
 
-# TODO: ansible_selinux.status == "enabled" should autodetect SELinux,
-# but may give a misleading result if a dependency is missing:
-# https://github.com/ansible/ansible/issues/16612
 - include: nginx-selinux.yml
-  when: ansible_selinux and ansible_selinux.status == "enabled"
+  when: selinux_enabled
 
 - include: nginx-cache.yml
 
