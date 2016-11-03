@@ -1,14 +1,6 @@
 ---
 # tasks file for roles/omero-web-runtime
 
-- name: omero web | install python packages
-  become: yes
-  yum:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - python-pip
-
 - name: omero web | install python redis package
   become: yes
   yum:
@@ -16,23 +8,12 @@
     state: present
   when: omero_web_runtime_redis
 
-# Uninstall python module rpms that will be replaced with a pip installed version
-- name: omero web | remove python packages
-  become: yes
-  yum:
-    name: "{{ item }}"
-    state: absent
-  with_items:
-    - python-gunicorn
-    - python-pillow
-
 - name: omero web | pip install packages
   become: yes
   pip:
     name: "{{ item }}"
     state: present
   with_items:
-    - "Pillow==2.9"
     - "django>=1.8,<1.9"
     - "gunicorn>=19.3"
 
