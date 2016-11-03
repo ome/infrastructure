@@ -2,7 +2,7 @@
 
 - name: restart devspace
   environment:
-    USER_ID: "{{ user_id }}"
+    USER_ID: "{{ devspace_user_id }}"
   become: yes
-  become_user: "{{ devuser }}"
+  become_user: "{{ devspace_user }}"
   include: "{{ devspace_handler_tasks }}"

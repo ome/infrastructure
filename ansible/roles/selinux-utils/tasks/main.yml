@@ -1,0 +1,32 @@
+---
+# tasks file for roles/selinux-utils
+
+# NOTE: The Ansible variable `ansible_selinux.status == "enabled"` should
+# autodetect SELinux, but may give a misleading result if a dependency is
+# missing: https://github.com/ansible/ansible/issues/16612
+# so use getsestatus instead
+
+# Always run including in check mode
+- name: selinux | check enabled
+  become: yes
+  command: getenforce
+  register: selinux_getenforce
+  always_run: True
+  failed_when: "selinux_getenforce.rc != 0 and selinux_getenforce.rc != 127"
+  changed_when: False
+  # 127=command not found, implies selinux disabled
+
+- name: system packages | set selinux variable
+  set_fact:
+    selinux_enabled: "{{ selinux_getenforce.rc == 0 and selinux_getenforce.stdout != 'Disabled' }}"
+
+- name: system packages | install selinux utilities
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - libselinux-python
+    - libsemanage-python
+    - policycoreutils-python
+  when: selinux_enabled

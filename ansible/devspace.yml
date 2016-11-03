@@ -8,13 +8,14 @@
     docker_use_ipv4_nic_mtu: True
 
   vars_prompt:
-    - name: "jenkins_nginx_password"
+    - name: "devspace_jenkins_nginx_password"
       prompt: "Enter Jenkins password"
       private: yes
-      when: jenkins_nginx_username|length>0
+      when: devspace_jenkins_nginx_username|length>0
 
   roles:
     - role: upgrade-distpackages
     - role: docker
+      docker_groupmembers: [centos]
     - role: versioncontrol-utils
     - role: devspace

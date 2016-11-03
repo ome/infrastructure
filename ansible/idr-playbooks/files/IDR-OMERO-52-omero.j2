@@ -44,7 +44,7 @@ config set omero.web.session_cookie_age 3600
 
 # redis
 config set omero.web.session_engine "django.contrib.sessions.backends.cache"
-config set omero.web.caches '{"default": {"BACKEND": "redis_cache.RedisCache","LOCATION": "127.0.0.1:6379"}}'
+config set omero.web.caches '{"default": {"BACKEND": "django_redis.cache.RedisCache","LOCATION": "redis://127.0.0.1:6379/0"}}'
 
 # social media
 config set omero.web.sharing.twitter '{"omero": "@openmicroscopy"}'
