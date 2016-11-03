@@ -3,13 +3,13 @@
 
 - name: Devspace down
   docker_service:
-    project_src: "{{ devhome }}"
+    project_src: "{{ devspace_home }}"
     state: absent
   when: devspace_force_restart
 
 - name: Devspace up
   docker_service:
-    project_src: "{{ devhome }}"
+    project_src: "{{ devspace_home }}"
     state: present
 
   register: output
