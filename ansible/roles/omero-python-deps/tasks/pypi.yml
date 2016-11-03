@@ -10,6 +10,8 @@
   - libjpeg-devel
   - libtiff-devel
   - zlib-devel
+  # python-pip might not be installed in minimal mode
+  - python-pip
 
 - name: omero python deps | pypi pillow
   become: yes
