@@ -81,7 +81,7 @@
     set_fact:
       docker_nfs_clients:
         "{{ docker_nfs_clients | default([]) + [ { 'host': item, 'options': 'rw,no_root_squash' } ] }}"
-    with_items: docker_host_ips
+    with_items: "{{ docker_host_ips }}"
 
   - debug:
       msg: "{{ docker_nfs_clients }}"
@@ -143,151 +143,11 @@
 
 - hosts: "{{ idr_environment | default('idr') }}-a-dockermanager-hosts"
 
-  pre_tasks:
-
-  - name: jupyterhub | check private vars are defined
-    assert:
-      msg: "Required idr_jupyter_* variable missing"
-      that:
-        - "idr_jupyter_users is defined"
-        - "idr_jupyter_admins is defined"
-        - "idr_jupyter_urlbase is defined"
-        - "idr_jupyter_prefix is defined"
-        - "idr_jupyter_github_id is defined"
-        - "idr_jupyter_github_secret is defined"
-
   roles:
   - role: versioncontrol-utils
+  - role: idr-jupyter
 
   tasks:
-
-  # This will be used to pass the config file into the server, and for the
-  # server to store persistent state
-  - name: jupyterhub | create jupyter working directory
-    become: yes
-    file:
-      path: /srv/jupyterhub
-      state: directory
-
-  - name: jupyterhub | copy jupyter configuration file
-    become: yes
-    template:
-      src: files/jupyterhub_config-py.j2
-      dest: /srv/jupyterhub/jupyterhub_config.py
-    register: jupyterconfig
-
-  - name: jupyterhub | pull images
-    become: yes
-    docker_image:
-      name: "{{ item }}"
-      state: "present"
-      force: "{{ idr_docker_pull_latest }}"
-    with_items:
-    - "{{ idr_jupyter_hub_image }}"
-    - "{{ idr_jupyter_notebook_image }}"
-
-  # TODO: The above `docker_image` only pulls latest
-  # Should be fixed in Ansible 2.2
-  # https://github.com/ansible/ansible/pull/16680
-  # idr_jupyter_hub_image is automatically pulled since the systemd service
-  # runs docker, but docker-py won't pull idr_jupyter_notebook_image
-  - name: jupyterhub | check if notebook image present (ansible 2.1 bug)
-    become: yes
-    command: docker images -q "{{ idr_jupyter_notebook_image }}"
-    register: docker_image_jhnote
-    always_run: yes
-    changed_when: "{{ docker_image_jhnote.stdout | length }} < 1"
-
-  - name: jupyterhub | pull notebook image (ansible 2.1 bug)
-    become: yes
-    command: docker pull "{{ idr_jupyter_notebook_image }}"
-    when: docker_image_jhnote.changed
-
-
-  # Without Docker swarm: start and enable the service
-
-  - name: jupyterhub | create systemd service
-    become: yes
-    template:
-      src: files/jupyterhub-docker.j2
-      dest: /etc/systemd/system/docker-jupyterhub.service
-    register: systemdjupyter
-    when: not docker_swarm_enabled
-
-  - name: jupyterhub | reload systemd
-    become: yes
-    command: systemctl daemon-reload
-    when: systemdjupyter.changed and not docker_swarm_enabled
-
-  - name: jupyterhub | restart
-    become: yes
-    service:
-      name: docker-jupyterhub.service
-      state: restarted
-    when: jupyterconfig.changed and not docker_swarm_enabled
-
-  - name: jupyterhub | enable jupyterhub
-    become: yes
-    service:
-      enabled: "yes"
-      name: docker-jupyterhub.service
-      state: started
-    when: not docker_swarm_enabled
-
-
-  # Docker swarm:
-  # - setup network
-  # - start/restart the service if necessary
-  # - don't enable it since swarm will auto-start the service
-  # TODO: Use docker_network when we switch to Ansible 2.2
-
-  - name: jupyterhub | check docker swarm network
-    become: yes
-    command: docker network inspect "{{ idr_jupyter_network }}"
-    always_run: yes
-    register: docker_jupyter_net
-    when: docker_swarm_enabled
-    changed_when: "docker_jupyter_net.rc != 0"
-    failed_when: "docker_jupyter_net.rc > 1"
-
-  - name: jupyterhub | create docker swarm network
-    become: yes
-    command: docker network create --driver overlay "{{ idr_jupyter_network }}" --opt com.docker.network.driver.mtu={{ ansible_default_ipv4.mtu }}
-    when: docker_swarm_enabled and docker_jupyter_net.changed
-
-  - name: jupyterhub | create swarm systemd service
-    become: yes
-    template:
-      src: files/jupyterhub-docker-swarm.j2
-      dest: /etc/systemd/system/docker-jupyterhub.service
-    register: systemdjupyter
-    when: docker_swarm_enabled
-
-  - name: jupyterhub | reload systemd
-    become: yes
-    command: systemctl daemon-reload
-    when: systemdjupyter.changed and docker_swarm_enabled
-
-  # Docker swarm may have started the service without telling systemd
-  # so only restart if the config has changed or the service isn't
-  # running
-  - name: jupyterhub | check docker swarm service
-    become: yes
-    command: docker service inspect "{{ idr_jupyter_service }}"
-    always_run: yes
-    register: docker_jupyter_service
-    when: docker_swarm_enabled
-    changed_when: "docker_jupyter_service.rc != 0"
-    failed_when: "docker_jupyter_service.rc > 1"
-
-  - name: jupyterhub | restart swarm
-    become: yes
-    service:
-      enabled: "no"
-      name: docker-jupyterhub.service
-      state: restarted
-    when: docker_swarm_enabled and (jupyterconfig.changed or docker_jupyter_service.changed)
-
 
   # Notebooks
 
@@ -326,39 +186,27 @@
                 PASSWORD = "{{ idr_jupyter_omero_pass | quote }}"
 
   vars:
-  - idr_jupyter_service: omero-jupyter
-  - idr_jupyter_network: omero-jupyter-net
-  # https://docs.docker.com/engine/admin/logging/overview/
-  - idr_jupyter_log_driver: journald
-  - idr_jupyter_authenticator: "oauthenticator.GitHubOAuthenticator"
+  - idr_jupyter_docker_swarm: "{{ docker_swarm_enabled }}"
+
+  # Default is system (PAM)
+  #- idr_jupyter_authenticator:
   #- idr_jupyter_authenticator: "dummyauthenticator.DummyAuthenticator"
-  #- idr_jupyter_urlbase: "http://example.org"
+
   - idr_docker_pull_latest: True
   - idr_jupyter_ip: "{{ hostvars[inventory_hostname]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address'] }}"
-  - idr_jupyter_hub_image: "imagedata/jupyterhub-githubauth:0.1.0"
+
   # Docker Swarm requires a modified version of DockerSpawner:
   #- idr_jupyter_hub_image: "manics/jupyterhub-githubauth:latest"
-  - idr_jupyter_notebook_image: "imagedata/jupyter-docker:0.1.0"
-  - idr_jupyter_hub_log_level: DEBUG
-  #- idr_jupyter_prefix: "/jupyter"
-  # If you don't define this it will be auto-generated by hub, but it means
-  # all proxies must be restarted if you restart the hub
-  # http://jupyterhub.readthedocs.io/en/latest/getting-started.html#proxy-authentication-token
-  #- idr_jupyter_proxy_token:
+
   # Mount this volume as /notebooks inside the docker container
   # You must ensure it has the correct permissions for writing
-  # idr_jupyter_notebook_host_volume: "/data/{username}"
   - idr_jupyter_notebook_host_volume: /data/idr-notebooks
-  # In theory it should be possible to have container survive a restart of
-  # the hub. In practice it seems to lead to permission problems.
-  - idr_jupyter_notebook_remove_containers: True
   - idr_jupyter_notebook_repo: https://github.com/IDR/idr-notebooks.git
   - idr_jupyter_notebook_repo_version: "0.1.0"
   - idr_jupyter_omero_host: "{{ hostvars[groups[idr_environment | default('idr') + '-a-omero-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address'] }}"
   - idr_jupyter_omero_user: public
   - idr_jupyter_omero_pass: public
-  # This must match the userid of the idr_jupyter_notebook_image user
-  - idr_jupyter_notebook_system_uid: 1000
+
   - idr_jupyter_notebook_volumes: >
       {
         '{{ idr_jupyter_notebook_host_volume }}': '/notebooks',
