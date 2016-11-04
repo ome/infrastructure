@@ -74,7 +74,6 @@
       - "pg_alice.stdout.startswith('alice|f|t|f|f|f|t|f|-1|********|||')"
       - "pg_bob.stdout.startswith('bob|f|t|f|t|f|t|f|-1|********|||')"
 
-
 - hosts: selinux
   roles:
   - selinux-utils
@@ -83,3 +82,16 @@
       # This assumes we're testing on the centos-7 Vagrantbox which has
       # selinux enabled. Use `is sameas` to also assert type
       that: "{{ selinux_enabled is sameas True }}"
+
+- hosts: docs
+  roles:
+  - role: sphinx-build
+
+  tasks:
+  - command: sphinx-build --version
+    register: sphinx_version
+
+  - assert:
+      that:
+      - "sphinx_version.stdout == 'Sphinx (sphinx-build) 1.2.3'"
+            

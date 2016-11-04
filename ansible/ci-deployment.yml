@@ -36,5 +36,5 @@
 # Deploy Documentation prerequisites
 - hosts: ci-docs
   roles:
+    - role: sphinx-build
     - role: ansible
-    - role: texlive

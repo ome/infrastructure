@@ -14,7 +14,6 @@
     state: present
   with_items:
     - python-devel
-    - gcc
 
 - name: virtualenv | install python tools
   become: yes
