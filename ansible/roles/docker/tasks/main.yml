@@ -66,4 +66,3 @@
     groups: docker
     append: yes
   with_items: "{{ docker_groupmembers }}"
-  when: docker_groupmembers is defined

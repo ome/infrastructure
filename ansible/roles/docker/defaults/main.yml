@@ -26,3 +26,6 @@ docker_use_ipv4_nic_mtu: False
 
 # Upstream Docker release branch
 docker_repo_version: main
+
+# Users who can run docker
+docker_groupmembers: []
