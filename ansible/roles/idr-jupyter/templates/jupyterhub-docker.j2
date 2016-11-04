@@ -1,0 +1,28 @@
+[Unit]
+Description=IDR JupyterHub
+Requires=docker.service
+After=docker.service
+
+[Service]
+#Restart=on-failure
+Restart=no
+RestartSec=10
+ExecStartPre=-/usr/bin/docker kill {{ idr_jupyter_service }}
+ExecStartPre=-/usr/bin/docker rm {{ idr_jupyter_service }}
+ExecStart=/usr/bin/docker run \
+    --name {{ idr_jupyter_service }} \
+    -p 8000:8000 \
+    -p 8081:8081 \
+    -e DOCKER_HOST=unix://var/run/docker.sock \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -v /srv/jupyterhub/:/srv/jupyterhub/ \
+    {{ idr_jupyter_hub_image }} \
+    jupyterhub \
+    --no-ssl \
+    --base-url={{ idr_jupyter_prefix }} \
+    -f /srv/jupyterhub/jupyterhub_config.py \
+    --log-level={{ idr_jupyter_hub_log_level }}
+ExecStop=/usr/bin/docker stop {{ idr_jupyter_service }}
+
+[Install]
+WantedBy=multi-user.target

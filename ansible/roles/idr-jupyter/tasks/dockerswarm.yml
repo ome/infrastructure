@@ -1,0 +1,50 @@
+---
+# Docker swarm:
+# - setup network
+# - start/restart the service if necessary
+# - don't enable it since swarm will auto-start the service
+# TODO: Use docker_network when we switch to Ansible 2.2
+
+- name: jupyterhub | check docker swarm network
+  become: yes
+  command: docker network inspect "{{ idr_jupyter_network }}"
+  always_run: yes
+  register: docker_jupyter_net
+  changed_when: "docker_jupyter_net.rc != 0"
+  failed_when: "docker_jupyter_net.rc > 1"
+
+- name: jupyterhub | create docker swarm network
+  become: yes
+  command: docker network create --driver overlay "{{ idr_jupyter_network }}" --opt com.docker.network.driver.mtu={{ ansible_default_ipv4.mtu }}
+  when: docker_jupyter_net.changed
+
+- name: jupyterhub | create swarm systemd service
+  become: yes
+  template:
+    src: jupyterhub-docker-swarm.j2
+    dest: /etc/systemd/system/docker-jupyterhub.service
+  register: systemdjupyter
+
+- name: jupyterhub | reload systemd
+  become: yes
+  command: systemctl daemon-reload
+  when: systemdjupyter.changed
+
+# Docker swarm may have started the service without telling systemd
+# so only restart if the config has changed or the service isn't
+# running
+- name: jupyterhub | check docker swarm service
+  become: yes
+  command: docker service inspect "{{ idr_jupyter_service }}"
+  always_run: yes
+  register: docker_jupyter_service
+  changed_when: "docker_jupyter_service.rc != 0"
+  failed_when: "docker_jupyter_service.rc > 1"
+
+- name: jupyterhub | restart swarm
+  become: yes
+  service:
+    enabled: "no"
+    name: docker-jupyterhub.service
+    state: restarted
+  when: (jupyterconfig.changed or docker_jupyter_service.changed)

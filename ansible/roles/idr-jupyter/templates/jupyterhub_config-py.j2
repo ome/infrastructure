@@ -1,0 +1,82 @@
+# Jupyterhub configuration file
+
+c = get_config()
+
+
+######################################################################
+# JupyterHub
+
+# Hub service listens on this interface:
+c.JupyterHub.hub_ip = "0.0.0.0"
+#c.JupyterHub.proxy_api_ip = c.JupyterHub.hub_ip
+
+{%if idr_jupyter_docker_swarm %}
+c.JupyterHub.spawner_class = "dockerspawner.DockerServiceSpawner"
+{% else %}
+c.JupyterHub.spawner_class = "dockerspawner.DockerSpawner"
+{% endif %}
+{% if idr_jupyter_proxy_token | default('') | length > 0 %}
+c.JupyterHub.proxy_auth_token = "{{ idr_jupyter_proxy_token }}"
+{% endif %}
+
+
+{% if idr_jupyter_docker_swarm %}
+
+######################################################################
+# DockerServiceSpawner
+# https://github.com/manics/dockerspawner/blob/master/dockerspawner/dockerservicespawner.py
+
+# Docker swarm may take a while to start a container
+c.DockerServiceSpawner.start_timeout = 180
+c.DockerServiceSpawner.debug = True
+c.DockerServiceSpawner.tls_verify = False
+#c.DockerServiceSpawner.hub_ip_connect = "{{ idr_jupyter_ip }}"
+c.DockerServiceSpawner.hub_ip_connect = "{{ idr_jupyter_service }}"
+c.DockerServiceSpawner.container_image = "{{ idr_jupyter_notebook_image }}"
+c.DockerServiceSpawner.remove_containers = {{ idr_jupyter_notebook_remove_containers | default(False) }}
+c.DockerServiceSpawner.use_internal_ip = True
+c.DockerServiceSpawner.network_name = "{{ idr_jupyter_network }}"
+{%   if idr_jupyter_notebook_volumes | default(None) %}
+c.DockerServiceSpawner.volumes = {{ idr_jupyter_notebook_volumes }}
+{%   endif %}
+c.DockerServiceSpawner.log_driver = "{{ idr_jupyter_log_driver }}"
+
+{% else %}
+
+######################################################################
+# DockerSpawner
+# https://github.com/jupyterhub/dockerspawner/blob/master/dockerspawner/dockerspawner.py
+
+c.DockerSpawner.tls_verify = False
+#c.DockerSpawner.tls_ca = "/etc/docker/ca.pem"
+#c.DockerSpawner.tls_cert = "/etc/docker/server-cert.pem"
+#c.DockerSpawner.tls_key = "/etc/docker/server-key.pem"
+#c.DockerSpawner.container_ip = "0.0.0.0"
+c.DockerSpawner.hub_ip_connect = "{{ idr_jupyter_ip }}"
+c.DockerSpawner.container_image = "{{ idr_jupyter_notebook_image }}"
+c.DockerSpawner.remove_containers = {{ idr_jupyter_notebook_remove_containers | default(False) }}
+c.DockerSpawner.use_internal_ip = True
+{%   if idr_jupyter_notebook_volumes | default(None) %}
+c.DockerSpawner.volumes = {{ idr_jupyter_notebook_volumes }}
+{%   endif %}
+
+{% endif %}
+
+
+
+######################################################################
+# Authenticator
+
+c.Authenticator.whitelist = {{ idr_jupyter_users | to_json }}
+c.Authenticator.admin_users = {{ idr_jupyter_admins | to_json }}
+
+{% if idr_jupyter_authenticator == 'system' %}
+# Use default authenticator
+{% elif idr_jupyter_authenticator == 'github' %}
+c.JupyterHub.authenticator_class = "oauthenticator.GitHubOAuthenticator"
+c.GitHubOAuthenticator.oauth_callback_url = "{{ idr_jupyter_urlbase }}{{ idr_jupyter_prefix }}/hub/oauth_callback"
+c.GitHubOAuthenticator.client_id = "{{ idr_jupyter_github_id }}"
+c.GitHubOAuthenticator.client_secret = "{{ idr_jupyter_github_secret }}"
+{% else %}
+c.JupyterHub.authenticator_class = "{{ idr_jupyter_authenticator }}"
+{% endif %}
