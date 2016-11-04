@@ -124,7 +124,7 @@ Proxy:
           server: http://b.internal/subdir
           dynamic: True
 
-Advanced configuration: force https, enable caching using an example predefined configuration (see `vars/example-omero.yml`), use HSTS, enable HTTP2
+Advanced configuration: force https, use HSTS, enable HTTP2
 
     - hosts: localhost
       roles:
@@ -140,8 +140,6 @@ Advanced configuration: force https, enable caching using an example predefined 
         nginx_proxy_http2: True
         nginx_proxy_force_ssl: True
         nginx_proxy_hsts_age: 31536000
-      vars_files:
-      - roles/nginx-proxy/vars/example-omero.yml
 
 
 Author Information
