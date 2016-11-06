@@ -9,9 +9,8 @@
 #idr_vm_image
 #idr_vm_flavour
 
-# Optional, default(omit)
-#idr_vm_private_network
-
+idr_vm_networks:
+- net-name: "{{ idr_environment }}"
 
 idr_vm_keyname: idr-deployment-key
 

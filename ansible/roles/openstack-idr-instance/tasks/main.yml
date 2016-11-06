@@ -15,7 +15,7 @@
     image: "{{ idr_vm_image }}"
     key_name: "{{ idr_vm_keyname }}"
     flavor: "{{ idr_vm_flavour }}"
-    nics: "{{ idr_vm_private_networks | default(omit) }}"
+    nics: "{{ idr_vm_networks }}"
     auto_ip: "{{ idr_vm_assign_floating_ip }}"
     meta:
       hostname: "{{ idr_vm_name }}"
