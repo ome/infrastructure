@@ -2,13 +2,15 @@
 # tasks file for roles/openstack-volume-storage
 
 - name: openstack volume | create volume
-  os_volume:
+  # Copying from a volume may be quicker than from a snapshot, but requires
+  # https://github.com/ansible/ansible-modules-core/pull/5176
+  # TODO: Revert to using distributed os_volume when Ansible 2.3 is released
+  #os_volume:
+  os_volume_ansible23:
     state: present
     size: "{{ openstack_volume_size }}"
     display_name: "{{ openstack_volume_vmname }}-{{ openstack_volume_name }}"
     snapshot_id: "{{ openstack_volume_snapshot | default(omit) }}"
-    # TODO: copying from a volume may be quicker than from a snapshot, but this requires
-    # https://github.com/ansible/ansible-modules-core/pull/5176
     volume: "{{ openstack_volume_source | default(omit) }}"
 
 - name: openstack volume | attach volume to host
