@@ -37,6 +37,10 @@
 
     - set_fact:
         ansible_command: >
+          #!/bin/sh
+
+          cd {{ playbook_dir | dirname }}
+
           ansible-playbook
           -i {{ inventory_file | ternary(inventory_file, inventory_dir) }}
           --diff
@@ -47,6 +51,7 @@
           idr-playbooks/idr-00-preinstall.yml
           idr-playbooks/idr-01-install-idr.yml
           idr-playbooks/idr-03-postinstall.yml
+          "$@"
 #          idr-playbooks/idr-09-monitoring.yml
 
     - copy:
