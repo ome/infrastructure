@@ -94,4 +94,28 @@
   - assert:
       that:
       - "sphinx_version.stdout == 'Sphinx (sphinx-build) 1.2.3'"
-            
+
+- hosts: jupyter
+  roles:
+  - role: docker
+  - role: docker-tools
+  - role: idr-jupyter
+    idr_jupyter_ip: "{{ ansible_eth0.ipv4.address }}"
+    # Users must exist, root is the only existing user in the container
+    idr_jupyter_users: [root]
+    idr_jupyter_admins: [root]
+    idr_jupyter_notebook_volumes: "{ '/notebooks/{username}': '/notebooks' }"
+  tasks:
+  - become: yes
+    file:
+      path: "/notebooks/root"
+      owner: 1000
+      state: directory
+  # To test this fully:
+  #     vagrant up jupyter
+  #     vagrant ssh jupyter
+  #     sudo docker exec -it omero-jupyter bash
+  #     echo root:password | chpasswd
+  #     sed -i /pam_securetty/s/^/#/ /etc/pam.d/login
+  # Setup a port-forward to 8000 and you should be able to login:
+  # http://localhost:8000/jupyter/ user:root password:password

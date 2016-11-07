@@ -66,6 +66,13 @@ Vagrant.configure(2) do |config|
     end
   end
 
+  config.vm.define "jupyter" do |jupyter|
+    jupyter.vm.box = "centos/7"
+    jupyter.vm.provision "ansible" do |ansible|
+      ansible.playbook = "test.yml"
+    end
+  end
+
   config.vm.define "training-server" do |training|
     training.vm.box = "centos/7"
     training.vm.provision "ansible" do |ansible|
