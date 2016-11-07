@@ -128,6 +128,3 @@
     nginx_ssl_certificate_key: "{{ nginx_proxy_ssl_certificate_key }}"
     when: idr_nginx_ssl_self_signed | default(False) | bool
   - role: nginx-proxy
-
-
-  # Additional vars are in group_vars/proxy-hosts.yml
