@@ -25,10 +25,6 @@ idr_jupyter_hub_log_level: DEBUG
 # http://jupyterhub.readthedocs.io/en/latest/getting-started.html#proxy-authentication-token
 #- idr_jupyter_proxy_token:
 
-# Mount this volume as /notebooks inside the docker container
-# You must ensure it has the correct permissions for writing
-idr_jupyter_notebook_host_volume: "/data/{username}"
-
 # In theory it should be possible to have container survive a restart of
 # the hub. In practice it seems to lead to permission problems.
 idr_jupyter_notebook_remove_containers: True
