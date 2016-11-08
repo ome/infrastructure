@@ -16,6 +16,7 @@ ExecStart=/usr/bin/docker run \
     -e DOCKER_HOST=unix://var/run/docker.sock \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v /srv/jupyterhub/:/srv/jupyterhub/ \
+    {{ idr_jupyter_hub_extra_docker_args }} \
     {{ idr_jupyter_hub_image }} \
     jupyterhub \
     --no-ssl \

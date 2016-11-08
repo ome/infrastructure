@@ -13,10 +13,13 @@ idr_jupyter_pull_latest: False
 #Accessible IP of the server running jupyterhub
 #idr_jupyter_ip:
 
-idr_jupyter_hub_image: "imagedata/jupyterhub-githubauth:0.1.0"
+# Extra arguments to be passed to docker run or docker service
+idr_jupyter_hub_extra_docker_args: ""
+
+idr_jupyter_hub_image: "imagedata/jupyterhub-githubauth:latest"
 # Docker Swarm requires a modified version of DockerSpawner:
 #idr_jupyter_hub_image: "manics/jupyterhub-githubauth:latest"
-idr_jupyter_notebook_image: "imagedata/jupyter-docker:0.1.0"
+idr_jupyter_notebook_image: "imagedata/jupyter-docker:latest"
 
 idr_jupyter_hub_log_level: DEBUG
 

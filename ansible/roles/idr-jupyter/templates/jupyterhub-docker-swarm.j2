@@ -21,6 +21,7 @@ ExecStart=/usr/bin/docker service create \
     -e DOCKER_HOST=unix://var/run/docker.sock \
     --mount source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind \
     --mount source=/srv/jupyterhub/,target=/srv/jupyterhub/,type=bind \
+    {{ idr_jupyter_hub_extra_docker_args }} \
     {{ idr_jupyter_hub_image }} \
     jupyterhub \
     --no-ssl \
