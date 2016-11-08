@@ -94,7 +94,6 @@ Edit this command if necessary, and run it, for example:
         --diff \
         -u centos \
         -e idr_environment=idr \
-        -e idr_nginx_ssl_self_signed=True \
         -e ansible_ssh_common_args="'-o ProxyCommand=\\\"ssh \
             -o UserKnownHostsFile=/dev/null \
             -o StrictHostKeyChecking=no \
@@ -135,8 +134,9 @@ Install the IDR:
 
     ansible-playbook \
         -i inventory \
-        -e idr_nginx_ssl_self_signed=True \
         idr-playbooks/idr-01-install-idr.yml \
         idr-playbooks/idr-02-install-analysis.yml
 
 Also run `idr-playbooks/idr-03-postinstall.yml` if you wish to setup or reset the IDR OMERO user accounts.
+
+This will generate a self-signed SSL certificate for the Nginx gateway.
