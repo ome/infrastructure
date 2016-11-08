@@ -101,21 +101,16 @@
   - role: docker-tools
   - role: idr-jupyter
     idr_jupyter_ip: "{{ ansible_eth0.ipv4.address }}"
-    # Users must exist, root is the only existing user in the container
-    idr_jupyter_users: [root]
-    idr_jupyter_admins: [root]
+    # `user` must exist in the jupyterhub Docker container
+    idr_jupyter_users: [user]
+    idr_jupyter_admins: [user]
     idr_jupyter_notebook_volumes: "{ '/notebooks/{username}': '/notebooks' }"
+    idr_jupyter_hub_extra_docker_args: "-e USER_PASSWORD=ome"
   tasks:
   - become: yes
     file:
-      path: "/notebooks/root"
+      path: "/notebooks/user"
       owner: 1000
       state: directory
-  # To test this fully:
-  #     vagrant up jupyter
-  #     vagrant ssh jupyter
-  #     sudo docker exec -it omero-jupyter bash
-  #     echo root:password | chpasswd
-  #     sed -i /pam_securetty/s/^/#/ /etc/pam.d/login
-  # Setup a port-forward to 8000 and you should be able to login:
-  # http://localhost:8000/jupyter/ user:root password:password
+  # Setup a port-forward to 8000 and you should be able to login as
+  # user:user password:ome
