@@ -5,7 +5,7 @@
 - name: system packages | setup upstream nginx repo
   become: yes
   yum:
-    name: http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
+    name: https://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
     state: present
 
 - name: system packages | install nginx
