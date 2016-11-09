@@ -23,7 +23,7 @@ devspace_compose: "v1"
 devspace_home: /home/{{ devspace_user }}/devspace
 
 # openstack IP e.g. 10.0.50.100
-devspace_openstack_ip:
+devspace_openstack_ip: "{{ ansible_host }}"
 
 # rename to:
 devspace_omero_branch: develop
