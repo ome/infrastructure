@@ -132,6 +132,51 @@ def append_hostvars(hostvars, groups, key, server, namegroup=False):
         groups[group].append(key)
 
 
+def is_ssh_proxy_host(server, network):
+    """
+    Checks the metadata to see if this is an SSH proxy host.
+    If it also has a floating IP then return this, otherwise return None.
+    """
+    try:
+        if not server['openstack']['metadata']['is_ssh_proxy_host']:
+            return
+    except KeyError:
+        return
+
+    for port in server['openstack']['addresses'][network]:
+        if port['OS-EXT-IPS:type'] == 'floating':
+            return port['addr']
+
+
+def update_ssh_proxy_host(hostvars):
+    # Look for a host in the same network which has property
+    # 'ssh_proxy_host: true'. If found set this as a SSH proxy in
+    # ansible_ssh_common_args
+    network_hosts = {}
+    network_ssh_proxy = {}
+    ssh_proxy_fmt = '-o ProxyCommand="ssh -W %%h:%%p -q %%r@%s"'
+
+    for (h, server) in hostvars.iteritems():
+        for network in server['openstack']['addresses']:
+            try:
+                network_hosts[network].append(server)
+            except KeyError:
+                network_hosts[network] = [server]
+
+            # If there are multiple proxies just use the first
+            if network not in network_ssh_proxy:
+                ssh_ip = is_ssh_proxy_host(server, network)
+                if ssh_ip:
+                    network_ssh_proxy[network] = ssh_ip
+
+    for (h, server) in hostvars.iteritems():
+        for network in server['openstack']['addresses']:
+            if network in network_ssh_proxy:
+                if 'ansible_ssh_common_args' not in server:
+                    server['ansible_ssh_common_args'] = (
+                        ssh_proxy_fmt % network_ssh_proxy[network])
+
+
 def get_host_groups_from_cloud(inventory):
     groups = collections.defaultdict(list)
     firstpass = collections.defaultdict(list)
@@ -163,6 +208,8 @@ def get_host_groups_from_cloud(inventory):
                     append_hostvars(
                         hostvars, groups, server['id'], server,
                         namegroup=True)
+
+    update_ssh_proxy_host(hostvars)
     groups['_meta'] = {'hostvars': hostvars}
     return groups
 
