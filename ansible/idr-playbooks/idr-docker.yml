@@ -199,7 +199,6 @@
   # You must ensure it has the correct permissions for writing
   - idr_jupyter_notebook_host_volume: /data/idr-notebooks
   - idr_jupyter_notebook_repo: https://github.com/IDR/idr-notebooks.git
-  - idr_jupyter_notebook_repo_version: HEAD
   - idr_jupyter_omero_host: "{{ hostvars[groups[idr_environment | default('idr') + '-a-omero-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address'] }}"
   - idr_jupyter_omero_user: public
   - idr_jupyter_omero_pass: public
