@@ -55,6 +55,9 @@ idr_vm_security_groups: >
     (idr_vm_management | ternary(['idr-web-external'], []))
   }}
 
+# Additional SSH metadata
+idr_vm_ssh_metadata: "{{ idr_vm_bastion | ternary([('is_ssh_proxy_host', 'true')], []) }}"
+
 idr_vm_default_groups_database:
 - database-hosts
 - "{{ idr_environment }}-database-hosts"

@@ -17,9 +17,13 @@
     flavor: "{{ idr_vm_flavour }}"
     nics: "{{ idr_vm_networks }}"
     auto_ip: "{{ idr_vm_assign_floating_ip }}"
-    meta:
-      hostname: "{{ idr_vm_name }}"
-      groups: "{{ (idr_vm_groups + idr_vm_extra_groups) | join(',') }}"
+    meta: >
+      {{ dict([
+          ("hostname", idr_vm_name),
+          ("groups", ','.join(idr_vm_groups + idr_vm_extra_groups)),
+        ] +
+        idr_vm_ssh_metadata
+      ) }}
     security_groups: "{{ idr_vm_security_groups | join(',') }}"
   register: vm
   with_sequence: "count={{ idr_vm_count }}"
