@@ -68,6 +68,10 @@ annotations have links to defined, published controlled vocabularies.
 [![graml-sysgroA](/webgateway/render_thumbnail/1230008/96/  "JL_120731_S6A [Well F-7; Field #1]")](/webclient/?show=image-1230008)
 [![mitocheck](/webgateway/render_thumbnail/1484759/96/  "LT0002_02 [Well E2, Field 1]")](/webclient/?show=image-1484759)
 
+## Analysis platform
+
+The IDR includes a [virtual analysis environment](/jupyter/) that provides full access to all data. Please contact us for an account.
+
 ## Funding and Project Participants
 
 This project is funded by the BBSRC (BB/M018423/1) and is a collaboration
