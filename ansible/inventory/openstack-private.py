@@ -126,6 +126,7 @@ def append_hostvars(hostvars, groups, key, server, namegroup=False):
 
     hostvars[key] = dict(
         ansible_ssh_host=ansible_ssh_host,
+        ansible_host=ansible_ssh_host,
         openstack=server)
     for group in get_groups_from_server(server, namegroup=namegroup):
         groups[group].append(key)
