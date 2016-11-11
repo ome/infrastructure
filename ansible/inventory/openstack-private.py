@@ -114,13 +114,30 @@ def get_host_groups(inventory, refresh=False):
 
 def append_hostvars(hostvars, groups, key, server, namegroup=False):
     ansible_ssh_host = None
+
+    # shade returns a dict of networks, but the order in which the networks
+    # were assigned may be significant.
+    # Check for a custom metadata property `network_order` that indicates
+    # the order of networks
+    try:
+        network_order = server.metadata['network_order'].split(',')
+        for network in network_order:
+            for port in server['addresses'][network]:
+                if port['OS-EXT-IPS:type'] == 'fixed':
+                    ansible_ssh_host = port['addr']
+                    break
+            if ansible_ssh_host:
+                break
+    except KeyError:
+        pass
+
     for network, ports in server['addresses'].iteritems():
+        if ansible_ssh_host:
+            break
         for port in ports:
             if port['OS-EXT-IPS:type'] == 'fixed':
                 ansible_ssh_host = port['addr']
                 break
-        if ansible_ssh_host:
-            break
     if not ansible_ssh_host:
         ansible_ssh_host = server['interface_ip']
 
