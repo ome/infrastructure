@@ -1,6 +1,7 @@
 # Runs all storage related playbooks for setting up the IDR infrastructure
 # This will be specific to your Openstack and local environment
 
+- include: idr-upgrade-dist.yml
 - include: os-idr-volumes.yml
 - include: idr-dundee-nfs.yml
 - include: idr-ebi-nfs.yml
