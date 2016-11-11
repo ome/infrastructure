@@ -9,10 +9,8 @@ IPV6INIT={{ item.ipv6init }}
 {% else %}
 IPV6INIT=yes
 {% endif %}
-{% if 'mtu' in item %}
+{% if 'mtu' in item and item['mtu'] %}
 MTU={{ item.mtu }}
-{% else %}
-MTU=1500
 {% endif %}
 ONBOOT=yes
 {% if 'networkmanager' in item %}
