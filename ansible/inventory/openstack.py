@@ -219,6 +219,11 @@ def main():
                     'expand_hostvars': True,
                 }
             ))
+        # shade.inventory ignores OS_CLOUD
+        # http://git.openstack.org/cgit/openstack-infra/shade/tree/shade/inventory.py?h=1.12.1#n38
+        cloud = os.getenv('OS_CLOUD')
+        if cloud:
+            inventory_args['cloud'] = cloud
 
         inventory = shade.inventory.OpenStackInventory(**inventory_args)
 
