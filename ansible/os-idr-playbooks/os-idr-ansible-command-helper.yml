@@ -13,27 +13,7 @@
 - hosts: localhost
   connection: local
 
-  pre_tasks:
-
-    # First try searching IDR_ENVIRONMENT-bastion-hosts, if there
-    # isn't one try management-hosts
-    - name: Get Bastion IP
-      set_fact:
-        idr_bastion_ip: "{{ hostvars[groups[(idr_environment | default('idr')) + '-bastion-hosts'].0].openstack.public_v4 }}"
-      ignore_errors: True
-      when: idr_bastion_ip is not defined
-
-    - name: Get Bastion IP
-      set_fact:
-        idr_bastion_ip: "{{ hostvars[groups['management-hosts'].0].openstack.public_v4 }}"
-      when: idr_bastion_ip is not defined
-
-    - fail:
-        msg: "Could not find bastion IP"
-      when: idr_bastion_ip is not defined
-
-    - debug:
-        var: idr_bastion_ip
+  tasks:
 
     - set_fact:
         ansible_command: >
@@ -41,12 +21,13 @@
 
           cd {{ playbook_dir | dirname }}
 
+          export ANSIBLE_HOST_KEY_CHECKING=False
+
           ansible-playbook
           -i {{ inventory_file | ternary(inventory_file, inventory_dir) }}
           --diff
           -u centos
           -e idr_environment={{ idr_environment | default('idr') }}
-          -e ansible_ssh_common_args="'-o ProxyCommand=\\\"ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -W %h:%p -q centos@{{ idr_bastion_ip }}\\\" -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'"
           idr-playbooks/idr-00-preinstall.yml
           idr-playbooks/idr-01-install-idr.yml
           idr-playbooks/idr-03-postinstall.yml
