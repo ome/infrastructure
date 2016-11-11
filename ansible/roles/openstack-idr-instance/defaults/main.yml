@@ -58,6 +58,9 @@ idr_vm_security_groups: >
 # Additional SSH metadata
 idr_vm_ssh_metadata: "{{ idr_vm_bastion | ternary([('is_ssh_proxy_host', 'true')], []) }}"
 
+# Information on order of networks
+idr_vm_network_metadata: "{{ [('network_order', idr_vm_networks | default([]) | map(attribute='net-name') | join(',') )] }}"
+
 idr_vm_default_groups_database:
 - database-hosts
 - "{{ idr_environment }}-database-hosts"
