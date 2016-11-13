@@ -155,7 +155,7 @@ def is_ssh_proxy_host(server, network):
     If it also has a floating IP then return this, otherwise return None.
     """
     try:
-        if not server['openstack']['metadata']['is_ssh_proxy_host']:
+        if server['openstack']['metadata']['ssh_proxy_host'] != 'proxy':
             return
     except KeyError:
         return
@@ -165,9 +165,24 @@ def is_ssh_proxy_host(server, network):
             return port['addr']
 
 
+def is_ssh_proxy_host_required(server):
+    # Checks the metadata to see if a SSH proxy host is required for access.
+    # This dynamic inventory intentionally always returns the private IP of
+    # a server, so effectively the proxy server must still connect via the
+    # external proxy floating IP.
+    try:
+        proxy = server['openstack']['metadata']['ssh_proxy_host']
+        if proxy in ('proxy', 'required'):
+            return True
+    except KeyError:
+        pass
+    return False
+
+
 def update_ssh_proxy_host(hostvars):
-    # Look for a host in the same network which has property
-    # 'ssh_proxy_host: true'. If found set this as a SSH proxy in
+    # If the server metadata has `ssh_proxy_host=required` then
+    # look for a host in the same network which has property
+    # `ssh_proxy_host=proxy` and set this as a SSH proxy in
     # ansible_ssh_common_args
     network_hosts = {}
     network_ssh_proxy = {}
@@ -187,11 +202,14 @@ def update_ssh_proxy_host(hostvars):
                     network_ssh_proxy[network] = ssh_ip
 
     for (h, server) in hostvars.iteritems():
+        if not is_ssh_proxy_host_required(server):
+            continue
+
         for network in server['openstack']['addresses']:
-            if network in network_ssh_proxy:
-                if 'ansible_ssh_common_args' not in server:
-                    server['ansible_ssh_common_args'] = (
-                        ssh_proxy_fmt % network_ssh_proxy[network])
+            if (network in network_ssh_proxy and
+                    'ansible_ssh_common_args' not in server):
+                server['ansible_ssh_common_args'] = (
+                    ssh_proxy_fmt % network_ssh_proxy[network])
 
 
 def get_host_groups_from_cloud(inventory):
