@@ -39,6 +39,14 @@
 # use_hostnames changes the behavior from registering every host with its UUID
 #               and making a group of its hostname to only doing this if the
 #               hostname in question has more than one server
+#
+# This dynamic inventory has been modified from the upstream version:
+# - It always returns private IPs for servers.
+# - If the server metadata contains `ssh_proxy_host` this will be used to
+#   automatically find a SSH proxy server and sets a host-var
+#   `ansible_ssh_common_args` on the server.
+# - If the server metadata contains `network_order` these networks will be
+#   searched for a private IP in that order.
 
 import argparse
 import collections
