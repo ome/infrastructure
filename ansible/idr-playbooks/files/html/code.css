@@ -1,0 +1,22 @@
+pre {
+    background-color: #f7f7f7;
+    box-sizing: border-box;
+    line-height: 1.45;
+    margin: 16px;
+    overflow: auto;
+    overflow-wrap: normal;
+    padding: 16px;
+}
+code {
+    background-color: transparent;
+    content: normal;
+    display: inline;
+    font-family: monospace;
+    font-size: 10pt;
+    line-height: inherit;
+    margin: 0;
+    overflow: visible;
+    overflow-wrap: normal;
+    white-space: pre;
+    word-break: normal;
+}

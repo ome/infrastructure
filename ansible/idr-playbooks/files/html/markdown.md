@@ -68,6 +68,10 @@ annotations have links to defined, published controlled vocabularies.
 [![graml-sysgroA](/webgateway/render_thumbnail/1230008/96/  "JL_120731_S6A [Well F-7; Field #1]")](/webclient/?show=image-1230008)
 [![mitocheck](/webgateway/render_thumbnail/1484759/96/  "LT0002_02 [Well E2, Field 1]")](/webclient/?show=image-1484759)
 
+## Analysis platform
+
+The IDR includes a [virtual analysis environment](/jupyter/) that provides full access to all data. Please contact us for an account.
+
 ## Funding and Project Participants
 
 This project is funded by the BBSRC (BB/M018423/1) and is a collaboration
@@ -86,3 +90,6 @@ from studies on human, Drosophila, budding and fission yeast, and mouse cells.
 Imaging modalities included so far include high content screens and
 histopathology, super-resolution and 3D-SIM datasets.
 
+## The IDR infrastructure
+
+Details of the infrastructure underlying the IDR, and instructions for deploying your IDR own version are on the [IDR Deployment page](/about/idr-deployment.html).
