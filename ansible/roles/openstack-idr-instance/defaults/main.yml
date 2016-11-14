@@ -103,3 +103,9 @@ idr_vm_default_groups_management:
 - management-hosts
 # TODO: Should they also be in an idr_environment group?
 #- "{{ idr_environment }}-management-hosts"
+
+idr_vm_cloud_group: >
+  {{
+    (idr_deployment_cloud | default('') | length > 0) | ternary(
+      [idr_deployment_cloud + '-hosts'], [])
+  }}
