@@ -1,0 +1,85 @@
+---
+# tasks file for roles/jekyll-site
+
+# Playbook for installing Jekyll and its prerequisites
+- name: Jekyll installation
+  hosts: web-linux # TODO
+  vars:
+    ansible_user: centos
+
+  tasks:
+
+  - name: Install required packages
+    become: yes
+    yum:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - rubygems
+      - ruby-devel
+      - make
+      - gcc
+
+  - name: Install Bundler
+    gem:
+      name: bundler
+      state: present
+      user_install: no
+    become: yes
+
+  - name: Install Jekyll
+    gem:
+      name: jekyll
+      state: present
+      user_install: no
+      include_doc: no
+    become: yes
+
+
+# Playbook for installing Jekyll and its prerequisites
+- name: Jekyll deployment
+  hosts: web-linux # TODO
+  vars:
+    ansible_user: centos
+    site_owner: centos
+    site_group: centos
+    site_root: /var/www/www-dev.openmicroscopy.org/html
+    site_name: www-dev.openmicroscopy.org
+    site_aliases:
+      - web-test.openmicroscopy.org
+    github_user: lunson
+    github_repo: www.openmicroscopy.org
+    github_branch: ome-redesign-master
+
+  roles:
+    - nginx
+
+  tasks:
+
+  - name: Create "{{ site_name }}" root directory
+    file:
+      state: directory
+      dest: "{{ site_root }}"
+      owner: "{{ site_owner }}"
+      group: "{{ site_group }}"
+      mode: 0755
+      serole: _default
+      setype: _default
+      seuser: _default
+    become: yes
+
+  - name: Clone {{ site_name }} source code repository
+    git:
+      repo: https://github.com/{{ github_user }}/{{ github_repo }}
+      version: "{{ github_branch }}"
+      dest: /home/{{ site_owner }}/{{ site_name }}
+
+  - name: Build the website using Jekyll
+    command: jekyll build chdir=/home/{{ site_owner }}/{{ site_name }} --destination {{ site_root }}
+
+  - name: Update Nginx configuration for {{ site_name }}
+    template:
+      src: templates/www-nginx.j2
+      dest: /etc/nginx/conf.d/{{ site_name }}.conf
+    become: yes
+    notify: restart nginx
