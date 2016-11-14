@@ -3,6 +3,7 @@
 # Copyright (c) 2012, Marco Vito Moscaritolo <marco@agavee.com>
 # Copyright (c) 2013, Jesse Keating <jesse.keating@rackspace.com>
 # Copyright (c) 2015, Hewlett-Packard Development Company, L.P.
+# Copyright (C) 2016, University of Dundee & Open Microscopy Environment
 #
 # This module is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
