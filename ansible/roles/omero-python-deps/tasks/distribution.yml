@@ -1,0 +1,10 @@
+---
+# Install python modules from distribution packages
+
+- name: omero python deps | distribution pillow
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - python-pillow
