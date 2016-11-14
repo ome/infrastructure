@@ -18,11 +18,14 @@
     - python-markdown
 
 # dependency for make movie
+- name: Import key to install mencoder
+  sudo: yes
+  rpm_key: state=present key=http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
+
 - name: system packages | setup upstream mencoder repo
   become: yes
   yum:
-    name: rpm --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
-    name: rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
+    name: http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
     state: present
 
 - name: system packages | install mencoder
