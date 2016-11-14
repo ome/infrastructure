@@ -1,0 +1,31 @@
+---
+# tasks file for roles/scripts-deps
+
+- name: system packages | install epel repo
+  become: yes
+  yum:
+    name: epel-release
+    state: present
+
+# dependencies for pdf export (figure)
+- name: system packages | install dependencies for pdf export
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - python-reportlab
+    - python-markdown
+
+# dependency for make movie
+- name: system packages | setup upstream mencoder repo
+  become: yes
+  yum:
+    name: rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
+    state: present
+
+- name: system packages | install mencoder
+  become: yes
+  yum:
+    name: mencoder
+    state: present
