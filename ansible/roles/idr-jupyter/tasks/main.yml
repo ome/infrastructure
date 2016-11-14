@@ -1,0 +1,55 @@
+---
+# tasks file for roles/docker-jupyterhub
+
+- name: jupyterhub | check variables
+  fail:
+    msg: "Invalid value of idr_jupyter_authenticator: {{ idr_jupyter_authenticator }}"
+  when: "idr_jupyter_authenticator not in ['system', 'github']"
+
+# This will be used to pass the config file into the server, and for the
+# server to store persistent state
+- name: jupyterhub | create jupyter working directory
+  become: yes
+  file:
+    path: /srv/jupyterhub
+    state: directory
+
+- name: jupyterhub | copy jupyter configuration file
+  become: yes
+  template:
+    src: jupyterhub_config-py.j2
+    dest: /srv/jupyterhub/jupyterhub_config.py
+  register: jupyterconfig
+
+- name: jupyterhub | pull images
+  become: yes
+  docker_image:
+    name: "{{ item }}"
+    state: "present"
+    force: "{{ idr_jupyter_pull_latest }}"
+  with_items:
+  - "{{ idr_jupyter_hub_image }}"
+  - "{{ idr_jupyter_notebook_image }}"
+
+# TODO: The above `docker_image` only pulls latest
+# Should be fixed in Ansible 2.2
+# https://github.com/ansible/ansible/pull/16680
+# idr_jupyter_hub_image is automatically pulled since the systemd service
+# runs docker, but docker-py won't pull idr_jupyter_notebook_image
+- name: jupyterhub | check if notebook image present (ansible 2.1 bug)
+  become: yes
+  command: docker images -q "{{ idr_jupyter_notebook_image }}"
+  register: docker_image_jhnote
+  always_run: yes
+  changed_when: "{{ docker_image_jhnote.stdout | length }} < 1"
+
+- name: jupyterhub | pull notebook image (ansible 2.1 bug)
+  become: yes
+  command: docker pull "{{ idr_jupyter_notebook_image }}"
+  when: docker_image_jhnote.changed
+
+- include: docker.yml
+  when: not idr_jupyter_docker_swarm
+
+- include: docker.yml
+  when: idr_jupyter_docker_swarm
