@@ -14,30 +14,16 @@
     github_branch: ome-redesign-master
 
   roles:
-    - nginx
+    - role: jekyll-site
+      jekyll_site_owner: "{{ site_owner }}"
+      jekyll_site_group: "{{ site_group }}"
+      jekyll_site_name: "{{ site_name }}"
+      jekyll_site_git_repo: https://github.com/{{ github_user }}/{{ github_repo }}
+      jekyll_site_git_branch: "{{ github_branch }}"
+      jekyll_site_force_rebuild: True
+    - role: nginx
 
   tasks:
-
-  - name: Create "{{ site_name }}" root directory
-    file:
-      state: directory
-      dest: "{{ site_root }}"
-      owner: "{{ site_owner }}"
-      group: "{{ site_group }}"
-      mode: 0755
-      serole: _default
-      setype: _default
-      seuser: _default
-    become: yes
-
-  - name: Clone {{ site_name }} source code repository
-    git:
-      repo: https://github.com/{{ github_user }}/{{ github_repo }}
-      version: "{{ github_branch }}"
-      dest: /home/{{ site_owner }}/{{ site_name }}
-
-  - name: Build the website using Jekyll
-    command: jekyll build chdir=/home/{{ site_owner }}/{{ site_name }} --destination {{ site_root }}
 
   - name: Update Nginx configuration for {{ site_name }}
     template:
