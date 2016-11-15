@@ -122,4 +122,10 @@
   tasks:
   - command: python -c 'import reportlab'
   - command: python -c 'import markdown'
+  - command: python -c 'import os.path; print os.path.exists("/usr/bin/mencoder")'
+    register: value
+
+  - assert:
+      that:
+      - "value.stdout == 'True'"
 
