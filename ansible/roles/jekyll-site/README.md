@@ -4,6 +4,12 @@ Jekyll site
 Install Jekyll and setup a site.
 
 
+Dependencies
+------------
+
+This role requires `git` and therefore includes `versioncontrol-utils` as a dependency.
+
+
 Role Variables
 --------------
 

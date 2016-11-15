@@ -97,7 +97,6 @@
 
 - hosts: jekyll
   roles:
-  - role: versioncontrol-utils
   - role: jekyll-site
     jekyll_site_name: test
     jekyll_site_git_repo: https://github.com/lunson/www.openmicroscopy.org
