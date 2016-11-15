@@ -8,7 +8,8 @@ jekyll_site_sourcedir: "/home/{{ jekyll_site_owner }}/{{ jekyll_site_name }}"
 jekyll_site_root: /var/www/{{ jekyll_site_name }}/html
 # Reguired: URL to git repository
 #jekyll_site_git_repo:
-jekyll_site_git_branch: HEAD
+# Optional, default omit
+#jekyll_site_git_branch:
 jekyll_site_baseurl: ""
 
 jekyll_site_force_git: False

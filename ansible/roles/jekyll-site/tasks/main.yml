@@ -44,7 +44,7 @@
   become_user: "{{ jekyll_site_owner }}"
   git:
     repo: "{{ jekyll_site_git_repo }}"
-    version: "{{ jekyll_site_git_branch }}"
+    version: "{{ jekyll_site_git_branch | default(omit) }}"
     dest: "{{ jekyll_site_sourcedir }}"
     force: "{{ jekyll_site_force_git }}"
   register: jekyll_site_clone
