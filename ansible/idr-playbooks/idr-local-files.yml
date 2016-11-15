@@ -4,31 +4,6 @@
 # TODO: This is a temporary playbook for copying ad-hoc files
 # This should be cleaned up and moved/combined into an appropriate role
 
-- hosts: "{{ idr_environment | default('idr') }}-proxy-hosts"
-
-  tasks:
-
-  - name: Create IDR landing page directory
-    become: yes
-    file:
-      path: /srv/www/html
-#      recurse: yes
-      serole: _default
-      setype: _default
-      seuser: _default
-      state: directory
-
-# TODO: Consider synchronize, though this requires sudo tty
-  - name: Create IDR landing page
-    become: yes
-    #synchronize:
-    copy:
-      dest: /srv/www/html/
-      src: "{{ playbook_dir }}/files/html/"
-      #delete: yes
-      #owner: no
-      #recursive: yes
-
 
 # Change the branding on the public facing OMERO, not needed for analysis
 - hosts: "{{ idr_environment | default('idr') }}-omero-hosts"

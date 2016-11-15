@@ -167,7 +167,6 @@ nginx_proxy_direct_locations:
 - location: "= /"
   redirect302: /about
 - location: "^~ /about"
-  index: idr.html
   alias: /srv/www/html
 
 
@@ -178,3 +177,13 @@ nginx_proxy_direct_locations:
 #- "^~ /login"
 
 #nginx_proxy_set_header_host: 'idr-demo.openmicroscopy.org'
+
+
+######################################################################
+# Static webpages (/about) on proxy
+
+jekyll_site_sourcedir: /home/omero/about
+jekyll_site_root: /srv/www/html
+jekyll_site_git_repo: https://github.com/IDR/idr-demo.openmicroscopy.org.git
+jekyll_site_force_git: True
+jekyll_site_baseurl: /about

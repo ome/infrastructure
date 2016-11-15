@@ -45,3 +45,9 @@
     nginx_ssl_certificate_key: "{{ nginx_proxy_ssl_certificate_key }}"
     when: "{{ not idr_nginx_ssl_production | default(True) | bool }}"
   - role: nginx-proxy
+
+
+# Playbook for setting up the IDR static website pages
+- hosts: "{{ idr_environment | default('idr') }}-proxy-hosts"
+  roles:
+  - role: jekyll-site
