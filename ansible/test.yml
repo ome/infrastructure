@@ -114,3 +114,12 @@
       state: directory
   # Setup a port-forward to 8000 and you should be able to login as
   # user:user password:ome
+
+- hosts: scriptsutils
+  roles:
+  - role: scripts-utils
+
+  tasks:
+  - command: python -c 'import reportlab'
+  - command: python -c 'import markdown'
+
