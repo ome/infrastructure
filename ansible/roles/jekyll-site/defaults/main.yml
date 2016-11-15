@@ -1,0 +1,13 @@
+---
+# defaults file for roles/jekyll-site
+
+jekyll_site_owner: root
+jekyll_site_group: root
+jekyll_site_name: localhost
+jekyll_site_sourcedir: "/home/{{ jekyll_site_owner }}/{{ jekyll_site_name }}"
+jekyll_site_root: /var/www/{{ jekyll_site_name }}/html
+# Reguired: URL to git repository
+#jekyll_site_git_repo:
+jekyll_site_git_branch: HEAD
+jekyll_site_update: False
+jekyll_site_baseurl: ""
