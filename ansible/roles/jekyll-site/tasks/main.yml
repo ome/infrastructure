@@ -46,8 +46,7 @@
     repo: "{{ jekyll_site_git_repo }}"
     version: "{{ jekyll_site_git_branch }}"
     dest: "{{ jekyll_site_sourcedir }}"
-    force: "{{ jekyll_site_update }}"
-    update: "{{ jekyll_site_update }}"
+    force: "{{ jekyll_site_force_git }}"
   register: jekyll_site_clone
 
 - name: jekyll | build jekyll website
@@ -60,4 +59,4 @@
          ternary('--baseurl ' + jekyll_site_baseurl, '') }}
   args:
     chdir: "{{ jekyll_site_sourcedir }}"
-  when: "{{ (jekyll_site_clone | changed) or jekyll_site_update }}"
+  when: "{{ (jekyll_site_clone | changed) or jekyll_site_force_rebuild }}"

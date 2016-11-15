@@ -18,7 +18,8 @@ Optional variables:
 - `jekyll_site_root`: The destination directory for the Jekyll output
 - `jekyll_site_owner`, `jekyll_site_group`: The system owner and group of `jekyll_site_sourcedir` and `jekyll_site_root`, default `root:root`
 - `jekyll_site_git_branch`: Git branch, default `HEAD`
-- `jekyll_site_update`: Force an update of the git checkout and remove modified files, and also force a rerun of `jekyll build`, default `False`
+- `jekyll_site_force_git`: Remove modified files in the git repository, default `False`
+- `jekyll_site_force_rebuild`: Force a rebuild even if the git checkout is unchanged, default `False`
 - `jekyll_site_baseurl`: Prefix for the Jekyll site
 
 
