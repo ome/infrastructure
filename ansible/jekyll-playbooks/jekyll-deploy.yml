@@ -14,13 +14,13 @@
     github_branch: ome-redesign-master
 
   roles:
-    - role: jekyll-site
-      jekyll_site_owner: "{{ site_owner }}"
-      jekyll_site_group: "{{ site_group }}"
-      jekyll_site_name: "{{ site_name }}"
-      jekyll_site_git_repo: https://github.com/{{ github_user }}/{{ github_repo }}
-      jekyll_site_git_branch: "{{ github_branch }}"
-      jekyll_site_force_rebuild: True
+    - role: jekyll-build
+      jekyll_build_owner: "{{ site_owner }}"
+      jekyll_build_group: "{{ site_group }}"
+      jekyll_build_name: "{{ site_name }}"
+      jekyll_build_git_repo: https://github.com/{{ github_user }}/{{ github_repo }}
+      jekyll_build_git_branch: "{{ github_branch }}"
+      jekyll_build_force_rebuild: True
     - role: nginx
 
   tasks:
