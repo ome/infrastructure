@@ -126,6 +126,7 @@ def append_hostvars(hostvars, groups, key, server, namegroup=False):
 
     hostvars[key] = dict(
         ansible_ssh_host=ansible_ssh_host,
+        ansible_host=ansible_ssh_host,
         openstack=server)
     for group in get_groups_from_server(server, namegroup=namegroup):
         groups[group].append(key)
@@ -226,6 +227,11 @@ def main():
                     'expand_hostvars': True,
                 }
             ))
+        # shade.inventory ignores OS_CLOUD
+        # http://git.openstack.org/cgit/openstack-infra/shade/tree/shade/inventory.py?h=1.12.1#n38
+        cloud = os.getenv('OS_CLOUD')
+        if cloud:
+            inventory_args['cloud'] = cloud
 
         inventory = shade.inventory.OpenStackInventory(**inventory_args)
 
