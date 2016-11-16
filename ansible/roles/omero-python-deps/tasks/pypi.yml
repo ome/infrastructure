@@ -7,6 +7,7 @@
     name: "{{ item }}"
     state: present
   with_items:
+  - gcc
   - libjpeg-devel
   - libtiff-devel
   - zlib-devel
