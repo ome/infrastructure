@@ -97,10 +97,11 @@
 
 - hosts: jekyll
   roles:
-  - role: jekyll-site
-    jekyll_site_name: test
-    jekyll_site_git_repo: https://github.com/lunson/www.openmicroscopy.org
-    jekyll_site_git_branch: ome-redesign-master
+  - role: jekyll-build
+    jekyll_build_name: test
+    # TODO: Use the official repo once the site is ready to deploy
+    jekyll_build_git_repo: https://github.com/lunson/www.openmicroscopy.org
+    jekyll_build_git_branch: ome-redesign-master
 
   tasks:
   - stat:
