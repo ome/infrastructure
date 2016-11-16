@@ -30,9 +30,9 @@
     -u {{ omero_user_admin_user }}
     -w {{ omero_user_admin_pass | quote }}
     add
-    {{ item.login }}
-    {{ item.firstname }}
-    {{ item.lastname }}
+    {{ item.login | quote }}
+    {{ item.firstname | quote }}
+    {{ item.lastname | quote }}
     --userpassword {{ item.password | quote }}
     {{ item.groups }}
   when: >

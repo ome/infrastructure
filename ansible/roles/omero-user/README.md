@@ -29,7 +29,7 @@ Create OMERO user accounts and groups:
   - `firstname`: First name
   - `lastname`: Last name
   - `password`: Password
-  - `groups`: String containing group arguments (see `bin/omero user add --help`)
+  - `groups`: String containing group arguments (see `bin/omero user add --help`), this must be quoted if the group-names contain spaces or other special characters
   - `force`: Forcibly reset password, default `False` (requires direct database access)
 - `omero_user_reset_root_password`: The new OMERO `root` password (requires direct database access)
 - `omero_group_create`: List of dictionaries of OMERO groups to create with fields:

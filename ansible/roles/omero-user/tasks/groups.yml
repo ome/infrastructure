@@ -30,7 +30,7 @@
     -u {{ omero_user_admin_user }}
     -w {{ omero_user_admin_pass | quote }}
     add
-    {{ item.name }}
+    {{ item.name | quote }}
     --type {{ item.type }}
   when: >
     {{ omero_group_list | selectattr('name', 'equalto', item.name) |
