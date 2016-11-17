@@ -95,6 +95,22 @@
       that:
       - "sphinx_version.stdout == 'Sphinx (sphinx-build) 1.2.3'"
 
+- hosts: jekyll
+  roles:
+  - role: jekyll-build
+    jekyll_build_name: test
+    # TODO: Use the official repo once the site is ready to deploy
+    jekyll_build_git_repo: https://github.com/lunson/www.openmicroscopy.org
+    jekyll_build_git_branch: ome-redesign-master
+
+  tasks:
+  - stat:
+      path: "/var/www/test/html/index.html"
+    register: st
+
+  - assert:
+      that: "st.stat.isreg"
+
 - hosts: jupyter
   roles:
   - role: docker
