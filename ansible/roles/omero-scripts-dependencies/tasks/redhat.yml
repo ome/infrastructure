@@ -1,5 +1,5 @@
 ---
-# tasks file for roles/scripts-deps
+# tasks file for roles/omero-scripts-dependencies
 # if the os is centOS
 
 - name: system packages | install epel repo
