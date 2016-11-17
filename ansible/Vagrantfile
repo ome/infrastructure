@@ -46,6 +46,17 @@ Vagrant.configure(2) do |config|
     end
   end
 
+  [
+    "omero-server",
+  ].each do |server|
+    config.vm.define "#{server}" do |node|
+      node.vm.box = "centos/7"
+      node.vm.provision "ansible" do |ansible|
+        ansible.playbook = "tests/#{server}.yml"
+      end
+    end
+  end
+
   config.vm.define "training-server" do |training|
     training.vm.box = "centos/7"
     training.vm.provision "ansible" do |ansible|
