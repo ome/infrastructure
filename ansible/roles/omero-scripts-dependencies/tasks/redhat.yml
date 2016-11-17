@@ -21,7 +21,9 @@
 # dependency for make movie
 - name: Import key to install mencoder
   sudo: yes
-  rpm_key: state=present key=http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
+  rpm_key: 
+    state: present
+    key: http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
 
 - name: system packages | setup upstream mencoder repo
   become: yes
