@@ -253,7 +253,9 @@ def get_host_groups_from_cloud(inventory):
                         hostvars, groups, server['id'], server,
                         namegroup=True)
 
-    update_ssh_proxy_host(hostvars)
+    auto_proxy = os.getenv('OS_PROXY_DISCOVER')
+    if auto_proxy and auto_proxy != '0':
+        update_ssh_proxy_host(hostvars)
     groups['_meta'] = {'hostvars': hostvars}
     return groups
 
