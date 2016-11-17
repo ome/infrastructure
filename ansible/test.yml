@@ -131,7 +131,7 @@
   # Setup a port-forward to 8000 and you should be able to login as
   # user:user password:ome
 
-- hosts: omeroscriptsdependencies
+- hosts: omeroscriptsdependencies, omeroscriptsdependencies-debian
   roles:
   - role: omero-scripts-dependencies
 
