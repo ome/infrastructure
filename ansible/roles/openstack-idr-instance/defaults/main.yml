@@ -7,11 +7,13 @@
 # Required vars:
 #idr_vm_name
 #idr_vm_image
-#idr_vm_key_name
 #idr_vm_flavour
 
 # Optional, default(omit)
 #idr_vm_private_network
+
+
+idr_vm_keyname: idr-deployment-key
 
 idr_vm_assign_floating_ip: False
 

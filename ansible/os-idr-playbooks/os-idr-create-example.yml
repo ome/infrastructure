@@ -9,12 +9,18 @@
 
   vars:
     - idr_environment: idr
-    #- idr_vm_keyname: VM_KEYNAME
+    - idr_keypair_keys: []
     - vm_image: CentOS 7 1604
     - vm_flavour: m1.large
 
 
   roles:
+
+    ############################################################
+    # Keypairs
+
+    - role: openstack-idr-keypairs
+
 
     ############################################################
     # Security groups

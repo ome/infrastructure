@@ -12,10 +12,10 @@ Defaults: `defaults/main.yml`
 Required variables:
 - `idr_vm_name`: VM hostname
 - `idr_vm_image`: Openstack base image
-- `idr_vm_keyname`: Openstack SSH key
 - `idr_vm_flavour`: Openstack flavour
 
 Optional variables:
+- `idr_vm_keyname`: Openstack SSH key, defaults to `idr-deployment-key` (see the `openstack-idr-keypairs` role)
 - `idr_vm_private_networks`: Use this network instead of the default one
 - `idr_vm_assign_floating_ip`: Assign a floating IP, default `False`
 - `idr_environment`: Use this as a group prefix. You should almost always set this to something other than the default `idr`
