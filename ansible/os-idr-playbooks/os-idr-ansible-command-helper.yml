@@ -22,6 +22,7 @@
           cd {{ playbook_dir | dirname }}
 
           export ANSIBLE_HOST_KEY_CHECKING=False
+          export OS_PROXY_DISCOVER=1
 
           ansible-playbook
           -i {{ inventory_file | ternary(inventory_file, inventory_dir) }}
