@@ -3,8 +3,6 @@
 
 - include: redhat.yml
   when: ansible_os_family == 'RedHat'
-  tags: package
 
 - include: debian.yml
   when: ansible_os_family == 'Debian'
-  tags: package
