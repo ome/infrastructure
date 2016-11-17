@@ -48,6 +48,10 @@ _nginx_proxy_backends_jupyter:
   server: "http://{{ omero_jupyter_host_ansible | default(None) }}"
   websockets: True
   read_timeout: 86400
+  # `proxy_set_header Host $host` is already set in the parent `server` scope,
+  # but there seems to be a issue which means it also needs to be set at the
+  # `location` scope when websockets are used
+  host_header: "$host"
 
 nginx_proxy_backends: >
   {{ _nginx_proxy_backends_omero +
