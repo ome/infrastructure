@@ -131,17 +131,17 @@
   # Setup a port-forward to 8000 and you should be able to login as
   # user:user password:ome
 
-- hosts: scriptsutils
+- hosts: omeroscriptsdependencies
   roles:
-  - role: scripts-utils
+  - role: omero-scripts-dependencies
 
   tasks:
+  - stat: path=/usr/bin/mencoder
+    register: p
   - command: python -c 'import reportlab'
   - command: python -c 'import markdown'
-  - command: python -c 'import os.path; print os.path.exists("/usr/bin/mencoder")'
-    register: value
 
   - assert:
       that:
-      - "value.stdout == 'True'"
+      - p.stat.exists
 
