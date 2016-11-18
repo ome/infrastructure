@@ -78,7 +78,7 @@ nginx_proxy_caches:
   - '"~web(client|gateway)/render_thumbnail/*"'
 - name: omerorender
   maxsize: 40g
-  keysize: 32m
+  keysize: 35m
   inactive: 30d
   match:
   - '"~web(client|gateway)/render_*/*"'
