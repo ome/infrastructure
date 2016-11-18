@@ -5,22 +5,24 @@
   roles:
     - role: jenkinsslave
     - role: virtualenv
-      virtualenv_user: "{{ jenkinsuser }}"
-      virtualenv_path: /home/{{ jenkinsuser }}/virtualenv
-      virtualenv_site_packages: "yes"
-      virtualenv_pip_rpm_dependencies:
-      virtualenv_pip_dependencies:
-      - scc
-      - omego
-      - genshi
-      - yaclifw
-      - PyYAML
-      - Sphinx==1.2.3
-      - epydoc
-      - "django>=1.8,<1.9"
     - role: sudoers
     - role: versioncontrol-utils
     - role: system-monitor-agent
+
+  vars:
+    virtualenv_user: "{{ jenkinsuser }}"
+    virtualenv_path: /home/{{ jenkinsuser }}/virtualenv
+    virtualenv_site_packages: "yes"
+    virtualenv_pip_rpm_dependencies:
+    virtualenv_pip_dependencies:
+    - scc
+    - omego
+    - genshi
+    - yaclifw
+    - PyYAML
+    - Sphinx==1.2.3
+    - epydoc
+    - "django>=1.8,<1.9"
 
 # Deploy OMERO build and runtime prerequisites
 - hosts: ci-omero
