@@ -59,37 +59,44 @@ nginx_proxy_cache_match_uri:
 # Order is important, the first match will be used
 nginx_proxy_caches:
 - name: omero
-  keysize: 10m
+  maxsize: 1g
+  keysize: 1m
   inactive: 30d
   match:
   - default
 - name: omerostatic
-  keysize: 10m
+  maxsize: 200m
+  keysize: 1m
   inactive: 30d
   match:
   - '"~static/*"'
 - name: omerothumbnail
-  keysize: 200m
+  maxsize: 10g
+  keysize: 300m
   inactive: 30d
   match:
   - '"~web(client|gateway)/render_thumbnail/*"'
 - name: omerorender
-  keysize: 4000m
+  maxsize: 40g
+  keysize: 32m
   inactive: 30d
   match:
   - '"~web(client|gateway)/render_*/*"'
 - name: omerometadata
-  keysize: 300m
+  maxsize: 25g
+  keysize: 65m
   inactive: 30d
   match:
   - '"~webclient/metadata_*"'
 - name: omeroapi
-  keysize: 10m
+  maxsize: 10g
+  keysize: 320m
   inactive: 30d
   match:
   - '"~webclient/api/*"'
 - name: omeromapr
-  keysize: 10m
+  maxsize: 5g
+  keysize: 100m
   inactive: 30d
   match:
   - '"~mapr/*"'
