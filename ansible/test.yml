@@ -136,7 +136,8 @@
   - role: omero-scripts-dependencies
 
   tasks:
-  - stat: path=/usr/bin/mencoder
+  - stat: 
+      path: "/usr/bin/mencoder"
     register: p
   - command: python -c 'import reportlab'
   - command: python -c 'import markdown'
