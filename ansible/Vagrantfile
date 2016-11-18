@@ -33,11 +33,11 @@ Vagrant.configure(2) do |config|
     "docs",
     "jekyll",
     "jupyter",
+    "omeroscriptsdependencies",
     "postgres",
     "redis",
     "samba",
-    "selinux",
-    "omeroscriptsdependencies"
+    "selinux"
   ].each do |server|
     config.vm.define "#{server}" do |node|
       node.vm.box = "centos/7"
