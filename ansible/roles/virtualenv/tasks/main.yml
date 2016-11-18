@@ -1,0 +1,36 @@
+---
+
+- name: virtualenv | check variables
+  fail:
+    msg: "Invalid value of virtualenv_user: {{ virtualenv_user }}"
+  when: not virtualenv_user or not virtualenv_user|length>0
+  fail:
+    msg: "Invalid value of virtualenv_path: {{ virtualenv_path }}"
+  when: not virtualenv_path or not virtualenv_path|length>0
+
+- name: virtualenv | install python tools
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - python-pip
+    - python-virtualenv
+
+- name: virtualenv | pip compilation requirements {{ virtualenv_pip_rpm_dependencies }}
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ virtualenv_pip_rpm_dependencies }}"
+
+- name: virtualenv | pypi {{ virtualenv_pip_dependencies }}
+  become: yes
+  become_user: "{{ virtualenv_user }}"
+  pip:
+    name: "{{ item }}"
+    virtualenv: "{{ virtualenv_path }}"
+    virtualenv_command: "virtualenv"
+    virtualenv_site_packages: "{{ virtualenv_site_packages }}"
+    state: present
+  with_items: "{{ virtualenv_pip_dependencies }}"

@@ -1,0 +1,5 @@
+---
+# defaults file for roles/virtualenv
+
+# create virtualenv with --system-site-packages
+virtualenv_site_packages: "no"
