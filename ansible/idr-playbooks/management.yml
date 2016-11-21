@@ -6,9 +6,7 @@
 # requires the internal network IPs of each host
 
 
-# There should be a single management server for each tenancy (i.e. this host
-# is shared across all idr environments in a tenancy)
-- hosts: management-hosts
+- hosts: "{{ idr_environment | default('idr') }}-management-hosts"
 
   roles:
   - role: basedeps  # munin requires EPEL
@@ -24,13 +22,13 @@
       address: 127.0.0.1
       extra: ["use_node_name yes"]
     munin_openstack_groups:
-    - database-hosts
-    - omero-hosts
-    - proxy-hosts
-    - bastion-hosts
-    - dockermanager-hosts
-    - dockerworker-hosts
-    - management-hosts
+    - "{{ idr_environment | default('idr') }}-database-hosts"
+    - "{{ idr_environment | default('idr') }}-omero-hosts"
+    - "{{ idr_environment | default('idr') }}-proxy-hosts"
+    - "{{ idr_environment | default('idr') }}-bastion-hosts"
+    - "{{ idr_environment | default('idr') }}-dockermanager-hosts"
+    - "{{ idr_environment | default('idr') }}-dockerworker-hosts"
+    - "{{ idr_environment | default('idr') }}-management-hosts"
 
   post_tasks:
     - name: Install httpd
@@ -50,13 +48,13 @@
 
 # Install munin client on all servers in all environments
 - hosts: >
-    database-hosts
-    omero-hosts
-    proxy-hosts
-    bastion-hosts
-    dockermanager-hosts
-    dockerworker-hosts
-    management-hosts
+    {{ idr_environment | default('idr') }}-database-hosts
+    {{ idr_environment | default('idr') }}-omero-hosts
+    {{ idr_environment | default('idr') }}-proxy-hosts
+    {{ idr_environment | default('idr') }}-bastion-hosts
+    {{ idr_environment | default('idr') }}-dockermanager-hosts
+    {{ idr_environment | default('idr') }}-dockerworker-hosts
+    {{ idr_environment | default('idr') }}-management-hosts
   roles:
   - role: basedeps  # munin-node requires EPEL
   - role: munin-node
@@ -65,7 +63,9 @@
 
 
 # Install slack notifier on all OMERO servers in all environments
-- hosts: omero-hosts
+- hosts: >
+    {{ idr_environment | default('idr') }}-omero-hosts
+    {{ idr_environment | default('idr') }}-a-omero-hosts
 
   pre_tasks:
   - name: Get short hostname (not the same as the Ansible hostname vars)
