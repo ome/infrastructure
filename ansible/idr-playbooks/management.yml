@@ -82,4 +82,4 @@
   roles:
   - role: omero-logmonitor
     omero_logmonitor_slack_token: "{{ idr_secret_omero_logmonitor_slack_token | default(None) }}"
-    omero_logmonitor_slack_channel: "#idr-notify"
+    omero_logmonitor_slack_channel: "#idr-logs"
