@@ -1,0 +1,14 @@
+---
+# tasks file for roles/omero-user
+
+- include: reset-root-password.yml
+  when: "omero_user_reset_root_password | length > 0"
+
+- include: groups.yml
+  when: omero_group_create
+
+- include: users.yml
+  when: omero_user_create
+
+- include: reset-password.yml
+  when: omero_user_create
