@@ -10,6 +10,14 @@ Most of these scripts should also work on other platforms, providing the VM is b
 
 To get started with a minimal OMERO server, use the example playbook in the [README.md of roles/omero-server](/roles/omero-server/README.md).
 
+
+Roles
+-----
+There are two roles directories.
+- `roles`: These are roles which are considered ready for use. Breaking changes to these roles will be minimised.
+- `roles-dev`: Roles which are still in development, or require special external configuration. These are not recommended for use.
+
+
 OME OpenStack Ansible
 ----------------------
 
