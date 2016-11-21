@@ -186,8 +186,8 @@ nginx_proxy_direct_locations:
 ######################################################################
 # Static webpages (/about) on proxy
 
-jekyll_site_sourcedir: /home/omero/about
-jekyll_site_root: /srv/www/html
-jekyll_site_git_repo: https://github.com/IDR/idr-demo.openmicroscopy.org.git
-jekyll_site_force_git: True
-jekyll_site_baseurl: /about
+jekyll_build_sourcedir: /home/omero/about
+jekyll_build_root: /srv/www/html
+jekyll_build_git_repo: https://github.com/IDR/idr-demo.openmicroscopy.org.git
+jekyll_build_force_git: True
+jekyll_build_baseurl: /about

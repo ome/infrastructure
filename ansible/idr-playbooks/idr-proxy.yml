@@ -50,4 +50,4 @@
 # Playbook for setting up the IDR static website pages
 - hosts: "{{ idr_environment | default('idr') }}-proxy-hosts"
   roles:
-  - role: jekyll-site
+  - role: jekyll-build
