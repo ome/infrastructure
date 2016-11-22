@@ -14,13 +14,19 @@ Required variables:
 - `idr_vm_image`: Openstack base image
 - `idr_vm_flavour`: Openstack flavour
 
-Optional variables:
+Optional instance variables:
 - `idr_environment`: Use this as a group prefix. This is required to ensure servers can lookup the address of other servers in the group, and is particularly important if multiple groups of servers are running in the same project. The default is `idr` but you should almost always set it to something else.
 - `idr_vm_keyname`: Openstack SSH key, defaults to `idr-deployment-key` (see the `openstack-idr-keypairs` role)
-- `idr_vm_private_networks`: Use this network instead of the default one
-- `idr_vm_assign_floating_ip`: Assign a floating IP, default `False`
 - `idr_vm_count`: Number of VMs to create, default `1`. The first VM will be named `idr_vm_name`, subsequent VMs will be named `idr_vm_name-N`
+
+Optional networking variables:
 - `idr_vm_networks`: A list of `net-name: NETWORK_NAME` pairs
+- `idr_vm_assign_floating_ip`: Assign a floating IP, default `False`.
+  If you have multiple NICs you should also define `idr_vm_floating_ip_net`.
+  If `idr_vm_count > 1` only the first VM will have a floating IP assigned.
+- `idr_vm_floating_ip_net`: If a floating IP is required attach it to this network. If you have multiple networks you should define this.
+- `idr_vm_external_network`: The name of the external network.
+  If `idr_vm_floating_ip_net` is defined you must also define this.
 
 Booleans indicating the purpose of this server:
 - If any of these are `True` they will be used to automatically set the security groups and host-groups for this VM, default `False`. Multiple may be set to `True` if a server has multiple purposes.
