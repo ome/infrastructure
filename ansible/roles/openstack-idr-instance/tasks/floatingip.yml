@@ -1,0 +1,30 @@
+---
+# Handle floating IPs with multiple NICs
+# The os_floating_ip module may behave in an unexpected manner.
+# These tasks attempt to work around them.
+# Even so you may still see problem with Ansible 2.1, if so try 2.2 or 2.3
+
+- name: idr vm | floating ip
+  #os_floating_ip_ansible23:
+  os_floating_ip_ansible22:
+  #os_floating_ip:
+    fixed_address: "{{ vm.results[0].openstack.networks[idr_vm_floating_ip_net][0] }}"
+    #nat_destination: "{{ idr_vm_floating_ip_net }}"
+    # TODO: shade(1.13.1).OpenStackCloud.add_ips_to_server ignores
+    # `fixed_address` unless `network` is also given, even though it
+    # shouldn't be necessary
+    network: "{{ idr_vm_external_network }}"
+    reuse: "yes"
+    server: "{{ vm.results[0].openstack.id }}"
+    state: present
+    # Wait so that we can check the IP (Ansible docs are incorrect)
+    wait: True
+  register: fip
+
+- fail:
+    msg: >
+      Expected floating ip {{ fip.floating_ip.floating_ip_address }} =>
+      {{ vm.results[0].openstack.networks[idr_vm_floating_ip_net][0] }}
+      found => {{ fip.floating_ip.fixed_ip_address }}.
+      This may be an Ansible bug, try manually detaching and reattaching the floating IP to the corrrect fixed IP.
+  when: 'fip.floating_ip.fixed_ip_address != vm.results[0].openstack.networks[idr_vm_floating_ip_net][0]'
