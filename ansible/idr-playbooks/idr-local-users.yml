@@ -4,6 +4,7 @@
 # Variables should be in a private group_vars file
 - hosts: >
     {{ idr_environment | default('idr') }}-hosts
+    {{ idr_environment | default('idr') }}-a-hosts
     management-hosts
   roles:
   - role: sudoers
