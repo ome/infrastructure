@@ -1,3 +1,0 @@
-# Runs all public playbooks for setting up the IDR analysis infrastructure
-
-- include: idr-docker.yml
