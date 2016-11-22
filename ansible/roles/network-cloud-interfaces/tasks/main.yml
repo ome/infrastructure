@@ -1,0 +1,33 @@
+---
+# Add new network interfaces using DHCP
+# This is intended to allow you to add an interface to a server without a
+# full network restart.
+
+- name: network cloud | get existing config
+  find:
+    file_type: file
+    paths: /etc/sysconfig/network-scripts
+    patterns: "ifcfg-*"
+    recurse: no
+  register: network_cloud_existing
+
+- name: network cloud | add nics
+  become: yes
+  template:
+    src: etc-sysconfig-network-scripts-ifcfg.j2
+    dest: /etc/sysconfig/network-scripts/ifcfg-{{ item }}
+  when: >
+    {{
+      (network_cloud_existing.files | selectattr("path", "equalto",
+         "/etc/sysconfig/network-scripts/ifcfg-" + item)
+         | list | length) == 0
+    }}
+  with_items: "{{ network_cloud_interfaces | default(ansible_interfaces) }}"
+  register: network_cloud_modified
+
+- name: network cloud | start new nics
+  become: yes
+  command: /usr/sbin/ifup {{ item.item }}
+  when: "{{ item | changed }}"
+  with_items:
+  - "{{ network_cloud_modified.results }}"
