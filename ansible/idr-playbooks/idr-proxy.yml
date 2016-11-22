@@ -38,8 +38,10 @@
     when: "{{ groups[idr_environment | default('idr') + '-a-dockermanager-hosts'] | length > 0 }}"
 
   roles:
+  # Default to a self-signed certificate, set `idr_nginx_ssl_production: True`
+  # to use production certificates
   - role: nginx-ssl-selfsigned
     nginx_ssl_certificate: "{{ nginx_proxy_ssl_certificate }}"
     nginx_ssl_certificate_key: "{{ nginx_proxy_ssl_certificate_key }}"
-    when: idr_nginx_ssl_self_signed | default(False) | bool
+    when: "{{ not idr_nginx_ssl_production | default(True) | bool }}"
   - role: nginx-proxy
