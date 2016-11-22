@@ -86,6 +86,7 @@ Caching:
 - `nginx_proxy_caches`: List of dictionaries of cache specifications with fields:
   - `name`: Name of the cache
   - `keysize`: Amount of shared memory to use for storing cache keys
+  - `maxsize`: Upper limit of the size of the cache
   - `inactive`: Time that items should be cached for
   - `match`: List of patterns to be stored in this cache, you probably want one item with the value `default` somewhere
 - `nginx_proxy_cache_skip_uri`: List of URI patterns that shouldn't be cached (default: everything that doesn't match `nginx_proxy_cache_match_uri`)
@@ -103,7 +104,7 @@ Caching:
 - `nginx_proxy_cache_lock_time`: Prevent multiple backend requests to the same object (subsequent requests will wait for the first to either return or time-out), default 1 minute
 - `nginx_proxy_cachebuster_port`: An alternative port which can be used to force a cache refresh, disabled by default. You should ensure this is firewalled. If SELinux is enabled and the port is not one that nginx can bind by default (typically 80, 81, 443, 488, 8008, 8009, 8443, 9000 are allowed by default) you must update your policy yourself.
 
-Warning: `max_size` is not set on any disk caches, so you should put `nginx_proxy_cache_parent_path` on a separate partition.
+Warning: for conviniounce, put `nginx_proxy_cache_parent_path` on a separate partition (calculate size of the partition based on `max_size` set on disk caches).
 
 
 Example Playbooks
