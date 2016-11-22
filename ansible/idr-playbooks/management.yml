@@ -46,7 +46,14 @@
         state: started
         #state: restarted
 
-- hosts: database-hosts,omero-hosts,proxy-hosts,bastion-hosts,dockermanager-hosts,dockerworker-hosts,management-hosts
+- hosts: >
+    database-hosts
+    omero-hosts
+    proxy-hosts
+    bastion-hosts
+    dockermanager-hosts
+    dockerworker-hosts
+    management-hosts
   roles:
   - role: basedeps  # munin-node requires EPEL
   - role: munin-node
