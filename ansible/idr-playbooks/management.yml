@@ -12,8 +12,8 @@
   - role: basedeps  # munin requires EPEL
   - role: munin
     munin_slack_token: "{{ idr_secret_management_slack_token | default(None) }}"
-    munin_slack_channel: "#trash"
-    munin_slack_username: "Test Munin Notifications"
+    munin_slack_channel: "#idr-notify"
+    munin_slack_username: "{{ idr_environment | default('idr') }} Munin Notification"
     munin_slack_emoji: ":pony:"
     munin_slack_url: http://{{ ansible_host }}/munin/problems.html
     # List of hosts to be monitored
@@ -81,4 +81,5 @@
 
   roles:
   - role: omero-logmonitor
-    # omero_logmonitor_slack_token:
+    omero_logmonitor_slack_token: "{{ idr_secret_omero_logmonitor_slack_token | default(None) }}"
+    omero_logmonitor_slack_channel: "#idr-notify"
