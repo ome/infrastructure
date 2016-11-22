@@ -28,7 +28,25 @@
     postgresql_server_chown_datadir: True
 
 
+# There are two OMERO and database servers. The next two plays set a
+# hostvar so that the OMERO servers connect to the correct database
+
 - hosts: "{{ idr_environment | default('idr') }}-omero-hosts"
+  tasks:
+  - name: Get database host
+    set_fact:
+      omero_db_host_ansible: "{{ hostvars[groups[idr_environment | default('idr') + '-database-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
+
+- hosts: "{{ idr_environment | default('idr') }}-a-omero-hosts"
+  tasks:
+  - name: Get database host
+    set_fact:
+      omero_db_host_ansible: "{{ hostvars[groups[idr_environment | default('idr') + '-a-database-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
+
+
+- hosts: >
+    {{ idr_environment | default('idr') }}-omero-hosts
+    {{ idr_environment | default('idr') }}-a-omero-hosts
 
   pre_tasks:
 
@@ -41,9 +59,6 @@
         omero soft noproc 8192
       dest: /etc/security/limits.d/95-omero.conf
     become: yes
-
-  - set_fact:
-      omero_db_host_ansible: "{{ hostvars[groups[idr_environment | default('idr') + '-database-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
 
   roles:
   - role: basedeps
