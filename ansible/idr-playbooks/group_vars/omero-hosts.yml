@@ -21,9 +21,6 @@ omero_web_public_password: "{{ idr_secret_omero_web_public_password | default('p
 
 omero_prestart_file: "{{ playbook_dir }}/files/IDR-OMERO-52-omero.j2"
 
-omero_logmonitor_slack_token: "{{ idr_secret_omero_logmonitor_slack_token | default(None) }}"
-omero_logmonitor_slack_channel: "#logs"
-
 
 ######################################################################
 # mapr
