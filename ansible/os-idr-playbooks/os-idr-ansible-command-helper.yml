@@ -44,7 +44,6 @@
           -e ansible_ssh_common_args="'-o ProxyCommand=\\\"ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -W %h:%p -q centos@{{ idr_bastion_ip }}\\\" -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'"
           idr-playbooks/idr-00-preinstall.yml
           idr-playbooks/idr-01-install-idr.yml
-          idr-playbooks/idr-02-install-analysis.yml
           idr-playbooks/idr-03-postinstall.yml
 #          idr-playbooks/idr-09-monitoring.yml
 
