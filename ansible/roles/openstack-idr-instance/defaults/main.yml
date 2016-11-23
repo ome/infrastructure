@@ -101,8 +101,8 @@ idr_vm_default_groups_dockerworker:
 # Management nodes are special since they may cross multiple environments
 idr_vm_default_groups_management:
 - management-hosts
-# TODO: Should they also be in an idr_environment group?
-#- "{{ idr_environment }}-management-hosts"
+- "{{ idr_environment }}-management-hosts"
+- "{{ idr_environment }}-hosts"
 
 idr_vm_cloud_group: >
   {{
