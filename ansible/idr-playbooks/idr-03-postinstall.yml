@@ -1,0 +1,3 @@
+# IDR post-installation playbooks
+
+- include: idr-reset-users-groups.yml

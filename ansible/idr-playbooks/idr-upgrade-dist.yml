@@ -1,0 +1,14 @@
+---
+# Playbook to upgrade all system packages
+
+- hosts: >
+    {{ idr_environment | default('idr') }}-hosts
+    {{ idr_environment | default('idr') }}-a-hosts
+    management-hosts
+  roles:
+  - role: upgrade-distpackages
+  # Ideally we should auto-reboot, but if the SSH proxy host is rebooted
+  # this breaks connections to all the backend servers and ansible may hang.
+  # Instead all nodes must be rebooted manually after a kernel upgrade (be
+  # aware that OMERO nodes may take several minutes to shutdown)
+    #upgrade_distpackages_reboot_kernel: True
