@@ -1,0 +1,2 @@
+idr_jupyter_hub_image: manics/jupyterhub-githubauth:merge
+idr_jupyter_notebook_image: imagedata/jupyter-docker:latest
