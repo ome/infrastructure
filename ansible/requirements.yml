@@ -1,0 +1,9 @@
+# External Ansible roles required by this repository
+
+- name: munin
+  src: https://github.com/openmicroscopy/ansible-role-munin.git
+  version: origin/master
+
+- name: munin-node
+  src: https://github.com/openmicroscopy/ansible-role-munin-node.git
+  version: origin/master

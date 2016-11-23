@@ -6,4 +6,11 @@ install:
   - pip install ansible
 
 script:
-    - cd ansible && ansible-playbook -i example-hosts --syntax-check *.yml *-playbooks/*.yml
+    - |
+      cd ansible
+      ansible-galaxy install -r requirements.yml
+      for f in *.yml *-playbooks/*.yml; do
+          if [ "$f" != requirements.yml ]; then
+              ansible-playbook -i example-hosts --syntax-check $f
+          fi
+      done
