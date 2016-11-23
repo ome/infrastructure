@@ -3,6 +3,7 @@
 # Copyright (c) 2012, Marco Vito Moscaritolo <marco@agavee.com>
 # Copyright (c) 2013, Jesse Keating <jesse.keating@rackspace.com>
 # Copyright (c) 2015, Hewlett-Packard Development Company, L.P.
+# Copyright (C) 2016, University of Dundee & Open Microscopy Environment
 #
 # This module is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -39,6 +40,14 @@
 # use_hostnames changes the behavior from registering every host with its UUID
 #               and making a group of its hostname to only doing this if the
 #               hostname in question has more than one server
+#
+# This dynamic inventory has been modified from the upstream version:
+# - It always returns private IPs for servers.
+# - If the server metadata contains `ssh_proxy_host` this will be used to
+#   automatically find a SSH proxy server and sets a host-var
+#   `ansible_ssh_common_args` on the server.
+# - If the server metadata contains `network_order` these networks will be
+#   searched for a private IP in that order.
 
 import argparse
 import collections
@@ -114,13 +123,30 @@ def get_host_groups(inventory, refresh=False):
 
 def append_hostvars(hostvars, groups, key, server, namegroup=False):
     ansible_ssh_host = None
+
+    # shade returns a dict of networks, but the order in which the networks
+    # were assigned may be significant.
+    # Check for a custom metadata property `network_order` that indicates
+    # the order of networks
+    try:
+        network_order = server.metadata['network_order'].split(',')
+        for network in network_order:
+            for port in server['addresses'][network]:
+                if port['OS-EXT-IPS:type'] == 'fixed':
+                    ansible_ssh_host = port['addr']
+                    break
+            if ansible_ssh_host:
+                break
+    except KeyError:
+        pass
+
     for network, ports in server['addresses'].iteritems():
+        if ansible_ssh_host:
+            break
         for port in ports:
             if port['OS-EXT-IPS:type'] == 'fixed':
                 ansible_ssh_host = port['addr']
                 break
-        if ansible_ssh_host:
-            break
     if not ansible_ssh_host:
         ansible_ssh_host = server['interface_ip']
 
@@ -130,6 +156,69 @@ def append_hostvars(hostvars, groups, key, server, namegroup=False):
         openstack=server)
     for group in get_groups_from_server(server, namegroup=namegroup):
         groups[group].append(key)
+
+
+def is_ssh_proxy_host(server, network):
+    """
+    Checks the metadata to see if this is an SSH proxy host.
+    If it also has a floating IP then return this, otherwise return None.
+    """
+    try:
+        if server['openstack']['metadata']['ssh_proxy_host'] != 'proxy':
+            return
+    except KeyError:
+        return
+
+    for port in server['openstack']['addresses'][network]:
+        if port['OS-EXT-IPS:type'] == 'floating':
+            return port['addr']
+
+
+def is_ssh_proxy_host_required(server):
+    # Checks the metadata to see if a SSH proxy host is required for access.
+    # This dynamic inventory intentionally always returns the private IP of
+    # a server, so effectively the proxy server must still connect via the
+    # external proxy floating IP.
+    try:
+        proxy = server['openstack']['metadata']['ssh_proxy_host']
+        if proxy in ('proxy', 'required'):
+            return True
+    except KeyError:
+        pass
+    return False
+
+
+def update_ssh_proxy_host(hostvars):
+    # If the server metadata has `ssh_proxy_host=required` then
+    # look for a host in the same network which has property
+    # `ssh_proxy_host=proxy` and set this as a SSH proxy in
+    # ansible_ssh_common_args
+    network_hosts = {}
+    network_ssh_proxy = {}
+    ssh_proxy_fmt = '-o ProxyCommand="ssh -W %%h:%%p -q %%r@%s"'
+
+    for (h, server) in hostvars.iteritems():
+        for network in server['openstack']['addresses']:
+            try:
+                network_hosts[network].append(server)
+            except KeyError:
+                network_hosts[network] = [server]
+
+            # If there are multiple proxies just use the first
+            if network not in network_ssh_proxy:
+                ssh_ip = is_ssh_proxy_host(server, network)
+                if ssh_ip:
+                    network_ssh_proxy[network] = ssh_ip
+
+    for (h, server) in hostvars.iteritems():
+        if not is_ssh_proxy_host_required(server):
+            continue
+
+        for network in server['openstack']['addresses']:
+            if (network in network_ssh_proxy and
+                    'ansible_ssh_common_args' not in server):
+                server['ansible_ssh_common_args'] = (
+                    ssh_proxy_fmt % network_ssh_proxy[network])
 
 
 def get_host_groups_from_cloud(inventory):
@@ -163,6 +252,10 @@ def get_host_groups_from_cloud(inventory):
                     append_hostvars(
                         hostvars, groups, server['id'], server,
                         namegroup=True)
+
+    auto_proxy = os.getenv('OS_PROXY_DISCOVER')
+    if auto_proxy and auto_proxy != '0':
+        update_ssh_proxy_host(hostvars)
     groups['_meta'] = {'hostvars': hostvars}
     return groups
 
