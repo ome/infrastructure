@@ -12,7 +12,9 @@
 # - `idr_net_iface=iface` if your servers use a network interface other
 #   then eth0 for inter-machine networking
 
-- hosts: "{{ idr_environment | default('idr') }}-database-hosts"
+- hosts: >
+    {{ idr_environment | default('idr') }}-database-hosts
+    {{ idr_environment | default('idr') }}-a-database-hosts
 
   roles:
   - role: postgresql
