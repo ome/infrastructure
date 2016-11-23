@@ -1,0 +1,9 @@
+# External Absible roles required by this repository
+
+- name: munin
+  src: https://github.com/manics/ansible-role-munin.git
+  version: origin/master
+
+- name: munin-node
+  src: https://github.com/manics/ansible-role-munin-node.git
+  version: origin/master
