@@ -9,7 +9,7 @@
 
   vars_prompt:
     - name: "devspace_jenkins_nginx_password"
-      prompt: "Enter Jenkins password"
+      prompt: "Secure Jenkins with password (username: devspace)"
       private: yes
       when: devspace_jenkins_nginx_username|length>0
 
