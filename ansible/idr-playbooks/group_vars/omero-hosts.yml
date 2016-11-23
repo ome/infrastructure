@@ -3,13 +3,14 @@ omero_dbname: idr
 omero_dbpassword: omero
 omero_datadir: /data/OMERO
 
-# TODO: change this to a lower system uid
-omero_system_uid: "{{ idr_secret_omero_system_uid | default(546) }}"
+omero_system_uid: 546
 
 omero_web_runtime_redis: True
 # This refers to a custom IDR release URL, not an official OMERO version
-omero_release: "0.0.7-rc1"
+omero_release: "0.0.7-rc2"
 omero_omego_additional_args: "--downloadurl https://downloads.openmicroscopy.org/idr"
+# Upgrades are normally disabled, uncomment if you want to upgrade OMERO:
+#omero_upgrade: True
 
 # Disable database backups
 omero_database_backupdir:
@@ -20,5 +21,58 @@ omero_web_public_password: "{{ idr_secret_omero_web_public_password | default('p
 
 omero_prestart_file: "{{ playbook_dir }}/files/IDR-OMERO-52-omero.j2"
 
-omero_logmonitor_slack_token: "{{ idr_secret_omero_logmonitor_slack_token | default(None) }}"
-omero_logmonitor_slack_channel: "#logs"
+
+######################################################################
+# mapr
+
+omero_web_app_packages:
+#  - "omero-mapr==0.1.1"
+  - "git+git://github.com/aleksandra-tarkowska/omero-mapr.git@0.1.6#egg=omero_mapr"
+omero_web_apps_add:
+- omero_mapr
+
+
+# Note this is set to [] in files/IDR-OMERO-52-omero.j2 so we can define
+# everything
+omero_web_app_add_top_links:
+- label: Studies
+  link:
+    viewname: webindex
+    query_string: { experimenter: -1 }
+  attrs:
+    title: Image Data Repository
+- label: Genes
+  link:
+    viewname: maprindex_gene
+    query_string: { experimenter: -1 }
+  attrs:
+    title: Genes browser
+- label: Phenotypes
+  link:
+    viewname: maprindex_phenotype
+    query_string: { experimenter: -1 }
+  attrs:
+    title: Phenotypes browser
+- label: siRNA
+  link:
+    viewname: maprindex_sirna
+    query_string: { experimenter: -1 }
+  attrs:
+    title: siRNA browser
+- label: Compound
+  link:
+    viewname: maprindex_compound
+    query_string: {"experimenter": -1}
+  attrs:
+    title: Compound browser
+- label: Organism
+  link:
+    viewname: maprindex_organism
+    query_string: {"experimenter": -1}
+  attrs:
+    title: Organism browser
+- label: Help
+  link: http://help.openmicroscopy.org/
+  attrs:
+    target: new
+    title: Open OMERO user guide in a new tab

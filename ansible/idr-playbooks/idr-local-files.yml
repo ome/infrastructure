@@ -4,28 +4,25 @@
 # TODO: This is a temporary playbook for copying ad-hoc files
 # This should be cleaned up and moved/combined into an appropriate role
 
-# Variables should be in a private group_vars file
-- hosts: "{{ idr_environment | default('idr') }}-proxy-hosts"
+
+# Change the branding on the public facing OMERO, not needed for analysis
+- hosts: "{{ idr_environment | default('idr') }}-omero-hosts"
 
   tasks:
 
-  - name: Create IDR landing page directory
+  - name: IDR top-left logo
     become: yes
-    file:
-      path: /srv/www/html
-#      recurse: yes
-      serole: _default
-      setype: _default
-      seuser: _default
-      state: directory
-
-# TODO: Consider synchronize, though this requires sudo tty
-  - name: Create IDR landing page
-    become: yes
-    #synchronize:
     copy:
-      dest: /srv/www/html/
-      src: "{{ playbook_dir }}/files/html/"
-      #delete: yes
-      #owner: no
-      #recursive: yes
+      dest: "/home/omero/OMERO.server/lib/python/omeroweb/webgateway/static/webgateway/img/logo2.png"
+      src: "{{ playbook_dir }}/files/images/idr-logo2.png"
+      owner: omero
+      group: omero
+    notify: restart omero-web
+
+  handlers:
+
+  - name: restart omero-web
+    become: yes
+    service:
+      name: omero-web.service
+      state: restarted

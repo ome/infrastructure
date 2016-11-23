@@ -30,7 +30,25 @@
     postgresql_server_chown_datadir: True
 
 
+# There are two OMERO and database servers. The next two plays set a
+# hostvar so that the OMERO servers connect to the correct database
+
 - hosts: "{{ idr_environment | default('idr') }}-omero-hosts"
+  tasks:
+  - name: Get database host
+    set_fact:
+      omero_db_host_ansible: "{{ hostvars[groups[idr_environment | default('idr') + '-database-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
+
+- hosts: "{{ idr_environment | default('idr') }}-a-omero-hosts"
+  tasks:
+  - name: Get database host
+    set_fact:
+      omero_db_host_ansible: "{{ hostvars[groups[idr_environment | default('idr') + '-a-database-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
+
+
+- hosts: >
+    {{ idr_environment | default('idr') }}-omero-hosts
+    {{ idr_environment | default('idr') }}-a-omero-hosts
 
   pre_tasks:
 
@@ -43,9 +61,6 @@
         omero soft noproc 8192
       dest: /etc/security/limits.d/95-omero.conf
     become: yes
-
-  - set_fact:
-      omero_db_host_ansible: "{{ hostvars[groups[idr_environment | default('idr') + '-database-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
 
   roles:
   - role: basedeps
@@ -69,67 +84,4 @@
     omero_systemd_setup: True
     omero_db_create: False
 
-    omero_web_app_packages:
-      - "omero-mapr==0.1.1"
-    omero_web_apps_add:
-    - mapr
-    omero_web_app_add_top_links:
-      # This should be a list of lists, but Ansible will automatically
-      # flatten it, so convert it to a dictionary with dummy keys instead
-      dummy_idr:
-        - IDR
-        - viewname: webindex
-          query_string: { experimenter: -1 }
-        - title: Image Data Repository
-      dummy_genes:
-        - Genes
-        - viewname: maprindex_gene
-          query_string: { experimenter: -1 }
-        - title: Genes browser
-      dummy_phenotype:
-        - Phenotypes
-        - viewname: maprindex_phenotype
-          query_string: { experimenter: -1 }
-        - title: Phenotypes browser
-      dummy_sirna:
-        - siRNA
-        - viewname: maprindex_sirna
-          query_string: { experimenter: -1 }
-        - title: siRNA browser
-      dummy_compound:
-        - Compound
-        - viewname: maprindex_compound
-          query_string: {"experimenter": -1}
-        - title: Compound browser
-#      dummy_history:
-#        - History
-#        - history
-#        - title: History
-#      dummy_about:
-#        - About
-#        - /about/
-#      dummy_help:
-#        - Help
-#        - http://help.openmicroscopy.org/
-#        - title: Open OMERO user guide in a new tab
-#          target: new
-
   # Additional vars are in group_vars/omero-hosts.yml
-
-
-- hosts: "{{ idr_environment | default('idr') }}-proxy-hosts"
-
-  pre_tasks:
-
-  - set_fact:
-      omero_omero_host_ansible: "{{ hostvars[groups[idr_environment | default('idr') + '-omero-hosts'][0]]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']}}"
-
-  roles:
-  - role: nginx-ssl-selfsigned
-    nginx_ssl_certificate: "{{ nginx_proxy_ssl_certificate }}"
-    nginx_ssl_certificate_key: "{{ nginx_proxy_ssl_certificate_key }}"
-    when: idr_nginx_ssl_self_signed | default(False) | bool
-  - role: nginx-proxy
-
-
-  # Additional vars are in group_vars/proxy-hosts.yml

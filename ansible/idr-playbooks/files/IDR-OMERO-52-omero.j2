@@ -10,7 +10,7 @@ config set omero.pixeldata.fail_if_missing true
 # web
 config set omero.web.application_server "wsgi-tcp"
 config set omero.web.application_server.max_requests 300
-config set omero.web.wsgi_timeout 30
+#config set omero.web.wsgi_timeout 30
 #config set omero.web.wsgi_args -- '--forwarded-allow-ips=YOUR_IP'
 
 config set omero.web.use_x_forwarded_host true
@@ -27,19 +27,22 @@ config set omero.web.public.enabled True
 config set omero.web.public.server_id 1
 config set omero.web.public.user public
 config set omero.web.public.password {{ omero_web_public_password }}
-config set omero.web.public.url_filter ^/(webadmin/myphoto/|webclient/(?!(action|annotate_(file|tags|comment|rating|map)|script_ui|ome_tiff|figure_script))|webgateway/(?!(archived_files|download_as)))
+config set omero.web.public.url_filter ^/(webadmin/myphoto/|mapr/|webclient/(?!(action|annotate_(file|tags|comment|rating|map)|script_ui|ome_tiff|figure_script))|webgateway/(?!(archived_files|download_as)))
 
 # Group/User drop down menu
 config set omero.client.ui.menu.dropdown.colleagues.enabled false
 config set omero.client.ui.menu.dropdown.everyone.label "Demo data"
 config set omero.client.ui.menu.dropdown.leaders.enabled false
 
+# Tree display
+config set omero.client.ui.tree.type_order false
+config set omero.client.ui.tree.orphans.enabled false
 
 config set omero.web.login_redirect '{"redirect": ["webindex"], "viewname": "load_template", "args": ["userdata"], "query_string": "experimenter=-1"}'
 
 
 # session
-config set omero.web.session_cookie_name sessionid_demo
+config set omero.web.session_cookie_name sessionid_{{ idr_environment | default('idr') }}
 config set omero.web.session_cookie_age 3600
 
 # redis
@@ -49,3 +52,9 @@ config set omero.web.caches '{"default": {"BACKEND": "django_redis.cache.RedisCa
 # social media
 config set omero.web.sharing.twitter '{"omero": "@openmicroscopy"}'
 config set omero.web.sharing.opengraph '{"omero": "Open Microscopy"}'
+
+# Clear the top links, they will be set later by mapr
+config set omero.web.ui.top_links '[]'
+
+# Right-hand metadata panel
+config set omero.web.ui.metadata_pane '[{"name": "tag", "label": "Tags", "index": 5}, {"name": "file", "label": "Attachments", "index": 2}, {"name": "map", "label": "Attributes", "index": 0}, {"name": "table", "label": "Tables", "index": 1}, {"name": "comment", "label": "Comments", "index": 3}, {"name": "rating", "label": "Ratings", "index": 4}, {"name": "other", "label": "Others", "index": 6}]'

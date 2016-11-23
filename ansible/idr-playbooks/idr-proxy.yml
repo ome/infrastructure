@@ -1,0 +1,53 @@
+# Setup the IDR web proxy
+#
+# This must be run after all other IDR services are installed, as we need the
+# full list of backend services to be proxied
+
+# Load hostvars (production OMERO)
+- hosts: "{{ idr_environment | default('idr') }}-omero-hosts"
+
+# Load hostvars (jupyter), this should be the proxy idr_environment
+# suffixed with `-a`
+- hosts: >
+    {{ idr_environment | default('idr') }}-a-dockermanager-hosts
+
+
+- hosts: "{{ idr_environment | default('idr') }}-proxy-hosts"
+
+  pre_tasks:
+
+  - name: Get omero IP
+    set_fact:
+      omero_omero_host_ansible: >-
+        {{
+          hostvars[groups[
+            idr_environment | default('idr') + '-omero-hosts'][0]]
+            ['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']
+        }}
+
+  - name: Get jupyterhub IP
+    set_fact:
+      # Optional, so that it can run in an environment where there's only
+      # an OMERO server but no analysis platform
+      omero_jupyter_host_ansible: >-
+        {{
+          hostvars[groups[
+            idr_environment | default('idr') + '-a-dockermanager-hosts'][0]]
+            ['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']
+        }}:8000
+    when: "{{ groups[idr_environment | default('idr') + '-a-dockermanager-hosts'] | length > 0 }}"
+
+  roles:
+  # Default to a self-signed certificate, set `idr_nginx_ssl_production: True`
+  # to use production certificates
+  - role: nginx-ssl-selfsigned
+    nginx_ssl_certificate: "{{ nginx_proxy_ssl_certificate }}"
+    nginx_ssl_certificate_key: "{{ nginx_proxy_ssl_certificate_key }}"
+    when: "{{ not idr_nginx_ssl_production | default(True) | bool }}"
+  - role: nginx-proxy
+
+
+# Playbook for setting up the IDR static website pages
+- hosts: "{{ idr_environment | default('idr') }}-proxy-hosts"
+  roles:
+  - role: jekyll-build
