@@ -1,4 +1,4 @@
-# External Absible roles required by this repository
+# External Ansible roles required by this repository
 
 - name: munin
   src: https://github.com/openmicroscopy/ansible-role-munin.git
