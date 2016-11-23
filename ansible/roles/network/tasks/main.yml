@@ -61,6 +61,3 @@
   # 'skipped' field may be missing if it wasn't skipped
   when: not item.skipped | default (False)
   with_items: "{{ checkbonds.results }}"
-
-- include: add_basic_ifaces.yml
-  when: "{{ network_basic_ifaces | default([]) }}"
