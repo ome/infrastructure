@@ -3,13 +3,25 @@
 
 # TODO: Convert this into one or more roles
 
+# TODO: Docker uses an incorrect MTU on OpenStack VMs, and it is not possible
+# to easily set it on the swarm ingress network. See this workround:
+# https://github.com/docker/docker/issues/24906#issuecomment-235894478
+# This must be done before creating the swarm
+#     docker network rm docker_gwbridge
+#     docker network create --opt com.docker.network.driver.mtu=1400 --subnet 172.18.0.0/16 docker_gwbridge
+
+# TODO: Convert this into one or more roles
+
 
 - hosts: "{{ idr_environment | default('idr') }}-docker-hosts"
 
   pre_tasks:
+
+  # This sets a host_var on all docker-hosts which can be used in other plays
   - name: enable/disable docker swarm
     set_fact:
-      docker_swarm_enabled: False
+      #docker_swarm_enabled: False
+      docker_swarm_enabled: True
 
   roles:
 
@@ -26,6 +38,32 @@
     ignore_errors: yes
     register: docker_swarm_active
     changed_when: False
+
+  # TODO: Maybe check docker_use_ipv4_nic_mtu?
+  # TODO: Use docker_network when we switch to Ansible 2.2
+  - name: docker swarm | check mtu
+    become: yes
+    command: docker network inspect docker_gwbridge -f "{{ '{{' }} index .Options \"com.docker.network.driver.mtu\" {{ '}}' }}"
+    always_run: yes
+    #ignore_errors: yes
+    register: docker_swarm_net_mtu
+    when: docker_swarm_enabled
+    #changed_when: "(docker_use_ipv4_nic_mtu | default(True)) and
+    changed_when: docker_swarm_net_mtu.stdout != "{{ ansible_default_ipv4.mtu }}"
+    failed_when: "(docker_swarm_net_mtu.rc != 0) and {{ not docker_swarm_net_mtu.stderr.endswith('No such network: docker_gwbridge') }}"
+
+  - name: docker swarm | network mtu delete docker_gwbridge
+    become: yes
+    command: docker network rm docker_gwbridge
+    register: docker_swarm_net_rm
+    failed_when: "(docker_swarm_net_rm.rc != 0) and {{ not docker_swarm_net_rm.stderr.endswith('network docker_gwbridge not found') }}"
+    when: docker_swarm_enabled and docker_swarm_net_mtu.changed
+
+  # TODO: Make subnet configurable
+  - name: docker swarm | network mtu create docker_gwbridge
+    become: yes
+    command: docker network create --opt com.docker.network.driver.mtu={{ ansible_default_ipv4.mtu }} --subnet 172.18.0.0/16 docker_gwbridge
+    when: docker_swarm_enabled and docker_swarm_net_mtu.changed
 
 
 - hosts: "{{ idr_environment | default('idr') }}-dockermanager-hosts"
@@ -87,11 +125,12 @@
       opts: rsize=8192,wsize=8192,timeo=14,intr,rw
       src: "{{ manager_ip }}:/data"
       state: mounted
+    when: docker_swarm_enabled
 
   - name: docker swarm | join worker
     become: yes
     command: docker swarm join --token {{ token }} {{ manager_ip }}
-    when: docker_swarm_active.stdout != 'active'
+    when: docker_swarm_enabled and docker_swarm_active.stdout != 'active'
 
   vars:
     token: "{{ hostvars[groups[idr_environment | default('idr') + '-dockermanager-hosts'][0]]['docker_swarm_worker_token'] }}"
@@ -161,31 +200,93 @@
     command: docker pull "{{ idr_jupyter_notebook_image }}"
     when: docker_image_jhnote.changed
 
+
+  # Without Docker swarm: start and enable the service
+
   - name: jupyterhub | create systemd service
     become: yes
     template:
       src: files/jupyterhub-docker.j2
       dest: /etc/systemd/system/docker-jupyterhub.service
     register: systemdjupyter
+    when: not docker_swarm_enabled
 
   - name: jupyterhub | reload systemd
     become: yes
     command: systemctl daemon-reload
-    when: systemdjupyter.changed
+    when: systemdjupyter.changed and not docker_swarm_enabled
 
   - name: jupyterhub | restart
     become: yes
     service:
       name: docker-jupyterhub.service
       state: restarted
-    when: jupyterconfig.changed
+    when: jupyterconfig.changed and not docker_swarm_enabled
 
   - name: jupyterhub | enable jupyterhub
     become: yes
     service:
-      enabled: yes
+      enabled: "yes"
       name: docker-jupyterhub.service
       state: started
+    when: not docker_swarm_enabled
+
+
+  # Docker swarm:
+  # - setup network
+  # - start/restart the service if necessary
+  # - don't enable it since swarm will auto-start the service
+  # TODO: Use docker_network when we switch to Ansible 2.2
+
+  - name: jupyterhub | check docker swarm network
+    become: yes
+    command: docker network inspect "{{ idr_jupyter_network }}"
+    always_run: yes
+    register: docker_jupyter_net
+    when: docker_swarm_enabled
+    changed_when: "docker_jupyter_net.rc != 0"
+    failed_when: "docker_jupyter_net.rc > 1"
+
+  - name: jupyterhub | create docker swarm network
+    become: yes
+    command: docker network create --driver overlay "{{ idr_jupyter_network }}" --opt com.docker.network.driver.mtu={{ ansible_default_ipv4.mtu }}
+    when: docker_swarm_enabled and docker_jupyter_net.changed
+
+  - name: jupyterhub | create swarm systemd service
+    become: yes
+    template:
+      src: files/jupyterhub-docker-swarm.j2
+      dest: /etc/systemd/system/docker-jupyterhub.service
+    register: systemdjupyter
+    when: docker_swarm_enabled
+
+  - name: jupyterhub | reload systemd
+    become: yes
+    command: systemctl daemon-reload
+    when: systemdjupyter.changed and docker_swarm_enabled
+
+  # Docker swarm may have started the service without telling systemd
+  # so only restart if the config has changed or the service isn't
+  # running
+  - name: jupyterhub | check docker swarm service
+    become: yes
+    command: docker service inspect "{{ idr_jupyter_service }}"
+    always_run: yes
+    register: docker_jupyter_service
+    when: docker_swarm_enabled
+    changed_when: "docker_jupyter_service.rc != 0"
+    failed_when: "docker_jupyter_service.rc > 1"
+
+  - name: jupyterhub | restart swarm
+    become: yes
+    service:
+      enabled: "no"
+      name: docker-jupyterhub.service
+      state: restarted
+    when: docker_swarm_enabled and (jupyterconfig.changed or docker_jupyter_service.changed)
+
+
+  # Notebooks
 
   - name: jupyterhub | check if idr-notebooks repo exists
     stat:
@@ -223,10 +324,18 @@
                 PASSWORD = "{{ idr_jupyter_omero_pass | quote }}"
 
   vars:
+  - idr_jupyter_service: omero-jupyter
+  - idr_jupyter_network: omero-jupyter-net
+  # https://docs.docker.com/engine/admin/logging/overview/
+  - idr_jupyter_log_driver: journald
+  - idr_jupyter_authenticator: "oauthenticator.GitHubOAuthenticator"
+  #- idr_jupyter_authenticator: "dummyauthenticator.DummyAuthenticator"
   #- idr_jupyter_urlbase: "http://example.org"
   - idr_docker_pull_latest: True
   - idr_jupyter_ip: "{{ hostvars[inventory_hostname]['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address'] }}"
-  - idr_jupyter_hub_image: "imagedata/jupyterhub-githubauth:0.1.0"
+  #- idr_jupyter_hub_image: "imagedata/jupyterhub-githubauth:0.1.0"
+  #- idr_jupyter_hub_image: "manics/jupyterhub-githubauth:latest"
+  - idr_jupyter_hub_image: "manics/jupyterhub-githubauth:auth"
   - idr_jupyter_notebook_image: "imagedata/jupyter-docker:0.1.0"
   - idr_jupyter_hub_log_level: DEBUG
   #- idr_jupyter_prefix: "/jupyter"
