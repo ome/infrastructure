@@ -7,7 +7,7 @@ omero_system_uid: 546
 
 omero_web_runtime_redis: True
 # This refers to a custom IDR release URL, not an official OMERO version
-omero_release: "0.0.7-rc2"
+omero_release: "0.3.0"
 omero_omego_additional_args: "--downloadurl https://downloads.openmicroscopy.org/idr"
 # Upgrades are normally disabled, uncomment if you want to upgrade OMERO:
 #omero_upgrade: True
@@ -26,8 +26,7 @@ omero_prestart_file: "{{ playbook_dir }}/files/IDR-OMERO-52-omero.j2"
 # mapr
 
 omero_web_app_packages:
-#  - "omero-mapr==0.1.1"
-  - "git+git://github.com/aleksandra-tarkowska/omero-mapr.git@0.1.6#egg=omero_mapr"
+  - "omero-mapr==0.1.7"
 omero_web_apps_add:
 - omero_mapr
 
