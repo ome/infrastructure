@@ -8,6 +8,7 @@ install:
 script:
     - |
       cd ansible
+      ansible-galaxy install -r requirements.yml
       for f in *.yml *-playbooks/*.yml; do
           if [ "$f" != requirements.yml ]; then
               ansible-playbook -i example-hosts --syntax-check $f
