@@ -8,8 +8,13 @@ After=docker.service
 Restart=no
 RestartSec=10
 ExecStartPre=-/usr/bin/docker kill {{ idr_jupyter_service }}
+
+{% if idr_jupyter_hub_keep_container %}
+ExecStartPre=-/usr/bin/docker create \
+{% else %}
 ExecStartPre=-/usr/bin/docker rm {{ idr_jupyter_service }}
 ExecStart=/usr/bin/docker run \
+{% endif %}
     --name {{ idr_jupyter_service }} \
     -p 8000:8000 \
     -p 8081:8081 \
@@ -23,6 +28,10 @@ ExecStart=/usr/bin/docker run \
     --base-url={{ idr_jupyter_prefix }} \
     -f /srv/jupyterhub/jupyterhub_config.py \
     --log-level={{ idr_jupyter_hub_log_level }}
+{% if idr_jupyter_hub_keep_container %}
+ExecStart=/usr/bin/docker start -a {{ idr_jupyter_service }}
+{% endif %}
+
 ExecStop=/usr/bin/docker stop {{ idr_jupyter_service }}
 
 [Install]
