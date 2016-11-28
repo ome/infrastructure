@@ -34,5 +34,6 @@
 - name: system packages | install mencoder
   become: yes
   yum:
+    enablerepo: nux-dextop
     name: mencoder
     state: present
