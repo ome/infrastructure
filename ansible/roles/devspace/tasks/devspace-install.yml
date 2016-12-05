@@ -49,10 +49,6 @@
     - passlib
     - pyyaml
     - docker-compose
-    # Temporary fix - cap requests to version below 2.12.2
-    # See https://github.com/kennethreitz/requests/issues/3734 and
-    # https://github.com/docker/docker-py/issues/1321
-    - requests<2.12.2
 
 # TEMP: Error: docker-py version is 1.10.2. Minimum version required is 1.7.0.
 # see https://github.com/ansible/ansible/issues/17495
