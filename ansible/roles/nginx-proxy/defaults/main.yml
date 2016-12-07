@@ -114,6 +114,9 @@ nginx_proxy_cache_hide_headers: []
 # Override the default Nginx cache key
 nginx_proxy_cache_key:
 
+# Manipulate the cache key
+nginx_proxy_cache_key_map: {}
+
 # Use stale cache if these situations are encountered
 nginx_proxy_cache_use_stale: "error timeout invalid_header updating http_500 http_502 http_503 http_504"
 
