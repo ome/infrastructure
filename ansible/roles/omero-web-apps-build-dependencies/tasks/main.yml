@@ -1,0 +1,5 @@
+---
+# tasks file for roles/omero-web-apps-build-dependencies
+
+- include: redhat.yml
+  when: ansible_os_family == 'RedHat'
