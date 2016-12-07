@@ -4,6 +4,10 @@
 
 ######################################################################
 # nginx and SSL
+
+# We need config options from 1.11
+nginx_stable_repo: False
+
 nginx_proxy_worker_processes: 4
 nginx_proxy_buffers: 32 16k
 
@@ -72,7 +76,12 @@ nginx_proxy_cachebuster_port: 9000
 
 # Cache the request path but not the host so that cache can be copied to
 # other servers
+# Ignore the `_=\d+` query parameter
 nginx_proxy_cache_key: "$request_uri"
+nginx_proxy_cache_key_map:
+- match: "~^(.+[\\?\\&])_=\\d+(.*)$"
+  key: "$1$2"
+# Non-matches default to the unchanged nginx_proxy_cache_key
 
 nginx_proxy_cache_ignore_headers: '"Set-Cookie" "Vary" "Expires"'
 nginx_proxy_cache_hide_headers:
