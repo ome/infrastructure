@@ -142,7 +142,7 @@
   - command: python -c 'import reportlab'
   - command: python -c 'import markdown'
 
-   - assert:
+  - assert:
       that:
       - p.stat.exists
 
