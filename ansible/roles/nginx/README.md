@@ -15,6 +15,7 @@ Log rotation:
 
 - `nginx_logrotate_interval`: Rotate log files at this interval, default `daily`
 - `nginx_logrotate_backlog_size`: Number of backlog files to keep, default `366`
+- `nginx_stable_repo`: If `False` use the mainline instead of stable repo, default `True`
 
 
 Author Information
