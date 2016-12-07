@@ -47,6 +47,17 @@ Vagrant.configure(2) do |config|
   end
 
   [
+    "omeroscriptsdependencies-debian"
+  ].each do |server|
+    config.vm.define "#{server}" do |node|
+      node.vm.box = "ubuntu/trusty64"
+      node.vm.provision "ansible" do |ansible|
+        ansible.playbook = "test.yml"
+      end
+    end
+  end
+
+  [
     "omero-server",
   ].each do |server|
     config.vm.define "#{server}" do |node|

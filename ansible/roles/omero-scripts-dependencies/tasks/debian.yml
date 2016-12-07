@@ -1,0 +1,22 @@
+---
+# tasks file for roles/omero-scripts-dependencies
+# if the os is ubuntu
+
+# dependencies for pdf export (figure)
+- name: system packages | install dependencies for pdf export
+  become: yes
+  apt:
+    pkg: "{{ item }}"
+    state: present
+  with_items:
+    - python-reportlab
+    - python-markdown
+
+# dependency for make movie
+- name: system packages | install dependency for make movie
+  become: yes
+  apt:
+    pkg: "{{ item }}"
+    state: present
+  with_items:
+    - mencoder

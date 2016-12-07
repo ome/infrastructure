@@ -130,3 +130,19 @@
       state: directory
   # Setup a port-forward to 8000 and you should be able to login as
   # user:user password:ome
+
+- hosts: omeroscriptsdependencies-debian
+  roles:
+  - role: omero-scripts-dependencies
+
+  tasks:
+  - stat: 
+      path: "/usr/bin/mencoder"
+    register: p
+  - command: python -c 'import reportlab'
+  - command: python -c 'import markdown'
+
+  - assert:
+      that:
+      - p.stat.exists
+

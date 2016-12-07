@@ -1,0 +1,19 @@
+---
+# tasks file for roles/omero-scripts-dependencies
+# if the os is centOS
+
+- name: system packages | install epel repo
+  become: yes
+  yum:
+    name: epel-release
+    state: present
+
+# dependencies for pdf export (figure)
+- name: system packages | install dependencies for pdf export
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - python-reportlab
+    - python-markdown
