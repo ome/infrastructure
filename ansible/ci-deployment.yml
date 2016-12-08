@@ -32,6 +32,7 @@
     - role: omero-runtime
     - role: omero-web-runtime
     - role: nginx
+    - role: omero-web-apps-build-dependencies
 
 # Deploy Documentation prerequisites
 - hosts: ci-docs
