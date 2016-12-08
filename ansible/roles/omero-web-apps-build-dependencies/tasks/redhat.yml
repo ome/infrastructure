@@ -23,7 +23,7 @@
     name: nodejs
     state: present
 
-- name: Install command line tool
+- name: Install grunt command line tool
   sudo: yes
   npm: 
     name: grunt-cli
