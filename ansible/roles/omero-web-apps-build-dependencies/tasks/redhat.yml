@@ -8,19 +8,10 @@
     name: epel-release
     state: present
 
-- name: Download setup script
-  get_url:
-    url: https://rpm.nodesource.com/setup_6.x
-    dest: /tmp/setup_6.x
-
-- name: Execute setup script
+- name: Install nodejs
   sudo: yes
-  command: bash /tmp/setup_6.x
-
-- name: Install node and npm
-  become: yes
   yum:
-    name: nodejs
+    name: https://rpm.nodesource.com/pub_6.x/el/7/x86_64/nodesource-release-el7-1.noarch.rpm
     state: present
 
 - name: Install grunt command line tool
