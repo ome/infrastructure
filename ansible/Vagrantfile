@@ -61,6 +61,7 @@ Vagrant.configure(2) do |config|
     "nginx",
     "nginx-mainline",
     "omero-server",
+    "omero-server-ice36",
   ].each do |server|
     config.vm.define "#{server}" do |node|
       node.vm.box = "centos/7"
