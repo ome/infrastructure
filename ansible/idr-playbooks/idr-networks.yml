@@ -1,9 +1,16 @@
-# Setup the IDR gateway networking
+# Setup the IDR additional network interfaces
 #
-# This is needed because the proxy server provides ssh-proxy access to
-# multiple networks, but only the firgst NIC is automatically configured.
+# This is needed because only the first NIC is automatically configured
 
+# Update the bastion servers first since they provides ssh-proxy access to
+# other servers
 - hosts: "{{ idr_environment | default('idr') }}-bastion-hosts"
+  roles:
+  - role: network-cloud-interfaces
 
+# All other hosts (e.g. those requiring NFS access on a separate network)
+- hosts: >
+    {{ idr_environment | default('idr') }}-hosts
+    {{ idr_environment | default('idr') }}-a-hosts
   roles:
   - role: network-cloud-interfaces
