@@ -9,13 +9,13 @@
     state: present
 
 - name: Install nodejs
-  sudo: yes
+  become: yes
   yum:
     name: https://rpm.nodesource.com/pub_6.x/el/7/x86_64/nodesource-release-el7-1.noarch.rpm
     state: present
 
 - name: Install grunt command line tool
-  sudo: yes
+  become: yes
   npm: 
     name: grunt-cli
     global: yes
