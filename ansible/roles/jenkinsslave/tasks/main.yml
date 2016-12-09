@@ -68,7 +68,7 @@
   lineinfile:
     dest: /etc/sudoers
     backup: yes
-    line: "{{ jenkinsuser }}    ALL=(omero:omero)    NOPASSWD: ALL"
+    line: "{{ jenkinsuser }}    ALL=({{ jenkinsuser }}:{{ jenkinsuser }})    NOPASSWD: ALL"
     insertafter: "^## Same thing without a password"
     state: present
     validate: 'visudo -cf %s'
@@ -90,5 +90,3 @@
     dest: /home/{{ jenkinsuser }}/.gitconfig
     owner: "{{ jenkinsuser }}"
     group: "{{ jenkinsuser }}"
-
-- include: setup_virtualenv.yml

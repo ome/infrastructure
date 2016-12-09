@@ -1,7 +1,5 @@
 ---
 # defaults file for roles/omero-python-deps
 
-# Distribution or PyPI packages?
-omero_python_deps_profile: distribution
 # Install minimal or all recommended packages?
 omero_python_deps_recommended: True

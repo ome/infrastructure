@@ -28,9 +28,28 @@ Role Variables
 --------------
 
 Optional variables:
-- `omero_python_deps_profile`: Either `distribution` to use the distribution packages for Python modules where possible (default), or `pypi` to install recommended packages globally from PyPI using `pip`.
 - `omero_python_deps_recommended`: If `False` install a minimal set of Python dependencies, default `True`.
 
+If `omero_python_deps_recommended` False then use virtualenv role
+
+    - role: virtualenv
+      virtualenv_user: "{{ youruser }}"
+      virtualenv_path: /home/{{ youruser }}/virtualenv
+      # virtualenv_site_packages: "yes"   # optional
+      virtualenv_pip_rpm_dependencies:
+      - gcc
+      - libjpeg-devel
+      - libtiff-devel
+      - zlib-devel
+      - python-pip
+      virtualenv_pip_dependencies:
+      - Pillow
+      - Cython
+      - numpy
+      - matplotlib
+      - tables
+      - scipy
+      - PyYAML
 
 Author Information
 ------------------

@@ -7,6 +7,12 @@
   roles:
     - role: versioncontrol-utils
     - role: jenkinsslave
+    - role: virtualenv
+      virtualenv_user: "{{ jenkinsuser }}"
+      virtualenv_path: /home/{{ jenkinsuser }}/virtualenv
+      virtualenv_pip_rpm_dependencies:
+      virtualenv_pip_dependencies:
+      - scc
 
 - include: jekyll-playbooks/jekyll-deploy.yml
   tags: jekyll-deploy
