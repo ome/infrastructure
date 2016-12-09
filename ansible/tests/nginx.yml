@@ -1,0 +1,14 @@
+- hosts: nginx
+  roles:
+  - role: nginx
+
+  tasks:
+  - command: /usr/sbin/nginx -v
+    register: ng_version
+    changed_when: False
+
+  # This will need to be updated when the major version is incremented
+  - assert:
+      that: >
+        "{{ ng_version.stderr | regex_replace('.+/(\d+\.\d+)\.\d+$', '\1') }}"
+        == "1.10"
