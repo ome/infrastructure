@@ -3,13 +3,7 @@
 # This is needed because the proxy server provides ssh-proxy access to
 # multiple networks, but only the firgst NIC is automatically configured.
 
-- hosts: "{{ idr_environment | default('idr') }}-proxy-hosts"
+- hosts: "{{ idr_environment | default('idr') }}-bastion-hosts"
 
   roles:
-  - role: network
-    network_basic_ifaces:
-    - device: eth1
-      bootproto: dhcp
-      mtu:
-      type: Ethernet
-      defroute: "no"
+  - role: network-cloud-interfaces
