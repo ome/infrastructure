@@ -14,6 +14,12 @@
     name: https://rpm.nodesource.com/pub_6.x/el/7/x86_64/nodesource-release-el7-1.noarch.rpm
     state: present
 
+- name: Install npm
+  become: yes
+  yum:
+    name: npm
+    state: present
+
 - name: Install grunt command line tool
   become: yes
   npm: 
