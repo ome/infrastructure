@@ -35,7 +35,7 @@
             idr_environment | default('idr') + '-a-dockermanager-hosts'][0]]
             ['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']
         }}:8000
-    when: "{{ groups[idr_environment | default('idr') + '-a-dockermanager-hosts'] | length > 0 }}"
+    when: "{{ groups[idr_environment | default('idr') + '-a-dockermanager-hosts'] is defined }}"
 
   roles:
   # Default to a self-signed certificate, set `idr_nginx_ssl_production: True`
