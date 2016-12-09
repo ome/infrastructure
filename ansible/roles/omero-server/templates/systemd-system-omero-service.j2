@@ -5,6 +5,8 @@ Description=OMERO.server
 # PostgreSQL may be running on a different server so don't set Requires
 #Requires=postgresql-9.4.service
 After=postgresql-9.4.service
+Requires=network.service
+After=network.service
 
 [Service]
 User={{ omero_system_user }}

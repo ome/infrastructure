@@ -2,6 +2,8 @@
 Description=OMERO.web
 # Not mandatory, Nginx may be running on a different server
 #Requires=nginx.service
+Requires=network.service
+After=network.service
 
 # TODO: Run web in foreground mode so that it can be monitored by systemd
 [Service]
