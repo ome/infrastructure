@@ -35,7 +35,8 @@
     mount:
       fstype: nfs
       name: "{{ nfs_mountpoint }}"
-      opts: rsize=8192,wsize=8192,timeo=14,intr,nolock
+      # Removed rsize=8192,wsize=8192, this should be auto-negotiated
+      opts: timeo=14,intr,nolock
       src: 10.35.106.250:/ivol_bioimage_sm
       state: mounted
 
