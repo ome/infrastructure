@@ -75,6 +75,7 @@
     tags: "python-pydata"
   - role: omero-web-apps
     tags: "omero-web-apps"
+  - role: analysis-tools
 
   vars:
     omero_dbhost: "{{ omero_db_host_ansible }}"
