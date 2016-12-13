@@ -1,0 +1,17 @@
+# Tasks specific to bastion hosts
+
+- hosts: >
+    {{ idr_environment | default('idr') }}-hosts
+    {{ idr_environment | default('idr') }}-a-hosts
+# Load hostvars
+
+# Setup /etc/hosts on bastion hosts
+- hosts: >
+    {{ idr_environment | default('idr') }}-bastion-hosts
+    {{ idr_environment | default('idr') }}-a-bastion-hosts
+
+  roles:
+  - role: hosts-populate
+    hosts_populate_openstack_groups:
+    - "{{ idr_environment | default('idr') }}-hosts"
+    - "{{ idr_environment | default('idr') }}-a-hosts"
