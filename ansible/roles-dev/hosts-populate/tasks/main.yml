@@ -1,0 +1,9 @@
+---
+# tasks file for roles/hosts-populate
+
+- name: hosts | update /etc/hosts
+  become: yes
+  template:
+    dest: /etc/hosts
+    backup: yes
+    src: etc-hosts.j2
