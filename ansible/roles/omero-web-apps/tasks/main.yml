@@ -45,21 +45,26 @@
   become_user: "{{ omero_system_user }}"
   command: >
     {{ omero_web_omero }} config append --set --report
-    omero.web.ui.metadata_panes {{ item }}
+    omero.web.ui.metadata_panes {{ item | to_json | quote }}
   register: out
   changed_when: "'Changed:' in out.stdout"
   with_items: "{{ omero_web_ui_metadata_panes | default([]) }}"
   notify:
     - restart omero-web
 
-- name: omero web config | mapr config
+# This block iterates through OMERO config `key:value` pairs where
+# `value` is a list of items to be individually added using
+# `config append`
+- name: omero web config | additional config append
   become: yes
   become_user: "{{ omero_system_user }}"
   command: >
     {{ omero_web_omero }} config append --set --report
-    omero.web.mapr.config {{ item }}
+    {{ item.0.key }} {{ item.1 | to_json | quote }}
   register: out
   changed_when: "'Changed:' in out.stdout"
-  with_items: "{{ omero_web_mapr_config | default([]) }}"
+  with_subelements:
+  - "{{ omero_web_additional_config_append | default({}) }}"
+  - value
   notify:
     - restart omero-web
