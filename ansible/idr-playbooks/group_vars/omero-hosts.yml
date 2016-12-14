@@ -27,7 +27,7 @@ omero_prestart_file: "{{ playbook_dir }}/files/IDR-OMERO-52-omero.j2"
 # mapr
 
 omero_web_app_packages:
-  - "omero-mapr==0.1.7"
+  - "omero-mapr==0.1.8"
 omero_web_apps_add:
 - omero_mapr
 
