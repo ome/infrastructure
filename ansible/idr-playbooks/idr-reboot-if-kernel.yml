@@ -1,0 +1,27 @@
+---
+# Auto-reboot if the kernel was upgraded.
+
+# If the SSH proxy host is rebooted this breaks connections to all the
+# backend servers and ansible may hang, so reboot bastion hosts separately.
+
+
+# Reboot non-bastion hosts, don't wait because checking that SSH is open
+# via a proxy-host is difficult
+- hosts: >
+    {{ idr_environment | default('idr') }}-hosts
+    {{ idr_environment | default('idr') }}-a-hosts
+    !bastion-hosts
+  roles:
+  - role: reboot-server
+    reboot_server_timeout: 0
+
+
+# Reboot bastion hosts, don't wait because with the default dynamic inventory
+# it proxies itself instead of using the external IP
+- hosts: >
+    {{ idr_environment | default('idr') }}-hosts
+    {{ idr_environment | default('idr') }}-a-hosts
+    &bastion-hosts
+  roles:
+  - role: reboot-server
+    reboot_server_timeout: 0
