@@ -86,7 +86,7 @@ omero_web_ui_metadata_panes:
   label: "Tables"
   index: 1
 - name: "file"
-  label": "Attachments"
+  label: "Attachments"
   index: 2
 - name: "comment"
   label: "Comments"
