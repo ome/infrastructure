@@ -77,6 +77,29 @@ omero_web_app_add_top_links:
     target: new
     title: Open OMERO user guide in a new tab
 
+# Metadata Panes order
+omero_web_ui_metadata_panes:
+- name: "map"
+  label: "Attributes"
+  index: 0
+- name: "table"
+  label: "Tables"
+  index: 1
+- name: "file"
+  label": "Attachments"
+  index: 2
+- name: "comment"
+  label: "Comments"
+  index: 3
+- name: "tag"
+  label: "Tags"
+  index: 4
+- name: "rating"
+  label: "Ratings"
+  index: 5
+- name: "other"
+  label: "Others"
+  index: 6
 
 ######################################################################
 # Other omero configuration

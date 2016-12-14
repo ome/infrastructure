@@ -39,3 +39,15 @@
   with_items: "{{ omero_web_app_add_top_links | default([]) }}"
   notify:
     - restart omero-web
+
+- name: omero web config | ui metadata panes
+  become: yes
+  become_user: "{{ omero_system_user }}"
+  command: >
+    {{ omero_web_omero }} config append --set --report
+    omero.web.ui.metadata_panes {{ item }}
+  register: out
+  changed_when: "'Changed:' in out.stdout"
+  with_items: "{{ omero_web_ui_metadata_panes | default([]) }}"
+  notify:
+    - restart omero-web
