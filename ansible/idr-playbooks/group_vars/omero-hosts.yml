@@ -101,6 +101,87 @@ omero_web_ui_metadata_panes:
   label: "Others"
   index: 6
 
+# Mapr config
+omero_web_mapr_config:
+- menu: "gene"
+  config:
+    default:
+      - "Gene Symbol"
+    all:
+      - "Gene Symbol"
+      - "Gene Identifier"
+    ns:
+      - "openmicroscopy.org/mapr/gene"
+    label: "Gene"
+- menu: "genesupplementary"
+  config:
+    default: []
+    all: []
+    ns:
+      - "openmicroscopy.org/mapr/gene/supplementary"
+    label: "Gene supplementary"
+- menu: "sirna"
+  config:
+    default:
+      - "siRNA Identifier"
+    all:
+      - "siRNA Identifier"
+      - "siRNA Pool Identifier"
+    ns:
+      - "openmicroscopy.org/mapr/sirna"
+    label: "siRNA"
+- menu: "sirnasupplementary"
+  config:
+    label: "siRNA supplementary"
+    default: []
+    all: []
+    ns:
+      - "openmicroscopy.org/mapr/sirna/supplementary"
+- menu: "phenotype"
+  config:
+    default:
+      - "Phenotype"
+    all:
+      - "Phenotype"
+      - "Phenotype Term Accession"
+    ns:
+      - "openmicroscopy.org/mapr/phenotype"
+    label: "Phenotype"
+- menu: "compound"
+  config:
+    default:
+      - "Compound Name"
+    all:
+      - "Compound Name"
+    ns:
+      - "openmicroscopy.org/mapr/compound"
+    label: "Compound"
+- menu: "compoundsupplementary"
+  config:
+    default: []
+    all: []
+    ns:
+      - "openmicroscopy.org/mapr/compound/supplementary"
+    label: "Compound supplementary"
+- menu: "organism"
+  config:
+    default:
+      - "Organism"
+    all:
+      - "Organism"
+    ns:
+      - "openmicroscopy.org/mapr/organism"
+    label: "Organism"
+- menu: "others"
+  config:
+    default:
+      - "Others"
+    all:
+      - "Others"
+    ns:
+      - "openmicroscopy.org/omero/bulk_annotations"
+    label: "Others"
+
 ######################################################################
 # Other omero configuration
 

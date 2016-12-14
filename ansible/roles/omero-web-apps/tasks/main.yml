@@ -51,3 +51,15 @@
   with_items: "{{ omero_web_ui_metadata_panes | default([]) }}"
   notify:
     - restart omero-web
+
+- name: omero web config | mapr config
+  become: yes
+  become_user: "{{ omero_system_user }}"
+  command: >
+    {{ omero_web_omero }} config append --set --report
+    omero.web.mapr.config {{ item }}
+  register: out
+  changed_when: "'Changed:' in out.stdout"
+  with_items: "{{ omero_web_mapr_config | default([]) }}"
+  notify:
+    - restart omero-web
