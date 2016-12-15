@@ -15,10 +15,12 @@
   with_items:
     - Cython
     - numpy
+    - python-jinja2
     - python-matplotlib
     - python-numexpr
     - python-tables
     - python-pip
+    - PyYAML
     - scipy
   when: "{{ omero_python_deps_recommended }}"
 
