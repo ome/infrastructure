@@ -13,7 +13,7 @@
     lvm_lvmount: /var/lib
     lvm_lvsize: 200G
     lvm_vgname: VGopenstack
-    lvm_lvfilesystem: xfs
+    lvm_lvfilesystem: ext4
   - role: openstack-prepare
 
   vars:
