@@ -68,8 +68,8 @@
   git:
     repo: "{{ devspace_git_repo }}"
     dest: "{{ devspace_home }}"
-    update: yes
-    force: yes
+    update: "{{ devspace_git_update }}"
+    force: "{{ devspace_git_force }}"
     refspec: "+refs/pull/*:refs/heads/*"
     version: "{{ devspace_git_repo_version }}"
   notify: restart devspace
