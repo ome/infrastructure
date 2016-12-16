@@ -2,14 +2,18 @@
 # Disabled by default since GPFS requires a compiled kernel module, upgraded
 # with care.
 
+{% if gpfs_repo_url_base | length > 0 %}
 [gpfs-base]
 name=GPFS Repository
 baseurl={{ gpfs_repo_url_base }}
 enabled=1
 gpgcheck=0
+{% endif %}
 
+{% if gpfs_repo_url_updates | length > 0 %}
 [gpfs-updates]
 name=GPFS Repository
 baseurl={{ gpfs_repo_url_updates }}
 enabled=1
 gpgcheck=0
+{% endif %}
