@@ -1,0 +1,37 @@
+# Add networks to an existing instance
+#
+
+- name: idr vm | get openstack servers
+  os_server_facts:
+  always_run: yes
+
+- name: idr vm | get openstack networks
+  os_networks_facts:
+  always_run: yes
+
+- debug:
+    msg: >
+      {{ (openstack_servers |
+           selectattr("name", "equalto", idr_instance_network_server) | list)
+           .0.networks }}
+    verbosity: 1
+
+- debug:
+    msg: >
+      {{ (openstack_networks | selectattr("name", "equalto", item) | list)
+      }}
+    verbosity: 1
+  with_items:
+  - "{{ idr_instance_network_networks }}"
+
+- name: idr vm | attach instance to network
+  command: >
+    nova interface-attach
+      --net-id {{ (openstack_networks |
+        selectattr("name", "equalto", item) | list).0.id }}
+      {{ idr_instance_network_server }}
+  when: >
+    item not in ((openstack_servers |
+      selectattr("name", "equalto", idr_instance_network_server) | list).0.networks)
+  with_items:
+  - "{{ idr_instance_network_networks }}"
