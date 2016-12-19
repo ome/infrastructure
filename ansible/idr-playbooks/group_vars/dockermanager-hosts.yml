@@ -1,3 +1,3 @@
 idr_jupyter_hub_image: "imagedata/jupyterhub-githubauth:0.2.0"
 idr_jupyter_notebook_image: "imagedata/jupyter-docker:0.2.0"
-idr_jupyter_notebook_repo_version: "HEAD"
+idr_jupyter_notebook_repo_version: "0.3.0"
