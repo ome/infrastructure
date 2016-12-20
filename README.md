@@ -17,14 +17,11 @@ for full installation instructions.
 
 ### Installation
 
-- Create a virtual environment and install Ansible:
+- Create a virtual environment and install the Ansible requirements (including
+  `shade` for using with OpenStack):
 
         virtualenv ~/venvs/ansible
-        ~/venvs/ansible/bin/pip install ansible
-
-- If using Ansible with OpenStack, you might want to install `shade`:
-
-        ~/venvs/ansible/bin/pip install shade
+        ~/venvs/ansible/bin/pip install -r requirements.txt
 
 - Clone this repository:
 
