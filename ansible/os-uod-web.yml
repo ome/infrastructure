@@ -10,7 +10,7 @@
 
   vars:
 
-    vm_image: "CentOS 7 1604"
+    vm_image: "CentOS 7"
     vm_flavour: m1.medium
     vm_groups: "ansible-managed,os-image-centos,web-linux"
     ignore_internal_known_hosts: True
