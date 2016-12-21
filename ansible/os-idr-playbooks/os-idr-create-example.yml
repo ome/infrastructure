@@ -10,7 +10,7 @@
   vars:
     - idr_environment: idr
     - idr_keypair_keys: []
-    - vm_image: CentOS 7 1604
+    - vm_image: CentOS 7
     - vm_flavour: m1.large
 
 
