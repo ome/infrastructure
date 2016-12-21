@@ -2,11 +2,19 @@
 # tasks file for roles/nginx
 
 
-- name: system packages | setup upstream nginx repo
+- name: system packages | setup upstream nginx stable repo
   become: yes
   yum:
     name: https://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
     state: present
+  when: nginx_stable_repo
+
+- name: system packages | setup upstream nginx mainline repo
+  become: yes
+  copy:
+    src: nginx-mainline.repo
+    dest: /etc/yum.repos.d/nginx-mainline.repo
+  when: not nginx_stable_repo
 
 - name: system packages | install nginx
   become: yes

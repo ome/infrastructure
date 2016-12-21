@@ -1,0 +1,33 @@
+- hosts: haproxy
+
+  roles:
+
+  - role: selinux-utils
+  - role: haproxy
+    haproxy_frontends:
+    - name: frontend-web
+      address: '*:80'
+      mode: http
+      backend: backend-web
+    - name: frontend-ssh
+      address: '*:10022'
+      mode: tcp
+      backend: backend-ssh
+    haproxy_backends:
+    - name: backend-web
+      mode: http
+      balance_method: roundrobin
+      servers:
+      - name: backend-web-1
+        address: www.openmicroscopy.org:80
+      - name: backend-web-2
+        address: idr-demo.openmicroscopy.org:80
+        options:
+        - forwardfor
+        - httpchk GET /about/
+        cookie: "SERVERID insert indirect"
+    - name: backend-ssh
+      mode: tcp
+      servers:
+      - name: backend-ssh-1
+        address: 10.0.0.1:22

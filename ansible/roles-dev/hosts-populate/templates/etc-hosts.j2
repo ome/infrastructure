@@ -1,0 +1,11 @@
+# Managed by Ansible
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+{% for group in (hosts_populate_openstack_groups | default([])) %}
+# Group {{ group }}
+{%   for host in (groups[group] | default([])) %}
+{{ hostvars[host]['ansible_' + (hosts_populate_iface | default('eth0'))].ipv4.address }} {{ hostvars[host].ansible_hostname }}
+{%   endfor %}
+
+{% endfor %}

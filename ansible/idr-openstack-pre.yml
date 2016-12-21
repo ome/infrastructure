@@ -13,10 +13,10 @@
     lvm_lvmount: /var/lib
     lvm_lvsize: 200G
     lvm_vgname: VGopenstack
-    lvm_lvfilesystem: xfs
+    lvm_lvfilesystem: ext4
   - role: openstack-prepare
 
   vars:
-    network_interfaces: "{{ pre_network_ifaces }}"
+    network_ifaces: "{{ pre_network_ifaces }}"
 
 # You may wish to run idr-gpfs-client.yml

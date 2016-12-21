@@ -100,6 +100,10 @@ Caching:
 - `nginx_proxy_cache_ignore_headers`: Headers to be ignored, e.g. `'"Set-Cookie" "Vary" "Expires"'`
 - `nginx_proxy_cache_hide_headers`: Headers to be hidden from clients in cached responses, must be a list e.g. `[Set-Cookie]`
 - `nginx_proxy_cache_key`: Override the default Nginx cache key, for example `"$host$request_uri"` to ignore session cookies
+- `nginx_proxy_cache_key_map`: Optionally map `nginx_proxy_cache_key` to the desired cache key, for instance if you want to ignore part of the url. This should be a list of dictionaries with fields:
+  - `match`: Match in nginx_proxy_cache_key
+  - `key`: The cache key
+`nginx_proxy_cache_key` is always included as the default.
 - `nginx_proxy_cache_use_stale`: Situations in which stale cache results should be returned, see `defaults/main.yml` for default
 - `nginx_proxy_cache_lock_time`: Prevent multiple backend requests to the same object (subsequent requests will wait for the first to either return or time-out), default 1 minute
 - `nginx_proxy_cachebuster_port`: An alternative port which can be used to force a cache refresh, disabled by default. You should ensure this is firewalled. If SELinux is enabled and the port is not one that nginx can bind by default (typically 80, 81, 443, 488, 8008, 8009, 8443, 9000 are allowed by default) you must update your policy yourself.

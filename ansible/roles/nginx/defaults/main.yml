@@ -6,3 +6,6 @@ nginx_logrotate_interval: daily
 
 # Number of backlog files to keep
 nginx_logrotate_backlog_size: 366
+
+# Use stable or mainline?
+nginx_stable_repo: True

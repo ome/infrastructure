@@ -43,3 +43,13 @@ map $request_uri $cache_zone_name
 {%   endfor %}
 {% endfor %}
 }
+
+{% if nginx_proxy_cache_key %}
+map {{ nginx_proxy_cache_key }} $cache_key
+{
+    default {{ nginx_proxy_cache_key }};
+{%   for item in nginx_proxy_cache_key_map %}
+    {{ item.match }} {{ item.key }};
+{%   endfor %}
+}
+{% endif %}

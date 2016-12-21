@@ -13,13 +13,6 @@ Role Variables
 - `network_disable_ifaces`: A list of network device names to be explicitly disabled, use this if you want to be sure the interface is disabled (as opposed to being auto-configured by the system).
 - `network_delete_ifaces`: A regular expression describing the network device name(s) to be removed (note this means the system may auto-configure them), use this for cleaning up spare configuration files.
 
-The above variables provide full control of all network interfaces on a server, and will almost always require a restart of the network service on the server.
-
-For convenience an alternative variable for adding interfaces with very simple configuration is available that will restart only the added interface.
-This should only be used where it is critical that connections to existing NICs are maintained, and is not recommended since the state of the system may not match the state after a full restart.
-- `network_basic_ifaces`: Adds and restart individual interfaces, use `network_ifaces` unless you really need this.
-
-
 
 Example Playbook
 ----------------

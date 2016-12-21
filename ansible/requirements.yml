@@ -7,3 +7,7 @@
 - name: munin-node
   src: https://github.com/openmicroscopy/ansible-role-munin-node.git
   version:  1.2.1-openmicroscopy1
+
+- name: haproxy
+  src: https://github.com/openmicroscopy/ansible-role-haproxy.git
+  version: origin/master
