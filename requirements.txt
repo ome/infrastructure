@@ -1,2 +1,2 @@
-ansible
-shade==1.11.1
+ansible==2.1.3.0
+shade==1.13.2
