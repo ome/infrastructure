@@ -13,14 +13,13 @@ If you have more complex requirements, including applying custom patches, instal
 Requirements
 ------------
 
-If you have access to a GPFS yum repository and are happy for a development toolchain to be installed on all your GPFS nodes set `gpfs_repo_url_base` and `gpfs_repo_url_updates` to point to your repositories.
+If you have access to a GPFS yum repository and are happy for a development toolchain to be installed on all your GPFS nodes set `gpfs_repo_url_base` and `gpfs_repo_url_updates` to point to your repositories if they haven't already been configured.
 
 
 Role Variables
 --------------
 
-These are required when using a yum repository:
-
+If you need to configure a yum repository for GPFS packages set these variables:
 - `gpfs_repo_url_base`: URL to the base packages in a GPFS yum repository
 - `gpfs_repo_url_updates`: URL to the updates packages in a GPFS yum repository
 

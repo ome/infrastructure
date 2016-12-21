@@ -10,4 +10,4 @@
   - role: logrotate
 
   vars:
-    network_interfaces: "{{ post_network_ifaces }}"
+    network_ifaces: "{{ post_network_ifaces }}"

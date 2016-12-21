@@ -4,7 +4,8 @@
 - name: openstack | Setup RDO repository
   become: yes
   yum:
-    pkg: https://www.rdoproject.org/repos/rdo-release.rpm
+    # pkg: https://www.rdoproject.org/repos/rdo-release.rpm
+    pkg: https://repos.fedorapeople.org/repos/openstack/openstack-mitaka/rdo-release-mitaka-6.noarch.rpm
     state: present
 
 - name: openstack | Install packstack
