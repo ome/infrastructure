@@ -32,10 +32,18 @@
   with_items: "{{ ice_pip_dependencies }}"
   when: ice_pip_dependencies
 
-- name: zeroc ice | pip install packages
+- name: zeroc ice | pip install packages (ansible < 2.2)
   become: yes
   pip:
     name: "{{ item }}"
     state: present
   with_items: "{{ ice_pip_packages }}"
-  when: ice_pip_packages
+  when: "ice_pip_packages and {{ ansible_version.full | version_compare('2.2', '<') }}"
+
+# https://github.com/ansible/ansible/issues/19321
+- name: zeroc ice | pip install packages (ansible >= 2.2)
+  become: yes
+  pip:
+    name: "{{ ice_pip_packages }}"
+    state: present
+  when: "ice_pip_packages and {{ ansible_version.full | version_compare('2.2', '>=') }}"
