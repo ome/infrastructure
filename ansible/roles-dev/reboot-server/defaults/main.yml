@@ -1,0 +1,18 @@
+---
+# defaults file for roles/reboot-server
+
+# If True unconditionally reboot the server, otherwise only reboot if the
+# kernel has changed
+reboot_server_always: False
+
+# Run the reboot check from this node
+reboot_server_delegate: localhost
+
+# Wait for this time (seconds) before shutting down the server
+reboot_server_shutdown_delay: 5
+
+# Wait for this time (seconds) before checking whether the server has restarted
+reboot_server_wait: 30
+
+# Maximum time (seconds) to wait for a reboot
+reboot_server_timeout: 300
