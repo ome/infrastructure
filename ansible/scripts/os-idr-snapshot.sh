@@ -14,7 +14,13 @@ vm_prefix="$1"
 today=$(date +%Y%m%d)
 errors=0
 
-for vm in database omero gateway; do
+for vm in \
+        database \
+        omero \
+        proxy \
+        a-dockermanager \
+        management \
+        ; do
     server="$vm_prefix-$vm"
     echo "Snapshotting server $server"
     openstack server image create --name "$server-$today" "$server" -f yaml
@@ -22,7 +28,12 @@ for vm in database omero gateway; do
     echo
 done
 
-for vol in database-db omero-data gateway-nginxcache; do
+for vol in \
+        database-db \
+        omero-data \
+        proxy-nginxcache \
+        a-dockermanager-jupyter \
+        ; do
     volume="$vm_prefix-$vol"
     echo "Snapshotting volume $volume"
     openstack snapshot create --force --name "$volume-$today" "$volume" -f yaml
