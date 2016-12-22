@@ -76,3 +76,10 @@ omero_web_app_add_top_links:
   attrs:
     target: new
     title: Open OMERO user guide in a new tab
+
+
+######################################################################
+# Other omero configuration
+
+# Install JDK to provide jstack
+java_jdk_install: True
