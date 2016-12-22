@@ -59,6 +59,7 @@ Vagrant.configure(2) do |config|
 
   [
     "haproxy",
+    "java",
     "nginx",
     "nginx-mainline",
     "omero-server",

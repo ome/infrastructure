@@ -1,0 +1,36 @@
+# JRE only
+- hosts: java
+  roles:
+  - role: java
+
+  tasks:
+  - stat:
+      path: /usr/bin/java
+    register: st1_java
+
+  - stat:
+      path: /usr/bin/javac
+    register: st1_javac
+
+  # WARNING: This will only pass on the first run, since the next playbook
+  # invalidates this assert
+  - assert:
+      that:
+      - "st1_java.stat.exists"
+      - "not st1_javac.stat.exists"
+
+
+# JRE and JDK
+- hosts: java
+  roles:
+  - role: java
+    java_jdk_install: True
+
+  tasks:
+  - stat:
+      path: /usr/bin/javac
+    register: st2_javac
+
+  - assert:
+      that:
+      - "st2_javac.stat.exists"
