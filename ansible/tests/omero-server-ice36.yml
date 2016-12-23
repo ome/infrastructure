@@ -1,8 +1,9 @@
-- hosts: omero-server
+- hosts: omero-server-ice36
 
   roles:
 
   - role: omero-server
+    ice_version: "3.6"
     postgresql_users_databases:
     - user: omero
       password: omero
@@ -26,7 +27,34 @@
       password: "user password"
       groups: '--group-name "Test Group 1"'
 
+
   tasks:
+
+  - name: Get icegridnode version seen by OMERO
+    become: yes
+    become_user: omero
+    command: icegridnode --version
+    register: ice_check_ver
+    always_run: yes
+
+  - name: Check ice version
+    assert:
+      that:
+      - '{{ ice_check_ver.stderr | version_compare("3.6", ">=") }}'
+      - '{{ ice_check_ver.stderr | version_compare("3.7", "<") }}'
+
+  - name: Get omero version
+    become: yes
+    become_user: omero
+    command: /home/omero/OMERO.server/bin/omero version
+    register: omero_check_ver
+    always_run: yes
+
+  - name: Check OMERO version
+    assert:
+      that:
+      - '"-ice36-" in "{{ omero_check_ver.stdout }}"'
+
 
   # If these commands return with exit code 0 they've succeeded
   # TODO: If these commands hang it means login failed and omero is
