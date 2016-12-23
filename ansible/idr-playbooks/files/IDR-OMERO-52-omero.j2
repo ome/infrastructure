@@ -53,8 +53,10 @@ config set omero.web.caches '{"default": {"BACKEND": "django_redis.cache.RedisCa
 config set omero.web.sharing.twitter '{"omero": "@openmicroscopy"}'
 config set omero.web.sharing.opengraph '{"omero": "Open Microscopy"}'
 
-# Clear the top links, they will be set later by mapr
+# Clear the top links and metadata
+# (They will be set later by mapr)
 config set omero.web.ui.top_links '[]'
+config set omero.web.ui.metadata_panes '[]'
 
 # Right-hand metadata panel
 config set omero.web.ui.metadata_pane '[{"name": "tag", "label": "Tags", "index": 5}, {"name": "file", "label": "Attachments", "index": 2}, {"name": "map", "label": "Attributes", "index": 0}, {"name": "table", "label": "Tables", "index": 1}, {"name": "comment", "label": "Comments", "index": 3}, {"name": "rating", "label": "Ratings", "index": 4}, {"name": "other", "label": "Others", "index": 6}]'

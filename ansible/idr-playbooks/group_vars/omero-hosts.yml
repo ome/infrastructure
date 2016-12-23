@@ -27,7 +27,7 @@ omero_prestart_file: "{{ playbook_dir }}/files/IDR-OMERO-52-omero.j2"
 # mapr
 
 omero_web_app_packages:
-  - "omero-mapr==0.1.7"
+  - "omero-mapr==0.1.8"
 omero_web_apps_add:
 - omero_mapr
 
@@ -77,6 +77,112 @@ omero_web_app_add_top_links:
     target: new
     title: Open OMERO user guide in a new tab
 
+# Metadata Panes order
+omero_web_ui_metadata_panes:
+- name: "map"
+  label: "Attributes"
+  index: 0
+- name: "table"
+  label: "Tables"
+  index: 1
+- name: "file"
+  label: "Attachments"
+  index: 2
+- name: "comment"
+  label: "Comments"
+  index: 3
+- name: "tag"
+  label: "Tags"
+  index: 4
+- name: "rating"
+  label: "Ratings"
+  index: 5
+- name: "other"
+  label: "Others"
+  index: 6
+
+# Additional plugin config (append)
+omero_web_additional_config_append:
+- key: omero.web.mapr.config
+  value:
+  - menu: "gene"
+    config:
+      default:
+        - "Gene Symbol"
+      all:
+        - "Gene Symbol"
+        - "Gene Identifier"
+      ns:
+        - "openmicroscopy.org/mapr/gene"
+      label: "Gene"
+  - menu: "genesupplementary"
+    config:
+      default: []
+      all: []
+      ns:
+        - "openmicroscopy.org/mapr/gene/supplementary"
+      label: "Gene supplementary"
+  - menu: "sirna"
+    config:
+      default:
+        - "siRNA Identifier"
+      all:
+        - "siRNA Identifier"
+        - "siRNA Pool Identifier"
+      ns:
+        - "openmicroscopy.org/mapr/sirna"
+      label: "siRNA"
+  - menu: "sirnasupplementary"
+    config:
+      label: "siRNA supplementary"
+      default: []
+      all: []
+      ns:
+        - "openmicroscopy.org/mapr/sirna/supplementary"
+  - menu: "phenotype"
+    config:
+      default:
+        - "Phenotype"
+      all:
+        - "Phenotype"
+        - "Phenotype Term Accession"
+      ns:
+        - "openmicroscopy.org/mapr/phenotype"
+      label: "Phenotype"
+  - menu: "compound"
+    config:
+      default:
+        - "Compound Name"
+      all:
+        - "Compound Name"
+      ns:
+        - "openmicroscopy.org/mapr/compound"
+      label: "Compound"
+  - menu: "compoundsupplementary"
+    config:
+      default: []
+      all: []
+      ns:
+        - "openmicroscopy.org/mapr/compound/supplementary"
+      label: "Compound supplementary"
+  - menu: "organism"
+    config:
+      default:
+        - "Organism"
+      all:
+        - "Organism"
+      ns:
+        - "openmicroscopy.org/mapr/organism"
+      label: "Organism"
+  - menu: "others"
+    config:
+      default:
+        - "Others"
+      all:
+        - "Others"
+      ns:
+        - "openmicroscopy.org/omero/bulk_annotations"
+      label: "Others"
 
 ######################################################################
 # Other omero configuration
