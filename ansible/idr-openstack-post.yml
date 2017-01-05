@@ -11,3 +11,10 @@
 
   vars:
     network_ifaces: "{{ post_network_ifaces }}"
+
+  tasks:
+    - name: add extra packages
+      become: yes
+      yum:
+        name: jq
+        state: present
