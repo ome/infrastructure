@@ -1,7 +1,0 @@
----
-dependencies:
-- role: basedeps
-- role: ice
-- role: omero-python-deps
-- role: redis
-  when: omero_web_runtime_redis

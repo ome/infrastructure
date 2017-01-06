@@ -1,5 +1,0 @@
----
-# defaults file for roles/ice
-
-# Ice version
-ice_version: 3.5

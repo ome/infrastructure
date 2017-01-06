@@ -1,4 +1,0 @@
----
-dependencies:
-- role: selinux-utils
-- role: nginx

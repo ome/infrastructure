@@ -1,4 +1,0 @@
----
-# defaults file for roles/lvm-partitions
-
-lvm_lvopts:
