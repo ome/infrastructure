@@ -3,16 +3,6 @@
     {{ idr_environment | default('idr') }}-ebi-nfs
     {{ idr_environment | default('idr') }}-a-ebi-nfs
 
-  roles:
-
-  # The NFS network
-  - role: network
-    network_basic_ifaces:
-    - device: eth1
-      bootproto: dhcp
-      mtu:
-      type: Ethernet
-
   tasks:
 
   - name: Create NFS group
