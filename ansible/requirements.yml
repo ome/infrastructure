@@ -1,5 +1,9 @@
 # External Ansible roles required by this repository
 
+- name: basedeps
+  src: https://github.com/openmicroscopy/ansible-role-basedeps
+  version: 1.0.0
+
 - name: cli-utils
   src: https://github.com/manics/ansible-role-cli-utils.git
   version: origin/master
@@ -18,6 +22,10 @@
 
 - name: ice
   src: https://github.com/manics/ansible-role-ice.git
+  version: origin/master
+
+- name: java
+  src: https://github.com/openmicroscopy/ansible-role-java
   version: origin/master
 
 - name: jekyll-build
