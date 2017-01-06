@@ -25,6 +25,13 @@
   with_items: "{{ network_cloud_interfaces | default(ansible_interfaces) }}"
   register: network_cloud_modified
 
+- name: network cloud | disable default routes
+  become: yes
+  copy:
+    dest: /etc/dhcp/dhclient-enter-hooks
+    src: dhcp-dhclient-enter-hooks
+    mode: 0755
+
 - name: network cloud | start new nics
   become: yes
   command: /usr/sbin/ifup {{ item.item }}
