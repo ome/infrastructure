@@ -146,3 +146,18 @@
       that:
       - p.stat.exists
 
+- hosts: omerowebappsbuilddependencies
+  roles:
+  - role: omero-web-apps-build-dependencies
+
+  tasks:
+  - command: node --version
+    register: node_version
+
+  - command: grunt --version
+    register: grunt_version
+
+  - assert:
+      that:
+      - node_version.stdout | version_compare('6.9', '>=')
+      - grunt_version.stdout | version_compare('1.2', '>=')
