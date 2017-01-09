@@ -15,7 +15,7 @@
   vars:
 
     vm_image: "CentOS 7"
-    vm_flavour: m2.large
+    vm_flavour_ram: 24576
     vm_size: 50
     vm_groups: "ansible-managed,os-image-centos,docker-hosts,devspace"
 
@@ -67,7 +67,7 @@
         volume_size: "{{ vm_size }}"
         terminate_volume: true
         key_name: "{{ vm_key_name }}"
-        flavor: "{{ vm_flavour }}"
+        flavor_ram: "{{ vm_flavour_ram }}"
         auto_ip: yes
         meta:
           hostname: "{{ vm_name }}"
