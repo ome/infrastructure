@@ -7,6 +7,10 @@
 # to work as expected since the hostvar is persistent across tasks.
 # See defaults/main.yml for most of the logic.
 
+# If you have multiple networks with external connectivity you should specify
+# the network the floating should be atfached too, otherwise it may be random
+# which is almost certainly not what you want.
+
 - name: idr vm | create VM
   os_server:
     # Only add `-N` suffix for item>1
@@ -16,7 +20,7 @@
     key_name: "{{ idr_vm_keyname }}"
     flavor: "{{ idr_vm_flavour }}"
     nics: "{{ idr_vm_networks }}"
-    auto_ip: "{{ idr_vm_assign_floating_ip }}"
+    auto_ip: "{{ idr_vm_assign_floating_ip and (idr_vm_floating_ip_net | length == 0) }}"
     meta: >
       {{ dict([
           ("hostname", idr_vm_name),
@@ -29,3 +33,6 @@
     security_groups: "{{ idr_vm_security_groups | join(',') }}"
   register: vm
   with_sequence: "count={{ idr_vm_count }}"
+
+- include: floatingip.yml
+  when: 'idr_vm_assign_floating_ip and (idr_vm_floating_ip_net | length > 0)'

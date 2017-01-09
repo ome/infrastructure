@@ -92,36 +92,122 @@ Vagrant.configure(2) do |config|
     end
   end
 
-  # IDR multinode omero
-  ["idr-database", "idr-omero", "idr-gateway"].each do |s|
-    config.vm.define "#{s}" do |node|
-      node.vm.box = "centos/7"
-      node.vm.network "private_network", type: "dhcp"
-      config.vm.provider :virtualbox do |vb|
-        vb.customize ["modifyvm", :id, "--memory", "4096"]
-      end
-      node.vm.provision "ansible" do |ansible|
-        ansible.playbook = "idr-playbooks/idr-omero.yml"
-        ansible.limit = "idr"
-        ansible.groups = {
-          "idr-database-hosts" => ["idr-database"],
-          "database-hosts" => ["idr-database"],
-          "idr-omero-hosts" => ["idr-omero"],
-          "omero-hosts" => ["idr-omero"],
-          "idr-proxy-hosts" => ["idr-gateway"],
-          "proxy-hosts" => ["idr-gateway"],
-          "idr:children" => ["idr-database-hosts", "idr-omero-hosts", "idr-proxy-hosts"],
-          "idr:vars" => {
-            # Vagrant uses eth0 for NAT, eth1 for private guest network
-            "idr_net_iface" => "eth1",
-            "idr_nginx_ssl_self_signed" => "True",
-            "omero_release" => "0.0.7-rc1",
-            "omero_omego_additional_args" => "--downloadurl https://downloads.openmicroscopy.org/idr",
-          }
-        }
-      end
+
+######################################################################
+# IDR multinode omero. Either run just the three IDR production VMs:
+#
+#   vagrant up idr-database idr-omero idr-gateway
+#
+# Or the full production and analysis setup:
+#
+#   vagrant up idr-database idr-omero idr-a-database idr-a-omero idr-a-dockermanager idr-gateway
+#
+# WARNING:
+# Ideally ansible would be run once after all VMs are created, but vagrant
+# provisions VMs in serial which means the ansible-playbook is run
+# multiple times.
+# This also means the order of VMs in `vagrant up` is important.
+#
+# https://github.com/mitchellh/vagrant/issues/1784
+#
+# https://www.vagrantup.com/docs/provisioning/ansible.html
+# "Ansible Parallel Execution" won't work because only a subset of VMs may
+# be brought up
+
+  [
+    "idr-omero",
+    "idr-a-omero",
+    "idr-a-dockermanager",
+  ].each do |server|
+    config.vm.provider :virtualbox do |vb|
+      vb.customize ["modifyvm", :id, "--memory", "4096"]
+    end
+    config.vm.provider :openstack do |os|
+      os.flavor = 'm1.medium'
     end
   end
+
+  # Nginx IDR caching configuration requires a lot of memory
+  [
+    "idr-gateway",
+  ].each do |server|
+    config.vm.provider :virtualbox do |vb|
+      vb.customize ["modifyvm", :id, "--memory", "6144"]
+    end
+    config.vm.provider :openstack do |os|
+      os.flavor = 'm1.large'
+    end
+  end
+
+  [
+    "idr-database",
+    "idr-omero",
+    "idr-gateway",
+    "idr-a-database",
+    "idr-a-omero",
+    "idr-a-dockermanager",
+  ].each do |server|
+
+    # Centos-7 box, create internal network between VMs
+    config.vm.define "#{server}" do |node|
+      node.vm.box = "centos/7"
+      node.vm.network "private_network", type: "dhcp"
+    end
+
+    # Ansible
+    config.vm.define "#{server}" do |node|
+
+      [
+        "idr-playbooks/idr-01-install-idr.yml",
+        "idr-playbooks/idr-03-postinstall.yml",
+      ].each do |playbook|
+
+        node.vm.provision "ansible" do |ansible|
+            ansible.playbook = "#{playbook}"
+            ansible.limit = "idr-hosts,idr-a-hosts"
+            ansible.groups = {
+
+              "idr-database-hosts" => ["idr-database"],
+              "idr-a-database-hosts" => ["idr-a-database"],
+              "database-hosts" => ["idr-database", "idr-a-database"],
+
+              "idr-omero-hosts" => ["idr-omero"],
+              "idr-a-omero-hosts" => ["idr-a-omero"],
+              "omero-hosts" => ["idr-omero", "idr-a-omero"],
+
+              "idr-proxy-hosts" => ["idr-gateway"],
+              "proxy-hosts" => ["idr-gateway"],
+
+              "idr-a-dockermanager-hosts" => ["idr-a-dockermanager"],
+              "dockermanager-hosts" => ["idr-a-dockermanager"],
+
+              "idr-a-docker-hosts:children" => ["idr-a-dockermanager-hosts"],
+
+              "idr-hosts:children" => [
+                "idr-database-hosts", "idr-omero-hosts", "idr-proxy-hosts"
+              ],
+
+              "idr-a-hosts:children" => [
+                "idr-a-database-hosts", "idr-a-omero-hosts", "idr-a-dockermanager-hosts"
+              ],
+
+              "idr-hosts:vars" => {
+                # Vagrant uses eth0 for NAT, eth1 for private guest network
+                "idr_net_iface" => "eth0",
+                "idr_nginx_ssl_production" => "False",
+              },
+              "idr-a-hosts:vars" => {
+                # Vagrant uses eth0 for NAT, eth1 for private guest network
+                "idr_net_iface" => "eth0",
+              },
+            }
+        end # ansible
+
+      end # playbook
+
+    end # node
+
+  end # server
 
 
   # Disable the new default behavior introduced in Vagrant 1.7, to

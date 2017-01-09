@@ -1,0 +1,7 @@
+---
+# tasks file for roles/reboot-server
+
+- include: reboot-if-kernel-upgraded.yml
+
+- include: reboot-server.yml
+  when: "{{ reboot_server_needed | default(reboot_server_always) }}"
