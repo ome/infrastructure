@@ -163,3 +163,25 @@
 - name: openstack-idr-security-groups
   src: IDR.openstack-idr-security-groups
   version: master
+
+
+# External development roles
+
+- name: omero-user
+  src: https://github.com/openmicroscopy/ansible-role-omero-user
+  version: master
+
+
+# External development roles (currently only used by the IDR?)
+
+- name: hosts-populate
+  src: https://github.com/openmicroscopy/ansible-role-hosts-populate
+  version: master
+
+- name: omero-web-apps
+  src: https://github.com/openmicroscopy/ansible-role-omero-web-apps
+  version: master
+
+- name: reboot-server
+  src: https://github.com/openmicroscopy/ansible-role-reboot-server
+  version: master
