@@ -1,5 +1,0 @@
----
-# defaults file for roles/nfs-share
-
-# A dictionary of shares, see README.md
-nfs_shares: {}
