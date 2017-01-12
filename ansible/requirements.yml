@@ -1,5 +1,9 @@
 # External Ansible roles required by this repository
 
+- name: analysis-tools
+  src: openmicroscopy.analysis-tools
+  version: 1.0.0
+
 - name: basedeps
   src: openmicroscopy.basedeps
   version: 1.0.0
@@ -50,7 +54,19 @@
 
 - name: munin-node
   src: openmicroscopy.munin-node
-  version:  1.2.1-openmicroscopy1
+  version: 1.2.1-openmicroscopy1
+
+- name: network-cloud-interfaces
+  src: openmicroscopy.network-cloud-interfaces
+  version: 1.0.0
+
+- name: nfs-mount
+  src: openmicroscopy.nfs-mount
+  version: 1.0.0
+
+- name: nfs-share
+  src: openmicroscopy.nfs-share
+  version: 1.0.0
 
 - name: nginx
   src: openmicroscopy.nginx
@@ -62,6 +78,10 @@
 
 - name: nginx-ssl-selfsigned
   src: openmicroscopy.nginx-ssl-selfsigned
+  version: 1.0.0
+
+- name: omero-logmonitor
+  src: openmicroscopy.omero-logmonitor
   version: 1.0.0
 
 - name: omero-python-deps
@@ -76,16 +96,40 @@
   src: openmicroscopy.omero-web-runtime
   version: 1.0.0
 
+- name: openstack-volume-storage
+  src: openmicroscopy.openstack-volume-storage
+  version: 1.0.0
+
 - name: postgresql
   src: openmicroscopy.postgresql
+  version: 1.0.0
+
+- name: python-pydata
+  src: openmicroscopy.python-pydata
   version: 1.0.0
 
 - name: redis
   src: openmicroscopy.redis
   version: 1.0.0
 
+- name: samba-client
+  src: openmicroscopy.samba-client
+  version: 1.0.0
+
 - name: selinux-utils
   src: openmicroscopy.selinux-utils
+  version: 1.0.0
+
+- name: storage-volume-initialise
+  src: openmicroscopy.storage-volume-initialise
+  version: 1.0.0
+
+- name: sudoers
+  src: openmicroscopy.sudoers
+  version: 1.0.0
+
+- name: upgrade-distpackages
+  src: openmicroscopy.upgrade-distpackages
   version: 1.0.0
 
 - name: versioncontrol-utils
