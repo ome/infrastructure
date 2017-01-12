@@ -1,93 +1,93 @@
 # External Ansible roles required by this repository
 
 - name: basedeps
-  src: https://github.com/openmicroscopy/ansible-role-basedeps
+  src: openmicroscopy.basedeps
   version: 1.0.0
 
 - name: cli-utils
-  src: https://github.com/openmicroscopy/ansible-role-cli-utils.git
-  version: origin/master
+  src: openmicroscopy.cli-utils
+  version: 1.0.0
 
 - name: docker
-  src: https://github.com/openmicroscopy/ansible-role-docker.git
-  version: origin/master
+  src: openmicroscopy.docker
+  version: 1.0.0
 
 - name: docker-tools
-  src: https://github.com/openmicroscopy/ansible-role-docker-tools.git
-  version: origin/master
+  src: openmicroscopy.docker-tools
+  version: 1.0.0
 
 - name: haproxy
-  src: https://github.com/openmicroscopy/ansible-role-haproxy.git
-  version: origin/master
+  src: openmicroscopy.haproxy
+  version: 1.0.0
 
 - name: ice
-  src: https://github.com/openmicroscopy/ansible-role-ice.git
-  version: origin/master
+  src: openmicroscopy.ice
+  version: 1.0.0
 
 - name: java
-  src: https://github.com/openmicroscopy/ansible-role-java
-  version: origin/master
+  src: openmicroscopy.java
+  version: 1.0.0
 
 - name: jekyll-build
-  src: https://github.com/openmicroscopy/ansible-role-jekyll-build.git
-  version: origin/master
+  src: openmicroscopy.jekyll-build
+  version: 1.0.0
 
 - name: local-accounts
-  src: https://github.com/openmicroscopy/ansible-role-local-accounts.git
-  version: origin/master
+  src: openmicroscopy.local-accounts
+  version: 1.0.0
 
 - name: logrotate
-  src: https://github.com/openmicroscopy/ansible-role-logrotate.git
-  version: origin/master
+  src: openmicroscopy.logrotate
+  version: 1.0.0
 
 - name: lvm-partition
-  src: https://github.com/openmicroscopy/ansible-role-lvm-partition.git
-  version: origin/master
+  src: openmicroscopy.lvm-partition
+  version: 1.0.0
 
 - name: munin
-  src: https://github.com/openmicroscopy/ansible-role-munin.git
+  src: openmicroscopy.munin
   version: 1.1.3-openmicroscopy1
 
 - name: munin-node
-  src: https://github.com/openmicroscopy/ansible-role-munin-node.git
+  src: openmicroscopy.munin-node
   version:  1.2.1-openmicroscopy1
 
 - name: nginx
-  src: https://github.com/openmicroscopy/ansible-role-nginx.git
-  version: origin/master
+  src: openmicroscopy.nginx
+  version: 1.0.0
 
 - name: nginx-proxy
-  src: https://github.com/openmicroscopy/ansible-role-nginx-proxy.git
-  version: origin/master
+  src: openmicroscopy.nginx-proxy
+  version: 1.0.0
 
 - name: nginx-ssl-selfsigned
-  src: https://github.com/openmicroscopy/ansible-role-nginx-ssl-selfsigned.git
-  version: origin/master
+  src: openmicroscopy.nginx-ssl-selfsigned
+  version: 1.0.0
 
 - name: omero-python-deps
-  src: https://github.com/openmicroscopy/ansible-role-omero-python-deps.git
-  version: origin/master
+  src: openmicroscopy.omero-python-deps
+  version: 1.0.0
 
 - name: omero-server
-  src: https://github.com/openmicroscopy/ansible-role-omero-server.git
-  version: origin/master
+  src: openmicroscopy.omero-server
+  version: 1.0.0
 
 - name: omero-web-runtime
-  src: https://github.com/openmicroscopy/ansible-role-omero-web-runtime.git
-  version: origin/master
+  src: openmicroscopy.omero-web-runtime
+  version: 1.0.0
 
 - name: postgresql
-  src: https://github.com/openmicroscopy/ansible-role-postgresql.git
-  version: origin/master
+  src: openmicroscopy.postgresql
+  version: 1.0.0
 
 - name: redis
-  src: https://github.com/openmicroscopy/ansible-role-redis.git
-  version: origin/master
+  src: openmicroscopy.redis
+  version: 1.0.0
 
 - name: selinux-utils
-  src: https://github.com/openmicroscopy/ansible-role-selinux-utils.git
-  version: origin/master
+  src: openmicroscopy.selinux-utils
+  version: 1.0.0
 
 - name: versioncontrol-utils
-  src: https://github.com/openmicroscopy/ansible-role-versioncontrol-utils.git
-  version: origin/master
+  src: openmicroscopy.versioncontrol-utils
+  version: 1.0.0
