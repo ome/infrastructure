@@ -15,6 +15,9 @@ idr_vm_networks:
 idr_vm_keyname: idr-deployment-key
 
 idr_vm_assign_floating_ip: False
+idr_vm_floating_ip_net: ""
+# Required if idr_vm_floating_ip_net is set
+#idr_vm_external_network:
 
 # idr_environment: All VMs will be put into this group
 idr_environment: idr
