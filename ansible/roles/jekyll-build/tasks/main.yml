@@ -1,0 +1,62 @@
+---
+# tasks file for roles/jekyll-build
+
+- name: jekyll | install required packages
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - rubygems
+    - ruby-devel
+    - make
+    - gcc
+
+- name: jekyll | install bundler
+  become: yes
+  gem:
+    name: bundler
+    state: present
+    user_install: no
+
+- name: jekyll | install jekyll
+  become: yes
+  gem:
+    name: jekyll
+    state: present
+    user_install: no
+    include_doc: no
+
+- name: jekyll | create site root directory
+  become: yes
+  file:
+    state: directory
+    dest: "{{ jekyll_build_root }}"
+    owner: "{{ jekyll_build_owner }}"
+    group: "{{ jekyll_build_group }}"
+    mode: 0755
+    serole: _default
+    setype: _default
+    seuser: _default
+
+- name: jekyll | clone site source code repository
+  become: yes
+  become_user: "{{ jekyll_build_owner }}"
+  git:
+    repo: "{{ jekyll_build_git_repo }}"
+    version: "{{ jekyll_build_git_branch | default(omit) }}"
+    dest: "{{ jekyll_build_sourcedir }}"
+    force: "{{ jekyll_build_force_git }}"
+  register: jekyll_build_clone
+
+- name: jekyll | build jekyll website
+  become: yes
+  become_user: "{{ jekyll_build_owner }}"
+  command: >
+      /usr/local/bin/jekyll build
+      --destination {{ jekyll_build_root }}
+      {{ (jekyll_build_baseurl | length > 0) |
+         ternary('--baseurl ' + jekyll_build_baseurl, '') }}
+  args:
+    chdir: "{{ jekyll_build_sourcedir }}"
+  when: "{{ (jekyll_build_clone | changed) or jekyll_build_force_rebuild }}"

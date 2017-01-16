@@ -3,8 +3,19 @@
 
 - hosts: devspace
 
+  vars:
+    # Overrides the default value in the docker role
+    docker_use_ipv4_nic_mtu: True
+
+  vars_prompt:
+    - name: "devspace_jenkins_nginx_password"
+      prompt: "Secure Jenkins with password (username: devspace)"
+      private: yes
+      when: devspace_jenkins_nginx_username|length>0
+
   roles:
     - role: upgrade-distpackages
     - role: docker
+      docker_groupmembers: [centos]
     - role: versioncontrol-utils
     - role: devspace

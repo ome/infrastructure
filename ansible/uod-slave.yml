@@ -11,6 +11,6 @@
     storage_volume_initialise_device: /dev/vdc
     storage_volume_initialise_mount: /opt/hudson
 
-- include: os-uod-docker.yml
+- include: uod-docker.yml
 
 - include: ci-deployment.yml

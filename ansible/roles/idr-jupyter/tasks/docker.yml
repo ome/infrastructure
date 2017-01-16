@@ -1,0 +1,28 @@
+---
+# Normal Docker: start and enable the jupyterhub service
+
+- name: jupyterhub | create systemd service
+  become: yes
+  template:
+    src: jupyterhub-docker.j2
+    dest: /etc/systemd/system/docker-jupyterhub.service
+  register: systemdjupyter
+
+- name: jupyterhub | reload systemd
+  become: yes
+  command: systemctl daemon-reload
+  when: systemdjupyter.changed
+
+- name: jupyterhub | restart
+  become: yes
+  service:
+    name: docker-jupyterhub.service
+    state: restarted
+  when: jupyterconfig.changed
+
+- name: jupyterhub | enable jupyterhub
+  become: yes
+  service:
+    enabled: "yes"
+    name: docker-jupyterhub.service
+    state: started

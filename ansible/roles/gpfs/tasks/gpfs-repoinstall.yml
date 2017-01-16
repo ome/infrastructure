@@ -7,6 +7,7 @@
     backup: no
     dest: /etc/yum.repos.d/gpfs.repo
     src: gpfs-repo.j2
+  when: "{{ (gpfs_repo_url_base | length > 0) or (gpfs_repo_url_updates | length > 0) }}"
 
 - name: gpfs | install kernel module build requirements
   become: yes
@@ -26,6 +27,7 @@
   yum:
     name: "{{ item }}"
     state: present
+    disable_gpg_check: yes
   with_items:
   - gpfs.base
   - gpfs.docs

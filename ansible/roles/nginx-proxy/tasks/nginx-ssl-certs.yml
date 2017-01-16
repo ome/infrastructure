@@ -6,7 +6,7 @@
   file:
     path: "{{ item | dirname }}"
     state: directory
-  when: item
+  when: "item | length > 0"
   with_items:
     - "{{ nginx_proxy_ssl_certificate }}"
     - "{{ nginx_proxy_ssl_certificate_key }}"
@@ -19,7 +19,7 @@
     owner: root
     mode: 0400
     src: "{{ nginx_proxy_ssl_certificate_source_path }}"
-  when: nginx_proxy_ssl_certificate_source_path
+  when: "nginx_proxy_ssl_certificate_source_path | length > 0"
   notify:
     - restart nginx
 
@@ -31,6 +31,6 @@
     owner: root
     mode: 0400
     src: "{{ nginx_proxy_ssl_certificate_key_source_path }}"
-  when: nginx_proxy_ssl_certificate_key_source_path
+  when: "nginx_proxy_ssl_certificate_key_source_path | length > 0"
   notify:
     - restart nginx

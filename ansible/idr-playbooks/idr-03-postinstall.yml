@@ -1,0 +1,5 @@
+# IDR post-installation playbooks
+
+- include: idr-reset-users-groups.yml
+
+- include: idr-bastion.yml

@@ -1,0 +1,8 @@
+---
+# tasks file for roles/redis
+
+- name: install ansible
+  become: yes
+  yum:
+    name: ansible
+    state: present

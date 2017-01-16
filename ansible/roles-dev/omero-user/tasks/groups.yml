@@ -1,0 +1,39 @@
+---
+# tasks file for roles/omero-user
+
+# Always run including in check mode
+- name: omero user | current group list
+  become: yes
+  become_user: "{{ omero_user_system }}"
+  command: >
+    {{ omero_user_bin_omero }} group -C
+    -s localhost
+    -u {{ omero_user_admin_user }}
+    -w {{ omero_user_admin_pass | quote }}
+    list
+    -q
+    --style json
+  register: groupcmd
+  always_run: yes
+  changed_when: False
+
+- name: omero user | set group list var
+  set_fact:
+    omero_group_list: "{{ groupcmd.stdout | from_json }}"
+
+- name: omero user | create group
+  become: yes
+  become_user: "{{ omero_user_system }}"
+  command: >
+    {{ omero_user_bin_omero }} group -C
+    -s localhost
+    -u {{ omero_user_admin_user }}
+    -w {{ omero_user_admin_pass | quote }}
+    add
+    {{ item.name | quote }}
+    --type {{ item.type }}
+  when: >
+    {{ omero_group_list | selectattr('name', 'equalto', item.name) |
+      list | length }} < 1
+  with_items:
+  - "{{ omero_group_create }}"

@@ -1,0 +1,12 @@
+---
+# defaults file for roles/openstack-idr-network
+
+#Required:
+#idr_network_name:
+
+idr_network_subnet: 192.168.1.0/24
+idr_network_subnet_name: "{{ idr_network_name }}-subnet"
+idr_network_router_name: "{{ idr_network_name }}-router"
+idr_network_dns:
+- 8.8.8.8
+- 8.8.4.4

@@ -1,0 +1,11 @@
+# Disable default route for all interfaces apart from eth0
+case $reason in
+  BOUND|RENEW|REBIND|REBOOT)
+    if [ "$interface" != eth0 ]; then
+      logger -t cloud-dhclient "Unsetting $interface new_routers=$new_routers"
+      unset new_routers
+      logger -t cloud-dhclient "Unsetting $interface new_classless_static_routes=$new_classless_static_routes"
+      unset new_classless_static_routes
+    fi
+    ;;
+esac

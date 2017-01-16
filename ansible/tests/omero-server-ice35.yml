@@ -1,0 +1,46 @@
+- hosts: omero-server-ice35
+
+  roles:
+
+  - role: omero-server
+    postgresql_users_databases:
+    - user: omero
+      password: omero
+      databases: [omero]
+    omero_systemd_setup: True
+
+
+  tasks:
+
+  - name: Get icegridnode version seen by OMERO
+    become: yes
+    become_user: omero
+    command: icegridnode --version
+    register: ice_check_ver
+    always_run: yes
+
+  - name: Check ice version
+    assert:
+      that:
+      - '{{ ice_check_ver.stderr | version_compare("3.5", ">=") }}'
+      - '{{ ice_check_ver.stderr | version_compare("3.6", "<") }}'
+
+  - name: Get omero version
+    become: yes
+    become_user: omero
+    command: /home/omero/OMERO.server/bin/omero version
+    register: omero_check_ver
+    always_run: yes
+
+  - name: Check OMERO version
+    assert:
+      that:
+      - '"-ice35-" in "{{ omero_check_ver.stdout }}"'
+
+  # If these commands return with exit code 0 they've succeeded
+  # TODO: If these commands hang it means login failed and omero is
+  # interactively prompting for a response. Fixing this requires a code
+  # change to OMERO.cli
+
+  - name: Test OMERO root login
+    command: "/home/omero/OMERO.server/bin/omero login -C -s localhost -u root -w 'omero'"

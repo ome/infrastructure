@@ -26,6 +26,11 @@
         databases: [omero]
       postgresql_server_chown_datadir: True
 
+# Deploy prerequisites to build web apps
+- hosts: ci-omero-web-apps-build
+  roles:
+    - role: omero-web-apps-build-dependencies
+
 # Deploy OMERO build and runtime prerequisites
 - hosts: ci-omero-web
   roles:
@@ -33,7 +38,9 @@
     - role: omero-web-runtime
     - role: nginx
 
+
 # Deploy Documentation prerequisites
 - hosts: ci-docs
   roles:
-    - role: texlive
+    - role: sphinx-build
+    - role: ansible

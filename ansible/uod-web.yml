@@ -8,8 +8,5 @@
     - role: versioncontrol-utils
     - role: jenkinsslave
 
-- include: jekyll-playbooks/jekyll-install.yml
-  tags: jekyll-install
-
 - include: jekyll-playbooks/jekyll-deploy.yml
   tags: jekyll-deploy

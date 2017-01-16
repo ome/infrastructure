@@ -9,6 +9,7 @@
 - hosts: docker
   roles:
   - role: docker
+  - role: docker-tools
 
 - hosts: redis
   roles:
@@ -30,3 +31,133 @@
         comment: Read-write share
         readonly: False
         users: [root]
+
+- hosts: cliutils
+  roles:
+  - role: cli-utils
+    # Should automatically bring in basedeps
+
+- hosts: postgres
+  roles:
+  - postgresql
+  vars:
+  - postgresql_server_listen: "'*'"
+  - postgresql_server_auth:
+    - database: publicdb
+      user: alice123
+      address: 192.168.1.0/24
+  - postgresql_users_databases:
+    - user: alice
+      password: alice123
+      databases: [publicdb, secretdb]
+    - user: bob
+      password: bob123
+      databases: [publicdb]
+      roles: "CREATEDB,NOSUPERUSER"
+
+  # Testing
+
+  tasks:
+  - command: psql postgres -c "SELECT * FROM pg_roles WHERE rolname='alice'" -At
+    become: yes
+    become_user: postgres
+    register: pg_alice
+
+  - command: psql postgres -c "SELECT * FROM pg_roles WHERE rolname='bob'" -At
+    become: yes
+    become_user: postgres
+    register: pg_bob
+
+  - assert:
+      that:
+      # Everything except the UID
+      - "pg_alice.stdout.startswith('alice|f|t|f|f|f|t|f|-1|********|||')"
+      - "pg_bob.stdout.startswith('bob|f|t|f|t|f|t|f|-1|********|||')"
+
+- hosts: selinux
+  roles:
+  - selinux-utils
+  tasks:
+  - assert:
+      # This assumes we're testing on the centos-7 Vagrantbox which has
+      # selinux enabled. Use `is sameas` to also assert type
+      that: "{{ selinux_enabled is sameas True }}"
+
+- hosts: docs
+  roles:
+  - role: sphinx-build
+
+  tasks:
+  - command: sphinx-build --version
+    register: sphinx_version
+
+  - assert:
+      that:
+      - "sphinx_version.stdout == 'Sphinx (sphinx-build) 1.2.3'"
+
+- hosts: jekyll
+  roles:
+  - role: jekyll-build
+    jekyll_build_name: test
+    # TODO: Use the official repo once the site is ready to deploy
+    jekyll_build_git_repo: https://github.com/lunson/www.openmicroscopy.org
+    jekyll_build_git_branch: ome-redesign-master
+
+  tasks:
+  - stat:
+      path: "/var/www/test/html/index.html"
+    register: st
+
+  - assert:
+      that: "st.stat.isreg"
+
+- hosts: jupyter
+  roles:
+  - role: docker
+  - role: docker-tools
+  - role: idr-jupyter
+    idr_jupyter_ip: "{{ ansible_eth0.ipv4.address }}"
+    # `user` must exist in the jupyterhub Docker container
+    idr_jupyter_users: [user]
+    idr_jupyter_admins: [user]
+    idr_jupyter_notebook_volumes: "{ '/notebooks/{username}': '/notebooks' }"
+    idr_jupyter_hub_extra_docker_args: "-e USER_PASSWORD=ome"
+  tasks:
+  - become: yes
+    file:
+      path: "/notebooks/user"
+      owner: 1000
+      state: directory
+  # Setup a port-forward to 8000 and you should be able to login as
+  # user:user password:ome
+
+- hosts: omeroscriptsdependencies-debian
+  roles:
+  - role: omero-scripts-dependencies
+
+  tasks:
+  - stat: 
+      path: "/usr/bin/mencoder"
+    register: p
+  - command: python -c 'import reportlab'
+  - command: python -c 'import markdown'
+
+  - assert:
+      that:
+      - p.stat.exists
+
+- hosts: omerowebappsbuilddependencies
+  roles:
+  - role: omero-web-apps-build-dependencies
+
+  tasks:
+  - command: node --version
+    register: node_version
+
+  - command: grunt --version
+    register: grunt_version
+
+  - assert:
+      that:
+      - node_version.stdout | version_compare('6.9', '>=')
+      - grunt_version.stdout | version_compare('1.2', '>=')

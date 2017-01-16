@@ -1,0 +1,23 @@
+---
+# Reboot a server if the running kernel is older than the latest installed
+
+- name: reboot | current running kernel
+  command: uname -r
+  register: running_kernel_version
+  always_run: True
+  changed_when: False
+
+# http://serverfault.com/a/601432
+- name: reboot | latest installed kernel
+  shell: rpm -q kernel --qf '%{BUILDTIME} %{VERSION}-%{RELEASE}.%{ARCH}\n' | tail -n 1 | cut -f 2 -d ' '
+  register: latest_kernel_version
+  always_run: True
+  changed_when: False
+
+- name: reboot | check if reboot needed
+  set_fact:
+    reboot_server_needed: "{{ running_kernel_version.stdout != latest_kernel_version.stdout }}"
+
+- debug:
+    msg: "Reboot needed (kernel): Current:{{ running_kernel_version.stdout }} Latest:{{ latest_kernel_version.stdout }}"
+  when: "{{ reboot_server_needed }}"

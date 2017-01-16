@@ -1,6 +1,6 @@
 # Nginx caches
 {% for item in nginx_proxy_caches %}
-proxy_cache_path {{ nginx_proxy_cache_parent_path }}/{{ item.name }} levels=1:2 keys_zone={{ item.name }}:{{ item.keysize }} inactive={{ item.inactive }} use_temp_path=off;
+proxy_cache_path {{ nginx_proxy_cache_parent_path }}/{{ item.name }} levels=1:2 keys_zone={{ item.name }}:{{ item.keysize }} max_size={{ item.maxsize }} inactive={{ item.inactive }} use_temp_path=off;
 {% endfor %}
 
 # Disable/enable caching for particular URLs
@@ -43,3 +43,13 @@ map $request_uri $cache_zone_name
 {%   endfor %}
 {% endfor %}
 }
+
+{% if nginx_proxy_cache_key %}
+map {{ nginx_proxy_cache_key }} $cache_key
+{
+    default {{ nginx_proxy_cache_key }};
+{%   for item in nginx_proxy_cache_key_map %}
+    {{ item.match }} {{ item.key }};
+{%   endfor %}
+}
+{% endif %}

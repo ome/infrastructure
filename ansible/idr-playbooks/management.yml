@@ -1,0 +1,85 @@
+# Configure monitoring across all IDR servers in a given tenancy irrespective
+# of idr environment, i.e. this playbook applies to all idr environments
+# simultaneously
+#
+# This must be run using the private openstack dynamic inventory since it
+# requires the internal network IPs of each host
+
+
+- hosts: "{{ idr_environment | default('idr') }}-management-hosts"
+
+  roles:
+  - role: basedeps  # munin requires EPEL
+  - role: munin
+    munin_slack_token: "{{ idr_secret_management_slack_token | default(None) }}"
+    munin_slack_channel: "#idr-notify"
+    munin_slack_username: "{{ idr_environment | default('idr') }} Munin Notification"
+    munin_slack_emoji: ":pony:"
+    munin_slack_url: http://{{ ansible_host }}/munin/problems.html
+    # List of hosts to be monitored
+    munin_hosts:
+    - name: localhost
+      address: 127.0.0.1
+      extra: ["use_node_name yes"]
+    munin_openstack_groups:
+    - "{{ idr_environment | default('idr') }}-database-hosts"
+    - "{{ idr_environment | default('idr') }}-omero-hosts"
+    - "{{ idr_environment | default('idr') }}-proxy-hosts"
+    - "{{ idr_environment | default('idr') }}-bastion-hosts"
+    - "{{ idr_environment | default('idr') }}-dockermanager-hosts"
+    - "{{ idr_environment | default('idr') }}-dockerworker-hosts"
+    - "{{ idr_environment | default('idr') }}-management-hosts"
+
+  post_tasks:
+    - name: Install httpd
+      become: yes
+      yum:
+        name: httpd
+        state: present
+
+    # TODO: Restart if /etc/httpd/conf.d/munin.conf changed
+    - name: Start httpd
+      become: yes
+      service:
+        enabled: yes
+        name: httpd
+        state: started
+        #state: restarted
+
+# Install munin client on all servers in all environments
+- hosts: >
+    {{ idr_environment | default('idr') }}-database-hosts
+    {{ idr_environment | default('idr') }}-omero-hosts
+    {{ idr_environment | default('idr') }}-proxy-hosts
+    {{ idr_environment | default('idr') }}-bastion-hosts
+    {{ idr_environment | default('idr') }}-dockermanager-hosts
+    {{ idr_environment | default('idr') }}-dockerworker-hosts
+    {{ idr_environment | default('idr') }}-management-hosts
+  roles:
+  - role: basedeps  # munin-node requires EPEL
+  - role: munin-node
+    munin_node_allowed_ips:
+    - '^192\.168\.\d+\.\d+$'
+
+
+# Install slack notifier on all OMERO servers in all environments
+- hosts: >
+    {{ idr_environment | default('idr') }}-omero-hosts
+    {{ idr_environment | default('idr') }}-a-omero-hosts
+
+  pre_tasks:
+  - name: Get short hostname (not the same as the Ansible hostname vars)
+    command: hostname -s
+    register: short_hostname
+    always_run: True
+    changed_when: False
+
+  - name: Set omero logmonitor bot-name
+    set_fact:
+      omero_logmonitor_slack_name: "{{ short_hostname.stdout }}-logbot"
+      omero_logmonitor_server_name: "{{ short_hostname.stdout }}"
+
+  roles:
+  - role: omero-logmonitor
+    omero_logmonitor_slack_token: "{{ idr_secret_omero_logmonitor_slack_token | default(None) }}"
+    omero_logmonitor_slack_channel: "#idr-logs"

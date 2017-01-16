@@ -44,6 +44,18 @@ Backend servers:
   - `server`: The backend server including scheme
   - `dynamic`: If `True` lookup IP on every request, default `False` (only lookup at startup).
   - `cache_validity`: The time that an object should be cached for, if omitted caching is disabled for this backend
+  - `websockets`: If `True` enable proxying of websockets, default `False`
+  - `read_timeout`: The proxy read timeout, optional
+  - `host_header`: Optionally set the Host header, you shouldn't need to set this unless you're trying to work around bugs in applications
+
+- `nginx_proxy_streams`: List of dictionaries of backend streaming servers
+  - `name`: A variable name used for grouping multiple upstream servers
+  - `port`: The port Nginx should lsiten on
+  - `servers`: A list of backend servers, each item may include server specific parameters
+  - `timeout`: Timeout between successive reads/writes
+  - `connect_timeout`: Backend connection timeout
+
+Warning: Using non-standard http ports in `nginx_proxy_streams` may lead to SELinux failures. This role will attempt to configure SELinux but may fail.
 
 Redirection:
 
@@ -64,7 +76,9 @@ Redirection:
 
 Use `nginx_proxy_direct_locations` with `redirect*` if you need to redirect based on Nginx `location` only, use `nginx_proxy_redirect_map` with `nginx_proxy_redirect_map_locations` if you also want to redirect based on query arguments.
 
+Websockets:
 
+- `nginx_proxy_websockets_enable`: This must be `True` if any proxies require proxying of websockets, default `False`
 
 Caching:
 
@@ -72,6 +86,7 @@ Caching:
 - `nginx_proxy_caches`: List of dictionaries of cache specifications with fields:
   - `name`: Name of the cache
   - `keysize`: Amount of shared memory to use for storing cache keys
+  - `maxsize`: Upper limit of the size of the cache
   - `inactive`: Time that items should be cached for
   - `match`: List of patterns to be stored in this cache, you probably want one item with the value `default` somewhere
 - `nginx_proxy_cache_skip_uri`: List of URI patterns that shouldn't be cached (default: everything that doesn't match `nginx_proxy_cache_match_uri`)
@@ -85,11 +100,15 @@ Caching:
 - `nginx_proxy_cache_ignore_headers`: Headers to be ignored, e.g. `'"Set-Cookie" "Vary" "Expires"'`
 - `nginx_proxy_cache_hide_headers`: Headers to be hidden from clients in cached responses, must be a list e.g. `[Set-Cookie]`
 - `nginx_proxy_cache_key`: Override the default Nginx cache key, for example `"$host$request_uri"` to ignore session cookies
+- `nginx_proxy_cache_key_map`: Optionally map `nginx_proxy_cache_key` to the desired cache key, for instance if you want to ignore part of the url. This should be a list of dictionaries with fields:
+  - `match`: Match in nginx_proxy_cache_key
+  - `key`: The cache key
+`nginx_proxy_cache_key` is always included as the default.
 - `nginx_proxy_cache_use_stale`: Situations in which stale cache results should be returned, see `defaults/main.yml` for default
 - `nginx_proxy_cache_lock_time`: Prevent multiple backend requests to the same object (subsequent requests will wait for the first to either return or time-out), default 1 minute
 - `nginx_proxy_cachebuster_port`: An alternative port which can be used to force a cache refresh, disabled by default. You should ensure this is firewalled. If SELinux is enabled and the port is not one that nginx can bind by default (typically 80, 81, 443, 488, 8008, 8009, 8443, 9000 are allowed by default) you must update your policy yourself.
 
-Warning: `max_size` is not set on any disk caches, so you should put `nginx_proxy_cache_parent_path` on a separate partition.
+Warning: for convenience, put `nginx_proxy_cache_parent_path` on a separate partition (calculate size of the partition based on `max_size` set on disk caches).
 
 
 Example Playbooks
@@ -110,7 +129,7 @@ Proxy:
           server: http://b.internal/subdir
           dynamic: True
 
-Advanced configuration: force https, enable caching using an example predefined configuration (see `vars/example-omero.yml`), use HSTS, enable HTTP2
+Advanced configuration: force https, use HSTS, enable HTTP2
 
     - hosts: localhost
       roles:
@@ -126,8 +145,6 @@ Advanced configuration: force https, enable caching using an example predefined 
         nginx_proxy_http2: True
         nginx_proxy_force_ssl: True
         nginx_proxy_hsts_age: 31536000
-      vars_files:
-      - roles/nginx-proxy/vars/example-omero.yml
 
 
 Author Information

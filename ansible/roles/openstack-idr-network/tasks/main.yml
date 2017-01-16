@@ -1,0 +1,20 @@
+---
+# Playbook for creating OpenStack IDR Networks
+
+- os_network:
+    name: "{{ idr_network_name }}"
+    state: present
+
+- os_subnet:
+    cidr: "{{ idr_network_subnet }}"
+    dns_nameservers: "{{ idr_network_dns }}"
+    name: "{{ idr_network_subnet_name }}"
+    network_name: "{{ idr_network_name }}"
+    state: present
+
+- os_router:
+    interfaces:
+    - "{{ idr_network_subnet_name }}"
+    name: "{{ idr_network_router_name }}"
+    network: "{{ idr_network_external_name }}"
+    state: present

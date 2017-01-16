@@ -7,16 +7,26 @@
   connection: local
   #gather_facts: false
 
+  pre_tasks:
+
+    - fail:
+        msg: "vm_key_name is required"
+      when: vm_key_name is undefined or not vm_key_name
+
+    - set_fact:
+        idr_environment: idr
+      when: idr_environment is undefined
+
+
   vars:
 
     # idr_environment: All VMs will be put into this group, which should have
     # a matching group_vars file
-    omero_vm_groups: "ansible-managed,os-image-centos,omero-hosts,{{ idr_environment | default('os-idr') }}"
+    omero_vm_groups: "ansible-managed,os-image-centos,omero-hosts,{{ idr_environment }}-omero-hosts,{{ idr_environment }}-hosts"
     omero_vm_extra_groups: ""
-    gateway_vm_groups: "ansible-managed,os-image-centos,proxy-hosts,{{ idr_environment | default('os-idr') }}"
-    database_vm_groups: "ansible-managed,os-image-centos,database-hosts,{{ idr_environment | default('os-idr') }}"
+    gateway_vm_groups: "ansible-managed,os-image-centos,proxy-hosts,{{ idr_environment }}-proxy-hosts,{{ idr_environment }}-hosts"
+    database_vm_groups: "ansible-managed,os-image-centos,database-hosts,{{ idr_environment }}-database-hosts,{{ idr_environment }}-hosts"
 
-    #vm_prefix:
     #vm_key_name:
     ignore_internal_known_hosts: True
 
@@ -25,17 +35,6 @@
   # to default.yml
   vars_files:
     - [ "{{ inventory_dir }}/vars/os-create-{{ os_cloud_provider }}.yml", "vars/os-create-default.yml" ]
-
-  pre_tasks:
-
-    - fail:
-        msg: "vm_key_name is required"
-      when: vm_key_name is undefined or not vm_key_name
-
-    - fail:
-        msg: "vm_prefix is required"
-      when: vm_prefix is undefined or not vm_prefix
-
 
   tasks:
 

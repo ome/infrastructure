@@ -1,0 +1,61 @@
+---
+# IDR ansible-playbook helper
+# Run this playbook to generate the command that should be run (optionally
+# pass the Openstack dynamic inventory, and the idr-environment if not the
+# default):
+#
+#     ansible-playbook [-i INVENTORY] os-idr-ansible-command.yml
+#         [-e idr_environment=IDR_ENVIRONMENT]
+#
+# The command will be written out to /tmp/run-ansible-command-IDR_ENVIRONMENT.sh
+
+
+- hosts: localhost
+  connection: local
+
+  tasks:
+
+    - set_fact:
+        # Single linebreaks are chomped, use double to output a linebreak
+        ansible_command: >
+          #!/bin/sh
+
+          cd {{ playbook_dir | dirname }}
+
+          export ANSIBLE_HOST_KEY_CHECKING=False OS_PROXY_DISCOVER=1
+
+          ansible-playbook
+          -i {{ inventory_file | ternary(inventory_file, inventory_dir) }}
+          --diff
+          -u centos
+          -e idr_environment={{ idr_environment | default('idr') }}
+          idr-playbooks/idr-00-preinstall.yml
+          idr-playbooks/idr-01-install-idr.yml
+          idr-playbooks/idr-03-postinstall.yml
+          "$@"
+#          idr-playbooks/idr-09-monitoring.yml
+
+    - copy:
+        content: "{{ ansible_command }}"
+        dest: "/tmp/run-ansible-command-{{ idr_environment | default('idr') }}.sh"
+      delegate_to: localhost
+
+    - debug:
+        msg: "Ansible command written to /tmp/run-ansible-command-{{ idr_environment | default('idr') }}.sh"
+
+    # Warning: this prints out a JSON-quoted string, so you can't just copy
+    # and paste it into a terminal. Instead see /tmp/run-ansible-command-*.sh
+    - debug:
+        var: ansible_command
+        verbosity: 1
+
+    - name: Run ansible deployment command
+      command: "{{ ansible_command }}"
+      args:
+        chdir: "{{ playbook_dir }/.."
+      register: ansibleout
+      when: run_ansible | default(False)
+
+    - debug:
+        var: ansibleout.stdout
+      when: run_ansible | default(False)
