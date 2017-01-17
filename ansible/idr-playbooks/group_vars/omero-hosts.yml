@@ -7,7 +7,7 @@ omero_system_uid: 546
 
 omero_web_runtime_redis: True
 # This refers to a custom IDR release URL, not an official OMERO version
-omero_release: "0.3.1"
+omero_release: "0.3.2"
 ice_version: "3.6"
 omero_omego_additional_args: "--downloadurl https://downloads.openmicroscopy.org/idr"
 # Upgrades are normally disabled, uncomment if you want to upgrade OMERO:
@@ -28,7 +28,7 @@ omero_server_limit_nofile: 16384
 # mapr
 
 omero_web_app_packages:
-  - "omero-mapr==0.1.8"
+- "omero-mapr==0.1.9"
 omero_web_apps_add:
 - omero_mapr
 
