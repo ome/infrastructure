@@ -80,10 +80,3 @@ omero_systemd_setup: False
 # EXPERIMENTAL, may break your system
 # Quoted to prevent autoconversion to bool
 omero_systemd_restart: "no"
-
-# Setup trust store
-omero_trust_store_setup: False
-omero_trust_store: "{{ omero_basedir }}/trust_store.jks"
-omero_trust_store_passwd: omero
-#omero_trust_store_certificates:
-#  - { url: 'https://www.digicert.com/CACerts/DigiCertAssuredIDRootCA.crt', name: 'DigiCertAssuredIDRootCA.crt'}
