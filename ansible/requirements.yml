@@ -1,13 +1,187 @@
 # External Ansible roles required by this repository
 
+- name: analysis-tools
+  src: openmicroscopy.analysis-tools
+  version: 1.0.0
+
+- name: basedeps
+  src: openmicroscopy.basedeps
+  version: 1.0.0
+
+- name: cli-utils
+  src: openmicroscopy.cli-utils
+  version: 1.0.0
+
+- name: docker
+  src: openmicroscopy.docker
+  version: 1.0.0
+
+- name: docker-tools
+  src: openmicroscopy.docker-tools
+  version: 1.0.0
+
+- name: haproxy
+  src: openmicroscopy.haproxy
+  version: 1.0.0
+
+- name: ice
+  src: openmicroscopy.ice
+  version: 1.0.0
+
+- name: java
+  src: openmicroscopy.java
+  version: 1.0.0
+
+- name: jekyll-build
+  src: openmicroscopy.jekyll-build
+  version: 1.0.0
+
+- name: local-accounts
+  src: openmicroscopy.local-accounts
+  version: 1.0.0
+
+- name: logrotate
+  src: openmicroscopy.logrotate
+  version: 1.0.0
+
+- name: lvm-partition
+  src: openmicroscopy.lvm-partition
+  version: 1.0.0
+
 - name: munin
-  src: https://github.com/openmicroscopy/ansible-role-munin.git
+  src: openmicroscopy.munin
   version: 1.1.3-openmicroscopy1
 
 - name: munin-node
-  src: https://github.com/openmicroscopy/ansible-role-munin-node.git
-  version:  1.2.1-openmicroscopy1
+  src: openmicroscopy.munin-node
+  version: 1.2.1-openmicroscopy1
 
-- name: haproxy
-  src: https://github.com/openmicroscopy/ansible-role-haproxy.git
-  version: origin/master
+- name: network-cloud-interfaces
+  src: openmicroscopy.network-cloud-interfaces
+  version: 1.0.0
+
+- name: nfs-mount
+  src: openmicroscopy.nfs-mount
+  version: 1.0.0
+
+- name: nfs-share
+  src: openmicroscopy.nfs-share
+  version: 1.0.0
+
+- name: nginx
+  src: openmicroscopy.nginx
+  version: 1.0.0
+
+- name: nginx-proxy
+  src: openmicroscopy.nginx-proxy
+  version: 1.0.0
+
+- name: nginx-ssl-selfsigned
+  src: openmicroscopy.nginx-ssl-selfsigned
+  version: 1.0.0
+
+- name: omero-logmonitor
+  src: openmicroscopy.omero-logmonitor
+  version: 1.0.0
+
+- name: omero-python-deps
+  src: openmicroscopy.omero-python-deps
+  version: 1.0.0
+
+- name: omero-server
+  src: openmicroscopy.omero-server
+  version: 1.0.0
+
+- name: omero-web-runtime
+  src: openmicroscopy.omero-web-runtime
+  version: 1.0.0
+
+- name: openstack-volume-storage
+  src: openmicroscopy.openstack-volume-storage
+  version: 1.0.0
+
+- name: postgresql
+  src: openmicroscopy.postgresql
+  version: 1.0.0
+
+- name: python-pydata
+  src: openmicroscopy.python-pydata
+  version: 1.0.0
+
+- name: redis
+  src: openmicroscopy.redis
+  version: 1.0.0
+
+- name: samba-client
+  src: openmicroscopy.samba-client
+  version: 1.0.0
+
+- name: selinux-utils
+  src: openmicroscopy.selinux-utils
+  version: 1.0.0
+
+- name: storage-volume-initialise
+  src: openmicroscopy.storage-volume-initialise
+  version: 1.0.0
+
+- name: sudoers
+  src: openmicroscopy.sudoers
+  version: 1.0.0
+
+- name: upgrade-distpackages
+  src: openmicroscopy.upgrade-distpackages
+  version: 1.0.0
+
+- name: versioncontrol-utils
+  src: openmicroscopy.versioncontrol-utils
+  version: 1.0.0
+
+
+# External Ansible roles required by the IDR
+# TODO: Move this into an IDR requirements file
+
+- name: idr-jupyter
+  src: IDR.idr-jupyter
+  version: master
+
+- name: openstack-idr-instance
+  src: IDR.openstack-idr-instance
+  version: master
+
+- name: openstack-idr-instance-network
+  src: IDR.openstack-idr-instance-network
+  version: master
+
+- name: openstack-idr-keypairs
+  src: IDR.openstack-idr-keypairs
+  version: master
+
+- name: openstack-idr-network
+  src: IDR.openstack-idr-network
+  version: master
+
+- name: openstack-idr-security-groups
+  src: IDR.openstack-idr-security-groups
+  version: master
+
+
+# External development roles
+
+- name: omero-user
+  src: https://github.com/openmicroscopy/ansible-role-omero-user
+  version: master
+
+
+# External development roles (currently only used by the IDR?)
+
+- name: hosts-populate
+  src: https://github.com/openmicroscopy/ansible-role-hosts-populate
+  version: master
+
+- name: omero-web-apps
+  src: https://github.com/openmicroscopy/ansible-role-omero-web-apps
+  version: master
+
+- name: reboot-server
+  src: https://github.com/openmicroscopy/ansible-role-reboot-server
+  version: master

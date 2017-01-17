@@ -5,10 +5,13 @@ cache: pip
 install:
   - pip install -r requirements.txt
 
+# ansible-galaxy returns 0 even if an error occurs so parse output
 script:
+    - cd ansible
     - |
-      cd ansible
-      ansible-galaxy install -r requirements.yml
+      ansible-galaxy install -r requirements.yml 2>&1 | tee -a galaxy.log
+      if grep ERROR galaxy.log; then exit 2; fi
+    - |
       for f in *.yml *-playbooks/*.yml; do
           if [ "$f" != requirements.yml ]; then
               ansible-playbook -i example-hosts --syntax-check $f
