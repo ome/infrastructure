@@ -34,6 +34,7 @@
     regexp: "{{ omero_server_symlink }}"
     line: "export PATH={{ omero_serverdir }}/{{ omero_server_symlink }}/bin:$PATH"
     state: present
+    create: yes
 
 - name: omero | set JAVA_OPTS
   become: yes
