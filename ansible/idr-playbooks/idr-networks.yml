@@ -7,6 +7,7 @@
 - hosts: "{{ idr_environment | default('idr') }}-bastion-hosts"
   roles:
   - role: network-cloud-interfaces
+    network_cloud_interface_regex: '^eth.*'
 
 # All other hosts (e.g. those requiring NFS access on a separate network)
 - hosts: >
@@ -14,3 +15,4 @@
     {{ idr_environment | default('idr') }}-a-hosts
   roles:
   - role: network-cloud-interfaces
+    network_cloud_interface_regex: '^eth.*'
