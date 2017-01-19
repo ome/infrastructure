@@ -30,7 +30,7 @@
 
 - name: java
   src: openmicroscopy.java
-  version: 1.0.0
+  version: 2.0.0
 
 - name: jekyll-build
   src: openmicroscopy.jekyll-build
@@ -58,7 +58,7 @@
 
 - name: network-cloud-interfaces
   src: openmicroscopy.network-cloud-interfaces
-  version: 1.0.0
+  version: 1.1.0
 
 - name: nfs-mount
   src: openmicroscopy.nfs-mount
@@ -90,7 +90,7 @@
 
 - name: omero-server
   src: openmicroscopy.omero-server
-  version: 1.0.0
+  version: 1.1.0
 
 - name: omero-web-runtime
   src: openmicroscopy.omero-web-runtime
@@ -110,6 +110,9 @@
 
 - name: redis
   src: openmicroscopy.redis
+  version: 1.0.0
+
+- src: openmicroscopy.rsync-server
   version: 1.0.0
 
 - name: samba-client

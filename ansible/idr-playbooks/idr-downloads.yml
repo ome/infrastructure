@@ -1,0 +1,33 @@
+# Setup the IDR rsync download server
+
+# Load hostvars
+- hosts: "{{ idr_environment | default('idr') }}-database-hosts"
+
+
+# TODO: Use new download-hosts group to avoid coupling this to omero-hosts
+# https://trello.com/c/ztvftdc8/154-define-download-hosts-group-for-rsync-server
+#- hosts: "{{ idr_environment | default('idr') }}-download-hosts"
+- hosts: "{{ idr_environment | default('idr') }}-omero-hosts"
+
+  roles:
+
+  - role: openmicroscopy.rsync-server
+    rsync_server_shares:
+    - name: omero
+      path: /data/OMERO
+      comment: /OMERO directory from the IDR
+    - name: sql
+      path: /srv/omero-sql
+      comment: PostgreSQL 9.4 database dump of the IDR
+
+  # TODO: Create DB dump file? Or should this be in another playbooks since
+  # it's not directly related to deployment?
+  # tasks:
+  # - name: Get database IP
+  #   set_fact:
+  #     omero_omero_host_ansible: >-
+  #       {{
+  #         hostvars[groups[
+  #           idr_environment | default('idr') + '-database-hosts'][0]]
+  #           ['ansible_' + (idr_net_iface | default('eth0'))]['ipv4']['address']
+  #       }}
