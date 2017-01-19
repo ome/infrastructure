@@ -48,7 +48,8 @@
     - pip
     - passlib
     - pyyaml
-    - docker-compose
+    # see https://github.com/ansible/ansible/issues/20380
+    - docker-compose==1.9.0
 
 # TEMP: Error: docker-py version is 1.10.2. Minimum version required is 1.7.0.
 # see https://github.com/ansible/ansible/issues/17495
@@ -119,7 +120,6 @@
     regexp: '^ARG USER_ID=1000'
     replace: 'ARG USER_ID={{ devspace_user_id }}' # how to find out UID?
   with_items:
-    - bf/Dockerfile
     - nginx/Dockerfile
     - slave/Dockerfile
     - server/Dockerfile
