@@ -31,10 +31,15 @@ devspace_openstack_ip: "{{ ansible_host }}"
 # rename to:
 devspace_omero_branch: develop
 
-# jenkins credentials:
-devspace_jenkins_nginx_username: devspace
-devspace_jenkins_nginx_password:
-
 devspace_handler_tasks: "devspace-runtime.yml"
 
 devspace_force_restart: true
+
+# SECURITY
+# jenkins admin credentials:
+devspace_jenkins_username: devspace
+devspace_jenkins_password:
+
+# jenkins nginx credentials:
+devspace_jenkins_nginx_username: devspace
+devspace_jenkins_nginx_password:

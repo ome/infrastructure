@@ -8,10 +8,15 @@
     docker_use_ipv4_nic_mtu: True
 
   vars_prompt:
-    - name: "devspace_jenkins_nginx_password"
-      prompt: "Secure Jenkins with password (username: devspace)"
+    - name: "devspace_jenkins_password"
+      prompt: "Secure Jenkins with admin password (username: devspace)"
       private: yes
-      when: devspace_jenkins_nginx_username|length>0
+
+  pre_tasks:
+
+    - fail:
+        msg: "Jenkins admin password is required"
+      when: devspace_jenkins_password is undefined or not devspace_jenkins_password
 
   roles:
     - role: upgrade-distpackages
