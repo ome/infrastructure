@@ -137,7 +137,7 @@
     line: "        auth_basic \"Restricted\";"
     insertafter: "    location / {"
     state: present
-  when: devspace_jenkins_nginx_password and devspace_jenkins_nginx_username|length>0 and devspace_jenkins_nginx_password|length>0
+  when: devspace_jenkins_nginx_username|length>0 and devspace_jenkins_nginx_password|length>0
 
 - name: set basic auth password for jenkins
   become: yes
@@ -148,7 +148,7 @@
     line: "        auth_basic_user_file /etc/nginx/conf.d/passwdfile;"
     insertafter: "        auth_basic \"Restricted\";"
     state: present
-  when: devspace_jenkins_nginx_password and devspace_jenkins_nginx_username|length>0 and devspace_jenkins_nginx_password|length>0
+  when: devspace_jenkins_nginx_username|length>0 and devspace_jenkins_nginx_password|length>0
 
 - name: set jenkins password
   become: yes
@@ -157,7 +157,7 @@
     path: "{{ devspace_home }}/jenkins/conf.d/passwdfile"
     name: "{{ devspace_jenkins_nginx_username }}"
     password: "{{ devspace_jenkins_nginx_password }}"
-  when: devspace_jenkins_nginx_password and devspace_jenkins_nginx_username|length>0 and devspace_jenkins_nginx_password|length>0
+  when: devspace_jenkins_nginx_username|length>0 and devspace_jenkins_nginx_password|length>0
 
 - name: ssl cert for jenkins
   become: yes

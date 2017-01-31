@@ -42,4 +42,4 @@ devspace_jenkins_password:
 
 # jenkins nginx credentials:
 devspace_jenkins_nginx_username: devspace
-devspace_jenkins_nginx_password:
+devspace_jenkins_nginx_password: ""
