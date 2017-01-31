@@ -128,7 +128,7 @@
     - web/Dockerfile
   when: devspace_compose == 'v1'
 
-- name: set basic auth password for jenkins
+- name: set basic auth password for nginx proxy
   become: yes
   lineinfile:
     dest: "{{ devspace_home }}/jenkins/conf.d/jenkins.conf"
@@ -139,7 +139,7 @@
     state: present
   when: devspace_jenkins_nginx_username|length>0 and devspace_jenkins_nginx_password|length>0
 
-- name: set basic auth password for jenkins
+- name: set basic auth password for nginx proxy
   become: yes
   lineinfile:
     dest: "{{ devspace_home }}/jenkins/conf.d/jenkins.conf"
@@ -150,7 +150,7 @@
     state: present
   when: devspace_jenkins_nginx_username|length>0 and devspace_jenkins_nginx_password|length>0
 
-- name: set jenkins password
+- name: set nginx proxy password
   become: yes
   become_user: "{{ devspace_user }}"
   htpasswd:
