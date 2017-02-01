@@ -1,29 +1,25 @@
 OME Ansible
 ===========
 
-This contains a variety of Ansible playbooks and roles, including example files for provisioning an OpenStack VM from scratch with OMERO using Ansible.
+This folder contains a variety of Ansible playbooks, including example files for provisioning an OpenStack VM from scratch with OMERO using Ansible.
 Most of these scripts should also work on other platforms, providing the VM is brought up by some other method.
 
 - Playbooks which start with `os` are OpenStack specific - the `os` stands for `OpenStack`.
 - Playbooks which start with `idr` are for the Image Data Repository.
 - Playbooks which start with `ci` are for OME continuous integration and build.
 
-To get started with a minimal OMERO server, use the example playbook in the [README.md of roles/omero-server](/roles/omero-server/README.md).
-
-
-Roles
------
-There are two roles directories.
-- `roles`: These are roles which are considered ready for use. Breaking changes to these roles will be minimised.
-- `roles-dev`: Roles which are still in development, or require special external configuration. These are not recommended for use.
+To get started with a minimal OMERO server, use the example playbook in the [omero-server](https://github.com/openmicroscopy/ansible-role-omero-server) role.
 
 
 OME OpenStack Ansible
 ----------------------
 
-For the OpenStack specific README, see: [Getting started with OME OpenStack Ansible](README-os.md)
-
-For the IDR specific OpenStack README, see: [IDR OpenStack](README-os-idr.md)
+- [Getting started](../docs/ansible/installation.md): Installation docs and initial examples.
+- [Ansible](../docs/ansible/ansible.md): Overview of Ansible, the configuration management system.
+- [Example workflows](../docs/ansible/example_workflows.md): Examples of provisioning new hosts, and running Ansible playbooks.
+- [Contributing](../docs/ansible/contributing.md): Suggestions on submitting modifications and extensions to the OME ansible roles and playbooks.
+- For the OpenStack specific README, see: [Getting started with OME OpenStack Ansible](README-os.md)
+- For the IDR specific OpenStack README, see: [IDR OpenStack](README-os-idr.md)
 
 
 IDR Systems Infrastructure (`idrsystems-*`)
