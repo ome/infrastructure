@@ -15,7 +15,7 @@ Ansible
 
 - [Ansible](ansible/ansible.md): Overview of Ansible, the configuration management system.
 - [Example workflows](ansible/example_workflows.md): Examples of provisioning new hosts, and running Ansible playbooks.
-- [Contributing](ansible/contributing.md): TODO
+- [Contributing](ansible/contributing.md): Suggestions on submitting modifications and extensions to the OME ansible roles and playbooks.
 
 
 Storage
