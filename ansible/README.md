@@ -17,8 +17,7 @@ Roles for these playbooks can be found on http://galaxy.ansible.com or http://gi
 A list of most of the roles can be found in
 [ansible/requirements.yml](https://github.com/openmicroscopy/infrastructure/blob/master/ansible/requirements.yml).
 
-Partial list of core roles
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+### Partial list of core roles ###
 
  - openmicroscopy.docker
    ([GitHub](https://github.com/openmicroscopy/ansible-role-docker)/[Galaxy](https://galaxy.ansible.com/openmicroscopy/docker/)):
@@ -60,8 +59,7 @@ Partial list of core roles
 Other core roles can be found under the [openmicroscopy](https://galaxy.ansible.com/openmicroscopy/) account on Galaxy.
 
 
-Development roles
-^^^^^^^^^^^^^^^^^
+### Development roles ###
 
 Roles which are not available on Galaxy should be considered in development. For exapmle:
 
@@ -78,8 +76,7 @@ Roles which are not available on Galaxy should be considered in development. For
    ([GitHub](https://github.com/openmicroscopy/ansible-role-reboot-server)):
    Reboot a server, optionally wait for it to return.
 
-Community roles
-^^^^^^^^^^^^^^^
+### Community roles ###
 
 The OME community also provides roles. For example:
 
