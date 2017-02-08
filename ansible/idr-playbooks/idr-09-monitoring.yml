@@ -1,4 +1,0 @@
-# IDR post-installation playbooks
-# Some of this requires private configuration information
-
-- include: management.yml
