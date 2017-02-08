@@ -13,11 +13,14 @@ To get started with a minimal OMERO server, use the example playbook in the [ome
 Roles
 -----
 
-Roles for these playbooks can be found on http://galaxy.ansible.com or http://github.com .
-A list of most of the roles can be found in
+Roles are "the Ansible way of bundling automation content and making it reusable." To keep playbooks
+as simple as possible, logic is refactored out into roles and versioned separately. A list of most
+of the roles can be found in
 [ansible/requirements.yml](https://github.com/openmicroscopy/infrastructure/blob/master/ansible/requirements.yml).
 
-### Partial list of core roles ###
+### on Ansible Galaxy ###
+
+This is a partial list of the roles that the OME team has released to Galaxy:
 
  - openmicroscopy.docker
    ([GitHub](https://github.com/openmicroscopy/ansible-role-docker)/[Galaxy](https://galaxy.ansible.com/openmicroscopy/docker/)):
@@ -59,9 +62,9 @@ A list of most of the roles can be found in
 Other core roles can be found under the [openmicroscopy](https://galaxy.ansible.com/openmicroscopy/) account on Galaxy.
 
 
-### Development roles ###
+### on GitHub ###
 
-Roles which are not available on Galaxy should be considered in development. For exapmle:
+Roles which are not available on Galaxy should be considered in development. For example:
 
  - hosts-populate
    ([GitHub](https://github.com/openmicroscopy/ansible-role-hosts-populate)):
@@ -76,13 +79,15 @@ Roles which are not available on Galaxy should be considered in development. For
    ([GitHub](https://github.com/openmicroscopy/ansible-role-reboot-server)):
    Reboot a server, optionally wait for it to return.
 
-### Community roles ###
+### from the community ###
 
 The OME community also provides roles. For example:
 
  - hajaalin.truststore
    ([GitHub](https://github.com/hajaalin/ansible-role-truststore)/([Galaxy](https://galaxy.ansible.com/hajaalin/truststore/)):
    Install JKS TrustStore
+
+If you would like to share your roles with other OME users, please open a PR against this file on GitHub.
 
 
 Further reading
