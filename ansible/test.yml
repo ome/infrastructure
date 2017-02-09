@@ -111,26 +111,6 @@
   - assert:
       that: "st.stat.isreg"
 
-- hosts: jupyter
-  roles:
-  - role: docker
-  - role: docker-tools
-  - role: idr-jupyter
-    idr_jupyter_ip: "{{ ansible_eth0.ipv4.address }}"
-    # `user` must exist in the jupyterhub Docker container
-    idr_jupyter_users: [user]
-    idr_jupyter_admins: [user]
-    idr_jupyter_notebook_volumes: "{ '/notebooks/{username}': '/notebooks' }"
-    idr_jupyter_hub_extra_docker_args: "-e USER_PASSWORD=ome"
-  tasks:
-  - become: yes
-    file:
-      path: "/notebooks/user"
-      owner: 1000
-      state: directory
-  # Setup a port-forward to 8000 and you should be able to login as
-  # user:user password:ome
-
 - hosts: omeroscriptsdependencies-debian
   roles:
   - role: omero-scripts-dependencies
