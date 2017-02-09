@@ -112,9 +112,6 @@
   src: openmicroscopy.redis
   version: 1.0.0
 
-- src: openmicroscopy.rsync-server
-  version: 1.0.0
-
 - name: samba-client
   src: openmicroscopy.samba-client
   version: 1.0.0
@@ -138,53 +135,3 @@
 - name: versioncontrol-utils
   src: openmicroscopy.versioncontrol-utils
   version: 1.0.0
-
-
-# External Ansible roles required by the IDR
-# TODO: Move this into an IDR requirements file
-
-- name: idr-jupyter
-  src: IDR.idr-jupyter
-  version: master
-
-- name: openstack-idr-instance
-  src: IDR.openstack-idr-instance
-  version: master
-
-- name: openstack-idr-instance-network
-  src: IDR.openstack-idr-instance-network
-  version: master
-
-- name: openstack-idr-keypairs
-  src: IDR.openstack-idr-keypairs
-  version: master
-
-- name: openstack-idr-network
-  src: IDR.openstack-idr-network
-  version: master
-
-- name: openstack-idr-security-groups
-  src: IDR.openstack-idr-security-groups
-  version: master
-
-
-# External development roles
-
-- name: omero-user
-  src: https://github.com/openmicroscopy/ansible-role-omero-user
-  version: master
-
-
-# External development roles (currently only used by the IDR?)
-
-- name: hosts-populate
-  src: https://github.com/openmicroscopy/ansible-role-hosts-populate
-  version: master
-
-- name: omero-web-apps
-  src: https://github.com/openmicroscopy/ansible-role-omero-web-apps
-  version: master
-
-- name: reboot-server
-  src: https://github.com/openmicroscopy/ansible-role-reboot-server
-  version: master
