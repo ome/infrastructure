@@ -99,13 +99,6 @@ Further reading
 - [Contributing](../docs/ansible/contributing.md): Suggestions on submitting modifications and extensions to the OME ansible roles and playbooks.
 
 
-OME OpenStack Ansible
-----------------------
-
-- For the OpenStack specific README, see: [Getting started with OME OpenStack Ansible](README-os.md)
-- For the IDR specific OpenStack README, see: [IDR OpenStack](README-os-idr.md)
-
-
 IDR Systems Infrastructure (`idrsystems-*`)
 -------------------------------------------
 
