@@ -8,7 +8,7 @@ Most of these scripts should also work on other platforms, providing the VM is b
 - Playbooks which start with `idr` are for the Image Data Repository.
 - Playbooks which start with `ci` are for OME continuous integration and build.
 
-To get started with a minimal OMERO server, use the example playbook in the [omero-server](https://github.com/openmicroscopy/ansible-role-omero-server) role.
+To get started with a minimal OMERO server, see the example playbook in the [omero-server](https://github.com/openmicroscopy/ansible-role-omero-server) role.
 
 Roles
 -----
