@@ -10,6 +10,14 @@ Most of these scripts should also work on other platforms, providing the VM is b
 
 To get started with a minimal OMERO server, see the example playbook in the [omero-server](https://github.com/openmicroscopy/ansible-role-omero-server) role.
 
+For more explanation on using Ansible in general, you may want to read:
+
+- [Getting started](../docs/ansible/installation.md): Installation docs and initial examples.
+- [Ansible](../docs/ansible/ansible.md): Overview of Ansible, the configuration management system.
+- [Example workflows](../docs/ansible/example_workflows.md): Examples of provisioning new hosts, and running Ansible playbooks.
+- [Contributing](../docs/ansible/contributing.md): Suggestions on submitting modifications and extensions to the OME ansible roles and playbooks.
+
+
 Roles
 -----
 
@@ -89,18 +97,10 @@ The OME community also provides roles. For example:
 
 If you would like to share your roles with other OME users, please open a PR against this file on GitHub.
 
+Playbooks
+---------
 
-Further reading
----------------
-
-- [Getting started](../docs/ansible/installation.md): Installation docs and initial examples.
-- [Ansible](../docs/ansible/ansible.md): Overview of Ansible, the configuration management system.
-- [Example workflows](../docs/ansible/example_workflows.md): Examples of provisioning new hosts, and running Ansible playbooks.
-- [Contributing](../docs/ansible/contributing.md): Suggestions on submitting modifications and extensions to the OME ansible roles and playbooks.
-
-
-IDR Systems Infrastructure (`idrsystems-*`)
--------------------------------------------
+### IDR Systems Infrastructure (`idrsystems-*`) ###
 
 These playbooks are for maintaining the bare-metal infrastructure for most of the IDR work.
 This primarily involves maintaining the servers and storage underlying the virtualisation platforms used for development and running of the actual IDR, and is inevitably tied to the hardware configurations of these servers as well as the configuration of other services provided by the parent institution.
@@ -113,8 +113,7 @@ This primarily involves maintaining the servers and storage underlying the virtu
   Since this attempts to install updates there may be changes even if the repository or inventory are unchanged.
 
 
-Dell Hardware (`hardware-dell`)
--------------------------------
+### Dell Hardware (`hardware-dell`) ###
 
 The playbooks in the `hardware-dell` directory can be used to help with installing Dell hardware maintenance, for instance DRAC and BIOS updates.
 Given the nature of these updates these playbooks should only be run when required, and consideration given to running against one host at a time.
