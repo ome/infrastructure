@@ -19,6 +19,10 @@ for full installation instructions.
 - Execute the following commands from the `ansible` subdirectory of the
   infrastructure repository.
 
+- Download the necessary Ansible roles:
+
+        ansible-galaxy install -r requirements.yml
+
 - Clone the repository containing the inventory, host and group vars files.
   Ansible will automatically look for `host_vars` and `group_vars`
   directories in the parent directory of the inventory file. This should be
