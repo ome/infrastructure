@@ -188,3 +188,6 @@
 - name: reboot-server
   src: https://github.com/openmicroscopy/ansible-role-reboot-server
   version: master
+
+- src: openmicroscopy.devspace
+  version: 0.1.0

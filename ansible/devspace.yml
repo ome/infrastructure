@@ -19,8 +19,4 @@
       when: devspace_jenkins_password is undefined or not devspace_jenkins_password
 
   roles:
-    - role: upgrade-distpackages
-    - role: docker
-      docker_groupmembers: [centos]
-    - role: versioncontrol-utils
-    - role: devspace
+    - role: openmicroscopy.devspace
