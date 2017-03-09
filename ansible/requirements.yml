@@ -115,6 +115,10 @@
   src: https://github.com/openmicroscopy/ansible-role-hosts-populate
   version: master
 
+- name: mysql-backup
+  src: https://github.com/openmicroscopy/ansible-role-mysql-backup
+  version: master
+
 - name: omero-web-apps
   src: https://github.com/openmicroscopy/ansible-role-omero-web-apps
   version: master

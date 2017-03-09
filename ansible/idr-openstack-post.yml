@@ -9,6 +9,8 @@
   - role: network
   - role: logrotate
   - role: system-monitor-agent
+  - role: mysql-backup
+    when: "{{ openstack_master_node | default(False) }}"
 
   vars:
     network_ifaces: "{{ post_network_ifaces }}"
