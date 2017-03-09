@@ -20,7 +20,7 @@
 - name: Install nodejs
   become: yes
   yum:
-    enablerepo: epel-testing
+    enablerepo: epel
     name: nodejs
     state: present
 
