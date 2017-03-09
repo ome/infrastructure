@@ -8,7 +8,7 @@
   roles:
   - role: network
   - role: logrotate
-  - role: system-monitor-agent 
+  - role: system-monitor-agent
 
   vars:
     network_ifaces: "{{ post_network_ifaces }}"
