@@ -8,6 +8,8 @@ ansible-galaxy install -r requirements.yml 2>&1 | tee galaxy-1.log
 grep ERROR galaxy-1.log && exit 2
 ansible-galaxy install -r requirements-compat.yml 2>&1 | tee galaxy-2.log
 grep ERROR galaxy-2.log && exit 2
+ansible-galaxy install -r requirements-internal.yml 2>&1 | tee galaxy-3.log
+grep ERROR galaxy-3.log && exit 2
 
 for f in !(requirements*).yml *-playbooks/*.yml; do
     # ansible-lint $f
