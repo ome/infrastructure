@@ -1,0 +1,8 @@
+# External Ansible roles that will only work internally
+# For example they may rely on an internal restricted resource which can
+# be easily replicated outside.
+# Roles which could be used outside the OME should go in requirements.yml
+
+- name: system-monitor-agent
+  src: https://github.com/kennethgillen/ansible-role-system-monitor-agent
+  version: cmk-126
