@@ -1,0 +1,18 @@
+# Install OMERO.web with a public user on localhost
+
+- hosts: all
+  roles:
+
+    - role: openmicroscopy.omero-web
+      omero_web_release: 5.3.0-m9
+      omero_web_config_set:
+        omero.web.public.enabled: True
+        omero.web.public.server_id: 1
+        omero.web.public.user: public
+        omero.web.public.password: "{{ omero_web_public_password }}"
+        omero.web.public.url_filter: "^/(webadmin/myphoto/|webclient/(?!(action|annotate_(file|tags|comment|rating|map)|script_ui|ome_tiff|figure_script))|webgateway/(?!(archived_files|download_as)))"
+
+
+# To be migrated to MT
+  vars:
+    omero_web_public_password: public 

@@ -1,0 +1,10 @@
+---
+
+- name: openmicroscopy.omero-common
+  src:  https://github.com/manics/ansible-role-omero-common.git
+
+- name: openmicroscopy.omego
+  src:  https://github.com/manics/ansible-role-omego.git
+
+- name: openmicroscopy.omero-web
+  src:  https://github.com/manics/ansible-role-omero-web.git
