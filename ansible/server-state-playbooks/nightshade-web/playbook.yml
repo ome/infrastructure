@@ -1,18 +1,23 @@
 # Install OMERO.web with a public user on localhost
 
 - hosts: all
+
   roles:
 
+#    # Root LV Size 
+#    - role: openmicroscopy.lvm-partition
+#      lvm_lvmount: /
+#      lvm_lvsize: "{{ provision_rootsize }}"
+#      lvm_lvfilesystem: "{{ provision_root_filesystem }}"
+#
+
+
+    # OMERO.web configuration in host_vars in different repository
     - role: openmicroscopy.omero-web
       omero_web_release: 5.3.0-m9
-      omero_web_config_set:
-        omero.web.public.enabled: True
-        omero.web.public.server_id: 1
-        omero.web.public.user: public
-        omero.web.public.password: "{{ omero_web_public_password }}"
-        omero.web.public.url_filter: "^/(webadmin/myphoto/|webclient/(?!(action|annotate_(file|tags|comment|rating|map)|script_ui|ome_tiff|figure_script))|webgateway/(?!(archived_files|download_as)))"
 
+    - role: openmicroscopy.system-monitor-agent
+      when: >
+            ((ansible_env.COBBLER_SERVER is defined)
+            and (ansible_env.COBBLER_SERVER == "spacewalk.lifesci.dundee.ac.uk"))
 
-# To be migrated to MT
-  vars:
-    omero_web_public_password: public 
