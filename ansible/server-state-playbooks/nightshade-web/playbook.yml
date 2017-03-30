@@ -2,19 +2,29 @@
 
 - hosts: all
 
+  tasks:
+    - name: Install open-vm-tools if VMware vm
+      become: yes
+      yum:
+        name: open-vm-tools
+        state: latest
+      when: >
+           ((ansible_virtualization_type is defined)
+           and (ansible_virtualization_type == "VMware"))
+  
   roles:
 
-#    # Root LV Size 
-#    - role: openmicroscopy.lvm-partition
-#      lvm_lvmount: /
-#      lvm_lvsize: "{{ provision_rootsize }}"
-#      lvm_lvfilesystem: "{{ provision_root_filesystem }}"
-#
-
+    # Root LV Size 
+    - role: openmicroscopy.lvm-partition
+      lvm_lvname: "{{ provision_root_lvname }}"
+      lvm_vgname: "{{ provision_root_vgname }}"
+      lvm_lvmount: /
+      lvm_lvsize: "{{ provision_rootsize }}"
+      lvm_lvfilesystem: "{{ provision_root_filesystem }}"
 
     # OMERO.web configuration in host_vars in different repository
     - role: openmicroscopy.omero-web
-      omero_web_release: 5.3.0-m9
+      omero_web_release: 5.2.8
 
     - role: openmicroscopy.system-monitor-agent
       when: >
