@@ -1,27 +1,17 @@
 # Install OMERO.web with a public user on localhost
 
 - hosts: all
-
-  tasks:
-    - name: Install open-vm-tools if VMware vm
-      become: yes
-      yum:
-        name: open-vm-tools
-        state: latest
-      when: >
-           ((ansible_virtualization_type is defined)
-           and (ansible_virtualization_type == "VMware"))
-  
+ 
   roles:
 
     # Root LV Size 
-    - role: openmicroscopy.lvm-partition
-      lvm_lvname: "{{ provision_root_lvname }}"
-      lvm_vgname: "{{ provision_root_vgname }}"
-      lvm_lvmount: /
-      lvm_lvsize: "{{ provision_rootsize }}"
-      lvm_lvfilesystem: "{{ provision_root_filesystem }}"
-
+#    - role: openmicroscopy.lvm-partition
+#      lvm_lvname: "{{ provision_root_lvname }}"
+#      lvm_vgname: "{{ provision_root_vgname }}"
+#      lvm_lvmount: /
+#      lvm_lvsize: "{{ provision_rootsize }}"
+#      lvm_lvfilesystem: "{{ provision_root_filesystem }}"
+#
     # OMERO.web configuration in host_vars in different repository
     - role: openmicroscopy.omero-web
       omero_web_release: 5.2.8
@@ -31,3 +21,39 @@
             ((ansible_env.COBBLER_SERVER is defined)
             and (ansible_env.COBBLER_SERVER == "spacewalk.lifesci.dundee.ac.uk"))
 
+  post_tasks:
+    - name: Install open-vm-tools if system is a VMware vm
+      become: yes
+      yum:
+        name: open-vm-tools
+        state: latest
+      when: >
+           ((ansible_virtualization_type is defined)
+           and (ansible_virtualization_type == "VMware"))
+
+    # post 2.3 'destfile' should be renamed 'path'
+    - name: NGINX - SSL Configuration - Additional listen port
+      become: yes
+      lineinfile:
+        destfile: /etc/nginx/conf.d/omero-web.conf
+        insertafter: '    listen 80;'
+        line: '    listen 443 ssl;'
+            
+    # post 2.3 'destfile' should be renamed 'path'
+    - name: NGINX - SSL Configuration - Rest of SSL section to omero-web.conf
+      tags:
+        - indev
+      become: yes
+      blockinfile:
+        destfile: /etc/nginx/conf.d/omero-web.conf
+        insertbefore: '.*sendfile.*'
+        block: |2+
+
+              ssl_certificate {{ nginx_ssl_files_path }}/{{ nginx_ssl_cert_filename }};
+              ssl_certificate_key {{ nginx_ssl_files_path }}/{{ nginx_ssl_key_filename }};
+              ssl_protocols  {{ nginx_ssl_protocols }}
+            
+              if ($ssl_protocol = "") {
+                  rewrite ^/(.*) https://$host/$1 permanent;
+              }
+          
