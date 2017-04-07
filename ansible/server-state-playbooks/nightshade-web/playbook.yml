@@ -1,17 +1,26 @@
 # Install OMERO.web with a public user on localhost
 
 - hosts: all
- 
+
+  handlers:
+
+  # Handler for nginx
+  - name: restart nginx
+    become: yes
+    service:
+      name: nginx
+      state: restarted
+
   roles:
 
     # Root LV Size 
-#    - role: openmicroscopy.lvm-partition
-#      lvm_lvname: "{{ provision_root_lvname }}"
-#      lvm_vgname: "{{ provision_root_vgname }}"
-#      lvm_lvmount: /
-#      lvm_lvsize: "{{ provision_rootsize }}"
-#      lvm_lvfilesystem: "{{ provision_root_filesystem }}"
-#
+    - role: openmicroscopy.lvm-partition
+      lvm_lvname: "{{ provision_root_lvname }}"
+      lvm_vgname: "{{ provision_root_vgname }}"
+      lvm_lvmount: /
+      lvm_lvsize: "{{ provision_rootsize }}"
+      lvm_lvfilesystem: "{{ provision_root_filesystem }}"
+
     # OMERO.web configuration in host_vars in different repository
     - role: openmicroscopy.omero-web
       omero_web_release: 5.2.8
@@ -31,6 +40,26 @@
            ((ansible_virtualization_type is defined)
            and (ansible_virtualization_type == "VMware"))
 
+    - name: NGINX - SSL File Deployment - prepare directory
+      become: yes
+      file:
+        path: "{{ nginx_ssl_files_path }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "u=r,go=" 
+
+    - name: NGINX - SSL File Deployment
+      become: yes
+      copy:
+        dest="{{ item.key }}"
+        content="{{ item.value.content }}"
+        owner="{{ item.value.owner }}"
+        group="{{ item.value.group }}"
+        mode="{{ item.value.mode }}"
+      with_dict: "{{ nginx_ssl_cert_files }}"
+      no_log: true
+
     # post 2.3 'destfile' should be renamed 'path'
     - name: NGINX - SSL Configuration - Additional listen port
       become: yes
@@ -41,8 +70,6 @@
             
     # post 2.3 'destfile' should be renamed 'path'
     - name: NGINX - SSL Configuration - Rest of SSL section to omero-web.conf
-      tags:
-        - indev
       become: yes
       blockinfile:
         destfile: /etc/nginx/conf.d/omero-web.conf
@@ -56,4 +83,6 @@
               if ($ssl_protocol = "") {
                   rewrite ^/(.*) https://$host/$1 permanent;
               }
-          
+      notify:
+        - restart nginx
+
