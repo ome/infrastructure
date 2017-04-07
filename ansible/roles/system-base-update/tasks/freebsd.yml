@@ -1,0 +1,12 @@
+---
+- name: Fetch new FreeBSD updates
+  command: freebsd-update fetch --not-running-from-cron
+  register: result_update
+  changed_when: "'No updates needed' not in result_update.stdout"
+  become: yes
+
+- name: Install FreeBSD updates
+  command: freebsd-update install
+  when: ansible_distribution == 'FreeBSD' and result_update.changed
+  register: result_update_install
+  become: yes

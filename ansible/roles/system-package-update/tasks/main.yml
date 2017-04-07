@@ -1,0 +1,20 @@
+---
+- include: homebrew.yml
+  when: ansible_pkg_mgr == 'homebrew'
+  tags: package
+  become: true
+  become_user: "{{homebrew_user}}"
+  environment:
+    PATH: "/usr/local/bin:/usr/local/sbin:{{ ansible_env.PATH }}"
+
+- include: apt.yml
+  when: ansible_pkg_mgr == 'apt'
+  tags: package
+
+- include: pkgng.yml
+  when: ansible_pkg_mgr == 'pkgng'
+  tags: package
+
+- include: yum.yml
+  when: ansible_pkg_mgr == 'yum'
+  tags: package

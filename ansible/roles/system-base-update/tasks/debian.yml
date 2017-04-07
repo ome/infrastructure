@@ -1,0 +1,8 @@
+---
+- name: Update Debian APT repositories
+  apt:
+    update_cache: yes
+
+- name: Upgrade Debian packages
+  apt:
+    upgrade: dist

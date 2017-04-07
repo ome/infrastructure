@@ -1,0 +1,5 @@
+---
+- name: Upgrade all RPM packages
+  yum:
+    name: '*'
+    state: latest
