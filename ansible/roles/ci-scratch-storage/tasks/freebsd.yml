@@ -21,20 +21,18 @@
 
 - name: Set up ZFS at boot
   lineinfile:
-    dest: /boot/loader.conf
-    regexp: '^zfs_load='
-    line: 'zfs_load="YES"'
+    dest: /etc/rc.conf
+    regexp: '^zfs_enable'
+    line: 'zfs_enable="YES"'
   become: yes
+  register: rc_zfs
 
-- name: Check if ZFS is started
-  command: kldstat -m zfs
-  ignore_errors: yes
-  register: zfs_loaded
-
-- name: Start up ZFS
-  command: kldload -n zfs
+- name: Reload zfs
+  service:
+    name: zfs
+    state: reloaded
   become: yes
-  when: zfs_loaded.rc == 1
+  when: rc_zfs.changed
 
 - name: Set up ZFS 4k ashift
   lineinfile:
