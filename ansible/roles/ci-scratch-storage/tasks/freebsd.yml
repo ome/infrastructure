@@ -1,0 +1,62 @@
+---
+- name: Check vtbd1 disklabel
+  command: gpart list vtbd1
+  ignore_errors: yes
+  register: vtbd1_exists
+
+- name: Create vtbd1 disklabel
+  command: gpart create -s GPT vtbd1
+  become: yes
+  when: vtbd1_exists.rc == 1
+
+- name: Check vtbd1p1 partition
+  command: test -c /dev/vtbd1p1
+  ignore_errors: yes
+  register: vtbd1p1_exists
+
+- name: Create vtbd1p1 partition
+  command: gpart add -a 4k -t freebsd-zfs -l scratch0 vtbd1
+  become: yes
+  when: vtbd1p1_exists.rc == 1
+
+- name: Set up ZFS at boot
+  lineinfile:
+    dest: /boot/loader.conf
+    regexp: '^zfs_load='
+    line: 'zfs_load="YES"'
+  become: yes
+
+- name: Check if ZFS is started
+  command: kldstat -m zfs
+  ignore_errors: yes
+  register: zfs_loaded
+
+- name: Start up ZFS
+  command: kldload -n zfs
+  become: yes
+  when: zfs_loaded.rc == 1
+
+- name: Set up ZFS 4k ashift
+  lineinfile:
+    dest: /etc/sysctl.conf
+    regexp: '^vfs.zfs.min_auto_ashift='
+    line: 'vfs.zfs.min_auto_ashift=12'
+  become: yes
+  register: sysctl
+
+- name: Reload sysctls
+  service:
+    name: sysctl
+    state: reloaded
+  become: yes
+  when: sysctl.changed
+
+- name: Check scratch pool exists
+  command: zpool list scratch
+  ignore_errors: yes
+  register: scratch_pool_exists
+
+- name: Create scratch pool
+  command: zpool create -m /scratch scratch /dev/vtbd1p1
+  become: yes
+  when: scratch_pool_exists.rc == 1
