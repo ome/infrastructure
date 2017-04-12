@@ -2,15 +2,6 @@
 
 - hosts: all
 
-  handlers:
-
-  # Handler for nginx
-  - name: restart nginx
-    become: yes
-    service:
-      name: nginx
-      state: restarted
-
   pre_tasks: 
 
     # For OMERO.web apps
@@ -172,13 +163,11 @@
       # omero.web systemd-based restart.
     - name: 
       become: yes
-      tags:
-        - indev
       template:
         src: templates/omero-web-config-for-webapps.j2
         dest: "{{ omero_web_basedir }}/config/omero-web-config-for-webapps.omero"
-        owner: "{{ omero_web_system_user }}" 
-        group: "{{ omero_web_system_user }}" 
+        owner: "root" 
+        group: "root" 
         mode: "u=rw,go=r"
       notify:
-        - omero-web restart omero-web 
+        - restart omero-web 
