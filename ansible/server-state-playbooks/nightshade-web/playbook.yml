@@ -44,6 +44,7 @@
     # OMERO.web configuration in host_vars in different repository
     - role: openmicroscopy.omero-web
       omero_web_release: 5.2.8
+      no_log: true
 
     - role: openmicroscopy.system-monitor-agent
       when: >
