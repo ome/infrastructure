@@ -123,8 +123,8 @@
       become: yes
       unarchive:
         src: https://downloads.openmicroscopy.org/latest/figure.zip
-        owner: "{{ omero_web_system_user }}" 
-        group: "{{ omero_web_system_user }}" 
+        owner: "root" 
+        group: "root" 
         mode: "u=rwx,go=rx" 
         dest: "{{ omero_web_extensionsdir }}"
         remote_src: True
@@ -135,8 +135,8 @@
       become: yes
       unarchive:
         src: "http://downloads.openmicroscopy.org/webtagging/{{ omero_web_extensions_tagging_ver }}/webtagging-{{ omero_web_extensions_tagging_ver }}.zip"
-        owner: "{{ omero_web_system_user }}" 
-        group: "{{ omero_web_system_user }}" 
+        owner: "root" 
+        group: "root" 
         mode: "u=rwx,go=rx" 
         dest: "{{ omero_web_extensionsdir }}"
         remote_src: True
@@ -149,8 +149,8 @@
         src: '{{ omero_web_extensionsdir }}/{{ item.src }}'
         dest: '{{ omero_web_extensionsdir }}/{{ item.dest }}'
         state: link
-        owner: "{{ omero_web_system_user }}" 
-        group: "{{ omero_web_system_user }}" 
+        owner: "root" 
+        group: "root" 
       with_items:
        - { src: 'webtagging-{{ omero_web_extensions_tagging_ver }}/autotag/', dest: 'autotag' }
        - { src: 'webtagging-{{ omero_web_extensions_tagging_ver }}/tagsearch/', dest: 'tagsearch' }
