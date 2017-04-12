@@ -1,0 +1,9 @@
+---
+# Apply operating system and package updates
+
+- hosts: all
+  roles:
+    - role: ci-base-setup
+    - role: ci-admin-user
+    - role: ci-scratch-storage
+
