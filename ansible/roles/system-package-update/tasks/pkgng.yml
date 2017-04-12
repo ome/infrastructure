@@ -1,0 +1,12 @@
+---
+- name: Update FreeBSD package list
+  command: pkg update -q
+  become: yes
+
+- name: Upgrade FreeBSD packages
+  command: pkg upgrade -y
+  become: yes
+
+- name: Clean FreeBSD package cache
+  command: pkg clean -qy
+  become: yes

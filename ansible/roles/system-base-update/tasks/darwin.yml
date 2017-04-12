@@ -1,0 +1,4 @@
+---
+- name: Update MacOS X base system
+  raw: softwareupdate -i -a
+  become: yes

@@ -1,0 +1,8 @@
+---
+# Apply operating system and package updates
+
+- hosts: all
+  roles:
+    - role: system-base-update
+    - role: system-package-update
+
