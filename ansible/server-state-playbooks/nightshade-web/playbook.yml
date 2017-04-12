@@ -114,8 +114,8 @@
       file:
         path: "{{ omero_web_extensionsdir }}"
         state: directory
-        owner: "{{ omero_web_system_user }}" 
-        group: "{{ omero_web_system_user }}" 
+        owner: "root" 
+        group: "root" 
         mode: "u=rwx,go=rx" 
 
     # download figure
