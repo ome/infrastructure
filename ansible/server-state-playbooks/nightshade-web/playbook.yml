@@ -61,6 +61,24 @@
            ((ansible_virtualization_type is defined)
            and (ansible_virtualization_type == "VMware"))
 
+    # cf https://www.digitalocean.com/community/tutorials/how-to-optimize-nginx-configuration
+    # post 2.3 'dest' should be renamed 'path'
+    - name: NGINX - Performance tuning - worker processes
+      become: yes
+      replace:
+        dest: "/etc/nginx/nginx.conf"
+        regexp: '^worker_processes\s+\d+;'
+        replace: "worker_processes {{ ansible_processor_cores }};"
+
+    # post 2.3 'dest' should be renamed 'path'
+    # cf https://www.digitalocean.com/community/tutorials/how-to-optimize-nginx-configuration
+    - name: NGINX - Performance tuning - worker connections
+      become: yes
+      replace:
+        dest: "/etc/nginx/nginx.conf"
+        regexp: 'worker_connections\s+\d+;'
+        replace: "worker_connections 65000;"
+
     - name: NGINX - SSL File Deployment - prepare directory
       become: yes
       file:
