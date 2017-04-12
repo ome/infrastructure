@@ -1,0 +1,12 @@
+---
+- name: Update packages
+  raw: pkg update
+  become: yes
+
+- name: Upgrade packages
+  raw: pkg upgrade -y
+  become: yes
+
+- name: Install python
+  raw: pkg install -y python
+  become: yes
