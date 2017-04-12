@@ -11,6 +11,35 @@
       name: nginx
       state: restarted
 
+  pre_tasks: 
+
+    # For OMERO.web apps
+    # Pythonpath must exist before omero.web.config is provisioned
+    # or OMERO.web won't start.
+    # create systemd file addition for PYTHONPATH
+    - name: OMERO.web apps | (pre_task) configure systemd for pythonpath - create config folder 
+      become: yes
+      file:
+        dest: "/etc/systemd/system/omero-web.service.d"
+        state: directory
+        mode: "u=rwx,go=rx" 
+        owner: "root" 
+        group: "root" 
+
+    # systemd web-apps folder to pythonpath to env
+    - name: OMERO.web apps | (pre_task) configure systemd for pythonpath 
+      become: yes
+      blockinfile:
+        create: yes
+        destfile: /etc/systemd/system/omero-web.service.d/pythonpath.conf
+        owner: "root" 
+        group: "root" 
+        block: |2+
+          [Service]
+          Environment="PYTHONPATH=$PYTHONPATH:/opt/omero/web/web-extensions"
+      notify:
+        - reload systemd
+
   roles:
 
     # Root LV Size 
@@ -86,3 +115,70 @@
       notify:
         - restart nginx
 
+    # 'manual' install of omero.web.apps for Nightshade feature parity
+
+    # note: system user var defined in openmicroscopy.omero-web as a default
+    - name: OMERO.web apps | top-level folder
+      become: yes
+      file:
+        path: "{{ omero_web_extensionsdir }}"
+        state: directory
+        owner: "{{ omero_web_system_user }}" 
+        group: "{{ omero_web_system_user }}" 
+        mode: "u=rwx,go=rx" 
+
+    # download figure
+    - name: OMERO.web apps | download latest figure
+      become: yes
+      unarchive:
+        src: https://downloads.openmicroscopy.org/latest/figure.zip
+        owner: "{{ omero_web_system_user }}" 
+        group: "{{ omero_web_system_user }}" 
+        mode: "u=rwx,go=rx" 
+        dest: "{{ omero_web_extensionsdir }}"
+        remote_src: True
+        creates: "{{ omero_web_extensionsdir }}/figure-{{omero_web_extensions_figure_ver}}" 
+
+    # download tagging
+    - name: OMERO.web apps | download latest tagging
+      become: yes
+      unarchive:
+        src: "http://downloads.openmicroscopy.org/webtagging/{{ omero_web_extensions_tagging_ver }}/webtagging-{{ omero_web_extensions_tagging_ver }}.zip"
+        owner: "{{ omero_web_system_user }}" 
+        group: "{{ omero_web_system_user }}" 
+        mode: "u=rwx,go=rx" 
+        dest: "{{ omero_web_extensionsdir }}"
+        remote_src: True
+        creates: "{{ omero_web_extensionsdir }}/webtagging-{{omero_web_extensions_tagging_ver}}" 
+
+    # create symlinks
+    - name: OMERO.web apps | app-name symlinks
+      become: yes
+      file:
+        src: '{{ omero_web_extensionsdir }}/{{ item.src }}'
+        dest: '{{ omero_web_extensionsdir }}/{{ item.dest }}'
+        state: link
+        owner: "{{ omero_web_system_user }}" 
+        group: "{{ omero_web_system_user }}" 
+      with_items:
+       - { src: 'webtagging-{{ omero_web_extensions_tagging_ver }}/autotag/', dest: 'autotag' }
+       - { src: 'webtagging-{{ omero_web_extensions_tagging_ver }}/tagsearch/', dest: 'tagsearch' }
+       - { src: 'figure-{{ omero_web_extensions_figure_ver }}', dest: 'figure' }
+      
+      # put the OMERO.web config for webapps here, and then restart web.
+      # i.e. take it out the initial set of omero.web config
+      # to go into {{ omero_web_basedir }}/config/*.omero
+      # which should then be turned into OMERO.web config by the
+      # omero.web systemd-based restart.
+    - name: 
+      become: yes
+      tags:
+        - indev
+      template:
+        src: templates/omero-web-config-for-webapps.j2
+        dest: "{{ omero_web_basedir }}/config/omero-web-config-for-webapps.omero"
+        owner: "{{ omero_web_system_user }}" 
+        group: "{{ omero_web_system_user }}" 
+        mode: "u=rw,go=r"
+      notify:
+        - omero-web restart omero-web 
