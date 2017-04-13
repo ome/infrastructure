@@ -7,6 +7,7 @@
 #   $ ansible-playbook -e "ci_host=<host>" -i inventory/ci-hosts ansible/os-ci-create-machine.yml --vault-password-file=<vault>
 #   Initial setup:
 #     (FreeBSD)
+#     $ ssh freebsd@<host> # To add host key fingerprint
 #     $ ansible-playbook -l <host> -e "ansible_user=freebsd" -u freebsd -i inventory/ci-hosts ansible/ci-initial-setup.yml --vault-password-file=<vault>
 
 - hosts: localhost
