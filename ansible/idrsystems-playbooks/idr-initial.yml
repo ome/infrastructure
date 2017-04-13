@@ -6,8 +6,8 @@
 - hosts: idr
   roles:
   - role: openmicroscopy.upgrade-distpackages
-  - role: openmicroscopy.server-swap
-  - role: openmicroscopy.network
+  - role: server-swap
+  - role: network
   #- role: system-monitor-agent
 
   post_tasks:
