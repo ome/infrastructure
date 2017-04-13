@@ -3,7 +3,8 @@
 
 - hosts: all
   roles:
+    - role: system-base-update
+    - role: system-package-update
     - role: ci-base-setup
     - role: ci-admin-user
     - role: ci-scratch-storage
-

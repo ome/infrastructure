@@ -1,12 +1,7 @@
 ---
-- name: Update packages
-  raw: pkg update
-  become: yes
-
-- name: Upgrade packages
-  raw: pkg upgrade -y
-  become: yes
-
+# cloudinit installs python2.7, but not the base python and python2 links.
 - name: Install python
-  raw: pkg install -y python
+  pkgng:
+    name: python
+    state: present
   become: yes
