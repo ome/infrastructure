@@ -68,7 +68,7 @@
       replace:
         dest: "/etc/nginx/nginx.conf"
         regexp: '^worker_processes\s+\d+;'
-        replace: "worker_processes {{ ansible_processor_cores }};"
+        replace: "worker_processes {{ ansible_processor_count * ansible_processor_cores }};"
 
     # post 2.3 'dest' should be renamed 'path'
     # cf https://www.digitalocean.com/community/tutorials/how-to-optimize-nginx-configuration
