@@ -1,6 +1,6 @@
 ---
 # cloudinit installs python2.7, but not the base python and python2 links.
-- name: Install python
+- name: ci-base-setup (freebsd) | Install python
   pkgng:
     name: python
     state: present

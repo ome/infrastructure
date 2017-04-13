@@ -1,25 +1,16 @@
 ---
-- name: Fetch new FreeBSD updates
+- name: system-base-update (freebsd) | Fetch new FreeBSD updates
   command: freebsd-update fetch --not-running-from-cron
   register: result_update
   changed_when: "'No updates needed' not in result_update.stdout"
   become: yes
 
-- name: Install FreeBSD updates
+- name: system-base-update (freebsd) | Install FreeBSD updates
   command: freebsd-update install
   when: ansible_distribution == 'FreeBSD' and result_update.changed
   register: result_update_install
   become: yes
-
-- name: Reboot FreeBSD VM (to use updated kernel)
-  shell: sleep 5 && reboot
-  ignore_errors: true
-  async: 1
-  poll: 0
-  become: yes
-
-- name: Wait for FreeBSD VM to restart
-  local_action: wait_for host={{ ansible_ssh_host }} state=started port=22 search_regex=OpenSSH delay=30 timeout=300 connect_timeout=15
-
-- name: Wait for SSH to become operational
-  pause: seconds=5
+  notify:
+    - reboot
+    - wait for restart
+    - wait for ssh

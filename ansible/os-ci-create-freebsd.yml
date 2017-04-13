@@ -12,7 +12,7 @@
   connection: local
 
   tasks:
-    - name: Create FreeBSD VM
+    - name: os-ci-create-freebsd | Create FreeBSD VM
       os_server:
         name: "{{ hostvars[ci_host]['openstack_machine']['name'] }}"
         state: present
@@ -31,14 +31,14 @@
     - debug:
         var: freebsd_host
 
-    - name: Create volumes
+    - name: os-ci-create-freebsd | Create volumes
       os_volume:
         state: present
         size: "{{ item.size }}"
         display_name: "{{ hostvars[ci_host]['openstack_machine']['name'] }}-{{ item.name }}"
       with_items: "{{ hostvars[ci_host]['openstack_volumes'] }}"
 
-    - name: Attach volumes
+    - name: os-ci-create-freebsd | Attach volumes
       os_server_volume:
         state: present
         server: "{{ hostvars[ci_host]['openstack_machine']['name'] }}"
@@ -50,11 +50,11 @@
   connection: local
 
   tasks:
-    - name: Stop FreeBSD VM (to attach new volumes)
+    - name: os-ci-create-freebsd | Stop FreeBSD VM (to attach new volumes)
       os_server_actions:
         server: "{{ hostvars[ci_host]['openstack_machine']['name'] }}"
         action: stop
-    - name: Start FreeBSD VM (to attach new volumes)
+    - name: os-ci-create-freebsd | Start FreeBSD VM (to attach new volumes)
       os_server_actions:
         server: "{{ hostvars[ci_host]['openstack_machine']['name'] }}"
         action: start

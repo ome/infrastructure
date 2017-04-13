@@ -1,7 +1,7 @@
 ---
 # Initial setup to enable administration with ansible.
 
-- hosts: all
+- hosts: ci
   roles:
     - role: system-base-update
     - role: system-package-update
