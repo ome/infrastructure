@@ -3,11 +3,11 @@
 
 # Initial networking and basic system configuration
 # A reboot may be required after this playbook
-- include: idrsystems-playbooks/idr-initial.yml
+- include: idr-initial.yml
 
 # Upgrade all system packages
 # A reboot may be required after this playbook
-- include: idrsystems-playbooks/idr-upgrade.yml
+- include: idr-upgrade.yml
 
 # Install everything else
 - include: idrsystems-deployment.yml
