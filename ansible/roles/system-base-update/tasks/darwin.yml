@@ -1,4 +1,4 @@
 ---
 - name: system-base-update (darwin) | Update base system
-  raw: softwareupdate -i -a
+  command: softwareupdate -i -a
   become: yes
