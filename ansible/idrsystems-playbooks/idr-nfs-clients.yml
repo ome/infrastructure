@@ -3,4 +3,4 @@
 
 - hosts: idr-nfs-clients
   roles:
-  - role: nfs-mount
+  - role: openmicroscopy.nfs-mount

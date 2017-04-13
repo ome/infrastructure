@@ -3,14 +3,14 @@
 
 - hosts: prod-web-proxies
   roles:
-  - role: lvm-partition
+  - role: openmicroscopy.lvm-partition
     lvm_lvname: root
     lvm_lvmount: /
     lvm_lvsize: "{{ root_size }}"
     lvm_lvfilesystem: "{{ root_filesystem }}"
-  - role: lvm-partition
+  - role: openmicroscopy.lvm-partition
     lvm_lvname: var_log
     lvm_lvmount: /var/log
     lvm_lvsize: "{{ varlog_size }}"
     lvm_lvfilesystem: "{{ root_filesystem }}"
-  - role: nginx-proxy
+  - role: openmicroscopy.nginx-proxy

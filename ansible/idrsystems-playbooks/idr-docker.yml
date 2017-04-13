@@ -18,8 +18,8 @@
     lvm_lvmount: /scratch
     lvm_lvsize: "{{ scratch_size }}"
     lvm_lvfilesystem: "{{ root_filesystem }}"
-  - role: basedeps
-  - role: logrotate
-  - role: docker
-  - role: sudoers
-  - role: versioncontrol-utils
+  - role: openmicroscopy.basedeps
+  - role: openmicroscopy.logrotate
+  - role: openmicroscopy.docker
+  - role: openmicroscopy.sudoers
+  - role: openmicroscopy.versioncontrol-utils
