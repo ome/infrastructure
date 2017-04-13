@@ -1,8 +1,34 @@
 ---
-# Playbook for maintaining IDR Samba nodes
+# Playbook for maintaining IDR analysis nodes
 
 - hosts: idr-analysis
   roles:
-  - role: analysis-tools
-  - role: samba-client
-  - role: sudoers
+
+  - role: openmicroscopy.lvm-partition
+    lvm_lvname: root
+    lvm_lvmount: /
+    lvm_lvsize: "{{ rootsize }}"
+    lvm_lvfilesystem: "{{ root_filesystem }}"
+  - role: openmicroscopy.lvm-partition
+    lvm_lvname: var_log
+    lvm_lvmount: /var/log
+    lvm_lvsize: "{{ varlog_size }}"
+    lvm_lvfilesystem: "{{ root_filesystem }}"
+  - role: openmicroscopy.lvm-partition
+    lvm_lvname: var_lib_docker
+    lvm_lvmount: /var/lib/docker
+    lvm_lvsize: "{{ docker_volumesize }}"
+    lvm_lvfilesystem: "{{ docker_filesystem }}"
+  - role: openmicroscopy.lvm-partition
+    lvm_lvname: scratch
+    lvm_lvmount: /scratch
+    lvm_lvsize: "{{ scratch_size }}"
+    lvm_lvfilesystem: "{{ root_filesystem }}"
+
+  - role: openmicroscopy.docker
+  - role: openmicroscopy.logrotate
+  - role: openmicroscopy.sudoers
+
+  - role: openmicroscopy.analysis-tools
+  - role: openmicroscopy.nfs-mount
+  - role: openmicroscopy.versioncontrol-utils
