@@ -5,8 +5,6 @@
 - include: idr-docker.yml
 - include: idr-gpfs-build.yml
 - include: idr-gpfs-client.yml
-- include: idr-gpfs-scratch.yml
 - include: idr-nfs-hosts.yml
-- include: idr-nfs-clients.yml
 - include: idr-samba-hosts.yml
 - include: idr-services.yml
