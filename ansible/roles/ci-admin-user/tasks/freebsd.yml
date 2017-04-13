@@ -1,25 +1,5 @@
 ---
-- name: Check ci-admin group exists
-  command: getent group ci-admin
-  ignore_errors: yes
-  register: ci_admin_group_exists
-
-- name: Create ci-admin group
-  command: pw group add -n ci-admin
-  become: yes
-  when: ci_admin_group_exists.rc == 2
-
-- name: Check ci-admin user exists
-  command: getent passwd ci-admin
-  ignore_errors: yes
-  register: ci_admin_user_exists
-
-- name: Create ci-admin user
-  command: pw user add -n ci-admin -g ci-admin -G wheel -c "CI Administrator for Ansible use" -m
-  become: yes
-  when: ci_admin_user_exists.rc == 2
-
-- name: Set ci-admin password
-  shell: 'echo "{{ ci_admin_password }}" | pw user mod ci-admin -h 0'
-  become: yes
-  when: ci_admin_user_exists.rc == 2
+- name: Add ci-admin to wheel group
+  user:
+    name: ci-admin
+    groups: [wheel]

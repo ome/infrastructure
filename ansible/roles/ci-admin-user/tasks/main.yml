@@ -1,4 +1,18 @@
 ---
+- name: Create ci-admin group
+  group:
+    name: ci-admin
+    state: present
+  become: yes
+
+- name: Create ci-admin user
+  user:
+    name: ci-admin
+    comment: "CI Administrator for Ansible use"
+    group: ci-admin
+    password: "{{ ci_admin_password }}"
+    state: present
+  become: yes
+
 - include: freebsd.yml
   when: ansible_os_family == 'FreeBSD'
-  tags: package
