@@ -1,5 +1,5 @@
 ---
-# Apply operating system and package updates
+# Initial setup to enable administration with ansible.
 
 - hosts: all
   roles:
