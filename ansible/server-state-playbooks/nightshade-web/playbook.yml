@@ -42,8 +42,10 @@
       lvm_lvfilesystem: "{{ provision_root_filesystem }}"
 
     # OMERO.web configuration in host_vars in different repository
+    # Upgrade 5.2.8 Web to 5.3.0
     - role: openmicroscopy.omero-web
-      omero_web_release: 5.2.8
+      omero_web_release: 5.3.0
+      omero_web_upgrade: True
       no_log: true
 
     - role: openmicroscopy.system-monitor-agent
@@ -149,18 +151,6 @@
         remote_src: True
         creates: "{{ omero_web_extensionsdir }}/figure-{{omero_web_extensions_figure_ver}}" 
 
-    # download tagging
-    - name: OMERO.web apps | download latest tagging
-      become: yes
-      unarchive:
-        src: "http://downloads.openmicroscopy.org/webtagging/{{ omero_web_extensions_tagging_ver }}/webtagging-{{ omero_web_extensions_tagging_ver }}.zip"
-        owner: "root" 
-        group: "root" 
-        mode: "u=rwx,go=rx" 
-        dest: "{{ omero_web_extensionsdir }}"
-        remote_src: True
-        creates: "{{ omero_web_extensionsdir }}/webtagging-{{omero_web_extensions_tagging_ver}}" 
-
     # create symlinks
     - name: OMERO.web apps | app-name symlinks
       become: yes
@@ -171,8 +161,6 @@
         owner: "root" 
         group: "root" 
       with_items:
-       - { src: 'webtagging-{{ omero_web_extensions_tagging_ver }}/autotag/', dest: 'autotag' }
-       - { src: 'webtagging-{{ omero_web_extensions_tagging_ver }}/tagsearch/', dest: 'tagsearch' }
        - { src: 'figure-{{ omero_web_extensions_figure_ver }}', dest: 'figure' }
       
       # put the OMERO.web config for webapps here, and then restart web.
