@@ -1,0 +1,59 @@
+# External Ansible roles required by this repository
+
+- src: openmicroscopy.analysis-tools
+  version: 1.0.0
+
+- src: openmicroscopy.basedeps
+  version: 1.0.0
+
+- src: openmicroscopy.cli-utils
+  version: 1.0.0
+
+- name: openmicroscopy.docker
+  src: https://github.com/manics/ansible-role-docker.git
+  version: docker-refactor
+
+- src: openmicroscopy.docker-tools
+  version: 1.0.0
+
+- src: openmicroscopy.local-accounts
+  version: 1.0.0
+
+- src: openmicroscopy.logrotate
+  version: 1.0.0
+
+- src: openmicroscopy.lvm-partition
+  version: 1.0.0
+
+- src: openmicroscopy.nfs-mount
+  version: 1.0.0
+
+- src: openmicroscopy.nfs-share
+  version: 1.0.0
+
+- src: openmicroscopy.nginx
+  version: 1.0.0
+
+- src: openmicroscopy.nginx-proxy
+  version: 1.0.0
+
+- src: openmicroscopy.python-pydata
+  version: 1.0.0
+
+- src: openmicroscopy.redis
+  version: 1.0.0
+
+- src: openmicroscopy.samba-client
+  version: 1.0.0
+
+- src: openmicroscopy.selinux-utils
+  version: 1.0.1
+
+- src: openmicroscopy.sudoers
+  version: 1.0.0
+
+- src: openmicroscopy.upgrade-distpackages
+  version: 1.0.0
+
+- src: openmicroscopy.versioncontrol-utils
+  version: 1.0.0
