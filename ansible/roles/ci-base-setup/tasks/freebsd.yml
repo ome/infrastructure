@@ -1,4 +1,19 @@
 ---
+- name: ci-base-setup (freebsd) | Set hostname
+  lineinfile:
+    dest: /etc/rc.conf
+    regexp: '^hostname='
+    line: 'hostname="{{ inventory_hostname }}"'
+  become: yes
+  register: rc_hostname
+
+- name: ci-scratch-storage (freebsd) | Reload hostname
+  service:
+    name: hostname
+    state: started
+  become: yes
+  when: rc_hostname.changed
+
 # cloudinit installs python2.7, but not the base python and python2 links.
 - name: ci-base-setup (freebsd) | Install python
   pkgng:
