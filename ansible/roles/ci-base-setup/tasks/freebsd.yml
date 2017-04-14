@@ -38,3 +38,22 @@
     opts: rw
     state: mounted
   become: yes
+
+# Default CI user environment
+- name: ci-base-setup (freebsd) | Set CI login class
+  blockinfile:
+    path: /etc/login.conf
+    marker: "# {mark} ANSIBLE MANAGED BLOCK (CI)"
+    content: |
+      ci:\
+            :umask=002:\
+            :path=~/bin /usr/local/bin /usr/local/sbin /bin /sbin /usr/bin /usr/sbin:\
+            :setenv=CMAKE_PREFIX_PATH=/usr/local:
+            :tc=default:
+  become: yes
+  register: ci_login
+
+- name: ci-base-setup (freebsd) | Update db
+  command: cap_mkdb /etc/login.conf
+  become: yes
+  when: ci_login.changed

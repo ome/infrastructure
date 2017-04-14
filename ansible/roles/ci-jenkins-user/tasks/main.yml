@@ -10,6 +10,7 @@
     name: ci-jenkins
     comment: "CI Jenkins worker"
     group: ci-jenkins
+    login_class: ci
     password: "{{ ci_jenkins_password_hash }}"
     state: present
   become: yes
