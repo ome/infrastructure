@@ -5,3 +5,21 @@
     name: python
     state: present
   become: yes
+
+- name: ci-base-setup (freebsd) | Mount fdescfs
+  mount:
+    path: /dev/fd
+    src: fdesc
+    fstype: fdescfs
+    opts: rw
+    state: mounted
+  become: yes
+
+- name: ci-base-setup (freebsd) | Mount procfs
+  mount:
+    path: /proc
+    src: proc
+    fstype: procfs
+    opts: rw
+    state: mounted
+  become: yes
