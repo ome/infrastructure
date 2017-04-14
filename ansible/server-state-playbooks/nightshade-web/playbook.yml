@@ -61,14 +61,14 @@
            ((ansible_virtualization_type is defined)
            and (ansible_virtualization_type == "VMware"))
 
-    # cf https://www.digitalocean.com/community/tutorials/how-to-optimize-nginx-configuration
+    # (Total cores / 2), leaving some for WSGI
     # post 2.3 'dest' should be renamed 'path'
     - name: NGINX - Performance tuning - worker processes
       become: yes
       replace:
         dest: "/etc/nginx/nginx.conf"
         regexp: '^worker_processes\s+\d+;'
-        replace: "worker_processes {{ ansible_processor_count * ansible_processor_cores }};"
+        replace: "worker_processes {{ (ansible_processor_count * ansible_processor_cores) / 2 }};"
 
     # post 2.3 'dest' should be renamed 'path'
     # cf https://www.digitalocean.com/community/tutorials/how-to-optimize-nginx-configuration
