@@ -10,7 +10,7 @@
     name: ci-admin
     comment: "CI Administrator for Ansible use"
     group: ci-admin
-    password: "{{ ci_admin_password }}"
+    password: "{{ ci_admin_password_hash }}"
     state: present
   become: yes
 
