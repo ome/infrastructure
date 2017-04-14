@@ -32,3 +32,5 @@
   - role: openmicroscopy.analysis-tools
   - role: openmicroscopy.nfs-mount
   - role: openmicroscopy.versioncontrol-utils
+
+  - role: openmicroscopy.celery-docker

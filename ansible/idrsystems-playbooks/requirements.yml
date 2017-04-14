@@ -9,6 +9,10 @@
 - src: openmicroscopy.cli-utils
   version: 1.0.0
 
+- name: openmicroscopy.celery-docker
+  src: https://github.com/manics/ansible-role-celery-docker.git
+  version: devel
+
 - name: openmicroscopy.docker
   src: https://github.com/manics/ansible-role-docker.git
   version: docker-refactor
