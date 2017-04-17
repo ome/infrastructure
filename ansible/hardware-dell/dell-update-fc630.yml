@@ -7,9 +7,9 @@
 - hosts: all
   roles:
   - role: dell-update
-    dell_update_filename: iDRAC-with-Lifecycle-Controller_Firmware_5GCHC_LN_2.30.30.30_A00.BIN
+    dell_update_filename: iDRAC-with-Lifecycle-Controller_Firmware_4950Y_LN_2.41.40.40_A00.bin
   - role: dell-update
-    dell_update_filename: BIOS_DC9XJ_LN_2.1.7.BIN
+    dell_update_filename: BIOS_DH7R1_LN_2.4.2.bin
 
   # vars:
   # - dell_update_package_dir: ~/ansible-data/dell-fc630/
