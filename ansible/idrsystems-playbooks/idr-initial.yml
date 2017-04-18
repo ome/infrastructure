@@ -8,6 +8,8 @@
   - role: openmicroscopy.upgrade-distpackages
   - role: server-swap
   - role: network
+  # Fails due to yum excludes, install it manually if you want it:
+  # yum --disableexcludes=all install check-mk-agent-1.2.6p16
   #- role: system-monitor-agent
 
   post_tasks:
