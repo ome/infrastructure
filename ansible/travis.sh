@@ -11,7 +11,20 @@ grep ERROR galaxy-2.log && exit 2
 ansible-galaxy install -r requirements-internal.yml 2>&1 | tee galaxy-3.log
 grep ERROR galaxy-3.log && exit 2
 
-for f in !(requirements*).yml *-playbooks/*.yml; do
+for f in !(requirements*).yml; do
+    # ansible-lint $f
+    ansible-playbook -i example-hosts --syntax-check $f
+done
+
+for f in jekyll-playbooks/*.yml; do
+    # ansible-lint $f
+    ansible-playbook -i example-hosts --syntax-check $f
+done
+
+pushd idrsystems-playbooks
+ansible-galaxy install -r requirements.yml 2>&1 | tee galaxy-4.log
+grep ERROR galaxy-4.log && exit 2
+for f in !(requirements*).yml; do
     # ansible-lint $f
     ansible-playbook -i example-hosts --syntax-check $f
 done
