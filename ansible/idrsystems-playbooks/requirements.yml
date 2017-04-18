@@ -13,9 +13,8 @@
   src: https://github.com/manics/ansible-role-celery-docker.git
   version: devel
 
-- name: openmicroscopy.docker
-  src: https://github.com/manics/ansible-role-docker.git
-  version: docker-refactor
+- src: openmicroscopy.docker
+  version: 2.0.0
 
 - src: openmicroscopy.docker-tools
   version: 1.0.0
