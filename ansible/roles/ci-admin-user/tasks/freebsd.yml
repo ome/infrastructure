@@ -1,0 +1,6 @@
+---
+- name: ci-admin-user (freebsd) | Add ci-admin to wheel group
+  user:
+    name: ci-admin
+    groups: [wheel]
+  become: yes

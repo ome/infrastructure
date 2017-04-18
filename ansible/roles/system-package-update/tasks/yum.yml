@@ -1,5 +1,5 @@
 ---
-- name: Upgrade all RPM packages
+- name: system-package-update (yum) | Upgrade all packages
   yum:
     name: '*'
     state: latest

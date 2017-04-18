@@ -1,0 +1,19 @@
+---
+- name: ci-data-user | Create ci-data group
+  group:
+    name: ci-data
+    state: present
+  become: yes
+
+- name: ci-data-user | Create ci-data user
+  user:
+    name: ci-data
+    comment: "CI Jenkins worker"
+    group: ci-data
+    password: "{{ ci_jenkins_password_hash }}"
+    state: present
+  become: yes
+
+- include: freebsd.yml
+  when: ansible_os_family == 'FreeBSD'
+  tags: package

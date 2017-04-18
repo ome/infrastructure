@@ -1,0 +1,17 @@
+---
+- name: ci-data-repo (freebsd) | Create nsmb credentials
+  become: yes
+  template:
+    src: freebsd-nsmb.j2
+    dest: "/etc/nsmb.conf"
+    force: yes
+    mode: 0600
+
+- name: ci-data-repo (freebsd) | Mount data repo
+  mount:
+    path: /data/ome-data-repo
+    src: //hslave-x@FS0/ome-data-repo
+    fstype: smbfs
+    opts: ro,late,-N,-uci-data,-gci-data
+    state: mounted
+  become: yes

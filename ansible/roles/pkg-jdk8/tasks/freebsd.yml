@@ -1,0 +1,6 @@
+---
+- name: pkg-jdk8 (freebsd) | Install JDK8
+  pkgng:
+    name: openjdk8
+    state: present
+  become: yes

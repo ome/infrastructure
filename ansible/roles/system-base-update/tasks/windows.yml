@@ -1,6 +1,6 @@
 ---
 # Install all security, critical, and rollup updates
-- name: Install Windows updates
+- name: system-base-update (windows) | Install Windows updates
   win_updates:
     category_names:
       - SecurityUpdates

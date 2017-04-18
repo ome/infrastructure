@@ -5,4 +5,3 @@
   roles:
     - role: system-base-update
     - role: system-package-update
-

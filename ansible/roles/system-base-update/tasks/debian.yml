@@ -1,8 +1,8 @@
 ---
-- name: Update Debian APT repositories
+- name: system-base-update (debian) | Update packages
   apt:
     update_cache: yes
 
-- name: Upgrade Debian packages
+- name: system-base-update (debian) | Upgrade packages
   apt:
     upgrade: dist

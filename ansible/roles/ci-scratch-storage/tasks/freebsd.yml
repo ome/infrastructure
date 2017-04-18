@@ -1,0 +1,63 @@
+---
+- name: ci-scratch-storage (freebsd) | Check vtbd1 disklabel
+  command: gpart list vtbd1
+  ignore_errors: yes
+  register: vtbd1_exists
+
+# Create disklabel if it doesn't exist
+- name: ci-scratch-storage (freebsd) | Create vtbd1 disklabel
+  command: gpart create -s GPT vtbd1
+  become: yes
+  when: vtbd1_exists.rc == 1
+
+- name: ci-scratch-storage (freebsd) | Check vtbd1p1 partition
+  command: test -c /dev/vtbd1p1
+  ignore_errors: yes
+  register: vtbd1p1_exists
+
+# Create partition if it doesn't exist
+- name: ci-scratch-storage (freebsd) | Create vtbd1p1 partition
+  command: gpart add -a 4k -t freebsd-zfs -l scratch0 vtbd1
+  become: yes
+  when: vtbd1p1_exists.rc == 1
+
+- name: ci-scratch-storage (freebsd) | Set up ZFS at boot
+  lineinfile:
+    dest: /etc/rc.conf
+    regexp: '^zfs_enable'
+    line: 'zfs_enable="YES"'
+  become: yes
+  register: rc_zfs
+
+- name: ci-scratch-storage (freebsd) | Reload zfs
+  service:
+    name: zfs
+    state: reloaded
+  become: yes
+  when: rc_zfs.changed
+
+- name: ci-scratch-storage (freebsd) | Set up ZFS 4k ashift
+  lineinfile:
+    dest: /etc/sysctl.conf
+    regexp: '^vfs.zfs.min_auto_ashift='
+    line: 'vfs.zfs.min_auto_ashift=12'
+  become: yes
+  register: sysctl
+
+- name: ci-scratch-storage (freebsd) | Reload sysctls
+  service:
+    name: sysctl
+    state: reloaded
+  become: yes
+  when: sysctl.changed
+
+- name: ci-scratch-storage (freebsd) | Check scratch pool exists
+  command: zpool list scratch
+  ignore_errors: yes
+  register: scratch_pool_exists
+
+# Create pool if it doesn't exist
+- name: ci-scratch-storage (freebsd) | Create scratch pool
+  command: zpool create -m /scratch scratch /dev/vtbd1p1
+  become: yes
+  when: scratch_pool_exists.rc == 1

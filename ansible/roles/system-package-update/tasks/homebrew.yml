@@ -1,14 +1,14 @@
 ---
-- name: Update and upgrade homebrew packages
+- name: system-package-update (homebrew) | Update and upgrade packages
   homebrew:
     update_homebrew: yes
     upgrade_all: yes
 
-- name: Clean up homebrew
+- name: system-package-update (homebrew) | Clean up
   command: brew cleanup
 
-- name: Prune stale homebrew links
+- name: system-package-update (homebrew) | Prune stale links
   command: brew prune
 
-- name: Check homebrew for problems
+- name: system-package-update (homebrew) | Check for problems
   command: brew doctor

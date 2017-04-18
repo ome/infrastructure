@@ -1,8 +1,8 @@
 ---
-- name: Update Debian APT repositories
+- name: system-package-update (apt) | Update package list
   apt:
     update_cache: yes
 
-- name: Upgrade Debian packages
+- name: system-package-update (apt) | Upgrade packages
   apt:
     upgrade: safe
