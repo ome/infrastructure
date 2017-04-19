@@ -3,23 +3,23 @@
 
 - hosts: idr-docker
   roles:
-  - role: lvm-partition
+  - role: openmicroscopy.lvm-partition
     lvm_lvname: root
     lvm_lvmount: /
     lvm_lvsize: "{{ rootsize }}"
     lvm_lvfilesystem: "{{ root_filesystem }}"
-  - role: lvm-partition
+  - role: openmicroscopy.lvm-partition
     lvm_lvname: var_log
     lvm_lvmount: /var/log
     lvm_lvsize: "{{ varlog_size }}"
     lvm_lvfilesystem: "{{ root_filesystem }}"
-  - role: lvm-partition
+  - role: openmicroscopy.lvm-partition
     lvm_lvname: scratch
     lvm_lvmount: /scratch
     lvm_lvsize: "{{ scratch_size }}"
-    lvm_lvfilesystem: "{{ scratch_filesystem }}"
-  - role: basedeps
-  - role: logrotate
-  - role: docker
-  - role: sudoers
-  - role: versioncontrol-utils
+    lvm_lvfilesystem: "{{ root_filesystem }}"
+  - role: openmicroscopy.basedeps
+  - role: openmicroscopy.logrotate
+  - role: openmicroscopy.docker
+  - role: openmicroscopy.sudoers
+  - role: openmicroscopy.versioncontrol-utils

@@ -2,5 +2,5 @@
 
 - hosts: idr
   roles:
-  - role: upgrade-distpackages
+  - role: openmicroscopy.upgrade-distpackages
     upgrade_distpackages_reboot_kernel: True

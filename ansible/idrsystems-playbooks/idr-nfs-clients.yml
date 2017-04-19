@@ -1,6 +1,0 @@
----
-# Playbook for maintaining IDR NFS clients
-
-- hosts: idr-nfs-clients
-  roles:
-  - role: nfs-mount
