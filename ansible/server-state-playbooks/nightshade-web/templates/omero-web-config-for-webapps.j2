@@ -2,8 +2,7 @@
 # Add web-extension OMERO.web configuration
 # after web already installed and running via role
 
-config set -- omero.web.apps '["autotag", "tagsearch", "figure"]'
-config set -- omero.web.ui.center_plugins '[["Auto Tag", "autotag/auto_tag_init.js.html", "auto_tag_panel"]]'
-config set -- omero.web.ui.top_links '[["Data", "webindex", {"title": "Browse Data via Projects, Tags etc"}], ["History", "history", {"title": "History"}], ["Help", "http://help.openmicroscopy.org/", {"target": "new", "title": "Open OMERO user guide in a new tab"}], ["Figure", "figure_index", {"target": "new", "title": "Open OMERO.Figure in a new tab"}], ["Tag Search", "tagsearch"]]'
+config set -- omero.web.apps '["figure"]'
+config set -- omero.web.ui.top_links '[["Data", "webindex", {"title": "Browse Data via Projects, Tags etc"}], ["History", "history", {"title": "History"}], ["Help", "http://help.openmicroscopy.org/", {"target": "new", "title": "Open OMERO user guide in a new tab"}], ["Figure", "figure_index", {"target": "new", "title": "Open OMERO.Figure in a new tab"}] ]'
 
 
