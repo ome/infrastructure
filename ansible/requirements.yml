@@ -129,3 +129,6 @@
 
 - src: openmicroscopy.devspace
   version: 0.1.1
+
+- src: openmicroscopy.system-monitor-agent
+  version: master

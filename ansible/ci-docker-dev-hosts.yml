@@ -19,3 +19,9 @@
   - role: docker
   - role: docker-dns-server
   - role: docker-dns-client
+
+- hosts: ci-docker-dev-hosts
+  tasks:
+  - file:
+      path: /scratch
+      mode: 1777
