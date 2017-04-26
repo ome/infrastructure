@@ -24,4 +24,4 @@
   tasks:
   - file:
       path: /scratch
-      mode: 1777
+      mode: "1777"
