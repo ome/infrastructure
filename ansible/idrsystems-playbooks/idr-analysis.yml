@@ -34,9 +34,3 @@
   - role: openmicroscopy.versioncontrol-utils
 
   - role: openmicroscopy.celery-docker
-
-- hosts: idr-analysis
-  tasks:
-  - file:
-      path: /scratch
-      mode: "1777"

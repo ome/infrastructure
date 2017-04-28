@@ -23,9 +23,3 @@
   - role: openmicroscopy.docker
   - role: openmicroscopy.sudoers
   - role: openmicroscopy.versioncontrol-utils
-
-- hosts: idr-docker
-  tasks:
-  - file:
-      path: /scratch
-      mode: "1777"
