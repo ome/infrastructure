@@ -129,3 +129,7 @@
 
 - src: openmicroscopy.devspace
   version: 0.1.1
+
+- name: openmicroscopy.system-monitor-agent
+  src: https://github.com/openmicroscopy/ansible-role-system-monitor-agent
+  version: master

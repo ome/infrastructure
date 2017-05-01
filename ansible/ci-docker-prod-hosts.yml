@@ -17,3 +17,9 @@
   - role: system-monitor-agent
   - role: versioncontrol-utils
   - role: docker
+
+- hosts: ci-docker-prod-hosts
+  tasks:
+  - file:
+      path: /scratch
+      mode: "1777"
