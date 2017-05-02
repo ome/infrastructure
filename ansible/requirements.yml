@@ -1,3 +1,9 @@
+# Workaround until https://github.com/ansible/galaxy-issues/issues/259 is fixed
+#
+- name: openmicroscopy.omero-common
+  src: https://github.com/openmicroscopy/ansible-role-omero-common
+  version: master
+
 # External Ansible roles required by this repository
 
 - src: openmicroscopy.analysis-tools
