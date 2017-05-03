@@ -1,0 +1,69 @@
+# Install OMERO.server and prepare the OME (UoD/SLS) prerequisites
+
+- hosts: all
+
+  pre_tasks:
+    - name: Install open-vm-tools if system is a VMware vm
+      become: yes
+      yum:
+        name: open-vm-tools
+        state: latest
+      when: >
+           ((ansible_virtualization_type is defined)
+           and (ansible_virtualization_type == "VMware"))
+   
+  roles:
+    # Now OME are using RHEL without Spacewalk, the current best-method of
+    # checking `is server SLS` is checking for the SLS nameservers.
+    - role: openmicroscopy.system-monitor-agent
+      when: "'10.1.255.216' in ansible_dns.nameservers"
+
+    # test/prototype postgres being in a different location
+      become: yes
+      file:
+        dest: '/tmp/postgres-data-here/'
+        state: directory
+        mode: "u=rwx,go=rx" 
+        owner: "root" 
+        group: "root" 
+
+    # Disk Layout - PostgreSQL | data dir 
+    - role: openmicroscopy.lvm-partition
+      tags: lvm
+      lvm_lvname: pgdata
+      lvm_vgname: postgresql
+      lvm_lvmount: /var/lib/pgsql
+      lvm_lvsize: "98%FREE"
+      lvm_lvfilesystem: "{{ filesystem }}"
+
+    # Disk Layout - OMERO | data dir 
+    - role: openmicroscopy.lvm-partition
+      tags: lvm
+      lvm_lvname: basedir
+      lvm_vgname: omero
+      lvm_lvmount: {{ omero_common_basedir }}
+      lvm_lvsize: "98%FREE"
+      lvm_lvfilesystem: "{{ filesystem }}"
+
+    - role: openmicroscopy.postgresql
+      postgresql_users_databases:
+      - user: "{{ vault_omero_os_user }}" 
+        password:  "{{ vault_omero_db_password }}"
+        databases: [omero]
+
+    # Not sure if we can Ansible this step, but for a
+    # migration, restore the DB before deploying OMERO
+    # and don't try to fully create a new OMERO db. (OMEGO options?)
+
+    # Testing with the NS copied data will require
+    # a 5.2.x server, to be upgraded later.
+    - role: openmicroscopy.omero-server
+      omero_server_release: 5.2.8
+      #NB - here must over-ride the omero OS user
+      # with that of Nightshade rather than the role default
+
+  vars:
+    # how about all non-private vars existing here
+    # since this is a public resource?
+    postgresql_version: "9.6"
+    filesystem: "xfs"
