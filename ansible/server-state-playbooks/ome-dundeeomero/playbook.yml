@@ -18,15 +18,6 @@
     - role: openmicroscopy.system-monitor-agent
       when: "'10.1.255.216' in ansible_dns.nameservers"
 
-    # test/prototype postgres being in a different location
-      become: yes
-      file:
-        dest: '/tmp/postgres-data-here/'
-        state: directory
-        mode: "u=rwx,go=rx" 
-        owner: "root" 
-        group: "root" 
-
     # Disk Layout - PostgreSQL | data dir 
     - role: openmicroscopy.lvm-partition
       tags: lvm
@@ -41,7 +32,7 @@
       tags: lvm
       lvm_lvname: basedir
       lvm_vgname: omero
-      lvm_lvmount: {{ omero_common_basedir }}
+      lvm_lvmount: "{{ omero_common_basedir }}"
       lvm_lvsize: "98%FREE"
       lvm_lvfilesystem: "{{ filesystem }}"
 
