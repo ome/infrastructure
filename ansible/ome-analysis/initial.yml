@@ -1,0 +1,16 @@
+---
+# Initial configuration of IDR nodes
+# Note you should reboot after changing the network configuration, and
+# manually verify that the configuration is correct
+
+- hosts: ome-jupyter
+  roles:
+  - role: openmicroscopy.upgrade-distpackages
+
+  # Fails due to yum excludes, install it manually if you want it:
+  # yum --disableexcludes=all install check-mk-agent-1.2.6p16
+  #- role: system-monitor-agent
+
+  post_tasks:
+  - debug:
+      msg: "You may need to reboot your system"

@@ -1,0 +1,48 @@
+# External Ansible roles required by this repository
+
+- src: openmicroscopy.basedeps
+  version: 1.0.0
+
+- src: openmicroscopy.cli-utils
+  version: 1.0.0
+
+- src: https://github.com/manics/ansible-role-cadvisor.git
+  name: openmicroscopy.cadvisor
+  version: 0.1.0
+
+- src: openmicroscopy.docker
+  version: 2.0.0
+
+- src: openmicroscopy.docker-tools
+  version: 1.0.0
+
+- src: openmicroscopy.logrotate
+  version: 1.0.0
+
+- src: openmicroscopy.lvm-partition
+  version: 1.0.0
+
+- src: openmicroscopy.nfs-mount
+  version: 1.0.0
+
+- src: openmicroscopy.nginx
+  version: 1.0.0
+
+- src: openmicroscopy.nginx-proxy
+  version: 1.0.0
+
+- src: openmicroscopy.selinux-utils
+  version: 1.0.1
+
+- src: openmicroscopy.sudoers
+  version: 1.0.0
+
+- src: openmicroscopy.upgrade-distpackages
+  version: 1.0.0
+
+- src: openmicroscopy.versioncontrol-utils
+  version: 1.0.0
+
+- name: IDR.idr-jupyter
+  src: https://github.com/IDR/ansible-role-idr-jupyter.git
+  version: 2.0.0

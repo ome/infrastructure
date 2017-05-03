@@ -1,0 +1,95 @@
+---
+# Playbook for setting up a jupyterhub server
+
+- hosts: ome-jupyter
+
+  roles:
+
+  # Do we need this?
+  #- role: server-swap
+
+  - role: network
+    # WARNING: ensure this server was provisioned with a statically assigned
+    # DHCP address, since these settings will be copied to a static
+    # configuration
+    network_ifaces:
+      - device: bond0
+        ip: "{{ ansible_default_ipv4.address }}"
+        netmask: "{{ ansible_default_ipv4.netmask }}"
+        type: bond
+        gateway: "{{ ansible_default_ipv4.gateway }}"
+        dns1: "{{ ansible_dns.nameservers.0 }}"
+        dns2: "{{ ansible_dns.nameservers.1 }}"
+        bondmaster: bond0
+      - device: eno1
+        bondmaster: bond0
+      - device: eno2
+        bondmaster: bond0
+    network_delete_ifaces: (enp|em).*
+
+  - role: openmicroscopy.lvm-partition
+    lvm_lvname: root
+    lvm_lvmount: /
+    lvm_lvsize: 20g
+    lvm_lvfilesystem: ext4
+    lvm_vgname: VolGroup00
+
+  - role: openmicroscopy.lvm-partition
+    lvm_lvname: var_log
+    lvm_lvmount: /var/log
+    lvm_lvsize: 4g
+    lvm_lvfilesystem: ext4
+    lvm_vgname: VolGroup00
+
+  - role: openmicroscopy.lvm-partition
+    lvm_lvname: var_lib_docker
+    lvm_lvmount: /var/lib/docker
+    lvm_lvsize: 1t
+    # Docker overlay requires d_type which isn't supported on RHEL7 xfs
+    # https://access.redhat.com/solutions/2322911
+    lvm_lvfilesystem: ext4
+    lvm_vgname: VolGroup00
+
+  - role: openmicroscopy.lvm-partition
+    lvm_lvname: data
+    lvm_lvmount: /data
+    lvm_lvsize: 1t
+    lvm_lvfilesystem: ext4
+    lvm_vgname: VolGroup00
+
+  - role: openmicroscopy.basedeps
+
+  - role: openmicroscopy.cli-utils
+
+  - role: openmicroscopy.versioncontrol-utils
+
+  # Ensure the system (especially kernel) is up to date
+  - role: openmicroscopy.docker
+
+  #- role: openmicroscopy.cadvisor
+
+  - role: IDR.idr-jupyter
+    idr_jupyter_hub_image: imagedata/jupyterhub-githubauth:latest
+    idr_jupyter_notebook_image: imagedata/jupyter-docker:latest
+    idr_jupyter_notebook_volumes: { '/data': '/data/notebooks' }
+
+  tasks:
+
+  - name: clone idr-notebooks
+    become: yes
+    git:
+      dest: "/data/"
+      repo: https://github.com/IDR/idr-notebooks.git
+      force: no
+      version: HEAD
+
+  - name: jupyterhub | create scratch notebooks directory
+    become: yes
+    file:
+      mode: "0755"
+      owner: 1000
+      path: "{{ idr_jupyter_notebook_host_volume }}/scratch"
+      state: directory
+
+  # Internal OME System monitoring: install manually
+  # yum --disableexcludes=all install check-mk-agent-1.2.6p16
