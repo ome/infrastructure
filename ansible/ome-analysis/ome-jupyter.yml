@@ -1,5 +1,10 @@
 ---
-# Playbook for setting up a jupyterhub server
+# This is an almost self-contained playbook for setting up a single
+# Jupyterhub server, with cadvisor running on port 9280
+# The only external variables are for GitHub OAuth.
+# In future if this is used to manage a cluster of Jupyterhub servers
+# some of the hardcode variables (e.g. volume sizes) should be moved into
+# group_vars
 
 - hosts: ome-jupyter
 
@@ -66,29 +71,33 @@
   # Ensure the system (especially kernel) is up to date
   - role: openmicroscopy.docker
 
-  #- role: openmicroscopy.cadvisor
+  - role: openmicroscopy.cadvisor
 
   - role: IDR.idr-jupyter
+    idr_jupyter_ip: "{{ ansible_default_ipv4.address }}"
     idr_jupyter_hub_image: imagedata/jupyterhub-githubauth:latest
     idr_jupyter_notebook_image: imagedata/jupyter-docker:latest
-    idr_jupyter_notebook_volumes: { '/data': '/data/notebooks' }
+    idr_jupyter_notebook_volumes: { '/data/idr-notebooks': '/notebooks' }
 
   tasks:
 
   - name: clone idr-notebooks
     become: yes
     git:
-      dest: "/data/"
+      dest: /data/idr-notebooks
       repo: https://github.com/IDR/idr-notebooks.git
       force: no
       version: HEAD
 
+  # Ideally scratch would be outside the github repo, but currently
+  # imagedata/jupyter-docker hardcodes /notebooks/library into the python
+  # path, so /data/idr-notebooks has to the the working directory
   - name: jupyterhub | create scratch notebooks directory
     become: yes
     file:
       mode: "0755"
       owner: 1000
-      path: "{{ idr_jupyter_notebook_host_volume }}/scratch"
+      path: /data/idr-notebooks/scratch
       state: directory
 
   # Internal OME System monitoring: install manually

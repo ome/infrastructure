@@ -6,8 +6,7 @@
 - src: openmicroscopy.cli-utils
   version: 1.0.0
 
-- src: https://github.com/manics/ansible-role-cadvisor.git
-  name: openmicroscopy.cadvisor
+- src: openmicroscopy.cadvisor
   version: 0.1.0
 
 - src: openmicroscopy.docker
