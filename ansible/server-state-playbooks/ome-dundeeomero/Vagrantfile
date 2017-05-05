@@ -8,6 +8,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provision "ansible" do |ansible|
+    ansible.skip_tags = "lvm"
     ansible.playbook = "playbook.yml"
     ansible.galaxy_role_file = "requirements.yml"
   end
