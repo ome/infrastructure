@@ -42,16 +42,39 @@
       - user: install-mock
         password: install-mock
         databases: [install-mock]
-      no_log: false
 
     # Testing with the NS copied data will require
     # a 5.2.x server, to be upgraded later.
+    # Note - had to have these set to `install-mock` to progress role
+    # installation before changing config to restored DB from other system.
     - role: openmicroscopy.omero-server
       omero_server_release: 5.2.8
-      omero_server_dbuser: install-mock
-      omero_server_dbname: install-mock
-      omero_server_dbpassword: install-mock
+      omero_server_dbuser: "{{ vault_omero_server_os_user }}"
+      omero_server_dbname:  "{{ vault_omero_server_dbname }}"
+      omero_server_dbpassword: "{{ vault_omero_server_dbpassword }}"
+      # Commenting out system_user: there's a bug in the role for 
+      # Active Directory users to be followed up.
+      # omero_server_system_user: "{{ vault_omero_server_os_user }}"
+      # omero_server_datadir: overridden after inital role run, via host vars
 
   vars:
     postgresql_version: "9.6"
     filesystem: "xfs"
+    omero_server_config_set:
+      omero.db.poolsize: 60
+      omero.jvmcfg.percent.blitz: 50
+      omero.jvmcfg.percent.indexer: 20
+      omero.jvmcfg.percent.pixeldata: 20
+      omero.jvmcfg.system_memory: 17000
+      omero.ldap.base: "{{ omero_server_ldap_base }}"
+      omero.ldap.config: true
+      omero.ldap.new_user_group: default
+      omero.ldap.urls: "{{ omero_server_ldap_urls }}"
+      omero.mail.config: true
+      omero.mail.from: "{{ omero_server_mail_from }}"
+      omero.mail.host: "{{ omero_server_mail_host }}"
+      omero.new_user_group: "My Data"
+      omero.search.batch: 100
+      omero.security.password_provider: chainedPasswordProvider431
+      omero.throttling.method_time.error: 60000
+ 
