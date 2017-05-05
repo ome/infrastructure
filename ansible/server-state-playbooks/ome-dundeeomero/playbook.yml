@@ -1,7 +1,6 @@
 # Install OMERO.server and prepare the OME (UoD/SLS) prerequisites
 
 - hosts: all
-
   pre_tasks:
     - name: Install open-vm-tools if system is a VMware vm
       become: yes
@@ -18,7 +17,7 @@
     - role: openmicroscopy.system-monitor-agent
       when: "'10.1.255.216' in ansible_dns.nameservers"
 
-    # Disk Layout - PostgreSQL | data dir 
+    # Disk Layout - PostgreSQL | data dir  
     - role: openmicroscopy.lvm-partition
       tags: lvm
       lvm_lvname: pgdata
@@ -35,26 +34,24 @@
       lvm_lvmount: "{{ omero_common_basedir }}"
       lvm_lvsize: "10120M"
       lvm_lvfilesystem: "{{ filesystem }}"
-
+      
+    #  Mock database user & creds, to allow Playbook to install
+    #  OMERO, and allow for a manual PostgresSQL dump/restore.
     - role: openmicroscopy.postgresql
       postgresql_users_databases:
-      - user: "{{ vault_omero_os_user }}" 
-        password:  "{{ vault_omero_db_password }}"
-        databases: [omero]
-
-    # Not sure if we can Ansible this step, but for a
-    # migration, restore the DB before deploying OMERO
-    # and don't try to fully create a new OMERO db. (OMEGO options?)
+      - user: install-mock
+        password: install-mock
+        databases: [install-mock]
+      no_log: false
 
     # Testing with the NS copied data will require
     # a 5.2.x server, to be upgraded later.
     - role: openmicroscopy.omero-server
       omero_server_release: 5.2.8
-      #NB - here must over-ride the omero OS user
-      # with that of Nightshade rather than the role default
+      omero_server_dbuser: install-mock
+      omero_server_dbname: install-mock
+      omero_server_dbpassword: install-mock
 
   vars:
-    # how about all non-private vars existing here
-    # since this is a public resource?
     postgresql_version: "9.6"
     filesystem: "xfs"
