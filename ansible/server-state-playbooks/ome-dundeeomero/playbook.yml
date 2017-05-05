@@ -52,9 +52,9 @@
       omero_server_dbuser: "{{ vault_omero_server_os_user }}"
       omero_server_dbname:  "{{ vault_omero_server_dbname }}"
       omero_server_dbpassword: "{{ vault_omero_server_dbpassword }}"
-      # Commenting out system_user: there's a bug in the role for 
-      # Active Directory users to be followed up.
-      # omero_server_system_user: "{{ vault_omero_server_os_user }}"
+      # Active Directory users not working with role
+      # Role requires to be manually modified to make it work with an AD user
+      omero_server_system_user: "{{ vault_omero_server_os_user }}"
       # omero_server_datadir: overridden after inital role run, via host vars
 
   vars:
