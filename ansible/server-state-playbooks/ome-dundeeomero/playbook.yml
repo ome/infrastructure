@@ -10,20 +10,42 @@
       when: >
            ((ansible_virtualization_type is defined)
            and (ansible_virtualization_type == "VMware"))
+
+    # Perhaps alter the role at https://github.com/openmicroscopy/ansible-role-lvm-partition/
+    # to make some of the variables non-required.
+    - name: Resize root FS without altering mount options
+      tags: lvm
+      become: yes
+      lvol:
+        lv: root
+        vg: rhel
+        size: "{{ provision_root_lvsize }}"
+        
+    - name: Install Make Movie script Prerequisite | MEncoder - Repo
+      become: yes
+      yum:
+        name:  http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
+        state: present
+
+    - name: Install Make Movie script Prerequisite | MEncoder - Package
+      become: yes
+      yum:
+        name: mencoder
+        state: present
    
   roles:
     # Now OME are using RHEL without Spacewalk, the current best-method of
     # checking `is server SLS` is checking for the SLS nameservers.
     - role: openmicroscopy.system-monitor-agent
       when: "'10.1.255.216' in ansible_dns.nameservers"
-
+   
     # Disk Layout - PostgreSQL | data dir  
     - role: openmicroscopy.lvm-partition
       tags: lvm
       lvm_lvname: pgdata
       lvm_vgname: postgresql
       lvm_lvmount: /var/lib/pgsql
-      lvm_lvsize: "74G"
+      lvm_lvsize: "{{ provision_postgres_lvsize }}"
       lvm_lvfilesystem: "{{ filesystem }}"
 
     # Disk Layout - OMERO | data dir 
@@ -32,7 +54,7 @@
       lvm_lvname: basedir
       lvm_vgname: omero
       lvm_lvmount: "{{ omero_common_basedir }}"
-      lvm_lvsize: "10120M"
+      lvm_lvsize: "{{ provision_omero_basedir_lvsize }}"
       lvm_lvfilesystem: "{{ filesystem }}"
       
     #  Mock database user & creds, to allow Playbook to install
@@ -52,7 +74,7 @@
       omero_server_dbuser: "{{ vault_omero_server_os_user }}"
       omero_server_dbname:  "{{ vault_omero_server_dbname }}"
       omero_server_dbpassword: "{{ vault_omero_server_dbpassword }}"
-      # Active Directory users not working with role
+      # Active Directory users not working with role.
       # Role requires to be manually modified to make it work with an AD user
       omero_server_system_user: "{{ vault_omero_server_os_user }}"
       # omero_server_datadir: overridden after inital role run, via host vars
@@ -61,6 +83,7 @@
     postgresql_version: "9.6"
     filesystem: "xfs"
     omero_server_config_set:
+      omero.db.name: omero
       omero.db.poolsize: 60
       omero.jvmcfg.percent.blitz: 50
       omero.jvmcfg.percent.indexer: 20
@@ -77,4 +100,6 @@
       omero.search.batch: 100
       omero.security.password_provider: chainedPasswordProvider431
       omero.throttling.method_time.error: 60000
+      omero.Ice.Default.Host: "{{ omero_server_ice_default_host }}"
+      Ice.Admin.Endpoints: "{{ omero_server_ice_admin_endpoints }}"
  
