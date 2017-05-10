@@ -7,30 +7,7 @@ modifications.  The instructions are updated for new releases, so it
 would be worth looking at these when updating these instructions for a
 new release where some of the details may have changed.
 
-## Local setup
-
-Create python virtualenv for openstack modules
-
-```sh
-if [ -f ~/venv/openstack/bin/activate ]; then
-    source ~/venv/openstack/bin/activate
-else
-    mkdir -p ~/venv
-    virtualenv ~/venv/openstack
-    source ~/venv/openstack/bin/activate
-
-    pip install python-openstackclient
-fi
-
-source ~/.openstackrc
-```
-
-Set additional details required below:
-
-```sh
-ssh_key="your_ssh_key"
-security_group="required_security_group"
-```
+Follow the [local setup](local-setup.md) instructions before starting.
 
 ## ISO image creation
 

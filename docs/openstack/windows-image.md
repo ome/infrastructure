@@ -5,31 +5,7 @@ OpenStack images for Windows are available from
 images for [Windows Server
 2012R2](https://cloudbase.it/openstack-windows-server-2012-r2-evalution-images/).
 
-## Local setup
-
-Create python virtualenv for openstack modules
-
-```sh
-if [ -f ~/venv/openstack/bin/activate ]; then
-    source ~/venv/openstack/bin/activate
-else
-    mkdir -p ~/venv
-    virtualenv ~/venv/openstack
-    source ~/venv/openstack/bin/activate
-
-    pip install python-openstackclient
-fi
-
-source ~/.openstackrc
-```
-
-Set additional details required below:
-
-```sh
-ssh_key="your_ssh_key"
-security_group="required_security_group"
-ssh_private_key_file="/path/to private key for ${ssh_key} name"
-```
+Follow the [local setup](local-setup.md) instructions before starting.
 
 ## Image creation
 

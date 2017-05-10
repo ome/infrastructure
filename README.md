@@ -14,8 +14,13 @@ provided in the [ansible README](ansible/README.md).
 
 ## OpenStack
 
-The [OpenStack docs](docs/openstack/idr-openstack.md) outline the installation of OpenStack
-which is running at the University of Dundee.
+- [Server setup](docs/openstack/idr-openstack.md) outlines the
+  installation of OpenStack which is running at the University of
+  Dundee.
+- [Local setup](docs/openstack/local-setup.md) details the steps to
+  access OpenStack from a client system
+- [FreeBSD image creation](docs/openstack/freebsd-image.md)
+- [Windows image creation](docs/openstack/windows-image.md)
 
 ## GPFS
 
