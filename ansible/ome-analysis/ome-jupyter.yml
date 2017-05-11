@@ -76,7 +76,7 @@
   - role: IDR.idr-jupyter
     idr_jupyter_ip: "{{ ansible_default_ipv4.address }}"
     idr_jupyter_hub_image: imagedata/jupyterhub-githubauth:latest
-    idr_jupyter_notebook_image: imagedata/jupyter-docker:latest
+    idr_jupyter_notebook_image: imagedata/jupyter-docker:develop
     idr_jupyter_notebook_volumes: { '/data/idr-notebooks': '/notebooks' }
 
   tasks:
