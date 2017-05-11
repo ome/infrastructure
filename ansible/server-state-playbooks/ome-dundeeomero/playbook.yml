@@ -161,7 +161,7 @@
     postgresql_version: "9.6"
     filesystem: "xfs"
     omero_server_config_set:
-      omero.db.name: omero
+      omero.db.name: install-mock
       omero.db.poolsize: 60
       omero.jvmcfg.percent.blitz: 50
       omero.jvmcfg.percent.indexer: 20
