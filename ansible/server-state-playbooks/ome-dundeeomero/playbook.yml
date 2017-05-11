@@ -88,7 +88,20 @@
       omero_server_system_user: "{{ vault_omero_server_os_user }}"
       # omero_server_datadir: overridden after inital role run, via host vars
 
+
+  post_tasks:
+    - name: Check_MK postgres plugin | check for plugin existence
+      stat:
+        path: "{{ check_mk_postgres_plugin }}"
+      register: check_mk_postgres_plugin_st
+
+    - name: Check_MK postgres plugin | activate the plugin
+      become: yes
+      command: cp "{{ check_mk_postgres_plugin }}"  /usr/share/check-mk-agent/plugins/
+      when: check_mk_postgres_plugin_st.stat.exists
+
   vars:
+    check_mk_postgres_plugin: /usr/share/check-mk-agent/available-plugins/mk_postgres
     postgresql_version: "9.6"
     filesystem: "xfs"
     omero_server_config_set:
