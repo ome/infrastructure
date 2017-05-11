@@ -33,14 +33,66 @@
         name: mencoder
         state: present
 
-    - name: OMERO.figure server-side prerequisites 
+    - name: OMERO.figure server-side prerequisites, script prerequisites + web server for decoupled OMERO.web
       become: yes
       yum:
         name: "{{ item }}"
         state: present
       with_items:
+        # For OMERO.figure
         - python-reportlab 
         - python-markdown 
+        # For the 'make movie' script
+        - mencoder
+        # Current server proxies to a decoupled OMERO.web server
+        # Initially replicate this setup, to minimise changes.
+        - nginx
+
+    # post 2.3 'dest' should be renamed 'path'
+    - name: NGINX - Performance tuning - worker processes
+      become: yes
+      replace:
+        dest: "/etc/nginx/nginx.conf"
+        regexp: '^worker_processes\s+\d+;'
+        replace: "worker_processes 1;"
+
+    # post 2.3 'dest' should be renamed 'path'
+    # cf https://www.digitalocean.com/community/tutorials/how-to-optimize-nginx-configuration
+    - name: NGINX - Performance tuning - worker connections
+      become: yes
+      replace:
+        dest: "/etc/nginx/nginx.conf"
+        regexp: 'worker_connections\s+\d+;'
+        replace: "worker_connections 65000;"
+
+    - name: NGINX - SSL File Deployment - prepare directory
+      become: yes
+      file:
+        path: "{{ nginx_ssl_files_path }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "u=r,go=" 
+
+    - name: NGINX - SSL File Deployment
+      become: yes
+      copy:
+        dest="{{ item.key }}"
+        content="{{ item.value.content }}"
+        owner="{{ item.value.owner }}"
+        group="{{ item.value.group }}"
+        mode="{{ item.value.mode }}"
+      with_dict: "{{ nginx_ssl_cert_files }}"
+      no_log: true
+
+    # post 2.3 'destfile' should be renamed 'path'
+    - name: NGINX - Configuration 
+      become: yes
+      template:
+        src: nginx-omero.conf.j2
+        dest: /etc/nginx/conf.d/omero-web.conf
+      notify:
+        - restart nginx
 
   roles:
     # Now OME are using RHEL without Spacewalk, the current best-method of
@@ -87,7 +139,6 @@
       # Role requires to be manually modified to make it work with an AD user
       omero_server_system_user: "{{ vault_omero_server_os_user }}"
       # omero_server_datadir: overridden after inital role run, via host vars
-
 
   post_tasks:
     - name: Check_MK postgres plugin | check for plugin existence

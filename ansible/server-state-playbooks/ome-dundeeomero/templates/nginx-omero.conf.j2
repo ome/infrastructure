@@ -1,0 +1,55 @@
+server {
+    listen 80;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name $hostname;
+
+    ssl_certificate {{ nginx_ssl_files_path }}/{{ nginx_ssl_cert_filename }};
+    ssl_certificate_key {{ nginx_ssl_files_path }}/{{ nginx_ssl_key_filename }};
+    ssl_protocols   {{ nginx_ssl_protocols }}
+
+    if ($ssl_protocol = "") {
+        rewrite ^/(.*) https://$host/$1 permanent;
+    }
+
+    # Add perfect forward secrecy
+    ssl_prefer_server_ciphers on;
+
+    # Add HSTS
+    add_header Strict-Transport-Security "max-age=31536000; includeSubdomains";
+
+    # ciphers
+    ssl_ciphers 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA';
+
+    sendfile on;
+    client_max_body_size 0;
+
+    # maintenance page serve from here
+    location @maintenance {
+        root {{ omero_common_basedir }}/server/OMERO.server/etc/templates/error;
+        try_files $uri /maintainance.html =502;
+    }
+
+    location / {
+        error_page 502 @maintenance;
+        # return 502;
+        # checks for static file, if not found proxy to ns-web
+    
+        proxy_pass              {{ nginx_omero_web_server_address }};
+        proxy_set_header        Host $host;
+        proxy_set_header        X-Real-IP $remote_addr;
+        proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header        X-Forwarded-Proto $scheme;
+        proxy_connect_timeout   150;
+        proxy_send_timeout      100;
+        proxy_read_timeout      100;
+        proxy_buffers           4 32k;
+        client_max_body_size    8m;
+        client_body_buffer_size 128k;
+    }
+
+}
+
