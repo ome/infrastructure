@@ -32,7 +32,16 @@
       yum:
         name: mencoder
         state: present
-   
+
+    - name: OMERO.figure server-side prerequisites 
+      become: yes
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - python-reportlab 
+        - python-markdown 
+
   roles:
     # Now OME are using RHEL without Spacewalk, the current best-method of
     # checking `is server SLS` is checking for the SLS nameservers.
