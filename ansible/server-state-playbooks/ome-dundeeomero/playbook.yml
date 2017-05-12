@@ -144,6 +144,7 @@
       # Prod value to come from host vars
       # omero_server_datadir: "/tmp/install-mock_omero-server-datadir"
       # omero_server_datadir: overridden after inital role run via host vars
+      omero_server_systemd_limit_nofile: 16384
 
   post_tasks:
     - name: Check_MK postgres plugin | check for plugin existence
