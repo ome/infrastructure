@@ -1,20 +1,15 @@
 ---
 - include: darwin.yml
   when: ansible_os_family == 'Darwin'
-  tags: package
 
 - include: debian.yml
   when: ansible_os_family == 'Debian'
-  tags: package
 
 - include: freebsd.yml
   when: ansible_os_family == 'FreeBSD'
-  tags: package
 
 - include: redhat.yml
   when: ansible_os_family == 'RedHat'
-  tags: package
 
 - include: windows.yml
   when: ansible_os_family == 'Windows'
-  tags: package
