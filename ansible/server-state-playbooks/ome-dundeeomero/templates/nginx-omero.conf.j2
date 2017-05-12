@@ -36,7 +36,7 @@ server {
     location / {
         error_page 502 @maintenance;
         # return 502;
-        # checks for static file, if not found proxy to ns-web
+        # checks for static file, if not found proxy to {{ nginx_omero_web_server_address }}
     
         proxy_pass              {{ nginx_omero_web_server_address }};
         proxy_set_header        Host $host;
