@@ -1,0 +1,30 @@
+---
+
+- name: ci-base-setup (windows) | Get domain
+  win_shell: "net config workstation | findstr /C:\"Full Computer name\" | %{$_ -replace \"^Full Computer name *\",\"\"}"
+#  register: win_domain
+
+- debug:
+    var: win_domain
+  
+- name: ci-base-setup (windows) | Stop
+  win_shell: fail_horribly
+
+- name: ci-base-setup (windows) | Set domain
+  win_shell: "netdom computername $env:computername /add:{{ inventory_hostname }}"
+
+- name: ci-base-setup (windows) | Set primary domain
+  win_shell: "netdom computername $env:computername /makeprimary:{{ inventory_hostname }}"
+
+- name: ci-base-setup (windows) | Set primary domain
+  win_shell: "netdom computername $env:computername /remove:{{ old_hostname }}"
+
+- name: ci-base-setup (windows) | Get hostname
+  win_command: hostname
+  register: win_hostname
+
+- name: ci-base-setup (windows) | Set hostname
+  win_shell: "netdom renamecomputer $env:computername /newname:{{ inventory_hostname.split('.')[0] }} /force"
+
+- name: ci-base-setup (windows) | Reboot
+  win_reboot:
