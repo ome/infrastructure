@@ -1,8 +1,8 @@
-### Taken from manics/ansible-public-omero-example.git
-### at bc730e580e7c9ed0752a68cd4aa42397e4e58a2a
-### and stripped of server components, leaving just server.
+### Taken from openmicroscopy/ansible-public-omero-example.git
+### and stripped of web components, leaving just server.
 
 ### ansible playbooks & requirements for installing basic OMERO server.
+### addition of NGINX to proxy to a decoupled remote OMERO.web server.
 
 
 - playbooks set up to run from localhost rather than remotely
