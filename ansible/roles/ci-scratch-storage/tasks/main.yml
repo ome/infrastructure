@@ -1,3 +1,6 @@
 ---
 - include: freebsd.yml
   when: ansible_os_family == 'FreeBSD'
+
+- include: windows.yml
+  when: ansible_os_family == 'Windows'

@@ -1,0 +1,14 @@
+---
+- name: ci-scratch-storage (windows) | Check that the drive S:\ exists
+  win_stat: path='S:\ABC'
+  register: stat_wdrive
+
+- name: ci-scratch-storage (windows) | Create diskpart script
+  template:
+    src: win-diskpart.j2
+    dest: 'C:\Users\Admin\scratch-diskpart'
+    force: yes
+ 
+- name: ci-scratch-storage (windows) | Create S:\ drive
+  command: 'diskpart /s C:\Users\Admin\scratch-diskpart'
+  when: stat_file.stat.exists == False
