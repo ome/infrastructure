@@ -1,18 +1,9 @@
 ---
-- name: ci-admin-user | Create ci-admin group
-  group:
-    name: ci-admin
-    state: present
-  become: yes
-
-- name: ci-admin-user | Create ci-admin user
-  user:
-    name: ci-admin
-    comment: "CI Administrator for Ansible use"
-    group: ci-admin
-    password: "{{ ci_admin_password_hash }}"
-    state: present
-  become: yes
+- include: unix.yml
+  when: ansible_os_family != 'Windows'
 
 - include: freebsd.yml
   when: ansible_os_family == 'FreeBSD'
+
+- include: windows.yml
+  when: ansible_os_family == 'Windows'
