@@ -131,19 +131,19 @@
     - role: openmicroscopy.omero-server
       omero_server_release: 5.3.1
       # install-mock set for inital provision, then playbook re-run with correct accounts.
-      omero_server_dbuser: install-mock
-      omero_server_dbname:  install-mock
-      omero_server_dbpassword: install-mock
-      #omero_server_dbuser: "{{ vault_omero_server_os_user }}"
-      #omero_server_dbname:  "{{ vault_omero_server_dbname }}"
-      #omero_server_dbpassword: "{{ vault_omero_server_dbpassword }}"
-      # Active Directory users not working with role, by default.
+      #omero_server_dbuser: install-mock
+      #omero_server_dbname:  install-mock
+      #omero_server_dbpassword: install-mock
+      omero_server_dbuser: "{{ vault_omero_server_os_user }}"
+      omero_server_dbname:  "{{ vault_omero_server_dbname }}"
+      omero_server_dbpassword: "{{ vault_omero_server_dbpassword }}"
+      # Active Directory users not working with role.
       # Role requires to be manually modified to make it work with an AD user
       omero_server_system_user: "{{ vault_omero_server_os_user }}"
       # Mocking omero_server_datadir for the first run.
       # Prod value to come from host vars
-      omero_server_datadir: "/tmp/install-mock_omero-server-datadir"
-      # omero_server_datadir: overridden after inital role run, via host vars
+      # omero_server_datadir: "/tmp/install-mock_omero-server-datadir"
+      # omero_server_datadir: overridden after inital role run via host vars
 
   post_tasks:
     - name: Check_MK postgres plugin | check for plugin existence
