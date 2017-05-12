@@ -47,6 +47,12 @@
         # Current server proxies to a decoupled OMERO.web server
         # Initially replicate this setup, to minimise changes.
         - nginx
+        
+    - name: NGINX - enable service / start on boot
+      become: yes
+      systemd:
+        name: nginx
+        enabled: yes
 
     # post 2.3 'dest' should be renamed 'path'
     - name: NGINX - Performance tuning - worker processes
