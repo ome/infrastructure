@@ -14,7 +14,7 @@
   win_msi:
     creates: 'C:\Program Files\ojdkbuild\java-1.8.0-openjdk-1.8.0.121-2\bin\java.exe'
     path: 'C:\Users\Admin\Downloads\java-1.8.0-openjdk-1.8.0.121-2.b13.ojdkbuild.windows.x86_64.msi'
-  state: present
+    state: present
 
 - name: pkg-jdk8 (windows) | Set JAVA_HOME
   win_environment:
