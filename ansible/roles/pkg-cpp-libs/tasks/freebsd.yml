@@ -1,0 +1,19 @@
+---
+- name: pkg-cpp-libs (freebsd) | Install C++ core libraries
+  pkgng:
+    name: boost-all,gmp,hdf5,icu,xalan-c,xerces-c3
+    state: present
+  become: yes
+
+- name: pkg-cpp-libs (freebsd) | Install C++ image libraries
+  pkgng:
+    name: giflib,jasper,jbigkit,jpeg-turbo,libmng,openjpeg,png,tiff
+    state: present
+  become: yes
+
+- name: pkg-cpp-libs (freebsd) | Install C++ Qt and OpenGL libraries
+  pkgng:
+    name: qt5,glm
+    state: present
+  become: yes
+
