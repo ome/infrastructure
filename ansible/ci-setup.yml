@@ -1,0 +1,26 @@
+---
+# Set up host as a jenkins worker
+
+- hosts: all
+  roles:
+    - role: ci-base-setup
+    - role: ci-jenkins-user
+      when: '"jenkins" in ci_roles'
+    - role: ci-jenkins-workspace
+      when: '"jenkins" in ci_roles'
+    - role: pkg-jdk8
+      when: '"jenkins" in ci_roles'
+    - role: ci-data-repo
+    - role: pkg-git
+    - role: pkg-cmake
+      when: '"cpp" in ci_roles'
+    - role: pkg-ninja
+      when: '"cpp" in ci_roles'
+    - role: pkg-zip
+      when: '"cpp" in ci_roles'
+    - role: pkg-doxygen
+      when: '"cpp" in ci_roles'
+    - role: pkg-cpp-tools
+      when: '"cpp" in ci_roles'
+    - role: pkg-cpp-libs
+      when: '"cpp-full" in ci_roles'
