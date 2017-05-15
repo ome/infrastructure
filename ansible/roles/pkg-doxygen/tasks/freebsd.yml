@@ -1,0 +1,6 @@
+---
+- name: doxygen (freebsd) | Install Doxygen
+  pkgng:
+    name: doxygen,graphviz
+    state: present
+  become: yes
