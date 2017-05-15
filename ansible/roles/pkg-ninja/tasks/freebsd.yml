@@ -1,0 +1,6 @@
+---
+- name: ninja (freebsd) | Install Ninja
+  pkgng:
+    name: ninja
+    state: present
+  become: yes
