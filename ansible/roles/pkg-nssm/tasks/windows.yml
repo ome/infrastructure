@@ -1,0 +1,26 @@
+---
+- name: nssm (windows) | Check if nssm is installed
+  win_stat: path='C:/tools/sbin/nssm.exe'
+  register: nssm_installed
+
+- name: nssm (windows) | Create sbin directory
+  win_file:
+    path: {{ tools_location }}\sbin
+    state: directory
+
+- name: nssm (windows) | Download nssm
+  win_get_url:
+    url: 'https://nssm.cc/release/nssm-2.24.zip'
+    dest: 'C:\Users\Admin\Downloads\nssm-2.24.zip'
+  when: not nssm_installed.stat.exists
+
+- name: nssm (windows) | Extract nssm
+  win_unzip:
+    src: 'C:\Users\Admin\Downloads\nssm-2.24.zip'
+    dest: 'C:\Users\Admin\Downloads'
+    creates: C:\Users\Admin\Downloads\nssm-2.24\win64\nssm.exe
+  when: not nssm_installed.stat.exists
+
+- name: nssm (windows) | Copy nssm
+  win_shell: 'copy C:\Users\Admin\Downloads\nssm-2.24\win64\nssm.exe {{ tools_location }}\sbin\nssm.exe'
+  when: not nssm_installed.stat.exists
