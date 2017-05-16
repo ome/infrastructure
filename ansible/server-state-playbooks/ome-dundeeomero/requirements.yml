@@ -1,0 +1,28 @@
+---
+
+- src: openmicroscopy.postgresql
+  version: 2.0.0
+
+- name: openmicroscopy.omero-common
+  src:  https://github.com/openmicroscopy/ansible-role-omero-common.git
+  version: 0.1.0
+
+- name: openmicroscopy.omego
+  src:  https://github.com/openmicroscopy/ansible-role-omego.git
+  version: 0.1.0
+
+- name: openmicroscopy.omero-server
+  src:  https://github.com/openmicroscopy/ansible-role-omero-server.git
+  version: 2.0.0-m1
+
+- name: omero-user
+  src: https://github.com/openmicroscopy/ansible-role-omero-user
+  version: 0.1.0
+
+- name: openmicroscopy.lvm-partition
+  src: https://github.com/openmicroscopy/ansible-role-lvm-partition.git
+
+- name: openmicroscopy.system-monitor-agent
+  src: https://github.com/openmicroscopy/ansible-role-system-monitor-agent.git
+
+
