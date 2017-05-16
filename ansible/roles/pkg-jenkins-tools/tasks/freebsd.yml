@@ -1,0 +1,25 @@
+---
+- name: pkg-jenkins-tools (freebsd) | Install shells
+  pkgng:
+    name: bash
+    state: present
+  become: yes
+
+- name: pkg-jenkins-tools (freebsd) | Install archival tools
+  pkgng:
+    name: gtar
+    state: present
+  become: yes
+
+- name: pkg-jenkins-tools (freebsd) | Install download and upload tools
+  pkgng:
+    name: curl,wget,rsync
+    state: present
+  become: yes
+
+- name: pkg-jenkins-tools (freebsd) | Install miscellaneous tools
+  pkgng:
+    name: fakeroot
+    state: present
+  become: yes
+

@@ -10,6 +10,8 @@
       when: '"jenkins" in ci_roles'
     - role: pkg-jdk8
       when: '"jenkins" in ci_roles'
+    - role: pkg-jenkins-tools
+      when: '"jenkins" in ci_roles'
     - role: ci-data-repo
     - role: ci-jenkins-service
       when: '"jenkins" in ci_roles'
