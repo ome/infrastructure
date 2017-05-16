@@ -1,0 +1,17 @@
+---
+- name: ci-jenkins-user (windows) | Add Jenkins user
+  win_user:
+    name: {{ ci_jenkins_user }}
+    password: {{ ci_jenkins_password }}
+    description: Jenkins build slave
+    state: present
+    groups:
+      - Users
+
+- name: ci-jenkins-user (windows) | Create jenkins directory
+  win_file:
+    path: {{ jenkins_location }}
+    state: directory
+
+- name: Change owner of Jenkins directory
+  win_owner: path={{ jenkins_location }} user={{ ci_jenkins_user }} recurse=yes

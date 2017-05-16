@@ -1,9 +1,10 @@
 CI jenkins user
-=============
+===============
 
 Create jenkins user for Jenkins slave use.
 
 - FreeBSD (create user)
+- Windows (create user)
 
 Requirements
 ------------

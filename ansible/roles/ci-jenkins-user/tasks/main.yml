@@ -1,23 +1,8 @@
 ---
-- name: ci-jenkins-user | Create ci-jenkins group
-  group:
-    name: ci-jenkins
-    state: present
-  become: yes
+- include: unix.yml
+  static: no
+  when: ansible_os_family != 'Windows'
 
-- name: ci-jenkins-user | Create ci-jenkins user
-  user:
-    name: ci-jenkins
-    comment: "CI Jenkins worker"
-    group: ci-jenkins
-    login_class: ci
-    password: "{{ ci_jenkins_password_hash }}"
-    state: present
-  become: yes
-
-- name: ci-jenkins-user | Add SSH key
-  authorized_key:
-    user: ci-jenkins
-    state: present
-    key: "{{ ci_jenkins_key }}"
-  become: yes
+- include: windows.yml
+  static: no
+  when: ansible_os_family == 'Windows'
