@@ -35,3 +35,5 @@
       when: '"java" in ci_roles'
     - role: pkg-python27
       when: '"python2" in ci_roles'
+    - role: pkg-sphinx
+      when: '"docs" in ci_roles or "cpp-full" in ci_roles'

@@ -1,0 +1,6 @@
+---
+- name: sphinx (freebsd) | Install Sphinx
+  pkgng:
+    name: py27-sphinx
+    state: present
+  become: yes
