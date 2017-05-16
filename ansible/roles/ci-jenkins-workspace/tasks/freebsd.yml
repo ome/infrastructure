@@ -24,15 +24,15 @@
 - name: ci-jenkins-workspace (freebsd) | Set jenkins dataset ownership
   file:
     path: /scratch/jenkins
-    owner: ci-jenkins
-    group: ci-jenkins
+    owner: "{{ ci_jenkins_user }}"
+    group: "{{ ci_jenkins_group }}"
     mode: 0775
   become: yes
 
 - name: ci-jenkins-workspace (freebsd) | Set workspace dataset ownership
   file:
     path: /scratch/jenkins/workspace
-    owner: ci-jenkins
-    group: ci-jenkins
+    owner: "{{ ci_jenkins_user }}"
+    group: "{{ ci_jenkins_group }}"
     mode: 0775
   become: yes
