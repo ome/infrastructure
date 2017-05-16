@@ -21,7 +21,10 @@
     - role: pkg-zip
       when: '"cpp" in ci_roles'
     - role: pkg-doxygen
-      when: '"cpp" in ci_roles'
+      # Due to the big dependency collection required for doxygen, we
+      # don't want it for minimal systems since the libraries it pulls
+      # in may conflict with our builds.
+      when: '"cpp-full" in ci_roles'
     - role: pkg-cpp-tools
       when: '"cpp" in ci_roles'
     - role: pkg-cpp-libs
