@@ -1,0 +1,26 @@
+---
+- name: pkg-cmake (windows) | Check if git is installed
+  win_stat: path='C:/Program Files/Git/bin/git.exe'
+  register: git_installed
+
+- name: pkg-cmake (windows) | Download git installer
+  win_get_url:
+    url: 'https://github.com/git-for-windows/git/releases/download/v{{ git.windows.version }}.windows.{{ git.windows.build }}/Git-{{ git.windows.version }}-64-bit.exe'
+    dest: 'C:\Users\Admin\Downloads\Git-{{ git.windows.version }}-64-bit.exe'
+  when: not git_installed.stat.exists
+
+- name: pkg-cmake (windows) | Copy git installer configuration
+  win_copy:
+    src: git-installer-options.txt
+    dest: {{ git.windows.installer_options }}
+  when: not git_installed.stat.exists
+
+- name: pkg-cmake (windows) | Install git
+  raw: 'C:\Users\Admin\Downloads\Git-{{ git.windows.version }}-64-bit.exe /silent /suppressmsgboxes /loadinf={{ git.windows.installer_options }}'
+  when: not git_installed.stat.exists
+
+- name: pkg-cmake (windows) | Delete git installer configuration
+  win_file:
+    path: {{ git.windows.installer_options }}
+    state: absent
+  when: not git_installed.stat.exists

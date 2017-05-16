@@ -1,0 +1,6 @@
+---
+git:
+  windows:
+    version: "2.12.2"
+    build: "1"
+    installer_options: "C:\\Users\\Admin\\Downloads\\git-installer-options.txt"
