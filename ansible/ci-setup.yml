@@ -33,3 +33,5 @@
       when: '"cpp-full" in ci_roles'
     - role: pkg-java-tools
       when: '"java" in ci_roles'
+    - role: pkg-python27
+      when: '"python2" in ci_roles'

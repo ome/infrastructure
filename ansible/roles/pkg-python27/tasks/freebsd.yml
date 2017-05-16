@@ -1,0 +1,6 @@
+---
+- name: python27 (freebsd) | Install Python 2.7
+  pkgng:
+    name: python27,py27-virtualenv
+    state: present
+  become: yes
