@@ -31,3 +31,5 @@
       when: '"cpp" in ci_roles'
     - role: pkg-cpp-libs
       when: '"cpp-full" in ci_roles'
+    - role: pkg-java-tools
+      when: '"java" in ci_roles'
