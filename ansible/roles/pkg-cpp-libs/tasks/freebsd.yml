@@ -11,6 +11,12 @@
     state: present
   become: yes
 
+- name: pkg-cpp-libs (freebsd) | Install C++ serialisation libraries
+  pkgng:
+    name: sqlite3,yaml-cpp
+    state: present
+  become: yes
+
 - name: pkg-cpp-libs (freebsd) | Install C++ Qt and OpenGL libraries
   pkgng:
     name: qt5,glm
