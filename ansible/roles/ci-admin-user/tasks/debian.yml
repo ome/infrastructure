@@ -1,0 +1,16 @@
+---
+- name: ci-admin-user (debian) | Add ci-admin to admin groups
+  user:
+    name: ci-admin
+    groups: [adm,sudo]
+  become: yes
+
+- name: ci-admin-user (debian) | Add ci-admin to sudoers
+  copy:
+    src: 90-ome-admin-users
+    dest: /etc/sudoers.d/90-ome-admin-users
+    owner: root
+    group: root
+    mode: 0440
+  become: yes
+  
