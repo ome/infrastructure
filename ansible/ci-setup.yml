@@ -4,6 +4,7 @@
 - hosts: all
   roles:
     - role: ci-base-setup
+    - role: ci-admin-auth
     - role: ci-jenkins-user
       when: '"jenkins" in ci_roles'
     - role: ci-jenkins-workspace

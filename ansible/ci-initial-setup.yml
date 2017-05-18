@@ -20,4 +20,5 @@
     - role: system-package-update
     - role: ci-base-setup
     - role: ci-admin-user
+    - role: ci-admin-auth
     - role: ci-scratch-storage
