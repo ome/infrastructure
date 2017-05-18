@@ -1,15 +1,20 @@
 ---
 - include: darwin.yml
+  static: no
   when: ansible_os_family == 'Darwin'
 
 - include: debian.yml
+  static: no
   when: ansible_os_family == 'Debian'
 
 - include: freebsd.yml
+  static: no
   when: ansible_os_family == 'FreeBSD'
 
 - include: redhat.yml
+  static: no
   when: ansible_os_family == 'RedHat'
 
 - include: windows.yml
+  static: no
   when: ansible_os_family == 'Windows'
