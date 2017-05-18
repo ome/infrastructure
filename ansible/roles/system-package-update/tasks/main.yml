@@ -1,5 +1,6 @@
 ---
 - include: homebrew.yml
+  static: no
   when: ansible_pkg_mgr is defined and ansible_pkg_mgr == 'homebrew'
   become: true
   become_user: "{{homebrew_user}}"
@@ -7,10 +8,13 @@
     PATH: "/usr/local/bin:/usr/local/sbin:{{ ansible_env.PATH }}"
 
 - include: apt.yml
+  static: no
   when: ansible_pkg_mgr is defined and ansible_pkg_mgr == 'apt'
 
 - include: pkgng.yml
+  static: no
   when: ansible_pkg_mgr is defined and ansible_pkg_mgr == 'pkgng'
 
 - include: yum.yml
+  static: no
   when: ansible_pkg_mgr is defined and ansible_pkg_mgr == 'yum'
