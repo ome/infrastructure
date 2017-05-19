@@ -1,0 +1,6 @@
+---
+- name: git (debian) | Install Git
+  apt:
+    name: git
+    state: present
+  become: yes
