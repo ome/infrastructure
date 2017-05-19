@@ -43,14 +43,11 @@
 - hosts: role-java
   roles:
     - role: pkg-java-tools
-      when: '"java" in ci_roles'
 
 - hosts: role-python2
   roles:
     - role: pkg-python27
-      when: '"python2" in ci_roles'
 
 - hosts: role-docs
   roles:
     - role: pkg-sphinx
-      when: '"docs" in ci_roles or "cpp-full" in ci_roles'
