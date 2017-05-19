@@ -163,8 +163,28 @@
       command: cp "{{ check_mk_postgres_plugin }}"  /usr/share/check-mk-agent/plugins/
       when: check_mk_postgres_plugin_st.stat.exists
 
+    - name: PostgreSQL Nightly Backups | Create the backups directory
+      become: yes
+      file:
+        path: "{{ omero_server_db_dumpdir_parent }}/{{ omero_server_db_dumpdir_name }}"
+        state: directory
+        owner: postgres
+        group: postgres
+        mode: "u=rwx,go="
+
+    - name: PostgreSQL Nightly Backups | send the backup script
+      become: yes
+      template:
+        src: nightly-pg_dump-omero.sh.j2
+        dest: /etc/cron.daily/nightly-pg_dump-omero.sh
+        mode: "u=rwx,go="
+
   vars:
     check_mk_postgres_plugin: /usr/share/check-mk-agent/available-plugins/mk_postgres
+    # Backup folder for PostgreSQL 'folder' format dump
+    # Overriden by host vars, example values:
+    #omero_server_db_dumpdir_parent: /tmp
+    #omero_server_db_dumpdir_name: nightly-pg_dump_omero.dir
     postgresql_version: "9.6"
     filesystem: "xfs"
     omero_server_config_set:
