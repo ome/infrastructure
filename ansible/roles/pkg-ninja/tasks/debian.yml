@@ -1,0 +1,6 @@
+---
+- name: ninja (debian) | Install Ninja
+  apt:
+    name: ninja-build
+    state: present
+  become: yes
