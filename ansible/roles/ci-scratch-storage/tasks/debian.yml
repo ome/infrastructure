@@ -1,4 +1,10 @@
 ---
+- name: ci-scratch-storage (debian) | Install LVM
+  apt:
+    name: lvm2
+    state: present
+  become: yes
+
 - name: ci-scratch-storage (debian) | Create volume group
   lvg:
     pvs: /dev/vdb
