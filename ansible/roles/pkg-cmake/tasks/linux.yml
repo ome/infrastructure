@@ -1,0 +1,46 @@
+---
+- name: cmake (linux) | Check CMake installation
+  stat:
+    path: "/opt/cmake-{{ cmake.version }}/bin/cmake"
+  register: cmake_installed
+
+- name: cmake (linux) | Download CMake
+  get_url:
+    url: "https://cmake.org/files/v{{ cmake.shortversion }}/cmake-{{ cmake.version }}-Linux-x86_64.tar.gz"
+    dest: /tmp
+  register: cmake_download
+  when: cmake_installed.stat.exists == false
+
+- name: ci-jenkins-workspace (debian) | Create /scratch/jenkins/workspace
+  file:
+    path: "/opt/cmake-{{ cmake.version }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  become: yes
+
+- name: cmake (linux) | Extract CMake
+  unarchive:
+    src: "{{ cmake_download.dest }}"
+    dest: "/opt/cmake-{{ cmake.version }}"
+    remote_src: yes
+    extra_opts: ['--strip-components=1']
+  when: cmake_installed.stat.exists == false
+  become: yes
+
+- name: cmake (linux) | Link CMake
+  file:
+    src: "/opt/cmake-{{ cmake.version }}"
+    dest: /opt/cmake
+    state: link
+  become: yes
+
+- name: cmake (linux) | Add to global PATH
+  lineinfile:
+    dest: /etc/environment
+    state: present
+    backrefs: yes
+    regexp: 'PATH=(["]*)((?!.*?/opt/cmake/bin).*?)(["]*)$'
+    line: 'PATH=\1/opt/cmake/bin:\2\3'
+  become: yes
