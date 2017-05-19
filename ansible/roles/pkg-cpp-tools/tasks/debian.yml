@@ -1,0 +1,16 @@
+---
+- name: pkg-cpp-tools (debian) | Install C++ build tools
+  apt:
+    name: build-essential
+    state: present
+  become: yes
+
+- name: pkg-cpp-tools (debian) | Install GNU Autotools
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - autoconf
+    - automake
+    - libtool
+  become: yes
