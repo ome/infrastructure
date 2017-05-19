@@ -1,0 +1,58 @@
+---
+- name: pkg-cpp-libs (debian) | Install C++ core libraries
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - libboost-all-dev
+    - libgmp-dev
+    - libhdf5-dev
+    - libicu-dev
+    - libxalan-c-dev
+    - libxerces-c-dev
+    - zlib1g-dev
+    - libgtest-dev
+  become: yes
+
+- name: pkg-cpp-libs (debian) | Install C++ image libraries
+  apt:
+    name:  "{{ item }}"
+    state: present
+  with_items:
+    - libgif-dev
+    - jasper
+    - libjbig-dev
+    - libjpeg-turbo8-dev
+    - libmng-dev
+    - libpng-dev
+    - libtiff5-dev
+  become: yes
+
+- name: pkg-cpp-libs (debian) | Install C++ image libraries (xenial)
+  apt:
+    name:  "{{ item }}"
+    state: present
+  with_items:
+    - libopenjp2-7-dev
+  become: yes
+  when: ansible_distribution_release != 'trusty'
+
+- name: pkg-cpp-libs (debian) | Install C++ serialisation libraries
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - libsqlite3-dev
+    - libyaml-cpp-dev
+  become: yes
+
+- name: pkg-cpp-libs (debian) | Install C++ Qt and OpenGL libraries
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - qt5-default
+    - libqt5opengl5-dev
+    - libqt5svg5-dev
+    - libglm-dev
+  become: yes

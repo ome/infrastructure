@@ -1,7 +1,7 @@
 ---
 - name: pkg-cpp-libs (freebsd) | Install C++ core libraries
   pkgng:
-    name: boost-all,gmp,hdf5,icu,xalan-c,xerces-c3
+    name: boost-all,gmp,hdf5,icu,xalan-c,xerces-c3,googletest
     state: present
   become: yes
 
@@ -22,4 +22,3 @@
     name: qt5,glm
     state: present
   become: yes
-
