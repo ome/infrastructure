@@ -136,7 +136,6 @@
     # installation before changing config to restored DB from other system.
     - role: openmicroscopy.omero-server
       omero_server_release: 5.3.2
-      omero_server_upgrade: True
       # install-mock set for inital provision, then playbook re-run with correct accounts.
       #omero_server_dbuser: install-mock
       #omero_server_dbname:  install-mock

@@ -45,7 +45,6 @@
     # Upgrade 5.2.8 Web to 5.3.0
     - role: openmicroscopy.omero-web
       omero_web_release: 5.3.2
-      omero_web_upgrade: True
       no_log: true
 
     - role: openmicroscopy.system-monitor-agent
