@@ -5,4 +5,8 @@
 config set -- omero.web.apps '["figure"]'
 config set -- omero.web.ui.top_links '[["Data", "webindex", {"title": "Browse Data via Projects, Tags etc"}], ["History", "history", {"title": "History"}], ["Help", "http://help.openmicroscopy.org/", {"target": "new", "title": "Open OMERO user guide in a new tab"}], ["Figure", "figure_index", {"target": "new", "title": "Open OMERO.Figure in a new tab"}] ]'
 
+# omero-fpbioimage
+config append -- omero.web.apps '"omero_fpbioimage"'
+config append -- omero.web.open_with '["omero_fpbioimage", "fpbioimage_index", {"supported_objects":["image"], "script_url": "fpbioimage/openwith.js", "label": "FPBioimage"}]'
+
 

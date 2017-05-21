@@ -42,17 +42,39 @@
       lvm_lvfilesystem: "{{ provision_root_filesystem }}"
 
     # OMERO.web configuration in host_vars in different repository
-    # Upgrade 5.2.8 Web to 5.3.0
     - role: openmicroscopy.omero-web
       omero_web_release: 5.3.2
       no_log: true
 
+    # This to be refactored for RHEL/non-spacewalk at some point
     - role: openmicroscopy.system-monitor-agent
       when: >
             ((ansible_env.COBBLER_SERVER is defined)
             and (ansible_env.COBBLER_SERVER == "spacewalk.lifesci.dundee.ac.uk"))
 
   post_tasks:
+
+    # to be modified, not available on pypi, so need git
+    - name: Omero.web plugin | omero-fpbioimage - requirements
+      become: yes
+      yum:
+        name: git
+        state: latest
+
+    - name: Omero.web plugin | omero-fpbioimage - plugin install
+      become: yes
+      pip:
+        name:
+        #- "omero-figure"
+        # to be modified, not available on pypi
+        - "git+git://github.com/ome/omero-fpbioimage.git@master#egg=fpbioimage"
+        state: present
+        # variable comes from role openmicroscopy.omero-web
+        virtualenv: "{{ omero_web_basedir }}/venv"
+        virtualenv_site_packages: yes
+      notify:
+        - restart omero-web 
+
     - name: Install open-vm-tools if system is a VMware vm
       become: yes
       yum:
