@@ -11,6 +11,27 @@
            ((ansible_virtualization_type is defined)
            and (ansible_virtualization_type == "VMware"))
 
+    # Not required for an OMERO server install - UoD specific implementation
+    - name: NGOM mount point | Install NFS prerequisites
+      become: yes
+      yum:
+        name: nfs-utils
+        state: present
+
+    # Not required for an OMERO server install - UoD specific implementation
+    # Before Ansible 2.3, option 'name' was used instead of 'path'
+    - name: NGOM mount point | Create the fstab entry and mount the fs
+      tags: lvm
+      become: yes
+      mount:
+        name: /ngom
+        state: mounted
+        fstype: nfs
+        src: "{{ngom_nfs_server_addr}}:/uod/lfs/ngom"
+        opts: tcp,rsize=16384,wsize=16384
+        dump: 0
+        passno: 0
+
     # Perhaps alter the role at https://github.com/openmicroscopy/ansible-role-lvm-partition/
     # to make some of the variables non-required.
     - name: Resize root FS without altering mount options
