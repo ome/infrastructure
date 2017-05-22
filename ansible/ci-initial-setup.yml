@@ -9,6 +9,9 @@
     - name: ci-initial-setup | Install python
       raw: "if test -x /usr/bin/apt; then test -e /usr/bin/python || (apt -y update && apt install -y python-minimal); fi"
       become: yes
+    - name: ci-initial-setup | Install pip
+      raw: "if test -x /usr/bin/apt; then test -e /usr/bin/pip || (apt -y update && apt install -y python-pip); fi"
+      become: yes
     # aptitude might not yet be installed (needed for package tasks).
     - name: ci-initial-setup | Install aptitude
       raw: "if test -x /usr/bin/apt; then test -e /usr/bin/aptitude || (apt -y update && apt install -y aptitude); fi"
