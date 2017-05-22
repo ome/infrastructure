@@ -32,7 +32,7 @@
         name: git
         state: latest
 
-    - name: Omero.web plugin | omero-fpbioimage - plugin install
+    - name: Omero.web plugins | omero-fpbioimage, omero-figure - plugin install
       become: yes
       pip:
         name:
