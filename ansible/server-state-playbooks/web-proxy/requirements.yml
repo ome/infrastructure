@@ -1,0 +1,19 @@
+# External Ansible roles required by this repository
+
+- src: openmicroscopy.lvm-partition
+  version: 1.0.0
+
+- src: openmicroscopy.nginx
+  version: 1.0.0
+
+- src: openmicroscopy.nginx-proxy
+  version: 1.1.0
+
+- src: openmicroscopy.selinux-utils
+  version: 1.0.1
+
+- src: openmicroscopy.upgrade-distpackages
+  version: 1.0.0
+
+- src: openmicroscopy.versioncontrol-utils
+  version: 1.0.0

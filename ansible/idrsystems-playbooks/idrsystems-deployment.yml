@@ -6,4 +6,3 @@
 - include: idr-gpfs-client.yml
 - include: idr-nfs-hosts.yml
 - include: idr-samba-hosts.yml
-- include: idr-services.yml
