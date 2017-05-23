@@ -110,23 +110,23 @@
 
 # External development roles
 
-- name: omero-user
+- src: openmicroscopy.omero-user
   version: 0.1.0
 
-- name: hosts-populate
+- src: openmicroscopy.hosts-populate
   version: 0.1.0
 
-- name: mysql-backup
+- src: openmicroscopy.mysql-backup
   version: 0.1.0
 
-- name: omero-web-apps
+- src: openmicroscopy.omero-web-apps
   version: 0.1.0
 
-- name: reboot-server
+- src: openmicroscopy.reboot-server
   version: 0.1.0
 
 - src: openmicroscopy.devspace
   version: 0.1.1
 
-- name: openmicroscopy.system-monitor-agent
+- src: openmicroscopy.system-monitor-agent
   version: 0.1.0
