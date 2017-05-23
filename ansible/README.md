@@ -31,7 +31,15 @@ list of most of the roles can be found in
 Core roles can be found under the
 [openmicroscopy](https://galaxy.ansible.com/openmicroscopy/) account on Galaxy
 and are versioned using [Semantic Versioning](http://semver.org/). Roles which
-version is below 1.0.0 should be considered in development
+version is below 1.0.0 should be considered in development.
+
+Examples of production roles include:
+
+ -  openmicroscopy.omero-server
+    ([GitHub](https://github.com/openmicroscopy/ansible-role-omero-server)/([Galaxy](https://galaxy.ansible.com/openmicroscopy/omero-server/)): Install and configure OMERO.server, and optionally PostgreSQL
+
+ -  openmicroscopy.omero-web
+    ([GitHub](https://github.com/openmicroscopy/ansible-role-omero-web)/([Galaxy](https://galaxy.ansible.com/openmicroscopy/omero-web/)): Installs and configures OMERO.web and Nginx
 
 ### from the community ###
 
