@@ -33,6 +33,8 @@ Core roles can be found under the
 and are versioned using [Semantic Versioning](http://semver.org/). Roles which
 version is below 1.0.0 should be considered in development.
 
+![Ansible Galaxy openmicroscopy](../docs/ansible/galaxy_openmicroscopy.png  "Ansible Galaxy: openmicroscopy roles")
+
 Examples of production roles include:
 
  -  openmicroscopy.omero-server
