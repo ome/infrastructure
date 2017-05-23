@@ -1,6 +1,6 @@
 # External Ansible roles required by this repository
 
-- name: openmicroscopy.omero-common
+- src: openmicroscopy.omero-common
   version: 0.1.0
 
 - src: openmicroscopy.analysis-tools
