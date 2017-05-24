@@ -22,7 +22,7 @@ Roles
 
 Roles are "the Ansible way of bundling automation content and making it
 reusable." To keep playbooks as simple as possible, logic is refactored out
-into roles, maintaining in individual repositories and versioned separately. A
+into roles, maintained in individual repositories and versioned separately. A
 list of most of the roles can be found in
 [ansible/requirements.yml](https://github.com/openmicroscopy/infrastructure/blob/master/ansible/requirements.yml).
 
@@ -30,7 +30,7 @@ list of most of the roles can be found in
 
 Core roles can be found under the
 [openmicroscopy](https://galaxy.ansible.com/openmicroscopy/) account on Galaxy
-and are versioned using [Semantic Versioning](http://semver.org/). Roles which
+and are versioned using [Semantic Versioning](http://semver.org/). Roles whose
 version is below 1.0.0 should be considered in development.
 
 ![Ansible Galaxy openmicroscopy](../docs/ansible/galaxy_openmicroscopy.png  "Ansible Galaxy: openmicroscopy roles")
