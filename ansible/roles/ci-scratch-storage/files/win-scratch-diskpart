@@ -1,4 +1,6 @@
 select disk 1
+online disk
+attributes disk clear readonly
 clean
 convert gpt
 create partition primary
