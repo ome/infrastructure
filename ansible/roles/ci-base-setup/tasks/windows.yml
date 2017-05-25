@@ -1,23 +1,19 @@
 ---
-
 - name: ci-base-setup (windows) | Get domain
   win_shell: "net config workstation | findstr /C:\"Full Computer name\" | %{$_ -replace \"^Full Computer name *\",\"\"}"
-#  register: win_domain
-
-- debug:
-    var: win_domain
-  
-- name: ci-base-setup (windows) | Stop
-  win_shell: fail_horribly
+  register: win_domain
 
 - name: ci-base-setup (windows) | Set domain
   win_shell: "netdom computername $env:computername /add:{{ inventory_hostname }}"
+  when: (inventory_hostname != win_domain.stdout.rstrip())
 
 - name: ci-base-setup (windows) | Set primary domain
   win_shell: "netdom computername $env:computername /makeprimary:{{ inventory_hostname }}"
+  when: (inventory_hostname != win_domain.stdout.rstrip())
 
-- name: ci-base-setup (windows) | Set primary domain
-  win_shell: "netdom computername $env:computername /remove:{{ old_hostname }}"
+- name: ci-base-setup (windows) | Remove old domain
+  win_shell: "netdom computername $env:computername /remove:{{ win_domain.stdout.rstrip() }}"
+  when: (inventory_hostname != win_domain.stdout.rstrip())
 
 - name: ci-base-setup (windows) | Get hostname
   win_command: hostname
@@ -25,6 +21,8 @@
 
 - name: ci-base-setup (windows) | Set hostname
   win_shell: "netdom renamecomputer $env:computername /newname:{{ inventory_hostname.split('.')[0] }} /force"
+  when: (inventory_hostname.split('.')[0] != win_hostname.stdout.rstrip())
 
 - name: ci-base-setup (windows) | Reboot
   win_reboot:
+  when: (inventory_hostname != win_domain.stdout.rstrip() or inventory_hostname.split('.')[0] != win_hostname.stdout.rstrip())
