@@ -15,6 +15,13 @@ else
 fi
 ```
 
+And ansible:
+
+```
+pip install ansible
+pip install 'pywinrm[credssp]'
+```
+
 Log into the OpenStack Horizon web interface and download the
 configuration as `~/.openstackrc` (Compute»Access & Security»API
 Access»Download OpenStack RC File v2.0).  Note "v3" configuration
