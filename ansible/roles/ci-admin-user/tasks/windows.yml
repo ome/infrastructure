@@ -1,7 +1,7 @@
 ---
-- name: ci-admin-user (windows) | Create ci-admin group
+- name: ci-admin-user (windows) | Create ci-admins group
   win_group:
-    name: ci-admin
+    name: ci-admins
     description: "CI Administrator group"
     state: present
 
@@ -11,7 +11,7 @@
     fullname: "CI Administrator"
     description: "CI System Administrator for Ansible use"
     groups:
-      - ci-admin
+      - ci-admins
       - Administrators
     password: "{{ ci_admin_password_hash }}"
     state: present
