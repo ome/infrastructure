@@ -44,6 +44,8 @@ administration using `authorized_keys` specified in management_tools
 the system can be administered with ansible using the `ci-admin`
 account and your own SSH credentials.
 
+Unix platforms:
+
 ```
 # SSH in manually to add the host to your known_hosts
 ssh <user>@<host>
@@ -54,6 +56,20 @@ ansible-playbook -l <host> -e "ansible_user=<user>" -u <user> -i <management_too
 As before, substitute all names marked with `<name>` for the
 appropriate names and paths.  `<user>` is specific to the image.  It's
 something like `centos`, `freebsd`, `ubuntu`, `Admin` or similar.
+
+Windows:
+
+```
+# See https://github.com/ansible/ansible/issues/22660
+# Enable connection via credssp which is needed to avoid "double-hop"
+# problems; we have to do this step by hand since there's a
+# chicken-and-egg problem with connecting to do it in a playbook.
+ansible <host> -e "ansible_user=Admin ansible_password=<admin_password> ansible_winrm_transport=basic" -u Admin -i <management_tools>/ansible/inventory/ci-openstack-hosts --vault-password-file=<vault> -m win_shell -a "Enable-WSManCredSSP -Role Server -Force"
+
+ansible-playbook -l <host> -e "ansible_user=Admin ansible_password=<admin_password>" -u Admin -i <management_tools>/ansible/inventory/ci-openstack-hosts <infrastructure>/ansible/ci-initial-setup.yml --vault-password-file=<vault>
+```
+
+Here, `<admin_password>` is the password for the Admin user, obtained as detailed on the [Windows image](windows-image.md) page.
 
 Once this completes, the node is ready to be configured for its
 purpose.  You shouldn't need to run the initial setup playbook again
