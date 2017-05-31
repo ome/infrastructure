@@ -1,0 +1,84 @@
+---
+# Setup a RDP
+
+- name: Change ubuntu password
+  become: yes
+  user:
+    name: "{{ rdp_user }}"
+    update_password: always
+    password: "{{ rdp_user_password }}"
+
+- name: Get aptitude for upgrade
+  apt:
+    pkg: aptitude
+    state: present
+
+- name: Safe system upgrade via aptitude
+  become: yes
+  apt:
+    update_cache: yes
+    upgrade: safe
+
+- name: Install ubuntu-desktop
+  become: yes
+  apt:
+    pkg: ubuntu-desktop
+    install_recommends: no
+    state: present
+
+- name: Install base packages
+  become: yes
+  apt:
+    pkg: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+    - firefox
+    - xrdp
+    - unity-lens-applications
+    - unity-lens-files
+
+- name: Allow using RDP
+  become: yes
+  apt:
+    pkg: "{{ item }}"
+    state: present
+  with_items:
+    - xfce4
+    - xfce4-terminal
+    - gnome-icon-theme-full
+    - tango-icon-theme
+
+- name: Create .xsession
+  become: yes
+  file:
+    path: /home/{{ rdp_user }}/.xsession
+    state: touch
+    owner: "{{ rdp_user }}"
+    mode: 0644
+
+- name: Set xfce4-session
+  become: yes
+  lineinfile:
+    dest: /home/{{ rdp_user }}/.xsession
+    line: "xfce4-session"
+#  notify:
+#    - restart display manager
+
+# TODO: make it reusable, see upgrade-distpackages Rebooting (Ansible kernel update)
+# https://support.ansible.com/hc/en-us/articles/201958037-Reboot-a-server-and-wait-for-it-to-come-back
+- name: system | reboot
+  become: yes
+  shell: "sleep 2 && shutdown -r now 'Rebooting (Ansible update)'"
+  async: 1
+  poll: 0
+  ignore_errors: True
+
+- name: system | wait for server to reboot
+  local_action:
+    module: wait_for
+    delay: 15
+    host: "{{ ansible_host | default(inventory_hostname) }}"
+    port: "{{ ansible_port | default(22) }}"
+    state: "started"
+    timeout: 60

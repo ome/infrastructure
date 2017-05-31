@@ -1,0 +1,64 @@
+---
+# Playbook for starting a docker instance in the
+# openstack cloud.
+
+## See os-create.yml
+
+## Run:
+# $ source openrc.sh
+# $ ansible-playbook os-devspace.yml -e vm_name=test-devspace -e vm_key_name=yourprofile
+
+- hosts: localhost
+  connection: local
+  #gather_facts: false
+
+  vars:
+
+    vm_image: "Ubuntu 14.04.4 LTS (trusty)"
+    vm_flavour: m1.medium
+    vm_size: 50
+    vm_groups: "ansible-managed,desktop-rdp"
+
+  pre_tasks:
+
+    - fail:
+        msg: "vm_key_name is required"
+      when: vm_key_name is undefined or not vm_key_name
+
+    - fail:
+        msg: "vm_name is required"
+      when: vm_name is undefined or not vm_name
+
+
+  tasks:
+
+    - name: RDP VM
+      os_server:
+        name: "{{ vm_name }}"
+        state: present
+        image: "{{ vm_image }}"
+        boot_from_volume: True
+        volume_size: "{{ vm_size }}"
+        terminate_volume: true
+        key_name: "{{ vm_key_name }}"
+        flavor: "{{ vm_flavour }}"
+        auto_ip: yes
+        meta:
+          hostname: "{{ vm_name }}"
+          groups: "{{ vm_groups }}"
+        security_groups: [all]
+      register: vmrdp
+
+    # To prevent duplicates with the dynamic inventory only add_host if
+    # the VM was created in this run
+
+    - name: RDP VM hosts files
+      add_host:
+        name: "{{ vm_name }}"
+        groups: "{{ vm_groups }}"
+        ansible_host: "{{ vmrdp.server.public_v4 }}"
+        ansible_user: "ubuntu"
+        ansible_become: true
+
+    - debug:
+        msg: "IPs (Docker) private:{{ vmrdp.openstack.private_v4 }} floating:{{ vmrdp.openstack.public_v4 | default('') }}"

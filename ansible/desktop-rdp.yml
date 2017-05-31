@@ -1,0 +1,15 @@
+---
+# Playbook adding a graphical interface to the Ubuntu Openstack instance
+
+- hosts: desktop-rdp
+
+  vars_prompt:
+    - name: "rdp_user_password"
+      prompt: Enter password
+      private: yes
+      confirm: yes
+      encrypt: "md5_crypt"
+      salt_size: 7
+
+  roles:
+    - role: "ubuntu-rdp"

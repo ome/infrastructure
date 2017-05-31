@@ -1,0 +1,8 @@
+---
+# Handlers for ubuntu-rdp
+
+- name: restart display manager
+  become: yes
+  service:
+    name: lightdm
+    state: restarted
