@@ -34,6 +34,7 @@
     owner={{ jenkinsuser }}
     group={{ jenkinsuser }}
     mode=0700
+    remote_src=True
   with_items:
     - { srcfile: "config", dest: ".ssh/config" }
     - { srcfile: "snoopycrimecop_github", dest: ".ssh/snoopycrimecop_github" }
