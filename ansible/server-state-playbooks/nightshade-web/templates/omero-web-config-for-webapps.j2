@@ -10,3 +10,15 @@ config append -- omero.web.open_with '["omero_figure", "new_figure", {"supported
 # omero-fpbioimage
 config append -- omero.web.apps '"omero_fpbioimage"'
 config append -- omero.web.open_with '["omero_fpbioimage", "fpbioimage_index", {"supported_objects":["image"], "script_url": "fpbioimage/openwith.js", "label": "FPBioimage"}]'
+
+# iviewer
+config append -- omero.web.apps '"omero_iviewer"'
+config append -- omero.web.open_with '["omero_iviewer", "omero_iviewer_index", {"supported_objects":["image"], "script_url": "omero_iviewer/openwith.js", "label": "OMERO.iviewer"}]'
+
+# Autotag
+config append -- omero.web.apps '"omero_webtagging_autotag"'
+config append -- omero.web.ui.center_plugins '["Auto Tag", "omero_webtagging_autotag/auto_tag_init.js.html", "auto_tag_panel"]'
+
+# tagsearch
+config append -- omero.web.apps '"omero_webtagging_tagsearch"'
+config append -- omero.web.ui.top_links '["Tag Search", "tagsearch"]'

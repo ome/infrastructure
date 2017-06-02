@@ -1,7 +1,17 @@
 # Install OMERO.web with a public user on localhost
+# Pass the command line 'upgrade-webapps' flag to upgrade webapps
 
 - hosts: all
-    
+
+  pre_tasks:
+
+    # Set desired state of webapps (upgrade v.s. install/keep current version)
+    - set_fact:
+        webapps_state: present 
+    - set_fact: 
+        webapps_state: latest 
+      when: upgrade_webapps is defined and upgrade_webapps == "True"
+
   roles:
 
     # Root LV Size 
@@ -25,22 +35,17 @@
 
   post_tasks:
 
-    # to be modified, not available on pypi, so need git
-    - name: Omero.web plugin | omero-fpbioimage - requirements
-      become: yes
-      yum:
-        name: git
-        state: latest
-
-    - name: Omero.web plugins | omero-fpbioimage, omero-figure - plugin install
+    - name: Omero.web plugins | plugin install via pip & pypi
       become: yes
       pip:
         name:
         - "omero-figure"
-        # to be modified, not available on pypi
-        - "git+git://github.com/ome/omero-fpbioimage.git@master#egg=fpbioimage"
+        - "omero-fpbioimage"
+        - "omero-webtagging-autotag"
+        - "omero-webtagging-tagsearch"
+        - "omero-iviewer"
         editable: False
-        state: present
+        state: "{{ webapps_state }}"
         # variable comes from role openmicroscopy.omero-web
         virtualenv: "{{ omero_web_basedir }}/venv"
         virtualenv_site_packages: yes
