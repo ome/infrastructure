@@ -11,6 +11,27 @@
            ((ansible_virtualization_type is defined)
            and (ansible_virtualization_type == "VMware"))
 
+    # Not required for an OMERO server install - UoD specific implementation
+    - name: NGOM mount point | Install NFS prerequisites
+      become: yes
+      yum:
+        name: nfs-utils
+        state: present
+
+    # Not required for an OMERO server install - UoD specific implementation
+    # Before Ansible 2.3, option 'name' was used instead of 'path'
+    - name: NGOM mount point | Create the fstab entry and mount the fs
+      tags: lvm
+      become: yes
+      mount:
+        name: /ngom
+        state: mounted
+        fstype: nfs
+        src: "{{ngom_nfs_server_addr}}:/uod/lfs/ngom"
+        opts: tcp,rsize=16384,wsize=16384
+        dump: 0
+        passno: 0
+
     # Perhaps alter the role at https://github.com/openmicroscopy/ansible-role-lvm-partition/
     # to make some of the variables non-required.
     - name: Resize root FS without altering mount options
@@ -136,7 +157,6 @@
     # installation before changing config to restored DB from other system.
     - role: openmicroscopy.omero-server
       omero_server_release: 5.3.2
-      omero_server_upgrade: True
       # install-mock set for inital provision, then playbook re-run with correct accounts.
       #omero_server_dbuser: install-mock
       #omero_server_dbname:  install-mock
@@ -164,8 +184,28 @@
       command: cp "{{ check_mk_postgres_plugin }}"  /usr/share/check-mk-agent/plugins/
       when: check_mk_postgres_plugin_st.stat.exists
 
+    - name: PostgreSQL Nightly Backups | Create the backups directory
+      become: yes
+      file:
+        path: "{{ omero_server_db_dumpdir_parent }}/{{ omero_server_db_dumpdir_name }}"
+        state: directory
+        owner: postgres
+        group: postgres
+        mode: "u=rwx,go="
+
+    - name: PostgreSQL Nightly Backups | send the backup script
+      become: yes
+      template:
+        src: nightly-pg_dump-omero.sh.j2
+        dest: /etc/cron.daily/nightly-pg_dump-omero.sh
+        mode: "u=rwx,go="
+
   vars:
     check_mk_postgres_plugin: /usr/share/check-mk-agent/available-plugins/mk_postgres
+    # Backup folder for PostgreSQL 'folder' format dump
+    # Overriden by host vars, example values:
+    #omero_server_db_dumpdir_parent: /tmp
+    #omero_server_db_dumpdir_name: nightly-pg_dump_omero.dir
     postgresql_version: "9.6"
     filesystem: "xfs"
     omero_server_config_set:
