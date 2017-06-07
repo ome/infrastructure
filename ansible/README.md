@@ -53,6 +53,14 @@ The OME community also provides roles. For example:
 
 If you would like to share your roles with other OME users, please open a PR against this file on GitHub.
 
+### within playbooks folder ###
+
+In some cases, roles are not ready to be extracted into separate repositories
+and deployed to Galaxy. In this case, the scope of development roles should be
+limited by creating a folder containing the set of playbooks for the given
+functionality and putting all the relevant local roles under a `roles`
+subfolder.
+
 Playbooks
 ---------
 
