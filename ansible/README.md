@@ -38,17 +38,17 @@ version is below 1.0.0 should be considered in development.
 Examples of production roles include:
 
  -  openmicroscopy.omero-server
-    ([GitHub](https://github.com/openmicroscopy/ansible-role-omero-server)/([Galaxy](https://galaxy.ansible.com/openmicroscopy/omero-server/)): Install and configure OMERO.server, and optionally PostgreSQL
+    ([GitHub](https://github.com/openmicroscopy/ansible-role-omero-server)/[Galaxy](https://galaxy.ansible.com/openmicroscopy/omero-server/)): Install and configure OMERO.server, and optionally PostgreSQL
 
  -  openmicroscopy.omero-web
-    ([GitHub](https://github.com/openmicroscopy/ansible-role-omero-web)/([Galaxy](https://galaxy.ansible.com/openmicroscopy/omero-web/)): Installs and configures OMERO.web and Nginx
+    ([GitHub](https://github.com/openmicroscopy/ansible-role-omero-web)/[Galaxy](https://galaxy.ansible.com/openmicroscopy/omero-web/)): Installs and configures OMERO.web and Nginx
 
 ### from the community ###
 
 The OME community also provides roles. For example:
 
  - hajaalin.truststore
-   ([GitHub](https://github.com/hajaalin/ansible-role-truststore)/([Galaxy](https://galaxy.ansible.com/hajaalin/truststore/)):
+   ([GitHub](https://github.com/hajaalin/ansible-role-truststore)/[Galaxy](https://galaxy.ansible.com/hajaalin/truststore/)):
    Install JKS TrustStore
 
 If you would like to share your roles with other OME users, please open a PR against this file on GitHub.
