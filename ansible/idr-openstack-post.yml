@@ -7,7 +7,7 @@
 
   roles:
   - role: network
-  - role: logrotate
+  - role: openmicroscopy.logrotate
   - role: system-monitor-agent
   - role: openmicroscopy.mysql-backup
     when: "{{ openstack_master_node | default(False) }}"
