@@ -1,0 +1,263 @@
+# Install OMERO.server, OMERO.web and prepare the OME (UoD/SLS) prerequisites
+
+- hosts: all
+  pre_tasks:
+    - name: Install open-vm-tools if system is a VMware vm
+      become: yes
+      yum:
+        name: open-vm-tools
+        state: latest
+      when: >
+           ((ansible_virtualization_type is defined)
+           and (ansible_virtualization_type == "VMware"))
+
+    # Perhaps alter the role at https://github.com/openmicroscopy/ansible-role-lvm-partition/
+    # to make some of the variables non-required.
+    - name: Resize root FS without altering mount options
+      tags: lvm
+      become: yes
+      lvol:
+        lv: root
+        vg: VolGroup00
+        size: "{{ provision_root_lvsize }}"
+        
+    - name: Install Make Movie script Prerequisite | MEncoder - Repo
+      become: yes
+      yum:
+        name:  http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
+        state: present
+
+    - name: Install Make Movie script Prerequisite | MEncoder - Package
+      become: yes
+      yum:
+        name: mencoder
+        state: present
+
+    - name: OMERO.figure server-side prerequisites, script prerequisites + web server for decoupled OMERO.web
+      become: yes
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        # For OMERO.figure
+        - python-reportlab 
+        - python-markdown 
+        # For the 'make movie' script
+        - mencoder
+
+    # Set desired state of webapps (upgrade v.s. install/keep current version)
+    - set_fact:
+        webapps_state: present 
+    - set_fact: 
+        webapps_state: latest 
+      when: upgrade_webapps is defined and upgrade_webapps == "True"
+
+  roles:
+    # Now OME are using RHEL without Spacewalk, the current best-method of
+    # checking `is server deployed in Dundee/SLS` is checking for the SLS nameservers.
+    - role: openmicroscopy.system-monitor-agent
+      when: "'10.1.255.216' in ansible_dns.nameservers"
+   
+    # Disk Layout - PostgreSQL | data dir on separate LV 
+    - role: openmicroscopy.lvm-partition
+      tags: lvm
+      # TODO change this back to postgres_pgdata - will need to revert to fresh
+      # infra-testpr as postgres currently installed here after first run.
+      lvm_lvname: pgdata
+      lvm_vgname: VolGroup00
+      lvm_lvmount: /var/lib/pgsql
+      lvm_lvsize: "{{ provision_postgres_lvsize }}"
+      lvm_lvfilesystem: "{{ filesystem }}"
+
+    # Disk Layout - OMERO | data dir 
+    - role: openmicroscopy.lvm-partition
+      tags: lvm
+      lvm_lvname: omero_basedir
+      lvm_vgname: VolGroup00
+      lvm_lvmount: "{{ omero_common_basedir }}"
+      lvm_lvsize: "{{ provision_omero_basedir_lvsize }}"
+      lvm_lvfilesystem: "{{ filesystem }}"
+      
+    - role: openmicroscopy.postgresql
+      postgresql_users_databases:
+      - user: "{{ vault_omero_server_os_user }}"
+        password: "{{ vault_omero_server_dbpassword }}"
+        databases: ["{{ vault_omero_server_dbname }}"]
+
+    - role: openmicroscopy.omero-server
+      omero_server_release: 5.3.2
+      omero_server_dbuser: "{{ vault_omero_server_os_user }}"
+      omero_server_dbname:  "{{ vault_omero_server_dbname }}"
+      omero_server_dbpassword: "{{ vault_omero_server_dbpassword }}"
+      omero_server_rootpassword: "{{ vault_omero_server_rootpassword }}"
+      omero_server_systemd_limit_nofile: 16384
+
+    - role: openmicroscopy.omero-web
+      omero_web_release: 5.3.2
+      no_log: true
+
+    # This role only works on OMERO 5.3+
+    - role: omero-user
+      no_log: true
+      omero_user_bin_omero: /opt/omero/server/OMERO.server/bin/omero
+      omero_user_system: omero-server
+      omero_user_admin_user: root
+      omero_user_admin_pass: "{{ vault_omero_server_rootpassword }}"
+      omero_group_create:
+      - name: public
+        type: read-only
+      omero_user_create:
+      - login: "{{ vault_omero_web_public_user }}"
+        firstname: public
+        lastname: user
+        password: "{{ vault_omero_web_public_password }}"
+        groups: "--group-name public"
+
+  post_tasks:
+    - name: Omero.web plugins | plugin install via pip & pypi
+      become: yes
+      pip:
+        name:
+        - "omero-figure"
+        - "omero-fpbioimage"
+        - "omero-webtagging-autotag"
+        - "omero-webtagging-tagsearch"
+        - "omero-iviewer"
+        editable: False
+        state: "{{ webapps_state }}"
+        # variable comes from role openmicroscopy.omero-web
+        virtualenv: "{{ omero_web_basedir }}/venv"
+        virtualenv_site_packages: yes
+      notify:
+        - restart omero-web 
+
+    - name: NGINX - Performance tuning - worker processes
+      become: yes
+      replace:
+        path: "/etc/nginx/nginx.conf"
+        regexp: '^worker_processes\s+\d+;'
+        replace: "worker_processes {{ ((ansible_processor_count * ansible_processor_cores) / 2) |round|int }};"
+
+    # cf https://www.digitalocean.com/community/tutorials/how-to-optimize-nginx-configuration
+    - name: NGINX - Performance tuning - worker connections
+      become: yes
+      replace:
+        path: "/etc/nginx/nginx.conf"
+        regexp: 'worker_connections\s+\d+;'
+        replace: "worker_connections 65000;"
+
+    - name: NGINX - SSL File Deployment - prepare directory
+      become: yes
+      file:
+        path: "{{ nginx_ssl_files_path }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "u=r,go=" 
+
+    - name: NGINX - SSL File Deployment
+      become: yes
+      copy:
+        dest="{{ item.key }}"
+        content="{{ item.value.content }}"
+        owner="{{ item.value.owner }}"
+        group="{{ item.value.group }}"
+        mode="{{ item.value.mode }}"
+      with_dict: "{{ nginx_ssl_cert_files }}"
+      no_log: true
+
+    - name: NGINX - SSL Configuration - Additional listen port
+      become: yes
+      lineinfile:
+        path: /etc/nginx/conf.d/omero-web.conf
+        insertafter: '    listen 80;'
+        line: '    listen 443 ssl;'
+            
+    - name: NGINX - SSL Configuration - Rest of SSL section to omero-web.conf
+      become: yes
+      blockinfile:
+        path: /etc/nginx/conf.d/omero-web.conf
+        insertbefore: '.*sendfile.*'
+        block: |2+
+
+              ssl_certificate {{ nginx_ssl_files_path }}/{{ nginx_ssl_cert_filename }};
+              ssl_certificate_key {{ nginx_ssl_files_path }}/{{ nginx_ssl_key_filename }};
+              ssl_protocols  {{ nginx_ssl_protocols }}
+            
+              if ($ssl_protocol = "") {
+                  rewrite ^/(.*) https://$host/$1 permanent;
+              }
+      notify:
+        - restart nginx
+
+    # Config for OMERO.web plugins, loaded into OMERO.web by the
+    # omero.web systemd restart.
+    - name: 
+      become: yes
+      template:
+        src: templates/omero-web-config-for-webapps.j2
+        dest: "{{ omero_web_basedir }}/config/omero-web-config-for-webapps.omero"
+        owner: "root" 
+        group: "root" 
+        mode: "u=rw,go=r"
+      notify:
+        - restart omero-web 
+
+    - name: Check_MK postgres plugin | check for plugin existence
+      stat:
+        path: "{{ check_mk_postgres_plugin }}"
+      register: check_mk_postgres_plugin_st
+
+    - name: Check_MK postgres plugin | activate the plugin
+      become: yes
+      command: cp "{{ check_mk_postgres_plugin }}"  /usr/share/check-mk-agent/plugins/
+      when: check_mk_postgres_plugin_st.stat.exists
+
+    - name: PostgreSQL Nightly Backups | Create the backups directory
+      become: yes
+      file:
+        path: "{{ omero_server_db_dumpdir_parent }}/{{ omero_server_db_dumpdir_name }}"
+        state: directory
+        owner: postgres
+        group: postgres
+        mode: "u=rwx,go="
+
+    - name: PostgreSQL Nightly Backups | send the backup script
+      become: yes
+      template:
+        src: nightly-pg_dump-omero.sh.j2
+        dest: /etc/cron.daily/nightly-pg_dump-omero.sh
+        mode: "u=rwx,go="
+
+  vars:
+    check_mk_postgres_plugin: /usr/share/check-mk-agent/available-plugins/mk_postgres
+    # Backup folder for PostgreSQL 'folder' format dump
+    # Overriden by host vars, example values:
+    omero_server_db_dumpdir_parent: /tmp
+    omero_server_db_dumpdir_name: nightly-pg_dump_omero.dir
+    postgresql_version: "9.6"
+    filesystem: "xfs"
+    omero_server_config_set:
+      omero.db.poolsize: 60
+      omero.jvmcfg.percent.blitz: 50
+      omero.jvmcfg.percent.indexer: 20
+      omero.jvmcfg.percent.pixeldata: 20
+      omero.jvmcfg.system_memory: 30000
+      omero.mail.config: true
+      omero.mail.from: "{{ omero_server_mail_from }}"
+      omero.mail.host: "{{ omero_server_mail_host }}"
+      omero.new_user_group: "My Data"
+      omero.search.batch: 100
+      omero.throttling.method_time.error: 60000
+    omero_web_config_set:
+      # https://www.openmicroscopy.org/site/support/omero5.3/sysadmins/public.html
+      omero.web.public.user: "{{ vault_omero_web_public_user }}" 
+      omero.web.public.password: "{{ vault_omero_web_public_password }}"
+      omero.web.public.enabled: True
+      omero.web.public.server_id: 1
+      omero.web.public.url_filter: "^/(webadmin/myphoto/|webclient/(?!(action|logout|annotate_(file|tags|comment|rating|map)|script_ui|ome_tiff|figure_script))|webgateway/(?!(archived_files|download_as)))"
+      omero.web.server_list: [["demo.openmicroscopy.org", 4064, "omero"]]
+      # Advice is (2*cores + 1) from OME docs. 
+      omero.web.wsgi_workers: "{{ (2 * (ansible_processor_count * ansible_processor_cores)) + 1 }}"
+      omero.web.admins:  "{{ omero_web_admins }}"
+

@@ -27,11 +27,10 @@
       omero_web_release: 5.3.2
       no_log: true
 
-    # This to be refactored for RHEL/non-spacewalk at some point
+    # Now OME are using RHEL without Spacewalk, the current best-method of
+    # checking `is server deployed in Dundee/SLS` is checking for the SLS nameservers.
     - role: openmicroscopy.system-monitor-agent
-      when: >
-            ((ansible_env.COBBLER_SERVER is defined)
-            and (ansible_env.COBBLER_SERVER == "spacewalk.lifesci.dundee.ac.uk"))
+      when: "'10.1.255.216' in ansible_dns.nameservers"
 
   post_tasks:
 
