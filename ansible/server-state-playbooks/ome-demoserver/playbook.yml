@@ -79,14 +79,15 @@
       lvm_lvfilesystem: "{{ filesystem }}"
       
     - role: openmicroscopy.postgresql
+      no_log: true
       postgresql_users_databases:
-      - user: "{{ vault_omero_server_os_user }}"
+      - user: "{{ vault_omero_server_db_user }}"
         password: "{{ vault_omero_server_dbpassword }}"
         databases: ["{{ vault_omero_server_dbname }}"]
 
     - role: openmicroscopy.omero-server
       omero_server_release: 5.3.2
-      omero_server_dbuser: "{{ vault_omero_server_os_user }}"
+      omero_server_dbuser: "{{ vault_omero_server_db_user }}"
       omero_server_dbname:  "{{ vault_omero_server_dbname }}"
       omero_server_dbpassword: "{{ vault_omero_server_dbpassword }}"
       omero_server_rootpassword: "{{ vault_omero_server_rootpassword }}"
@@ -106,10 +107,12 @@
       omero_group_create:
       - name: public
         type: read-only
+      - name: "My Data"
+        type: private
       omero_user_create:
       - login: "{{ vault_omero_web_public_user }}"
-        firstname: public
-        lastname: user
+        firstname: Public
+        lastname: User
         password: "{{ vault_omero_web_public_password }}"
         groups: "--group-name public"
 
@@ -123,6 +126,7 @@
         - "omero-webtagging-autotag"
         - "omero-webtagging-tagsearch"
         - "omero-iviewer"
+        - "omero-marshal==0.5.1"
         editable: False
         state: "{{ webapps_state }}"
         # variable comes from role openmicroscopy.omero-web
