@@ -3,6 +3,7 @@
 
 - hosts: prod-web-proxies
   roles:
+  - role: network
   - role: openmicroscopy.lvm-partition
     lvm_lvname: root
     lvm_lvmount: /
