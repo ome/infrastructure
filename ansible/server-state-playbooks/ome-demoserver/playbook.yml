@@ -33,7 +33,7 @@
         name: mencoder
         state: present
 
-    - name: OMERO.figure server-side prerequisites, script prerequisites + web server for decoupled OMERO.web
+    - name: OMERO.figure server-side prerequisites, script prerequisites 
       become: yes
       yum:
         name: "{{ item }}"
@@ -58,24 +58,40 @@
     - role: openmicroscopy.system-monitor-agent
       when: "'10.1.255.216' in ansible_dns.nameservers"
    
-    # Disk Layout - PostgreSQL | data dir on separate LV 
+    # Disk Layout - PostgreSQL | data dir on separate VG (SSD) 
     - role: openmicroscopy.lvm-partition
       tags: lvm
-      # TODO change this back to postgres_pgdata - will need to revert to fresh
-      # infra-testpr as postgres currently installed here after first run.
       lvm_lvname: pgdata
-      lvm_vgname: VolGroup00
+      lvm_vgname: "{{ provision_postgres_vgname }}"
       lvm_lvmount: /var/lib/pgsql
       lvm_lvsize: "{{ provision_postgres_lvsize }}"
       lvm_lvfilesystem: "{{ filesystem }}"
 
-    # Disk Layout - OMERO | data dir 
+    # Disk Layout - OMERO | VG and LV (separate disk) for Binary Repository
     - role: openmicroscopy.lvm-partition
       tags: lvm
-      lvm_lvname: omero_basedir
+      lvm_lvname: datadir
+      lvm_vgname: "{{ provision_omero_server_datadir_vgname }}"
+      lvm_lvmount: "{{ omero_server_datadir }}"
+      lvm_lvsize: "{{ provision_omero_server_datadir_lvsize }}"
+      lvm_lvfilesystem: "{{ filesystem }}"
+
+    # Disk Layout - OMERO.server | LV for dist & logs 
+    - role: openmicroscopy.lvm-partition
+      tags: lvm
+      lvm_lvname: omero_server_basedir
       lvm_vgname: VolGroup00
-      lvm_lvmount: "{{ omero_common_basedir }}"
-      lvm_lvsize: "{{ provision_omero_basedir_lvsize }}"
+      lvm_lvmount: "{{ omero_server_basedir }}"
+      lvm_lvsize: "{{ provision_omero_server_basedir_lvsize }}"
+      lvm_lvfilesystem: "{{ filesystem }}"
+      
+    # Disk Layout - OMERO.web | LV for dist & logs
+    - role: openmicroscopy.lvm-partition
+      tags: lvm
+      lvm_lvname: omero_web_basedir
+      lvm_vgname: VolGroup00
+      lvm_lvmount: "{{ omero_web_basedir }}"
+      lvm_lvsize: "{{ provision_omero_web_basedir_lvsize }}"
       lvm_lvfilesystem: "{{ filesystem }}"
       
     - role: openmicroscopy.postgresql
@@ -209,12 +225,12 @@
 
     - name: Check_MK postgres plugin | check for plugin existence
       stat:
-        path: "{{ check_mk_postgres_plugin }}"
+        path: "{{ check_mk_agent_plugin_path }}/mk_postgres"
       register: check_mk_postgres_plugin_st
 
     - name: Check_MK postgres plugin | activate the plugin
       become: yes
-      command: cp "{{ check_mk_postgres_plugin }}"  /usr/share/check-mk-agent/plugins/
+      command: cp "{{ check_mk_agent_plugin_path }}/mk_postgres" /usr/share/check-mk-agent/plugins/
       when: check_mk_postgres_plugin_st.stat.exists
 
     - name: PostgreSQL Nightly Backups | Create the backups directory
@@ -234,13 +250,16 @@
         mode: "u=rwx,go="
 
   vars:
-    check_mk_postgres_plugin: /usr/share/check-mk-agent/available-plugins/mk_postgres
+    # Check_MK (system monitoring) agent plugin location
+    check_mk_agent_plugin_path: /usr/share/check-mk-agent/available-plugins
+
     # Backup folder for PostgreSQL 'folder' format dump
-    # Overriden by host vars, example values:
     omero_server_db_dumpdir_parent: /tmp
     omero_server_db_dumpdir_name: nightly-pg_dump_omero.dir
+
     postgresql_version: "9.6"
     filesystem: "xfs"
+
     omero_server_config_set:
       omero.db.poolsize: 60
       omero.jvmcfg.percent.blitz: 50
@@ -253,13 +272,14 @@
       omero.new_user_group: "My Data"
       omero.search.batch: 100
       omero.throttling.method_time.error: 60000
+
     omero_web_config_set:
       # https://www.openmicroscopy.org/site/support/omero5.3/sysadmins/public.html
       omero.web.public.user: "{{ vault_omero_web_public_user }}" 
       omero.web.public.password: "{{ vault_omero_web_public_password }}"
       omero.web.public.enabled: True
       omero.web.public.server_id: 1
-      omero.web.public.url_filter: "^/(webadmin/myphoto/|webclient/(?!(action|logout|annotate_(file|tags|comment|rating|map)|script_ui|ome_tiff|figure_script))|webgateway/(?!(archived_files|download_as)))"
+      omero.web.public.url_filter: "^/(webgateway/(?!(archived_files|download_as))|webclient/annotation/([0-9]+)/)"
       omero.web.server_list: [["demo.openmicroscopy.org", 4064, "omero"]]
       # Advice is (2*cores + 1) from OME docs. 
       omero.web.wsgi_workers: "{{ (2 * (ansible_processor_count * ansible_processor_cores)) + 1 }}"
