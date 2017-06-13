@@ -20,6 +20,7 @@
         lv: root
         vg: VolGroup00
         size: "{{ provision_root_lvsize }}"
+        shrink: no
         
     - name: Install Make Movie script Prerequisite | MEncoder - Repo
       become: yes
@@ -66,6 +67,7 @@
       lvm_lvmount: /var/lib/pgsql
       lvm_lvsize: "{{ provision_postgres_lvsize }}"
       lvm_lvfilesystem: "{{ filesystem }}"
+      lvm_shrink: False
 
     # Disk Layout - OMERO | VG and LV (separate disk) for Binary Repository
     - role: openmicroscopy.lvm-partition
@@ -75,6 +77,7 @@
       lvm_lvmount: "{{ omero_server_datadir }}"
       lvm_lvsize: "{{ provision_omero_server_datadir_lvsize }}"
       lvm_lvfilesystem: "{{ filesystem }}"
+      lvm_shrink: False
 
     # Disk Layout - OMERO.server | LV for dist & logs 
     - role: openmicroscopy.lvm-partition
@@ -84,6 +87,7 @@
       lvm_lvmount: "{{ omero_server_basedir }}"
       lvm_lvsize: "{{ provision_omero_server_basedir_lvsize }}"
       lvm_lvfilesystem: "{{ filesystem }}"
+      lvm_shrink: False
       
     # Disk Layout - OMERO.web | LV for dist & logs
     - role: openmicroscopy.lvm-partition
@@ -93,6 +97,7 @@
       lvm_lvmount: "{{ omero_web_basedir }}"
       lvm_lvsize: "{{ provision_omero_web_basedir_lvsize }}"
       lvm_lvfilesystem: "{{ filesystem }}"
+      lvm_shrink: False
       
     - role: openmicroscopy.postgresql
       no_log: true
