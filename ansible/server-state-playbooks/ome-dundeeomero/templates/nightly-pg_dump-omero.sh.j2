@@ -1,5 +1,0 @@
-#!/bin/sh
-# Clean the files from the folder-format dump directory 
-rm {{ omero_server_db_dumpdir_parent }}/{{ omero_server_db_dumpdir_name }}/* 
-# Create a fresh db dump
-sudo -u postgres pg_dump -j {{ (ansible_processor_count * ansible_processor_cores) |round|int }} -Fd -f {{ omero_server_db_dumpdir_parent }}/{{ omero_server_db_dumpdir_name }} {{ vault_omero_server_dbname }}

@@ -1,6 +1,6 @@
 # Install OMERO.server, OMERO.web and prepare the OME (UoD/SLS) prerequisites
 
-- hosts: all
+- hosts: ome-demoserver.openmicroscopy.org
   pre_tasks:
     - name: Install open-vm-tools if system is a VMware vm
       become: yes
