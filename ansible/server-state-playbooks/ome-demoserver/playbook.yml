@@ -57,6 +57,7 @@
     # Now OME are using RHEL without Spacewalk, the current best-method of
     # checking `is server deployed in Dundee/SLS` is checking for the SLS nameservers.
     - role: openmicroscopy.system-monitor-agent
+      tags: monitoring
       when: "'10.1.255.216' in ansible_dns.nameservers"
    
     # Disk Layout - PostgreSQL | data dir on separate VG (SSD) 
@@ -229,14 +230,40 @@
         - restart omero-web 
 
     - name: Check_MK postgres plugin | check for plugin existence
+      tags: monitoring
       stat:
         path: "{{ check_mk_agent_plugin_path }}/mk_postgres"
       register: check_mk_postgres_plugin_st
 
     - name: Check_MK postgres plugin | activate the plugin
+      tags: monitoring
       become: yes
-      command: cp "{{ check_mk_agent_plugin_path }}/mk_postgres" /usr/share/check-mk-agent/plugins/
+      command: cp "{{ check_mk_agent_plugin_path }}/mk_postgres" /usr/share/check-mk-agent/plugins/ creates=/usr/share/check-mk-agent/plugins/mk_postgres
       when: check_mk_postgres_plugin_st.stat.exists
+
+    - name: Check_MK logwatch plugin | check for plugin existence
+      tags: monitoring
+      stat:
+        path: "{{ check_mk_agent_plugin_path }}/mk_logwatch"
+      register: check_mk_logwatch_plugin_st
+
+    - name: Check_MK logwatch plugin | activate the plugin
+      tags: monitoring
+      become: yes
+      command: cp "{{ check_mk_agent_plugin_path }}/mk_logwatch" /usr/share/check-mk-agent/plugins/ creates=/usr/share/check-mk-agent/plugins/mk_logwatch
+      when: check_mk_logwatch_plugin_st.stat.exists
+
+    - name: Check_MK logwatch plugin | check for default config file
+      tags: monitoring
+      stat:
+        path: "{{ check_mk_agent_config_example_path }}/logwatch.cfg"
+      register: check_mk_logwatch_plugin_conf_st
+      
+    - name: Check_MK logwatch plugin | copy the default config
+      tags: monitoring
+      become: yes
+      command: cp "{{ check_mk_agent_config_example_path }}/logwatch.cfg" "{{ check_mk_agent_config_path }}/logwatch.cfg" creates="{{ check_mk_agent_config_path }}/logwatch.cfg"
+      when: check_mk_logwatch_plugin_conf_st
 
     - name: PostgreSQL Nightly Backups | Create the backups directory
       become: yes
@@ -255,8 +282,10 @@
         mode: "u=rwx,go="
 
   vars:
-    # Check_MK (system monitoring) agent plugin location
+    # Check_MK (system monitoring) paths
     check_mk_agent_plugin_path: /usr/share/check-mk-agent/available-plugins
+    check_mk_agent_config_example_path: /usr/share/check_mk/agents/cfg_examples
+    check_mk_agent_config_path: /etc/check-mk-agent
 
     # Backup folder for PostgreSQL 'folder' format dump
     omero_server_db_dumpdir_parent: /tmp
