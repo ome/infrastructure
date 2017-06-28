@@ -24,7 +24,7 @@
 
     # OMERO.web configuration in host_vars in different repository
     - role: openmicroscopy.omero-web
-      omero_web_release: 5.3.2
+      omero_web_release: 5.3.3
       no_log: true
 
     # This to be refactored for RHEL/non-spacewalk at some point
