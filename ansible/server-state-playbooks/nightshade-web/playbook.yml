@@ -1,5 +1,5 @@
 # Install OMERO.web with a public user on localhost
-# Pass the command line 'upgrade-webapps' flag to upgrade webapps
+# Pass the command line 'upgrade_webapps' flag to upgrade webapps
 
 - hosts: all
 
