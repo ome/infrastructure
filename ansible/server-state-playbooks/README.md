@@ -16,5 +16,6 @@ Details
 - after installing ansible and ansible-galaxy,
     ansible-galaxy install -r requirements.yml -p roles
 
-- install OMERO.web server
+- to install e.g. OMERO, or OMERO.web, and configure
+  the server, depending on the requirements of that system,
     ansible-playbook playbook.yml
