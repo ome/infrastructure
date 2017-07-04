@@ -13,7 +13,7 @@ config append -- omero.web.open_with '["omero_fpbioimage", "fpbioimage_index", {
 
 # iviewer
 config append -- omero.web.apps '"omero_iviewer"'
-config append -- omero.web.open_with '["omero_iviewer", "omero_iviewer_index", {"supported_objects":["image"], "script_url": "omero_iviewer/openwith.js", "label": "OMERO.iviewer"}]'
+config append -- omero.web.open_with '["omero_iviewer", "omero_iviewer_index", {"supported_objects":["images"], "script_url": "omero_iviewer/openwith.js", "label": "OMERO.iviewer"}]'
 
 # Autotag
 config append -- omero.web.apps '"omero_webtagging_autotag"'
