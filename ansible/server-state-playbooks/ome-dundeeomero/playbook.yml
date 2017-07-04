@@ -185,6 +185,7 @@
       when: check_mk_postgres_plugin_st.stat.exists
 
     - name: PostgreSQL Nightly Backups | Create the backups directory
+      tags: backups
       become: yes
       file:
         path: "{{ omero_server_db_dumpdir_parent }}/{{ omero_server_db_dumpdir_name }}"
@@ -194,6 +195,7 @@
         mode: "u=rwx,go="
 
     - name: PostgreSQL Nightly Backups | send the backup script
+      tags: backups
       become: yes
       template:
         src: nightly-pg_dump-omero.sh.j2
