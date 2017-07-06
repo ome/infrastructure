@@ -1,0 +1,151 @@
+# Install NGINX, and prepare the OME (UoD/SLS) prerequisites
+
+# hosts: all for vagrant testing
+- hosts: infra-testpr.openmicroscopy.org
+  pre_tasks:
+    - name: Install open-vm-tools if system is a VMware vm
+      become: yes
+      yum:
+        name: open-vm-tools
+        state: latest
+      when: >
+           ((ansible_virtualization_type is defined)
+           and (ansible_virtualization_type == "VMware"))
+
+    # Perhaps alter the role at https://github.com/openmicroscopy/ansible-role-lvm-partition/
+    # to make some of the variables non-required.
+    - name: Resize root FS without altering mount options
+      tags: lvm
+      become: yes
+      lvol:
+        lv: root
+        vg: VolGroup00
+        size: "{{ provision_root_lvsize }}"
+        shrink: no
+    
+  roles:
+    # Now OME are using RHEL without Spacewalk, the current best-method of
+    # checking `is server deployed in Dundee/SLS` is checking for the SLS nameservers.
+    - role: openmicroscopy.system-monitor-agent
+      tags: monitoring
+      when: "'10.1.255.216' in ansible_dns.nameservers"
+
+    - role: openmicroscopy.nginx
+   
+  post_tasks:
+    - name: NGINX - Performance tuning - worker processes
+      become: yes
+      replace:
+        path: "/etc/nginx/nginx.conf"
+        regexp: '^worker_processes\s+\d+;'
+        replace: "worker_processes {{ ((ansible_processor_count * ansible_processor_cores) / 2) |round|int }};"
+
+    # cf https://www.digitalocean.com/community/tutorials/how-to-optimize-nginx-configuration
+    - name: NGINX - Performance tuning - worker connections
+      become: yes
+      replace:
+        path: "/etc/nginx/nginx.conf"
+        regexp: 'worker_connections\s+\d+;'
+        replace: "worker_connections 65000;"
+
+    - name: NGINX - SSL File Deployment - prepare directory
+      become: yes
+      file:
+        path: "{{ nginx_ssl_files_path }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "u=r,go=" 
+
+    - name: NGINX - SSL File Deployment
+      become: yes
+      copy:
+        dest="{{ item.key }}"
+        content="{{ item.value.content }}"
+        owner="{{ item.value.owner }}"
+        group="{{ item.value.group }}"
+        mode="{{ item.value.mode }}"
+      with_dict: "{{ nginx_ssl_cert_files }}"
+      no_log: true
+
+    - name: NGINX - SSL Configuration - Additional listen port
+      become: yes
+      lineinfile:
+        path: /etc/nginx/conf.d/omero-web.conf
+        insertafter: '    listen 80;'
+        line: '    listen 443 ssl;'
+            
+    - name: NGINX - SSL Configuration - Rest of SSL section to omero-web.conf
+      become: yes
+      blockinfile:
+        path: /etc/nginx/conf.d/omero-web.conf
+        insertbefore: '.*sendfile.*'
+        block: |2+
+
+              ssl_certificate {{ nginx_ssl_files_path }}/{{ nginx_ssl_cert_filename }};
+              ssl_certificate_key {{ nginx_ssl_files_path }}/{{ nginx_ssl_key_filename }};
+              ssl_protocols  {{ nginx_ssl_protocols }}
+            
+              if ($ssl_protocol = "") {
+                  rewrite ^/(.*) https://$host/$1 permanent;
+              }
+      notify:
+        - restart nginx
+
+    - name: Check_MK logwatch plugin | check for plugin existence
+      tags: monitoring
+      stat:
+        path: "{{ check_mk_agent_plugin_path }}/mk_logwatch"
+      register: check_mk_logwatch_plugin_st
+
+    - name: Check_MK logwatch plugin | activate the plugin
+      tags: monitoring
+      become: yes
+      command: cp "{{ check_mk_agent_plugin_path }}/mk_logwatch" /usr/share/check-mk-agent/plugins/ creates=/usr/share/check-mk-agent/plugins/mk_logwatch
+      when: check_mk_logwatch_plugin_st.stat.exists
+
+    - name: Check_MK logwatch plugin | check for default config file
+      tags: monitoring
+      stat:
+        path: "{{ check_mk_agent_config_example_path }}/logwatch.cfg"
+      register: check_mk_logwatch_plugin_conf_st
+      
+    - name: Check_MK logwatch plugin | copy the default config
+      tags: monitoring
+      become: yes
+      command: cp "{{ check_mk_agent_config_example_path }}/logwatch.cfg" "{{ check_mk_agent_config_path }}/logwatch.cfg" creates="{{ check_mk_agent_config_path }}/logwatch.cfg"
+      when: check_mk_logwatch_plugin_conf_st
+
+  vars:
+    # Check_MK (system monitoring) paths
+    check_mk_agent_plugin_path: /usr/share/check-mk-agent/available-plugins
+    check_mk_agent_config_example_path: /usr/share/check_mk/agents/cfg_examples
+    check_mk_agent_config_path: /etc/check-mk-agent
+
+    filesystem: "xfs"
+
+    omero_server_config_set:
+      omero.db.poolsize: 60
+      omero.jvmcfg.percent.blitz: 50
+      omero.jvmcfg.percent.indexer: 20
+      omero.jvmcfg.percent.pixeldata: 20
+      omero.jvmcfg.system_memory: 30000
+      omero.mail.config: true
+      omero.mail.from: "{{ omero_server_mail_from }}"
+      omero.mail.host: "{{ omero_server_mail_host }}"
+      omero.new_user_group: "My Data"
+      omero.search.batch: 100
+      omero.throttling.method_time.error: 60000
+
+    omero_web_config_set:
+      # https://www.openmicroscopy.org/site/support/omero5.3/sysadmins/public.html
+      omero.web.public.user: "{{ vault_omero_web_public_user }}" 
+      omero.web.public.password: "{{ vault_omero_web_public_password }}"
+      omero.web.public.enabled: True
+      omero.web.public.server_id: 1
+      omero.web.public.url_filter: "^/(webgateway/(?!(archived_files|download_as))|webclient/annotation/([0-9]+)/)"
+      omero.web.server_list: [["demo.openmicroscopy.org", 4064, "omero"]]
+      # Advice is (2*cores + 1) from OME docs. 
+      omero.web.wsgi_workers: "{{ (2 * (ansible_processor_count * ansible_processor_cores)) + 1 }}"
+      omero.web.admins:  "{{ omero_web_admins }}"
+
