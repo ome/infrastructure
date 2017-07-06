@@ -31,6 +31,11 @@
       when: "'10.1.255.216' in ansible_dns.nameservers"
 
     - role: openmicroscopy.nginx
+
+    - role: openmicroscopy.jekyll-build
+      tags: jekyll
+      jekyll_build_git_repo: "https://github.com/openmicroscopy/www.openmicroscopy.org"
+      jekyll_build_force_rebuild: True
    
   post_tasks:
     - name: NGINX - Performance tuning - worker processes

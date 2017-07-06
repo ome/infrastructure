@@ -3,6 +3,10 @@
 - name: openmicroscopy.nginx
   src:  https://github.com/openmicroscopy/ansible-role-nginx.git
 
+- name: openmicroscopy.jekyll-build
+  src:  https://github.com/openmicroscopy/ansible-role-jekyll-build.git
+  version: 1.1.1
+
 - name: openmicroscopy.lvm-partition
   src: https://github.com/openmicroscopy/ansible-role-lvm-partition.git
 
