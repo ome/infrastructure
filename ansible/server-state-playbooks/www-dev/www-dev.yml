@@ -67,31 +67,7 @@
         mode="{{ item.value.mode }}"
       with_dict: "{{ nginx_ssl_cert_files }}"
       no_log: true
-
-    - name: NGINX - SSL Configuration - Additional listen port
-      become: yes
-      lineinfile:
-        path: /etc/nginx/conf.d/omero-web.conf
-        insertafter: '    listen 80;'
-        line: '    listen 443 ssl;'
             
-    - name: NGINX - SSL Configuration - Rest of SSL section to omero-web.conf
-      become: yes
-      blockinfile:
-        path: /etc/nginx/conf.d/omero-web.conf
-        insertbefore: '.*sendfile.*'
-        block: |2+
-
-              ssl_certificate {{ nginx_ssl_files_path }}/{{ nginx_ssl_cert_filename }};
-              ssl_certificate_key {{ nginx_ssl_files_path }}/{{ nginx_ssl_key_filename }};
-              ssl_protocols  {{ nginx_ssl_protocols }}
-            
-              if ($ssl_protocol = "") {
-                  rewrite ^/(.*) https://$host/$1 permanent;
-              }
-      notify:
-        - restart nginx
-
     - name: Check_MK logwatch plugin | check for plugin existence
       tags: monitoring
       stat:
@@ -124,28 +100,4 @@
 
     filesystem: "xfs"
 
-    omero_server_config_set:
-      omero.db.poolsize: 60
-      omero.jvmcfg.percent.blitz: 50
-      omero.jvmcfg.percent.indexer: 20
-      omero.jvmcfg.percent.pixeldata: 20
-      omero.jvmcfg.system_memory: 30000
-      omero.mail.config: true
-      omero.mail.from: "{{ omero_server_mail_from }}"
-      omero.mail.host: "{{ omero_server_mail_host }}"
-      omero.new_user_group: "My Data"
-      omero.search.batch: 100
-      omero.throttling.method_time.error: 60000
-
-    omero_web_config_set:
-      # https://www.openmicroscopy.org/site/support/omero5.3/sysadmins/public.html
-      omero.web.public.user: "{{ vault_omero_web_public_user }}" 
-      omero.web.public.password: "{{ vault_omero_web_public_password }}"
-      omero.web.public.enabled: True
-      omero.web.public.server_id: 1
-      omero.web.public.url_filter: "^/(webgateway/(?!(archived_files|download_as))|webclient/annotation/([0-9]+)/)"
-      omero.web.server_list: [["demo.openmicroscopy.org", 4064, "omero"]]
-      # Advice is (2*cores + 1) from OME docs. 
-      omero.web.wsgi_workers: "{{ (2 * (ansible_processor_count * ansible_processor_cores)) + 1 }}"
-      omero.web.admins:  "{{ omero_web_admins }}"
 
