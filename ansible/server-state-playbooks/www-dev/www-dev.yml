@@ -73,6 +73,16 @@
       jekyll_build_force_rebuild: True
    
   post_tasks:
+
+    # TODO define this in a variable from host_vars, as varies per-host
+    # and we are also using it in the config for role openmicroscopy.jekyll-build
+    - name: Deployed HTML Symlink
+      become: yes
+      file:
+        src: /var/www/localhost/html/
+        path: /var/www/localhost/html/www.openmicroscopy.org
+        state: link
+
     - name: NGINX - Performance tuning - worker processes
       become: yes
       replace:
