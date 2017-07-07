@@ -22,7 +22,42 @@
         vg: VolGroup00
         size: "{{ provision_root_lvsize }}"
         shrink: no
-    
+
+    - name: Jekyll Prerequisites | Ruby
+      become: yes
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - ruby
+        - ruby-devel
+        - zlib-devel
+        - "@Development tools"
+
+    - name: Jekyll/Travis Prerequisites | Prerequisite Gems
+      become: yes
+      gem:
+        name: jekyll-feed
+        version: 0.7
+
+    - name: Jekyll/Travis Prerequisites | Prerequisite Gems
+      become: yes
+      gem:
+        name: nokogiri
+        version: 1.6.8.1
+
+    - name: Jekyll/Travis Prerequisites | Prerequisite Gems
+      become: yes
+      gem:
+        name: activesupport
+        version: 4.2.9
+
+    - name: Jekyll/Travis Prerequisites | Prerequisite Gems
+      become: yes
+      gem:
+        name: html-proofer
+        version: 3.2.0
+
   roles:
     # Now OME are using RHEL without Spacewalk, the current best-method of
     # checking `is server deployed in Dundee/SLS` is checking for the SLS nameservers.
@@ -72,6 +107,15 @@
         mode="{{ item.value.mode }}"
       with_dict: "{{ nginx_ssl_cert_files }}"
       no_log: true
+
+    - name: NGINX config | www-dev.openmicroscopy.org
+      become: yes
+      template:
+        src: templates/www-dev.openmicroscopy.org.conf.j2
+        dest: "/etc/nginx/conf.d/www-dev.openmicroscopy.org.conf"
+        owner: "root" 
+        group: "root" 
+        mode: "u=rw,go=r"
             
     - name: Check_MK logwatch plugin | check for plugin existence
       tags: monitoring
@@ -95,7 +139,7 @@
       tags: monitoring
       become: yes
       command: cp "{{ check_mk_agent_config_example_path }}/logwatch.cfg" "{{ check_mk_agent_config_path }}/logwatch.cfg" creates="{{ check_mk_agent_config_path }}/logwatch.cfg"
-      when: check_mk_logwatch_plugin_conf_st
+      when: check_mk_logwatch_plugin_conf_st.stat.exists
 
   vars:
     # Check_MK (system monitoring) paths
