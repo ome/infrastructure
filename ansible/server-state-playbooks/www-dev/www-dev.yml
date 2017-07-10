@@ -58,6 +58,12 @@
         name: html-proofer
         version: 3.2.0
 
+    - name: Jekyll/Travis Prerequisites | Prerequisite Gems
+      become: yes
+      gem:
+        name: jekyll-paginate
+        version: 1.1.0
+
   roles:
     # Now OME are using RHEL without Spacewalk, the current best-method of
     # checking `is server deployed in Dundee/SLS` is checking for the SLS nameservers.
