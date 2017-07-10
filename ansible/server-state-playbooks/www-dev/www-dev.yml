@@ -2,6 +2,8 @@
 
 # hosts: all for vagrant testing
 - hosts: infra-testpr.openmicroscopy.org
+  environment:
+      PATH: /usr/local/bin:{{ ansible_env.PATH }}
   pre_tasks:
     - name: Install open-vm-tools if system is a VMware vm
       become: yes
@@ -23,46 +25,6 @@
         size: "{{ provision_root_lvsize }}"
         shrink: no
 
-    - name: Jekyll Prerequisites | Ruby
-      become: yes
-      yum:
-        name: "{{ item }}"
-        state: present
-      with_items:
-        - ruby
-        - ruby-devel
-        - zlib-devel
-        - "@Development tools"
-
-    - name: Jekyll/Travis Prerequisites | Prerequisite Gems
-      become: yes
-      gem:
-        name: jekyll-feed
-        version: 0.7
-
-    - name: Jekyll/Travis Prerequisites | Prerequisite Gems
-      become: yes
-      gem:
-        name: nokogiri
-        version: 1.6.8.1
-
-    - name: Jekyll/Travis Prerequisites | Prerequisite Gems
-      become: yes
-      gem:
-        name: activesupport
-        version: 4.2.9
-
-    - name: Jekyll/Travis Prerequisites | Prerequisite Gems
-      become: yes
-      gem:
-        name: html-proofer
-        version: 3.2.0
-
-    - name: Jekyll/Travis Prerequisites | Prerequisite Gems
-      become: yes
-      gem:
-        name: jekyll-paginate
-        version: 1.1.0
 
   roles:
     # Now OME are using RHEL without Spacewalk, the current best-method of
