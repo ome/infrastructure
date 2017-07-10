@@ -1,0 +1,16 @@
+server {
+        listen 80 default_server;
+
+        root /var/www/localhost/html/;
+        index index.html index.htm;
+
+        server_name {{ ansible_hostname }};
+
+        location / {
+                # First attempt to serve request as file, then
+                # as directory, then fall back to displaying a 404.
+                try_files $uri $uri/ /index.html;
+                # Uncomment to enable naxsi on this location
+                # include /etc/nginx/naxsi.rules
+        }
+}
