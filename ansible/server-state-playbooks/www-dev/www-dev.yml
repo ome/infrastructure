@@ -132,6 +132,7 @@
         owner: "root" 
         group: "root" 
         mode: "u=rw,go=r"
+      notify: restart nginx
             
     - name: Check_MK logwatch plugin | check for plugin existence
       tags: monitoring
