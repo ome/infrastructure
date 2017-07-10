@@ -46,6 +46,7 @@
     # and we are also using it in the config for role openmicroscopy.jekyll-build
     - name: Deployed HTML Symlink
       become: yes
+      tags: jekyll
       file:
         src: /var/www/localhost/html/
         path: /var/www/localhost/html/www.openmicroscopy.org
