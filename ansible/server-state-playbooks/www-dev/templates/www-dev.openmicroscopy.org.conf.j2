@@ -1,5 +1,10 @@
 server {
         listen 80 default_server;
+        listen 443 default_server ssl;
+
+        ssl_certificate {{ nginx_ssl_files_path }}/{{ nginx_ssl_cert_filename }};
+        ssl_certificate_key {{ nginx_ssl_files_path }}/{{ nginx_ssl_key_filename }};
+        ssl_protocols  {{ nginx_ssl_protocols }}
 
         root /var/www/localhost/html/;
         index index.html index.htm;
