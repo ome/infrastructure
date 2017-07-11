@@ -19,6 +19,11 @@ server {
                 # include /etc/nginx/naxsi.rules
         }
 
+        location /community {
+                proxy_set_header Host www.openmicroscopy.org;
+                proxy_pass $scheme://134.36.65.239$request_uri/;
+        }
+
         error_page 404 /404.html;
 
 
