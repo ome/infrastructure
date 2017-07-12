@@ -1,10 +1,7 @@
-# Workaround until https://github.com/ansible/galaxy-issues/issues/259 is fixed
-#
-- name: openmicroscopy.omero-common
-  src: https://github.com/openmicroscopy/ansible-role-omero-common
-  version: master
-
 # External Ansible roles required by this repository
+
+- src: openmicroscopy.omero-common
+  version: 0.1.0
 
 - src: openmicroscopy.analysis-tools
   version: 1.0.0
@@ -61,7 +58,7 @@
   version: 1.0.0
 
 - src: openmicroscopy.nginx-proxy
-  version: 1.0.0
+  version: 1.1.0
 
 - src: openmicroscopy.nginx-ssl-selfsigned
   version: 1.0.0
@@ -113,29 +110,23 @@
 
 # External development roles
 
-- name: omero-user
-  src: https://github.com/openmicroscopy/ansible-role-omero-user
-  version: master
+- src: openmicroscopy.omero-user
+  version: 0.1.0
 
-- name: hosts-populate
-  src: https://github.com/openmicroscopy/ansible-role-hosts-populate
-  version: master
+- src: openmicroscopy.hosts-populate
+  version: 0.1.0
 
-- name: mysql-backup
-  src: https://github.com/openmicroscopy/ansible-role-mysql-backup
-  version: master
+- src: openmicroscopy.mysql-backup
+  version: 0.1.0
 
-- name: omero-web-apps
-  src: https://github.com/openmicroscopy/ansible-role-omero-web-apps
-  version: master
+- src: openmicroscopy.omero-web-apps
+  version: 0.1.0
 
-- name: reboot-server
-  src: https://github.com/openmicroscopy/ansible-role-reboot-server
-  version: master
+- src: openmicroscopy.reboot-server
+  version: 0.1.0
 
 - src: openmicroscopy.devspace
   version: 0.1.1
 
-- name: openmicroscopy.system-monitor-agent
-  src: https://github.com/openmicroscopy/ansible-role-system-monitor-agent
-  version: master
+- src: openmicroscopy.system-monitor-agent
+  version: 0.1.0
