@@ -145,8 +145,46 @@
     - match: default
       dest: /
 
+    # about
+    - match: /site/about
+      dest: /about
+    - match: /site/about/who-ome
+      dest: /about
+    - match: /site/about/licensing-attribution
+      dest: /licensing
+    - match: /site/about/ome-contributors
+      dest: /contributors
+    - match: /site/about/partners
+      dest: /commercial-partners
+    - match: /site/about/development-teams
+      dest: /teams
+
+    # products
+    - match: /site/products
+      dest: /products
     - match: /site/products/omero
       dest: /omero
+    - match: /site/products/omero/feature-list
+      dest: /omero/new
+    - match: /site/products/omero/big-images-support
+      dest: /omero/view/
+    - match: /site/products/bio-formats
+      dest: /bio-formats
+    - match: /site/products/ome-files-cpp
+      dest: /ome-files
+
+    # community
+    - match: /site/community
+      dest: /support
+    - match: /site/community/mailing-lists
+      dest: /support
+    - match: /site/community/jobs
+      dest: /careers
+
+    # support
+    - match: /site/support
+      dest: /docs
+    
 
     nginx_proxy_direct_locations:
     - location: "/"
