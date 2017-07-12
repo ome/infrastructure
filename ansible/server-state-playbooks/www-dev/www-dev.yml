@@ -147,13 +147,3 @@
 
     filesystem: "xfs"
 
-    ######################################################################
-    # Static webpages 
-
-    jekyll_build_sourcedir: /home/root/localhost
-    jekyll_build_root: /var/www/localhost/html
-    # already defined above..
-    jekyll_build_git_repo: "https://github.com/openmicroscopy/www.openmicroscopy.org"
-    jekyll_build_force_git: True
-    jekyll_build_baseurl: /
-
