@@ -1,7 +1,8 @@
 # Install NGINX, and prepare the OME (UoD/SLS) prerequisites
 
 # hosts: all for vagrant testing
-- hosts: infra-testpr.openmicroscopy.org
+#- hosts: infra-testpr.openmicroscopy.org
+- hosts: all
   environment:
       PATH: /usr/local/bin:{{ ansible_env.PATH }}
   pre_tasks:
@@ -25,6 +26,27 @@
         size: "{{ provision_root_lvsize }}"
         shrink: no
 
+    - name: NGINX - SSL File Deployment - prepare directory
+      become: yes
+      file:
+        path: "{{ nginx_ssl_files_path }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "u=r,go=" 
+
+    - name: NGINX - SSL File Deployment
+      become: yes
+      copy:
+        dest="{{ item.key }}"
+        content="{{ item.value.content }}"
+        owner="{{ item.value.owner }}"
+        group="{{ item.value.group }}"
+        mode="{{ item.value.mode }}"
+      with_dict: "{{ nginx_ssl_cert_files }}"
+      no_log: true
+
+
 
   roles:
     # Now OME are using RHEL without Spacewalk, the current best-method of
@@ -38,7 +60,21 @@
       jekyll_build_git_repo: "https://github.com/openmicroscopy/www.openmicroscopy.org"
       jekyll_build_force_rebuild: True
 
-    - role: openmicroscopy.nginx
+    - role: openmicroscopy.nginx_proxy
+      tags: nginxconf
+      nginx_proxy_backends:
+      - location: /legacy
+        server: http://www-legacy.openmicroscopy.org
+        #cache_validity: 1h
+      nginx_proxy_worker_processes: "{{ ((ansible_processor_count * ansible_processor_cores) / 2) |round|int }}"
+      nginx_proxy_ssl: True
+      nginx_proxy_ssl_certificate: "{{ nginx_ssl_files_path }}/{{ nginx_ssl_cert_filename }}"
+      nginx_proxy_ssl_certificate_key: "{{ nginx_ssl_files_path }}/{{ nginx_ssl_key_filename }}"
+      nginx_proxy_http2: True
+      nginx_proxy_force_ssl: False
+      nginx_proxy_hsts_age: 31536000
+
+    #- role: openmicroscopy.nginx
    
   post_tasks:
 
@@ -67,37 +103,17 @@
         regexp: 'worker_connections\s+\d+;'
         replace: "worker_connections 65000;"
 
-    - name: NGINX - SSL File Deployment - prepare directory
-      become: yes
-      file:
-        path: "{{ nginx_ssl_files_path }}"
-        state: directory
-        owner: root
-        group: root
-        mode: "u=r,go=" 
-
-    - name: NGINX - SSL File Deployment
-      become: yes
-      copy:
-        dest="{{ item.key }}"
-        content="{{ item.value.content }}"
-        owner="{{ item.value.owner }}"
-        group="{{ item.value.group }}"
-        mode="{{ item.value.mode }}"
-      with_dict: "{{ nginx_ssl_cert_files }}"
-      no_log: true
-
-    - name: NGINX config | www-dev.openmicroscopy.org
-      become: yes
-      tags: nginxconf
-      template:
-        src: templates/www-dev.openmicroscopy.org.conf.j2
-        dest: "/etc/nginx/conf.d/www-dev.openmicroscopy.org.conf"
-        owner: "root" 
-        group: "root" 
-        mode: "u=rw,go=r"
-      notify: restart nginx
-            
+#    - name: NGINX config | www-dev.openmicroscopy.org
+#      become: yes
+#      tags: nginxconf
+#      template:
+#        src: templates/www-dev.openmicroscopy.org.conf.j2
+#        dest: "/etc/nginx/conf.d/www-dev.openmicroscopy.org.conf"
+#        owner: "root" 
+#        group: "root" 
+#        mode: "u=rw,go=r"
+#      notify: restart nginx
+#            
     - name: Check_MK logwatch plugin | check for plugin existence
       tags: monitoring
       stat:
@@ -131,4 +147,13 @@
 
     filesystem: "xfs"
 
+    ######################################################################
+    # Static webpages 
+
+    jekyll_build_sourcedir: /home/root/localhost
+    jekyll_build_root: /var/www/localhost/html
+    # already defined above..
+    jekyll_build_git_repo: "https://github.com/openmicroscopy/www.openmicroscopy.org"
+    jekyll_build_force_git: True
+    jekyll_build_baseurl: /
 

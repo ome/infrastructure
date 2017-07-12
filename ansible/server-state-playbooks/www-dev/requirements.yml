@@ -3,6 +3,15 @@
 - name: openmicroscopy.nginx
   src:  https://github.com/openmicroscopy/ansible-role-nginx.git
 
+- name: openmicroscopy.nginx_proxy
+  src: https://github.com/openmicroscopy/ansible-role-nginx-proxy.git
+  version: 1.2.0
+
+# dependancy of nginx_proxy
+- name: openmicroscopy.selinux-utils
+  src: https://github.com/openmicroscopy/ansible-role-selinux-utils.git
+  version: 1.0.2
+
 - name: openmicroscopy.jekyll-build
   src:  https://github.com/openmicroscopy/ansible-role-jekyll-build.git
   version: 1.1.1

@@ -21,6 +21,7 @@ server {
 
         location /community {
                 proxy_set_header Host www.openmicroscopy.org;
+                proxy_set_header X-Real-IP $remote_addr;
                 proxy_pass $scheme://134.36.65.239$request_uri/;
         }
 
