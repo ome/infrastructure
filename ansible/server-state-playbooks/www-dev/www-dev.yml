@@ -1,8 +1,6 @@
 # Install NGINX, and prepare the OME (UoD/SLS) prerequisites
 
-# hosts: all for vagrant testing
-#- hosts: infra-testpr.openmicroscopy.org
-- hosts: all
+- hosts: infra-testpr.openmicroscopy.org
   environment:
       PATH: /usr/local/bin:{{ ansible_env.PATH }}
   pre_tasks:
@@ -62,10 +60,6 @@
 
     - role: openmicroscopy.nginx_proxy
       tags: nginxconf
-      nginx_proxy_backends:
-      - location: /legacy
-        server: http://www-legacy.openmicroscopy.org
-        #cache_validity: 1h
       nginx_proxy_worker_processes: "{{ ((ansible_processor_count * ansible_processor_cores) / 2) |round|int }}"
       nginx_proxy_ssl: True
       nginx_proxy_ssl_certificate: "{{ nginx_ssl_files_path }}/{{ nginx_ssl_cert_filename }}"
@@ -102,18 +96,7 @@
         path: "/etc/nginx/nginx.conf"
         regexp: 'worker_connections\s+\d+;'
         replace: "worker_connections 65000;"
-
-#    - name: NGINX config | www-dev.openmicroscopy.org
-#      become: yes
-#      tags: nginxconf
-#      template:
-#        src: templates/www-dev.openmicroscopy.org.conf.j2
-#        dest: "/etc/nginx/conf.d/www-dev.openmicroscopy.org.conf"
-#        owner: "root" 
-#        group: "root" 
-#        mode: "u=rw,go=r"
-#      notify: restart nginx
-#            
+            
     - name: Check_MK logwatch plugin | check for plugin existence
       tags: monitoring
       stat:
@@ -146,4 +129,26 @@
     check_mk_agent_config_path: /etc/check-mk-agent
 
     filesystem: "xfs"
+    
+    # Vars for role openmicroscopy.nginx_proxy
+    nginx_proxy_backends:
+      - location: /community
+        server: http://www-legacy.openmicroscopy.org/community
+        #cache_validity: 1h
+      
+    nginx_proxy_redirect_map_locations:
+    # TODO: change to 301 when we're happy
+    - location: "~ ^/(site)($|/)"
+      code: 302
 
+    nginx_proxy_redirect_map:
+    - match: default
+      dest: /
+
+    - match: /site/products/omero
+      dest: /omero
+
+    nginx_proxy_direct_locations:
+    - location: "= /"
+      alias: /var/www/localhost/html
+      index: index.html
