@@ -1,7 +1,6 @@
 # Install NGINX, and prepare the OME (UoD/SLS) prerequisites
 
-#- hosts: infra-testpr.openmicroscopy.org
-- hosts: all
+- hosts: infra-testpr.openmicroscopy.org
   environment:
       PATH: /usr/local/bin:{{ ansible_env.PATH }}
   pre_tasks:
