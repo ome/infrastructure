@@ -1,6 +1,7 @@
 # Install NGINX, and prepare the OME (UoD/SLS) prerequisites
 
-- hosts: infra-testpr.openmicroscopy.org
+#- hosts: infra-testpr.openmicroscopy.org
+- hosts: all
   environment:
       PATH: /usr/local/bin:{{ ansible_env.PATH }}
   pre_tasks:
@@ -149,6 +150,6 @@
       dest: /omero
 
     nginx_proxy_direct_locations:
-    - location: "= /"
-      alias: /var/www/localhost/html
+    - location: "/"
+      root: /var/www/localhost/html
       index: index.html
