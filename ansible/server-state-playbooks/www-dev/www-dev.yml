@@ -193,9 +193,11 @@
     - match: /site/community/jobs
       dest: /careers
 
-    # support
+    # misc
     - match: /site/support
       dest: /docs
+    - match: /site/news
+      dest: /announcements
     
 
     nginx_proxy_direct_locations:
