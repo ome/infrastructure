@@ -147,8 +147,20 @@
         server: http://www-legacy.openmicroscopy.org/site/support/omero
       - location: /site/support/omero5
         server: http://www-legacy.openmicroscopy.org/site/support/omero5
-      - location: /site/support/omero5.5
-        server: http://www-legacy.openmicroscopy.org/site/support/omero5.5
+      - location: /site/support/omero5.3
+        server: http://www-legacy.openmicroscopy.org/site/support/omero5.3
+      - location: /site/support/bio-formats
+        server: http://www-legacy.openmicroscopy.org/site/support/bio-formats
+      - location: /site/support/bio-formats5
+        server: http://www-legacy.openmicroscopy.org/site/support/omero5
+      - location: /site/support/bio-formats5.5
+        server: http://www-legacy.openmicroscopy.org/site/support/bio-formats5.5
+      - location: /site/support/ome-model
+        server: http://www-legacy.openmicroscopy.org/site/support/ome-model
+      - location: /site/support/contributing
+        server: http://docs.openmicroscopy.org/contributing
+      - location: /site/support/ome-files-cpp
+        server: http://www-legacy.openmicroscopy.org/site/support/ome-files-cpp
       - location: /site/products/omero/secvuln
         server: http://www-legacy.openmicroscopy.org/site/products/omero/secvuln
 
