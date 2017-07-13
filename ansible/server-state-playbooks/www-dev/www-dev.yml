@@ -152,7 +152,7 @@
       - location: /site/support/bio-formats
         server: http://www-legacy.openmicroscopy.org/site/support/bio-formats
       - location: /site/support/bio-formats5
-        server: http://www-legacy.openmicroscopy.org/site/support/omero5
+        server: http://www-legacy.openmicroscopy.org/site/support/bio-formats5
       - location: /site/support/bio-formats5.5
         server: http://www-legacy.openmicroscopy.org/site/support/bio-formats5.5
       - location: /site/support/ome-model
@@ -166,7 +166,7 @@
 
     nginx_proxy_redirect_map_locations:
     # TODO: change to 301 when we're happy
-    - location: "~ ^/(site)?/$"
+    - location: "~ ^/(site)/?$"
       code: 302
     - location: "~ ^/(site/about)($|/)"
       code: 302
