@@ -166,6 +166,8 @@
 
     nginx_proxy_redirect_map_locations:
     # TODO: change to 301 when we're happy
+    - location: "~ ^/(site)?/$"
+      code: 302
     - location: "~ ^/(site/about)($|/)"
       code: 302
     - location: "~ ^/(site/products)($|/)"
@@ -174,11 +176,19 @@
       code: 302
     - location: "~ ^/(site/news)($|/)"
       code: 302
+    - location: "~ ^/(site/support)/?$"
+      code: 302
 
     nginx_proxy_redirect_map:
     # by default redirect to the 404 page
     - match: default
       dest: /404.html
+
+    # top-level
+    - match: /site
+      dest: /
+    - match: /site/
+      dest: /
 
     # about
     - match: /site/about
@@ -217,6 +227,10 @@
       dest: /careers
 
     # news
+    - match: /site/support
+      dest: /docs
+    - match: /site/support/
+      dest: /
     - match: /site/news
       dest: /announcements
     
