@@ -176,8 +176,10 @@
       code: 302
 
     nginx_proxy_redirect_map:
+    # by default redirect to the 404 page
     - match: default
       dest: /404.html
+
     # about
     - match: /site/about
       dest: /about
@@ -214,7 +216,7 @@
     - match: /site/community/jobs
       dest: /careers
 
-    # misc
+    # news
     - match: /site/news
       dest: /announcements
     
