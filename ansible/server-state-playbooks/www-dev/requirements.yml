@@ -9,16 +9,12 @@
 
 # dependancy of nginx_proxy
 - name: openmicroscopy.selinux-utils
-  src: https://github.com/manics/ansible-role-selinux-utils.git
-  version: getenforce-path
-  #src: https://github.com/openmicroscopy/ansible-role-selinux-utils.git
-  #version: 1.0.2
+  src: https://github.com/openmicroscopy/ansible-role-selinux-utils.git
+  version: 1.0.3
 
 - name: openmicroscopy.jekyll-build
-  src: https://github.com/sbesson/ansible-role-jekyll-build.git
-  version: force_rebuild
-  #src:  https://github.com/openmicroscopy/ansible-role-jekyll-build.git
-  #version: 1.1.1
+  src: https://github.com/openmicroscopy/ansible-role-jekyll-build.git
+  version: 1.1.3
 
 - name: openmicroscopy.lvm-partition
   src: https://github.com/openmicroscopy/ansible-role-lvm-partition.git
