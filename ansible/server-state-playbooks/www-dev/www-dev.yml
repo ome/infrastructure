@@ -141,6 +141,8 @@
         server: http://www-legacy.openmicroscopy.org/Schemas
       - location: /XMLschemas
         server: http://www-legacy.openmicroscopy.org/XMLschemas
+      - location: /omero-blog
+        server: http://blog.openmicroscopy.org
       - location: /site/support/omero
         server: http://www-legacy.openmicroscopy.org/site/support/omero
       - location: /site/support/omero5
