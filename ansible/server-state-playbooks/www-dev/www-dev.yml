@@ -170,7 +170,7 @@
       code: 302
     - location: "~ ^/(site/about)($|/)"
       code: 302
-    - location: "~ ^/(site/products)($|/)"
+    - location: "~ ^/(site/products)(?!/omero/secvuln)($|/)"
       code: 302
     - location: "~ ^/(site/community)($|/)"
       code: 302
