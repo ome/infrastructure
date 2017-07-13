@@ -156,9 +156,6 @@
       code: 302
 
     nginx_proxy_redirect_map:
-    - match: default
-      dest: /
-
     # about
     - match: /site/about
       dest: /about
