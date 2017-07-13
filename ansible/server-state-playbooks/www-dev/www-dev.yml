@@ -134,7 +134,10 @@
     nginx_proxy_backends:
       - location: /community
         server: http://www-legacy.openmicroscopy.org/community
-        #cache_validity: 1h
+      - location: /qa2
+        server: http://www-legacy.openmicroscopy.org/qa2
+      - location: /Schemas
+        server: http://www-legacy.openmicroscopy.org/Schemas
       
     nginx_proxy_redirect_map_locations:
     # TODO: change to 301 when we're happy
