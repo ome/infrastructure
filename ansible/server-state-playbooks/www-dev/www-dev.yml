@@ -139,7 +139,15 @@
         server: http://www-legacy.openmicroscopy.org/qa2
       - location: /Schemas
         server: http://www-legacy.openmicroscopy.org/Schemas
-      
+      - location: /XMLschemas
+        server: http://www-legacy.openmicroscopy.org/XMLschemas
+      - location: /site/support/omero
+        server: http://www-legacy.openmicroscopy.org/site/support/omero
+      - location: /site/support/omero5
+        server: http://www-legacy.openmicroscopy.org/site/support/omero5
+      - location: /site/support/omero5.5
+        server: http://www-legacy.openmicroscopy.org/site/support/omero5.5
+
     nginx_proxy_redirect_map_locations:
     # TODO: change to 301 when we're happy
     - location: "~ ^/(site)($|/)"
