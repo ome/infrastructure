@@ -160,12 +160,12 @@
       code: 302
     - location: "~ ^/(site/community)($|/)"
       code: 302
-    - location: "~ ^/(site/support)($|/)"
-      code: 302
     - location: "~ ^/(site/news)($|/)"
       code: 302
 
     nginx_proxy_redirect_map:
+    - match: default
+      dest: /404.html
     # about
     - match: /site/about
       dest: /about
@@ -203,8 +203,6 @@
       dest: /careers
 
     # misc
-    - match: /site/support
-      dest: /docs
     - match: /site/news
       dest: /announcements
     
