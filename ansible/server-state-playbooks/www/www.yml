@@ -1,6 +1,6 @@
 # Install NGINX, and prepare the OME (UoD/SLS) prerequisites
 
-- hosts: infra-testpr.openmicroscopy.org
+- hosts: www
   environment:
       PATH: /usr/local/bin:{{ ansible_env.PATH }}
   pre_tasks:
@@ -58,6 +58,7 @@
       jekyll_build_git_repo: "https://github.com/snoopycrimecop/www.openmicroscopy.org"
       jekyll_build_git_branch: "gh-pages"
       jekyll_build_force_rebuild: True
+      jekyll_build_config: ['_config.yml', '_prod.yml']
 
     - role: openmicroscopy.nginx_proxy
       tags: nginxconf
@@ -72,17 +73,6 @@
     #- role: openmicroscopy.nginx
    
   post_tasks:
-
-    # TODO define this in a variable from host_vars, as varies per-host
-    # and we are also using it in the config for role openmicroscopy.jekyll-build
-    - name: Deployed HTML Symlink
-      become: yes
-      tags: jekyll
-      file:
-        src: /var/www/localhost/html/
-        path: /var/www/localhost/html/www.openmicroscopy.org
-        state: link
-
     - name: NGINX - Performance tuning - worker processes
       become: yes
       replace:
@@ -123,7 +113,7 @@
       when: check_mk_logwatch_plugin_conf_st.stat.exists
 
   vars:
-    vault: "{{ lookup('passwordstore', 'vault/{{ inventory_hostname }} returnall=True') | from_yaml }}"
+    vault: "{{ lookup('passwordstore', 'vault/www returnall=True') | from_yaml }}"
     # Check_MK (system monitoring) paths
     check_mk_agent_plugin_path: /usr/share/check-mk-agent/available-plugins
     check_mk_agent_config_example_path: /usr/share/check_mk/agents/cfg_examples
