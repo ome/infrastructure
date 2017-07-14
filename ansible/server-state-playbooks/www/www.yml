@@ -55,8 +55,7 @@
 
     - role: openmicroscopy.jekyll-build
       tags: jekyll
-      jekyll_build_git_repo: "https://github.com/snoopycrimecop/www.openmicroscopy.org"
-      jekyll_build_git_branch: "gh-pages"
+      jekyll_build_git_repo: "https://github.com/openmicroscopy/www.openmicroscopy.org"
       jekyll_build_force_rebuild: True
       jekyll_build_config: ['_config.yml', '_prod.yml']
 
