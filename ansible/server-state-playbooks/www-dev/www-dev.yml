@@ -1,6 +1,6 @@
 # Install NGINX, and prepare the OME (UoD/SLS) prerequisites
 
-- hosts: infra-testpr.openmicroscopy.org
+- hosts: www
   environment:
       PATH: /usr/local/bin:{{ ansible_env.PATH }}
   pre_tasks:
@@ -113,7 +113,7 @@
       when: check_mk_logwatch_plugin_conf_st.stat.exists
 
   vars:
-    vault: "{{ lookup('passwordstore', 'vault/{{ inventory_hostname }} returnall=True') | from_yaml }}"
+    vault: "{{ lookup('passwordstore', 'vault/www returnall=True') | from_yaml }}"
     # Check_MK (system monitoring) paths
     check_mk_agent_plugin_path: /usr/share/check-mk-agent/available-plugins
     check_mk_agent_config_example_path: /usr/share/check_mk/agents/cfg_examples
