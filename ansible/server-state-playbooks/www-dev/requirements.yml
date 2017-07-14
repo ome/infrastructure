@@ -13,8 +13,8 @@
   version: 1.0.3
 
 - name: openmicroscopy.jekyll-build
-  src: https://github.com/openmicroscopy/ansible-role-jekyll-build.git
-  version: 1.1.3
+  src: https://github.com/snoopycrimecop/ansible-role-jekyll-build.git
+  version: master/merge/daily
 
 - name: openmicroscopy.lvm-partition
   src: https://github.com/openmicroscopy/ansible-role-lvm-partition.git

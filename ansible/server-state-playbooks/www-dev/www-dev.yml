@@ -58,6 +58,7 @@
       jekyll_build_git_repo: "https://github.com/snoopycrimecop/www.openmicroscopy.org"
       jekyll_build_git_branch: "gh-pages"
       jekyll_build_force_rebuild: True
+      jekyll_build_config: ['_config.yml', '_prod.yml']
 
     - role: openmicroscopy.nginx_proxy
       tags: nginxconf
@@ -72,17 +73,6 @@
     #- role: openmicroscopy.nginx
    
   post_tasks:
-
-    # TODO define this in a variable from host_vars, as varies per-host
-    # and we are also using it in the config for role openmicroscopy.jekyll-build
-    - name: Deployed HTML Symlink
-      become: yes
-      tags: jekyll
-      file:
-        src: /var/www/localhost/html/
-        path: /var/www/localhost/html/www.openmicroscopy.org
-        state: link
-
     - name: NGINX - Performance tuning - worker processes
       become: yes
       replace:
