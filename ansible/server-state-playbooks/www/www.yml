@@ -131,50 +131,20 @@
         server: http://www-legacy.openmicroscopy.org/XMLschemas
       - location: /omero-blog
         server: http://blog.openmicroscopy.org
-      - location: /site/support/omero
-        server: http://www-legacy.openmicroscopy.org/site/support/omero
-      - location: /site/support/omero5
-        server: http://www-legacy.openmicroscopy.org/site/support/omero5
-      - location: /site/support/omero5.3
-        server: http://www-legacy.openmicroscopy.org/site/support/omero5.3
-      - location: /site/support/bio-formats
-        server: http://www-legacy.openmicroscopy.org/site/support/bio-formats
-      - location: /site/support/bio-formats5
-        server: http://www-legacy.openmicroscopy.org/site/support/bio-formats5
-      - location: /site/support/bio-formats5.5
-        server: http://www-legacy.openmicroscopy.org/site/support/bio-formats5.5
-      - location: /site/support/ome-model
-        server: http://www-legacy.openmicroscopy.org/site/support/ome-model
-      - location: /site/support/contributing
-        server: http://docs.openmicroscopy.org/contributing
-      - location: /site/support/ome-files-cpp
-        server: http://www-legacy.openmicroscopy.org/site/support/ome-files-cpp
-      - location: /site/products/omero/secvuln
-        server: http://www-legacy.openmicroscopy.org/site/products/omero/secvuln
 
     nginx_proxy_redirect_map_locations:
     # TODO: change to 301 when we're happy
-    - location: "~ ^/(site)/?$"
-      code: 302
-    - location: "~ ^/(site/about)($|/)"
-      code: 302
-    - location: "~ ^/(site/products)(?!/omero/secvuln)($|/)"
-      code: 302
-    - location: "~ ^/(site/community)($|/)"
-      code: 302
-    - location: "~ ^/(site/news)($|/)"
-      code: 302
-    - location: "~ ^/(site/support)/?$"
+    - location: "~ ^/(site)($|/)"
       code: 302
 
     nginx_proxy_redirect_map:
     # by default redirect to the 404 page
     - match: default
       dest: /404.html
-
-    # top-level
     - match: "~/site/?$"
       dest: /
+    - match: "~/site/news/?$"
+      dest: /announcements
 
     # about
     - match: "~/site/about/?$"
@@ -189,6 +159,8 @@
       dest: /commercial-partners
     - match: "~/site/about/development-teams/?$"
       dest: /teams
+    - match: "~/site/about/(?<link>.*)$"
+      dest: https://www-legacy.openmicroscopy.org/site/about/$link
 
     # products
     - match: "~/site/products/?$"
@@ -203,6 +175,8 @@
       dest: /bio-formats
     - match: "~/site/products/ome-files-cpp/?$"
       dest: /ome-files
+    - match: "~/site/products/(?<link>.*)$"
+      dest: https://www-legacy.openmicroscopy.org/site/products/$link
 
     # community
     - match: "~/site/community/?$"
@@ -211,13 +185,14 @@
       dest: /support
     - match: "~/site/community/jobs/?$"
       dest: /careers
+    - match: "~/site/community/(?<link>.*)$"
+      dest: https://www-legacy.openmicroscopy.org/site/community/$link
 
-    # news
+    # support
     - match: "~/site/support/?$"
       dest: /docs
-    - match: "~/site/news/?$"
-      dest: /announcements
-    
+    - match: "~/site/support/(?<link>.*)$"
+      dest: https://www-legacy.openmicroscopy.org/site/support/$link
 
     nginx_proxy_direct_locations:
     - location: "/"
