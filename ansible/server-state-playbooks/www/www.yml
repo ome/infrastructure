@@ -122,13 +122,13 @@
     # Vars for role openmicroscopy.nginx_proxy
     nginx_proxy_backends:
       - location: /community
-        server: http://www-legacy.openmicroscopy.org/community
+        server: https://www-legacy.openmicroscopy.org/community
       - location: /qa2
-        server: http://www-legacy.openmicroscopy.org/qa2
+        server: https://www-legacy.openmicroscopy.org/qa2
       - location: /Schemas
-        server: http://www-legacy.openmicroscopy.org/Schemas
+        server: https://www-legacy.openmicroscopy.org/Schemas
       - location: /XMLschemas
-        server: http://www-legacy.openmicroscopy.org/XMLschemas
+        server: https://www-legacy.openmicroscopy.org/XMLschemas
       - location: /omero-blog
         server: http://blog.openmicroscopy.org
 
