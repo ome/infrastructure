@@ -1,0 +1,6 @@
+---
+- name: cmake (debian) | Install CMake
+  apt:
+    name: cmake
+    state: absent
+  become: yes
