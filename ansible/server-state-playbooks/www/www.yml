@@ -138,11 +138,17 @@
       code: 302
     - location: "~ ^/(omero-blog)($|/)"
       code: 302
+    - location: "~ ^/(info)($|/)"
+      code: 302
 
     nginx_proxy_redirect_map:
     # by default redirect to the 404 page
     - match: default
       dest: /404.html
+    - match: "~/info/?$"
+      dest: /
+    - match: "~/info/(?<link>.*)$"
+      dest: https://www-legacy.openmicroscopy.org/info/$link
     - match: "~/omero-blog.*"
       dest: http://blog.openmicroscopy.org
     - match: "~/site/?$"
