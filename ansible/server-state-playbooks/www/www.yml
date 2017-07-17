@@ -131,18 +131,20 @@
         server: https://www-legacy.openmicroscopy.org/Schemas
       - location: /XMLschemas
         server: https://www-legacy.openmicroscopy.org/XMLschemas
-      - location: /omero-blog
-        server: http://blog.openmicroscopy.org
 
     nginx_proxy_redirect_map_locations:
     # TODO: change to 301 when we're happy
     - location: "~ ^/(site)($|/)"
+      code: 302
+    - location: "~ ^/(omero-blog)($|/)"
       code: 302
 
     nginx_proxy_redirect_map:
     # by default redirect to the 404 page
     - match: default
       dest: /404.html
+    - match: "~/omero-blog.*"
+      dest: http://blog.openmicroscopy.org
     - match: "~/site/?$"
       dest: /
     - match: "~/site/news/?$"
