@@ -6,12 +6,12 @@
 - name: python27 (windows) | Download the Python 2.7 installer
   win_get_url:
     url: 'https://www.python.org/ftp/python/{{ python27.windows.version }}/python-{{ python27.windows.version }}.amd64.msi'
-    dest: 'C:\Users\Admin\Downloads\python-{{ python27.windows.version }}.amd64.msi'
+    dest: "{{ ansible_user_dir }}\\Downloads\\python-{{ python27.windows.version }}.amd64.msi"
   when: not python_installed.stat.exists
 
 - name: python27 (windows) | Install MSI
   win_msi:
     creates: 'C:\Python27\python.exe'
     extra_args: "{{ python27.windows.installer_options }}"
-    path: 'C:\Users\Admin\Downloads\python-{{ python27.windows.version }}.amd64.msi'
+    path: "{{ ansible_user_dir }}\\Downloads\\python-{{ python27.windows.version }}.amd64.msi"
     state: present
