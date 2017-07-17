@@ -13,5 +13,5 @@
     groups:
       - ci-admins
       - Administrators
-    password: "{{ ci_admin_password_hash }}"
+    password: "{{ ci_admin_password }}"
     state: present
