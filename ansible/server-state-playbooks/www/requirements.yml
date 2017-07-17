@@ -4,8 +4,8 @@
   src:  https://github.com/openmicroscopy/ansible-role-nginx.git
 
 - name: openmicroscopy.nginx_proxy
-  src: https://github.com/openmicroscopy/ansible-role-nginx-proxy.git
-  version: 1.2.0
+  src: https://github.com/snoopycrimecop/ansible-role-nginx-proxy.git
+  version: master/merge/daily
 
 # dependancy of nginx_proxy
 - name: openmicroscopy.selinux-utils

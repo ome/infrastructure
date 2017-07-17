@@ -68,6 +68,7 @@
       nginx_proxy_http2: True
       nginx_proxy_force_ssl: False
       nginx_proxy_hsts_age: 31536000
+      nginx_proxy_404: "/404.html"
 
     #- role: openmicroscopy.nginx
    
