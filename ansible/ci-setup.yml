@@ -51,3 +51,15 @@
 - hosts: role-docs
   roles:
     - role: pkg-sphinx
+
+- hosts: role-vs2015
+  roles:
+    - role: pkg-vs2015
+
+- hosts: role-vs2017
+  roles:
+    - role: pkg-vs2017
+
+- hosts: role-cygwin
+  roles:
+    - role: cygwin
