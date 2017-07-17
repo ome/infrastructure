@@ -6,15 +6,15 @@
 - name: ci-scratch-storage (windows) | Create diskpart script
   win_copy:
     src: win-scratch-diskpart
-    dest: 'C:\Users\Admin\scratch-diskpart'
+    dest: "{{ ansible_user_dir }}\\scratch-diskpart"
   when: stat_drive.stat.exists == False
  
 - name: ci-scratch-storage (windows) | Create S drive
-  win_command: 'diskpart /s C:\Users\Admin\scratch-diskpart'
+  win_command: "diskpart /s {{ ansible_user_dir }}\\scratch-diskpart"
   when: stat_drive.stat.exists == False
 
 - name: ci-scratch-storage (windows) | Delete diskpart script
   win_file:
-    path: 'C:\Users\Admin\scratch-diskpart'
+    path: "{{ ansible_user_dir }}\\scratch-diskpart"
     state: absent
   when: stat_drive.stat.exists == False
