@@ -125,6 +125,8 @@
         server: https://www-legacy.openmicroscopy.org/community
       - location: /qa2
         server: https://www-legacy.openmicroscopy.org/qa2
+        location: /static
+        server: https://www-legacy.openmicroscopy.org
       - location: /Schemas
         server: https://www-legacy.openmicroscopy.org/Schemas
       - location: /XMLschemas
