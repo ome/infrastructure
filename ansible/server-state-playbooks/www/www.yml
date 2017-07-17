@@ -121,16 +121,21 @@
     
     # Vars for role openmicroscopy.nginx_proxy
     nginx_proxy_backends:
+      # Proxy for phpBB forums
       - location: /community
         server: https://www-legacy.openmicroscopy.org/community
+      # Proxy for QA application
       - location: /qa2
         server: https://www-legacy.openmicroscopy.org/qa2
       - location: /static
         server: https://www-legacy.openmicroscopy.org
+      # Proxy locations for OME Data Model schemas
       - location: /Schemas
         server: https://www-legacy.openmicroscopy.org/Schemas
       - location: /XMLschemas
         server: https://www-legacy.openmicroscopy.org/XMLschemas
+      - location: /schema_doc
+        server: https://www-legacy.openmicroscopy.org
 
     nginx_proxy_redirect_map_locations:
     # TODO: change to 301 when we're happy
