@@ -18,7 +18,7 @@ fi
 And ansible:
 
 ```
-pip install ansible
+pip install ansible shade
 pip install 'pywinrm[credssp]'
 ```
 
