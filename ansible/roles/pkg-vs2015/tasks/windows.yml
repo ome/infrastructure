@@ -1,0 +1,18 @@
+---
+- name: vs2015 (windows) | Check if Visual Studio 2015 Build Tools are installed
+  win_stat: path='C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/vcvarsall.bat'
+  register: vs2015_installed
+
+- name: vs2015 (windows) | Download the Visual Studio 2015 Build Tools installer
+  win_get_url:
+    url: 'http://go.microsoft.com/fwlink/?LinkId=691126&__hstc=268264337.1d17b8336c63a9a2e9dd4ba1dbfb08f5.1495812655625.1495812655625.1495812655625.1&__hssc=268264337.3.1495812655626&__hsfp=3622320289&fixForIE=.exe'
+    dest: "{{ ansible_user_dir }}\\Downloads\\vs_buildtools-2015.exe"
+  when: not vs2015_installed.stat.exists
+
+- name: vs2015 (windows) | Install Visual Studio 2015 Build Tools
+  raw: "{{ ansible_user_dir }}\\Downloads\\vs_buildtools-2015.exe /silent /norestart /SuppressRefreshPrompt"
+  when: not vs2015_installed.stat.exists
+
+- name: ci-base-setup (windows) | Reboot
+  win_reboot:
+  when: not vs2015_installed.stat.exists
