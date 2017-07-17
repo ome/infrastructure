@@ -164,8 +164,6 @@
     # about
     - match: "~/site/about/?$"
       dest: /about
-    - match: "~/site/about/who-ome/?$"
-      dest: /about
     - match: "~/site/about/licensing-attribution/?$"
       dest: /licensing
     - match: "~/site/about/ome-contributors/?$"
