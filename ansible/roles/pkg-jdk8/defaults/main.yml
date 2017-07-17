@@ -1,0 +1,6 @@
+---
+jdk8:
+  windows:
+    version: "1.8.0"
+    fullversion: "1.8.0.121-2"
+    build: "13"

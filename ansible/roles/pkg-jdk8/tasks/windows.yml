@@ -1,24 +1,30 @@
 ---
 - name: pkg-jdk8 (windows) | Check to see if java is installed
-  win_stat: path='C:/Program Files/ojdkbuild/java-1.8.0-openjdk-1.8.0.121-2/bin/java.exe'
+  win_stat: path="C:/Program Files/ojdkbuild/java-{{ jdk8.windows.version }}-openjdk-{{ jdk8.windows.fullversion }}/bin/java.exe"
   register: java_installed
 
 - name: pkg-jdk8 (windows) | Download the Java 8 installer
   win_get_url:
     # URL from https://github.com/ojdkbuild/ojdkbuild
-    url: 'https://github.com/ojdkbuild/ojdkbuild/releases/download/1.8.0.121-2/java-1.8.0-openjdk-1.8.0.121-2.b13.ojdkbuild.windows.x86_64.msi'
-    dest: 'C:\Users\Admin\Downloads\java-1.8.0-openjdk-1.8.0.121-2.b13.ojdkbuild.windows.x86_64.msi'
+    url: "https://github.com/ojdkbuild/ojdkbuild/releases/download/{{ jdk8.windows.fullversion }}/java-{{ jdk8.windows.version }}-openjdk-{{ jdk8.windows.fullversion }}.b{{ jdk8.windows.build }}.ojdkbuild.windows.x86_64.msi"
+    dest: "{{ ansible_user_dir }}\\Downloads\\java-{{ jdk8.windows.version }}-openjdk-{{ jdk8.windows.fullversion }}.b{{ jdk8.windows.build }}.ojdkbuild.windows.x86_64.msi"
   when: not java_installed.stat.exists
 
 - name: pkg-jdk8 (windows) | Install Java 8
   win_msi:
-    creates: 'C:\Program Files\ojdkbuild\java-1.8.0-openjdk-1.8.0.121-2\bin\java.exe'
-    path: 'C:\Users\Admin\Downloads\java-1.8.0-openjdk-1.8.0.121-2.b13.ojdkbuild.windows.x86_64.msi'
+    creates: "C:\Program Files\\ojdkbuild\\java-{{ jdk8.windows.version }}-openjdk-{{ jdk8.windows.fullversion }}\\bin\\java.exe"
+    path: "{{ ansible_user_dir }}\\Downloads\\java-{{ jdk8.windows.version }}-openjdk-{{ jdk8.windows.fullversion }}.b{{ jdk8.windows.build }}.ojdkbuild.windows.x86_64.msi"
     state: present
+  when: not java_installed.stat.exists
 
 - name: pkg-jdk8 (windows) | Set JAVA_HOME
   win_environment:
     state: present
     name: JAVA_HOME
-    value: 'C:\Program Files\ojdkbuild\java-1.8.0-openjdk-1.8.0.121-2'
+    value: "C:\\Program Files\\ojdkbuild\\java-{{ jdk8.windows.version }}-openjdk-{{ jdk8.windows.fullversion }}"
     level: machine
+  register: java_path
+
+- name: ci-base-setup (windows) | Reboot
+  win_reboot:
+  when: java_path.changed
