@@ -1,0 +1,14 @@
+---
+- name: vs2017 (windows) | Check if Visual Studio 2017 Build Tools are installed
+  win_stat: path='C:/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/VC/Auxiliary/Build/vcvarsall.bat'
+  register: vs2017_installed
+
+- name: vs2017 (windows) | Download the Visual Studio 2017 Build Tools installer
+  win_get_url:
+    url: 'https://aka.ms/vs/15/release/vs_buildtools.exe'
+    dest: "{{ ansible_user_dir }}\\Downloads\\vs_buildtools-2017.exe"
+  when: not vs2017_installed.stat.exists
+
+- name: vs2017 (windows) | Install Visual Studio 2017 Build Tools
+  raw: "{{ ansible_user_dir }}\\Downloads\\vs_buildtools-2017.exe --quiet --wait --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
+  when: not vs2017_installed.stat.exists
