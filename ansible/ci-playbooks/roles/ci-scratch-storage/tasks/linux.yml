@@ -1,0 +1,7 @@
+---
+- name: ci-scratch-storage (linux) | Create volume group
+  lvg:
+    pvs: /dev/vdb
+    state: present
+    vg: scratch
+  become: yes
