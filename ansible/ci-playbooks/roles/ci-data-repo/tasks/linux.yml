@@ -1,0 +1,17 @@
+---
+- name: ci-data-repo (linux) | Create CIFS credentials
+  become: yes
+  template:
+    src: debian-credentials.j2
+    dest: "/etc/fstab-fs0-hslave-x.cred"
+    force: yes
+    mode: 0600
+
+- name: ci-data-repo (linux) | Mount data repo
+  mount:
+    path: /data/ome-data-repo
+    src: //fs0.lifesci.dundee.ac.uk/ome-data-repo
+    fstype: cifs
+    opts: ro,uid=ci-data,gid=ci-data,credentials=/etc/fstab-fs0-hslave-x.cred
+    state: mounted
+  become: yes

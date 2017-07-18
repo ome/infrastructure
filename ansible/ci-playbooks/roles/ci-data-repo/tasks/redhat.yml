@@ -1,0 +1,6 @@
+---
+- name: ci-data-repo (redhat) | Install CIFS support
+  yum:
+    name: cifs-utils
+    state: latest
+  become: yes
