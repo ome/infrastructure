@@ -84,7 +84,7 @@
       jekyll_build_git_repo: "https://github.com/openmicroscopy/www.openmicroscopy.org"
       jekyll_build_force_rebuild: True
       jekyll_build_config: ['_config.yml', '_prod.yml']
-      jekyll_build_name: www.openmicroscopy.org
+      jekyll_build_name: "{{ website_name }}"
 
     - role: openmicroscopy.nginx_proxy
       tags: nginxconf
@@ -234,5 +234,5 @@
 
     nginx_proxy_direct_locations:
     - location: "/"
-      root: "/var/www/{{ jekyll_build_name }}/html"
+      root: "/var/www/{{ website_name }}/html"
       index: index.html
