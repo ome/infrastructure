@@ -3,3 +3,4 @@
   yum:
     name: '*'
     state: latest
+  become: yes
