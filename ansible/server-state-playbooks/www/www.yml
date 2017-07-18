@@ -16,7 +16,7 @@
     # Two tasks here which could instead ues the role at 
     # https://github.com/openmicroscopy/ansible-role-lvm-partition/, but that role 
     # will change the device name to symlinks rather than existing device ID.
-    - name: storage | Resize root LV 
+    - name: storage | Resize root LV
       tags: lvm
       become: yes
       lvol:
@@ -25,12 +25,31 @@
         size: "{{ provision_root_lvsize }}"
         shrink: no
 
-    - name: storage | Resize root FS 
+    # Grow the filesystem to fill the LV
+    - name: storage | Resize root FS
       tags: lvm
       become: yes
       filesystem:
         fstype: "{{ filesystem }}"
         dev: /dev/mapper/{{ lvm_vgname }}-root
+        resizefs: yes
+
+    - name: storage | Resize var_log LV
+      tags: lvm
+      become: yes
+      lvol:
+        lv: var_log
+        vg: "{{ lvm_vgname  }}"
+        size: "{{ provision_varlog_lvsize }}"
+        shrink: no
+
+    # Grow the filesystem to fill the LV
+    - name: storage | Resize var_log FS
+      tags: lvm
+      become: yes
+      filesystem:
+        fstype: "{{ filesystem }}"
+        dev: /dev/mapper/{{ lvm_vgname }}-var_log
         resizefs: yes
 
     - name: NGINX - SSL File Deployment - prepare directory
@@ -65,6 +84,7 @@
       jekyll_build_git_repo: "https://github.com/openmicroscopy/www.openmicroscopy.org"
       jekyll_build_force_rebuild: True
       jekyll_build_config: ['_config.yml', '_prod.yml']
+      jekyll_build_name: www.openmicroscopy.org
 
     - role: openmicroscopy.nginx_proxy
       tags: nginxconf
