@@ -129,7 +129,7 @@
     check_mk_agent_config_example_path: /usr/share/check_mk/agents/cfg_examples
     check_mk_agent_config_path: /etc/check-mk-agent
 
-    filesystem: "xfs"
+    filesystem: "ext4"
     
     # Vars for role openmicroscopy.nginx_proxy
     nginx_proxy_backends:
