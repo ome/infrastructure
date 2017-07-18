@@ -13,9 +13,10 @@
            ((ansible_virtualization_type is defined)
            and (ansible_virtualization_type == "VMware"))
 
-    # Perhaps alter the role at https://github.com/openmicroscopy/ansible-role-lvm-partition/
-    # to make some of the variables non-required.
-    - name: Resize root FS without altering mount options
+    # Two tasks here which could instead ues the role at 
+    # https://github.com/openmicroscopy/ansible-role-lvm-partition/, but that role 
+    # will change the device name to symlinks rather than existing device ID.
+    - name: storage | Resize root LV 
       tags: lvm
       become: yes
       lvol:
@@ -23,6 +24,14 @@
         vg: "{{ lvm_vgname  }}"
         size: "{{ provision_root_lvsize }}"
         shrink: no
+
+    - name: storage | Resize root FS 
+      tags: lvm
+      become: yes
+      filesystem:
+        fstype: "{{ filesystem }}"
+        dev: /dev/mapper/{{ lvm_vgname }}-root
+        resizefs: yes
 
     - name: NGINX - SSL File Deployment - prepare directory
       become: yes
@@ -45,22 +54,6 @@
       no_log: true
 
   roles:
-    - role: openmicroscopy.lvm-partition
-      tags: lvm
-      lvm_lvname: root
-      lvm_lvmount: /
-      lvm_lvsize: "{{ root_size }}"
-      lvm_lvfilesystem: "{{ filesystem }}"
-      lvm_shrink: False
-
-    - role: openmicroscopy.lvm-partition
-      tags: lvm
-      lvm_lvname: var_log
-      lvm_lvmount: /var/log
-      lvm_lvsize: "{{ varlog_size }}"
-      lvm_lvfilesystem: "{{ filesystem }}"
-      lvm_shrink: False
-
     # Now OME are using RHEL without Spacewalk, the current best-method of
     # checking `is server deployed in Dundee/SLS` is checking for the SLS nameservers.
     - role: openmicroscopy.system-monitor-agent
