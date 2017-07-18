@@ -22,7 +22,7 @@ Firstly, add the machine configuration to management_tools.
 Run the following:
 
 ```
-ansible-playbook -e "ci_host=<host>" -i <management_tools>/ansible/inventory/ci-openstack-hosts <infrastructure>/ansible/os-ci-create-machine.yml --vault-password-file=<vault>
+ansible-playbook -e "ci_host=<host>" -i <management_tools>/ansible/inventory/ci-openstack-hosts <infrastructure>/ansible/os-ci-create-machine.yml
 ```
 
 Substitute all names marked with `<name>` for the appropriate names
@@ -50,7 +50,7 @@ Unix platforms:
 # SSH in manually to add the host to your known_hosts
 ssh <user>@<host>
 
-ansible-playbook -l <host> -e "ansible_user=<user>" -u <user> -i <management_tools>/ansible/inventory/ci-openstack-hosts <infrastructure>/ansible/ci-initial-setup.yml --vault-password-file=<vault>
+ansible-playbook -l <host> -e "ansible_user=<user>" -u <user> -i <management_tools>/ansible/inventory/ci-openstack-hosts <infrastructure>/ansible/ci-initial-setup.yml
 ```
 
 As before, substitute all names marked with `<name>` for the
@@ -64,9 +64,9 @@ Windows:
 # Enable connection via credssp which is needed to avoid "double-hop"
 # problems; we have to do this step by hand since there's a
 # chicken-and-egg problem with connecting to do it in a playbook.
-ansible <host> -e "ansible_user=Admin ansible_password=<admin_password> ansible_winrm_transport=basic" -u Admin -i <management_tools>/ansible/inventory/ci-openstack-hosts --vault-password-file=<vault> -m win_shell -a "Enable-WSManCredSSP -Role Server -Force"
+ansible <host> -e "ansible_user=Admin ansible_password=<admin_password> ansible_winrm_transport=basic" -u Admin -i <management_tools>/ansible/inventory/ci-openstack-hosts -m win_shell -a "Enable-WSManCredSSP -Role Server -Force"
 
-ansible-playbook -l <host> -e "ansible_user=Admin ansible_password=<admin_password>" -u Admin -i <management_tools>/ansible/inventory/ci-openstack-hosts <infrastructure>/ansible/ci-initial-setup.yml --vault-password-file=<vault>
+ansible-playbook -l <host> -e "ansible_user=Admin ansible_password=<admin_password>" -u Admin -i <management_tools>/ansible/inventory/ci-openstack-hosts <infrastructure>/ansible/ci-initial-setup.yml
 ```
 
 Here, `<admin_password>` is the password for the Admin user, obtained as detailed on the [Windows image](windows-image.md) page.
@@ -80,7 +80,7 @@ purpose.  You shouldn't need to run the initial setup playbook again
 Run:
 
 ```
-ansible-playbook -l <host|group> -i <management_tools>/ansible/inventory/ci-openstack-hosts <infrastructure>/ansible/ci-setup.yml --vault-password-file=<vault>
+ansible-playbook -l <host|group> -i <management_tools>/ansible/inventory/ci-openstack-hosts <infrastructure>/ansible/ci-setup.yml
 ```
 
 Once this step completes, the node is ready to be added to jenkins.

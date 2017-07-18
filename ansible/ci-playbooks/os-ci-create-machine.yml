@@ -4,20 +4,20 @@
 #
 # Usage:
 #   Provision machine:
-#   $ ansible-playbook -e "ci_host=<host>" -i inventory/ci-hosts ansible/os-ci-create-machine.yml --vault-password-file=<vault>
+#   $ ansible-playbook -e "ci_host=<host>" -i inventory/ci-hosts ansible/os-ci-create-machine.yml
 #
 #   Initial setup:
 #     (FreeBSD)
 #       $ ssh freebsd@<host> # To add host key fingerprint
-#       $ ansible-playbook -l <host> -e "ansible_user=freebsd" -u freebsd -i inventory/ci-openstack-hosts ansible/ci-initial-setup.yml --vault-password-file=<vault>
+#       $ ansible-playbook -l <host> -e "ansible_user=freebsd" -u freebsd -i inventory/ci-openstack-hosts ansible/ci-initial-setup.yml
 #
 #     (Ubuntu)
-#       $ ansible-playbook -l <host> -e "ansible_user=ubuntu" -u ubuntu -i inventory/ci-openstack-hosts ./ci-initial-setup.yml --vault-password-file=<vault>
+#       $ ansible-playbook -l <host> -e "ansible_user=ubuntu" -u ubuntu -i inventory/ci-openstack-hosts ./ci-initial-setup.yml
 #
 #     (Windows)
 #       nova get-password ci-<host> | base64 -d | openssl rsautl -decrypt -inkey ~/.ssh/<ci key>
 #       ==> Admin password
-#       $ ansible-playbook -l <host> -e "ansible_user=Admin ansible_password=<password>" -u Admin -i inventory/ci-openstack-hosts ansible/ci-initial-setup.yml --vault-password-file=<vault>
+#       $ ansible-playbook -l <host> -e "ansible_user=Admin ansible_password=<password>" -u Admin -i inventory/ci-openstack-hosts ansible/ci-initial-setup.yml
 
 - hosts: localhost
   connection: local
