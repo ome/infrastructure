@@ -1,0 +1,5 @@
+---
+- name: ci-base-setup (redhat) | Set hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+  become: yes
