@@ -1,8 +1,5 @@
 ---
 
-- name: openmicroscopy.nginx
-  src:  https://github.com/openmicroscopy/ansible-role-nginx.git
-
 - name: openmicroscopy.nginx_proxy
   src: https://github.com/openmicroscopy/ansible-role-nginx-proxy.git
   version: 1.4.0
@@ -15,9 +12,6 @@
 - name: openmicroscopy.jekyll-build
   src: https://github.com/openmicroscopy/ansible-role-jekyll-build.git
   version: 1.2.0
-
-- name: openmicroscopy.lvm-partition
-  src: https://github.com/openmicroscopy/ansible-role-lvm-partition.git
 
 - name: openmicroscopy.system-monitor-agent
   src: https://github.com/openmicroscopy/ansible-role-system-monitor-agent.git
