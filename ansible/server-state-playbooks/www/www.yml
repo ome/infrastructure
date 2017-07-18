@@ -234,5 +234,5 @@
 
     nginx_proxy_direct_locations:
     - location: "/"
-      root: /var/www/localhost/html
+      root: "/var/www/{{ jekyll_build_name }}/html"
       index: index.html
