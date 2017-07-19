@@ -1,0 +1,10 @@
+---
+- name: pkg-jenkins-tools (redhat) | Install download and upload tools
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - curl
+    - wget
+    - rsync
+  become: yes
