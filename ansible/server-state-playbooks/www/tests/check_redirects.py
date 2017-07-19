@@ -11,11 +11,11 @@ import pytest
 import requests
 
 
-HOST = os.getenv('HOST', 'https://infra-testpr.openmicroscopy.org')
+HOST = os.getenv('HOST', 'https://ome-www.openmicroscopy.org')
 
 
 # Based on
-# https://github.com/sbesson/infrastructure/blob/3fd40a3ad61a0f496b4815e4abbeadca798ce210/ansible/server-state-playbooks/www-dev/www-dev.yml#L172
+# https://github.com/openmicroscopy/infrastructure/blob/master/ansible/server-state-playbooks/www/www.yml
 @pytest.mark.parametrize('uri,expect', [
     ('/site', '/'),
     ('/site/about/licensing-attribution', '/licensing'),
