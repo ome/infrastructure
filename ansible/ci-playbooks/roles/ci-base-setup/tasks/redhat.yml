@@ -3,3 +3,14 @@
   hostname:
     name: "{{ inventory_hostname }}"
   become: yes
+
+- name: ci-base-setup (redhat) | Install Python packages for SNI
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - pyOpenSSL
+    - python2-ndg_httpsclient
+    - python-pyasn1
+  become: yes
+  when: ansible_distribution_major_version == '6'
