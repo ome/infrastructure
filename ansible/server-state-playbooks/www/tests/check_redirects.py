@@ -12,6 +12,7 @@ import requests
 
 
 HOST = os.getenv('HOST', 'https://ome-www.openmicroscopy.org')
+LEGACY_HOST = os.getenv('LEGACY_HOST', 'https://www-legacy.openmicroscopy.org')
 
 
 # Based on
@@ -35,6 +36,16 @@ def test_redirect_with_slash(uri, expect, suffix):
     r = requests.head('%s%s%s' % (HOST, uri, suffix))
     assert r.is_redirect
     assert r.headers['Location'] == '%s%s' % (HOST, expect)
+
+
+@pytest.mark.parametrize('uri', [
+    '/site/about/publications',
+    ])
+@pytest.mark.parametrize('suffix', ['', '/'])
+def test_legacy_redirects(uri, suffix):
+    r = requests.head('%s%s%s' % (HOST, uri, suffix))
+    assert r.is_redirect
+    assert r.headers['Location'] == '%s%s%s' % (LEGACY_HOST, uri, suffix)
 
 
 def test_404():
