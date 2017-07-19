@@ -1,7 +1,7 @@
 ---
-- include: debian.yml
+- include: linux.yml
   static: no
-  when: ansible_os_family == 'Debian'
+  when: ansible_system == 'Linux'
 
 - include: freebsd.yml
   static: no
