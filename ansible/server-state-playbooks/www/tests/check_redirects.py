@@ -28,6 +28,10 @@ LEGACY_HOST = os.getenv('LEGACY_HOST', 'https://www-legacy.openmicroscopy.org')
     ('/site/community/mailing-lists', '/support'),
     ('/site/community/jobs', '/careers'),
 
+    ('/site/products', '/products'),
+    ('/site/products/bio-formats', '/bio-formats'),
+    ('/site/products/omero', '/omero'),
+
     ('/site/support', '/docs'),
     ('/site/news', '/announcements'),
 ])
@@ -40,6 +44,10 @@ def test_redirect_with_slash(uri, expect, suffix):
 
 @pytest.mark.parametrize('uri', [
     '/site/about/publications',
+    '/site/community/scripts',
+    '/site/products/partner',
+    '/site/support/omero5.3',
+    '/site/support/bio-formats5.5',
     ])
 @pytest.mark.parametrize('suffix', ['', '/'])
 def test_legacy_redirects(uri, suffix):
@@ -64,6 +72,8 @@ def test_404():
     ('/community/viewtopic.php?p=18303#p18303',
      '<div id="p18303" class="post bg1">'),
     ('/community/index.php', 'Index page</title>'),
+    ('/Schemas/', 'Open Microscopy Environment Schemas</title>'),
+    ('/Schemas/OME/2016-06/ome.xsd', 'Schema June 2016'),
 ])
 def test_content(uri, content):
     r = requests.get('%s%s' % (HOST, uri))
