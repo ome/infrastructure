@@ -1,0 +1,6 @@
+---
+- name: pkg-jdk8 (redhat) | Install JDK8
+  yum:
+    name: java-1.8.0-openjdk-devel
+    state: latest
+  become: yes
