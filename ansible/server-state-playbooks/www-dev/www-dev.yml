@@ -1,0 +1,134 @@
+# Install NGINX, and prepare the OME (UoD/SLS) prerequisites
+
+# hosts: all for vagrant testing
+- hosts: infra-testpr.openmicroscopy.org
+  environment:
+      PATH: /usr/local/bin:{{ ansible_env.PATH }}
+  pre_tasks:
+    - name: Install open-vm-tools if system is a VMware vm
+      become: yes
+      yum:
+        name: open-vm-tools
+        state: latest
+      when: >
+           ((ansible_virtualization_type is defined)
+           and (ansible_virtualization_type == "VMware"))
+
+    # Perhaps alter the role at https://github.com/openmicroscopy/ansible-role-lvm-partition/
+    # to make some of the variables non-required.
+    - name: Resize root FS without altering mount options
+      tags: lvm
+      become: yes
+      lvol:
+        lv: root
+        vg: VolGroup00
+        size: "{{ provision_root_lvsize }}"
+        shrink: no
+
+
+  roles:
+    # Now OME are using RHEL without Spacewalk, the current best-method of
+    # checking `is server deployed in Dundee/SLS` is checking for the SLS nameservers.
+    - role: openmicroscopy.system-monitor-agent
+      tags: monitoring
+      when: "'10.1.255.216' in ansible_dns.nameservers"
+
+    - role: openmicroscopy.jekyll-build
+      tags: jekyll
+      jekyll_build_git_repo: "https://github.com/openmicroscopy/www.openmicroscopy.org"
+      jekyll_build_force_rebuild: True
+
+    - role: openmicroscopy.nginx
+   
+  post_tasks:
+
+    # TODO define this in a variable from host_vars, as varies per-host
+    # and we are also using it in the config for role openmicroscopy.jekyll-build
+    - name: Deployed HTML Symlink
+      become: yes
+      tags: jekyll
+      file:
+        src: /var/www/localhost/html/
+        path: /var/www/localhost/html/www.openmicroscopy.org
+        state: link
+
+    - name: NGINX - Performance tuning - worker processes
+      become: yes
+      replace:
+        path: "/etc/nginx/nginx.conf"
+        regexp: '^worker_processes\s+\d+;'
+        replace: "worker_processes {{ ((ansible_processor_count * ansible_processor_cores) / 2) |round|int }};"
+
+    # cf https://www.digitalocean.com/community/tutorials/how-to-optimize-nginx-configuration
+    - name: NGINX - Performance tuning - worker connections
+      become: yes
+      replace:
+        path: "/etc/nginx/nginx.conf"
+        regexp: 'worker_connections\s+\d+;'
+        replace: "worker_connections 65000;"
+
+    - name: NGINX - SSL File Deployment - prepare directory
+      become: yes
+      file:
+        path: "{{ nginx_ssl_files_path }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "u=r,go=" 
+
+    - name: NGINX - SSL File Deployment
+      become: yes
+      copy:
+        dest="{{ item.key }}"
+        content="{{ item.value.content }}"
+        owner="{{ item.value.owner }}"
+        group="{{ item.value.group }}"
+        mode="{{ item.value.mode }}"
+      with_dict: "{{ nginx_ssl_cert_files }}"
+      no_log: true
+
+    - name: NGINX config | www-dev.openmicroscopy.org
+      become: yes
+      tags: nginxconf
+      template:
+        src: templates/www-dev.openmicroscopy.org.conf.j2
+        dest: "/etc/nginx/conf.d/www-dev.openmicroscopy.org.conf"
+        owner: "root" 
+        group: "root" 
+        mode: "u=rw,go=r"
+      notify: restart nginx
+            
+    - name: Check_MK logwatch plugin | check for plugin existence
+      tags: monitoring
+      stat:
+        path: "{{ check_mk_agent_plugin_path }}/mk_logwatch"
+      register: check_mk_logwatch_plugin_st
+
+    - name: Check_MK logwatch plugin | activate the plugin
+      tags: monitoring
+      become: yes
+      command: cp "{{ check_mk_agent_plugin_path }}/mk_logwatch" /usr/share/check-mk-agent/plugins/ creates=/usr/share/check-mk-agent/plugins/mk_logwatch
+      when: check_mk_logwatch_plugin_st.stat.exists
+
+    - name: Check_MK logwatch plugin | check for default config file
+      tags: monitoring
+      stat:
+        path: "{{ check_mk_agent_config_example_path }}/logwatch.cfg"
+      register: check_mk_logwatch_plugin_conf_st
+      
+    - name: Check_MK logwatch plugin | copy the default config
+      tags: monitoring
+      become: yes
+      command: cp "{{ check_mk_agent_config_example_path }}/logwatch.cfg" "{{ check_mk_agent_config_path }}/logwatch.cfg" creates="{{ check_mk_agent_config_path }}/logwatch.cfg"
+      when: check_mk_logwatch_plugin_conf_st.stat.exists
+
+  vars:
+    vault: "{{ lookup('passwordstore', 'vault/{{ inventory_hostname }} returnall=True') | from_yaml }}"
+    # Check_MK (system monitoring) paths
+    check_mk_agent_plugin_path: /usr/share/check-mk-agent/available-plugins
+    check_mk_agent_config_example_path: /usr/share/check_mk/agents/cfg_examples
+    check_mk_agent_config_path: /etc/check-mk-agent
+
+    filesystem: "xfs"
+
+

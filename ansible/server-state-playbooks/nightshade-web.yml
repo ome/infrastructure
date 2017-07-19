@@ -1,5 +1,5 @@
 # Install OMERO.web with a public user on localhost
-# Pass the command line 'upgrade-webapps' flag to upgrade webapps
+# Pass the command line 'upgrade_webapps' flag to upgrade webapps
 
 - hosts: ns-web.openmicroscopy.org
 
@@ -24,7 +24,7 @@
 
     # OMERO.web configuration in host_vars in different repository
     - role: openmicroscopy.omero-web
-      omero_web_release: 5.3.2
+      omero_web_release: 5.3.3
       no_log: true
 
     # Now OME are using RHEL without Spacewalk, the current best-method of
