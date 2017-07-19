@@ -9,8 +9,11 @@
     - name: ci-initial-setup | Install python
       raw: "if test -x /usr/bin/apt; then test -e /usr/bin/python || (apt -y update && apt install -y python-minimal); fi"
       become: yes
-    - name: ci-initial-setup | Install pip
+    - name: ci-initial-setup (debian) | Install pip
       raw: "if test -x /usr/bin/apt; then test -e /usr/bin/pip || (apt -y update && apt install -y python-pip); fi"
+      become: yes
+    - name: ci-initial-setup (redhat) | Install pip
+      raw: "if test -f /etc/redhat-release; then test -e /usr/bin/pip || (yum -y install epel-release && yum -y install python-pip); fi"
       become: yes
     # aptitude might not yet be installed (needed for package tasks).
     - name: ci-initial-setup | Install aptitude
