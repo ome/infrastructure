@@ -1,0 +1,9 @@
+---
+- name: zip (redhat) | Install zip and unzip
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - zip
+    - unzip
+  become: yes
