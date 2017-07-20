@@ -1,0 +1,28 @@
+---
+- name: pkg-cpp-tools (redhat) | Install C++ build tools
+  yum:
+    name: '@Development tools'
+    state: latest
+  become: yes
+
+- name: pkg-cpp-tools (redhat) | Install GNU Autotools
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - autoconf
+    - automake
+    - libtool
+  become: yes
+
+- name: pkg-cpp-tools (redhat) | Enable SCL repository
+  yum:
+    name: centos-release-scl-rh
+    state: latest
+  become: yes
+
+- name: pkg-cpp-tools (redhat) | Install Devtoolset-4
+  yum:
+    name: devtoolset-4
+    state: latest
+  become: yes
