@@ -4,6 +4,15 @@
     name: "{{ inventory_hostname }}"
   become: yes
 
+- name: ci-base-setup (redhat) | Add PATH to /etc/environment
+  lineinfile:
+    dest: /etc/environment
+    state: present
+    create: yes
+    regexp: '^PATH='
+    line: 'PATH=/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin'
+  become: yes
+
 - name: ci-base-setup (redhat) | Install Python packages for SNI
   yum:
     name: "{{ item }}"
