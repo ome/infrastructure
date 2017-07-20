@@ -1,0 +1,27 @@
+---
+- name: ninja (linux) | Check if Ninja is installed
+  stat: path="{{ tools_location }}/bin/ninja"
+  register: ninja_installed
+
+- name: ninja (linux) | Download Ninja
+  get_url:
+    url: 'https://github.com/ninja-build/ninja/releases/download/v{{ ninja.windows.version }}/ninja-linux.zip'
+    checksum: 'sha256:38fa8cfb9c1632a5cdf7a32fe1a7c5aa89e96c1d492c28624f4cc018e68458b9'
+    dest: /tmp
+  register: ninja_download
+  when: ninja_installed.stat.exists == false
+
+- name: ninja (linux) | Extract Ninja
+  unarchive:
+    src: "{{ ninja_download.dest }}"
+    dest: "{{ tools_location }}/bin"
+    remote_src: yes
+  when: ninja_installed.stat.exists == false
+  become: yes
+
+- name: ninja (linux) | Set Ninja permissions
+  file:
+    path: "{{ tools_location }}/bin/ninja"
+    mode: 0755
+  when: ninja_installed.stat.exists == false
+  become: yes
