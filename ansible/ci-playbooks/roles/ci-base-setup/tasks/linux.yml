@@ -1,0 +1,15 @@
+---
+- name: ci-base-setup (linux) | Create tools directory
+  file:
+    path: "{{ tools_location }}/bin"
+    state: directory
+  become: yes
+
+- name: ci-base-setup (linux) | Add tools/bin to global PATH
+  lineinfile:
+    dest: /etc/environment
+    state: present
+    backrefs: yes
+    regexp: 'PATH=(["]*)((?!.*?/opt/tools/bin).*?)(["]*)$'
+    line: 'PATH=\1/opt/tools/bin:\2\3'
+  become: yes
