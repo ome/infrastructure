@@ -36,11 +36,15 @@
     state: link
   become: yes
 
-- name: cmake (linux) | Add to global PATH
-  lineinfile:
-    dest: /etc/environment
-    state: present
-    backrefs: yes
-    regexp: 'PATH=(["]*)((?!.*?/opt/cmake/bin).*?)(["]*)$'
-    line: 'PATH=\1/opt/cmake/bin:\2\3'
+- name: cmake (linux) | Add to tools
+  file:
+    src: "/opt/cmake/bin/{{ item }}"
+    dest: "{{ tools_location }}/bin/{{ item }}"
+    state: link
+  with_items:
+    - ccmake
+    - cmake
+    - cmake-gui
+    - cpack
+    - ctest
   become: yes
