@@ -68,6 +68,14 @@ content_uris = [
     ('/Schemas', 'Open Microscopy Environment Schemas</title>'),
     ('/Schemas/ROI', 'Open Microscopy Environment ROI Schemas</title>'),
     ('/Schemas/broken-link', 'Open Microscopy Environment Schemas</title>'),
+
+    ('/qa2', '<strong>OMERO.qa</strong>  provides support services'),
+    ('/qa2/qa/feedback/17777', '<a href="/qa2/qa/feedback/">Go back</a>'),
+    ('/qa2/qa/upload', 'Uploading sample images'),
+    ('/qa2/qa/feedback/?status=1',
+        'If you cannot view feedback you previously submitted'),
+    ('/qa2/registry/demo_account', 'Requesting a demo server account'),
+    ('/qa2/registry/statistic', 'File statistics.'),
 ]
 content_uris_no_slash = [
     ('/Schemas/OME/2016-06/ome.xsd', 'Schema June 2016'),
