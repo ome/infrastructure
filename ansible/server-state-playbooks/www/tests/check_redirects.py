@@ -10,8 +10,10 @@ import os
 import pytest
 import requests
 
-HOST = os.getenv('HOST', 'https://ome-www.openmicroscopy.org')
+HOST_OME = os.getenv('HOST', 'https://ome-www.openmicroscopy.org')
+HOST_OPENMICROSCOPY = os.getenv('HOST', 'https://www.openmicroscopy.org')
 LEGACY_HOST = os.getenv('LEGACY_HOST', 'https://www-legacy.openmicroscopy.org')
+hosts = (HOST_OME, HOST_OPENMICROSCOPY)
 suffixes = ['', '/']
 redirect_uris = [
     ('/site', '/'),
@@ -90,44 +92,50 @@ content_uris_no_slash = [
 
 # Based on
 # https://github.com/openmicroscopy/infrastructure/blob/master/ansible/server-state-playbooks/www/www.yml
+@pytest.mark.parametrize('host', hosts)
 @pytest.mark.parametrize('uri,expect', redirect_uris)
 @pytest.mark.parametrize("suffix", suffixes)
-def test_redirect_with_slash(uri, expect, suffix):
-    r = requests.head('%s%s%s' % (HOST, uri, suffix))
+def test_redirect_with_slash(host, uri, expect, suffix):
+    r = requests.head('%s%s%s' % (host, uri, suffix))
     assert r.is_redirect
-    assert r.headers['Location'] == '%s%s' % (HOST, expect)
+    assert r.headers['Location'] == '%s%s' % (host, expect)
 
 
+@pytest.mark.parametrize('host', hosts)
 @pytest.mark.parametrize("suffix", suffixes)
-def test_redirect_blog(suffix):
+def test_redirect_blog(host, suffix):
     uri, expect = blog_uris
-    r = requests.head('%s%s%s' % (HOST, uri, suffix))
+    r = requests.head('%s%s%s' % (host, uri, suffix))
     assert r.is_redirect
     assert r.headers['Location'] == expect
 
 
+@pytest.mark.parametrize('host', hosts)
 @pytest.mark.parametrize('uri', legacy_uris)
 @pytest.mark.parametrize('suffix', suffixes)
-def test_legacy_redirects(uri, suffix):
-    r = requests.head('%s%s%s' % (HOST, uri, suffix))
+def test_legacy_redirects(host, uri, suffix):
+    r = requests.head('%s%s%s' % (host, uri, suffix))
     assert r.is_redirect
     assert r.headers['Location'] == '%s%s%s' % (LEGACY_HOST, uri, suffix)
 
 
-def test_404():
+@pytest.mark.parametrize('host', hosts)
+def test_404(host):
     uri = '/non-existent/path'
-    r = requests.head('%s%s' % (HOST, uri))
+    r = requests.head('%s%s' % (host, uri))
     assert r.status_code == 404
 
 
+@pytest.mark.parametrize('host', hosts)
 @pytest.mark.parametrize('uri,content', content_uris)
 @pytest.mark.parametrize('suffix', suffixes)
-def test_content(uri, content, suffix):
-    r = requests.get('%s%s%s' % (HOST, uri, suffix))
+def test_content(host, uri, content, suffix):
+    r = requests.get('%s%s%s' % (host, uri, suffix))
     assert content in r.text
 
 
+@pytest.mark.parametrize('host', hosts)
 @pytest.mark.parametrize('uri,content', content_uris_no_slash)
-def test_content_no_slash(uri, content):
-    r = requests.get('%s%s' % (HOST, uri))
+def test_content_no_slash(host, uri, content):
+    r = requests.get('%s%s' % (host, uri))
     assert content in r.text
