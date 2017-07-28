@@ -95,9 +95,12 @@
       nginx_proxy_http2: True
       nginx_proxy_force_ssl: False
       nginx_proxy_404: "/404.html"
+      nginx_proxy_conf_http:
+        - "client_max_body_size 2g;"
 
   post_tasks:
     - name: NGINX - Performance tuning - worker processes
+      tags: nginxconf
       become: yes
       replace:
         path: "/etc/nginx/nginx.conf"
@@ -106,6 +109,7 @@
 
     # cf https://www.digitalocean.com/community/tutorials/how-to-optimize-nginx-configuration
     - name: NGINX - Performance tuning - worker connections
+      tags: nginxconf
       become: yes
       replace:
         path: "/etc/nginx/nginx.conf"
