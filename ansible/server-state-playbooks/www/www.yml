@@ -96,7 +96,7 @@
       nginx_proxy_force_ssl: False
       nginx_proxy_404: "/404.html"
       nginx_proxy_conf_http:
-        - "client_max_body_size 2g;"
+        - "client_max_body_size 2g"
 
   post_tasks:
     - name: NGINX - Performance tuning - worker processes
