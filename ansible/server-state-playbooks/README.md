@@ -3,7 +3,7 @@ Server-state playbooks
 
 These playbooks encapsulate the running of various
 production servers run by the OME team. The initial
-template for these playbooks are now contained in:
+template for these playbooks is now contained in:
 
   https://github.com/openmicroscopy/ansible-public-omero-example
 
