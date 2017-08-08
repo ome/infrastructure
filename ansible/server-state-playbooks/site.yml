@@ -1,0 +1,6 @@
+---
+# ansible-playbook server-state-playbooks/site.yml --list-hosts
+# Optionally passing an inventory: -i ../ansible/inventory/prod-hosts
+- include: nightshade-web.yml
+- include: ome-demoserver.yml
+- include: ome-dundeeomero.yml
