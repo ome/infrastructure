@@ -19,5 +19,5 @@
   authorized_key:
     user: "{{ ci_jenkins_user }}"
     state: present
-    key: "{{ ci_jenkins_key }}"
+    key: "{{ ci_jenkins_ssh_key }}"
   become: yes
