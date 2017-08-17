@@ -1,12 +1,12 @@
 ---
-- name: ci-jenkins-workspace (debian) | Add jenkins logical volume
+- name: ci-jenkins-workspace (linux) | Add jenkins logical volume
   lvol:
     vg: scratch
     lv: scratch
     size: 64512
   become: yes
 
-- name: ci-jenkins-workspace (debian) | Create scratch filesystem
+- name: ci-jenkins-workspace (linux) | Create scratch filesystem
   filesystem:
     # Because it's a scratch filesytem with no important data on it,
     # disable journalling for performance.
@@ -15,7 +15,7 @@
     opts: -O ^has_journal
   become: yes
 
-- name: ci-data-repo (debian) | Mount data repo
+- name: ci-data-repo (linux) | Mount data repo
   mount:
     path: /scratch
     src: /dev/scratch/scratch
@@ -24,14 +24,14 @@
     state: mounted
   become: yes
 
-- name: ci-jenkins-workspace (debian) | Create /scratch/jenkins/workspace
+- name: ci-jenkins-workspace (linux) | Create /scratch/jenkins/workspace
   file:
     path: /scratch/jenkins/workspace
     state: directory
     mode: 0755
   become: yes
 
-- name: ci-jenkins-workspace (debian) | Set scratch directory ownership
+- name: ci-jenkins-workspace (linux) | Set scratch directory ownership
   file:
     path: /scratch
     owner: root
@@ -39,7 +39,7 @@
     mode: 0755
   become: yes
 
-- name: ci-jenkins-workspace (debian) | Set jenkins directory ownership
+- name: ci-jenkins-workspace (linux) | Set jenkins directory ownership
   file:
     path: /scratch/jenkins
     owner: "{{ ci_jenkins_user }}"
@@ -47,7 +47,7 @@
     mode: 0775
   become: yes
 
-- name: ci-jenkins-workspace (debian) | Set workspace directory ownership
+- name: ci-jenkins-workspace (linux) | Set workspace directory ownership
   file:
     path: /scratch/jenkins/workspace
     owner: "{{ ci_jenkins_user }}"
