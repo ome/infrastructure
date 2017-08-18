@@ -79,7 +79,7 @@
   version: 1.0.0
 
 - src: openmicroscopy.postgresql
-  version: 1.0.0
+  version: 2.0.0
 
 - src: openmicroscopy.python-pydata
   version: 1.0.0
