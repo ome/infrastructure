@@ -16,11 +16,6 @@ for f in !(requirements*).yml; do
     ansible-playbook -i example-hosts --syntax-check $f
 done
 
-for f in jekyll-playbooks/*.yml; do
-    # ansible-lint $f
-    ansible-playbook -i example-hosts --syntax-check $f
-done
-
 pushd idrsystems-playbooks
 ansible-galaxy install -r requirements.yml 2>&1 | tee galaxy-4.log
 grep ERROR galaxy-4.log && exit 2

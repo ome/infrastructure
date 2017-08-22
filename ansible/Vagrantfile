@@ -31,7 +31,6 @@ Vagrant.configure(2) do |config|
     "cliutils",
     "docker",
     "docs",
-    "jekyll",
     "jupyter",
     "postgres",
     "redis",
