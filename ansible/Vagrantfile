@@ -31,7 +31,6 @@ Vagrant.configure(2) do |config|
     "cliutils",
     "docker",
     "docs",
-    "jekyll",
     "jupyter",
     "postgres",
     "redis",
@@ -79,16 +78,6 @@ Vagrant.configure(2) do |config|
     training.vm.provision "ansible" do |ansible|
       ansible.verbose = "v"
       ansible.playbook = "training-server.yml"
-    end
-  end
-
-  config.vm.define "uod-web" do |uodweb|
-    uodweb.vm.box = "centos/7"
-    uodweb.vm.provision "ansible" do |ansible|
-      ansible.playbook = "uod-web.yml"
-      ansible.groups = {
-        "web-linux" => ["uod-web"],
-      }
     end
   end
 
