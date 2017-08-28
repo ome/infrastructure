@@ -14,7 +14,7 @@ Follow the [local setup](local-setup.md) instructions before starting.
 Download ISO image, then run:
 
 ```sh
-openstack image create --file ~/Downloads/FreeBSD-11.0-RELEASE-amd64-disc1.iso --disk-format iso --container-format bare "FreeBSD-11.0-RELEASE-amd64-dvd1.iso"
+openstack image create --file ~/Downloads/FreeBSD-11.1-RELEASE-amd64-disc1.iso --disk-format iso --container-format bare "FreeBSD-11.1-RELEASE-amd64-dvd1.iso"
 ```
 
 Set `image_id` using `id` of created image.
@@ -22,7 +22,7 @@ Set `image_id` using `id` of created image.
 ## Installation
 
 ```sh
-openstack volume create --size 16 "FreeBSD-11.0-root"
+openstack volume create --size 16 "FreeBSD-11.1-root"
 ```
 
 Set `volume_id` using `id` of created volume.
@@ -30,7 +30,7 @@ Set `volume_id` using `id` of created volume.
 Next, boot the installer:
 
 ```sh
-openstack server create "--image=$image_id" --key-name "$ssh_key" --flavor "m1.small" --block-device-mapping "vdb=$volume_id:::0" "FreeBSD-11.0-RELEASE-install"
+openstack server create "--image=$image_id" --key-name "$ssh_key" --flavor "m1.small" --block-device-mapping "vdb=$volume_id:::0" "FreeBSD-11.1-RELEASE-install"
 ```
 
 Set `install_vm_id` using `id` of created VM.
@@ -40,12 +40,12 @@ installation sequence:
 
 - Perform standard FreeBSD install
 - Keyboard:            UK keymap
-- Hostname:            freebsd110
+- Hostname:            freebsd111
 - Distribution select: No package sets (keep minimal)
 - Partitioning:        Auto (UFS)
-- Partition:           Entire disk
+- Partition:           Entire disk; delete swap and root partitions, recreate root partition using full disk capacity
 - Partition scheme:    GPT
-- Root password:       freebsd110 (temporary)
+- Root password:       freebsd111 (temporary)
 - Network configuration: vtnet0, IPv4 DHCP, IPv6 SLAAC, default resolver setup
 - Clock:                 UTC
 - Timezone:              UTC
@@ -72,7 +72,7 @@ openstack server delete "$install_vm_id"
 Make the volume bootable:
 
 ```sh
-cinder set-bootable "$volume_id" true
+cinder --os-volume-api-version 2 set-bootable "$volume_id" true
 ```
 
 List available networks:
@@ -87,7 +87,7 @@ external connections for downloading packages).
 Now, start up a new VM using our installation volume:
 
 ```sh
-openstack server create --volume "$volume_id" --block-device "source=volume,id=$volume_id,dest=volume,shutdown=preserve,bootindex=0" --flavor "m1.small" --security-group "$security_group" --nic "net-id=$net_id" --key-name "$ssh_key" FreeBSD-11.0-RELEASE-configure
+nova boot --block-device "source=volume,id=$volume_id,dest=volume,shutdown=preserve,bootindex=0" --poll --flavor "m1.small" --security-group "$security_group" --nic "net-id=$net_id" --key-name "$ssh_key" FreeBSD-11.1-RELEASE-configure
 ```
 
 Set `configure_vm_id` using `id` of created VM.
@@ -136,7 +136,7 @@ openstack server delete "$configure_vm_id"
 
 Finally, create an OpenStack image from this volume:
 
-openstack image create --volume "$volume_id" "FreeBSD-11.0-RELEASE"
+openstack image create --volume "$volume_id" "FreeBSD-11.1-RELEASE"
 
 This will be used to create new VMs.
 
@@ -145,7 +145,7 @@ This will be used to create new VMs.
 Create a VM using our new image:
 
 ```sh
-openstack server create --image="FreeBSD-11.0-RELEASE" --security-group "$security_group" --nic "net-id=$net_id" --key-name "$ssh_key" --flavor "m1.small"  "test7"
+openstack server create --image="FreeBSD-11.1-RELEASE" --security-group "$security_group" --nic "net-id=$net_id" --key-name "$ssh_key" --flavor "m1.medium"  "test-freebsd-11.1"
 ```
 
 You should be able to log in and do whatever you like.
