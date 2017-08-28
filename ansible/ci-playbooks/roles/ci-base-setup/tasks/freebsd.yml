@@ -48,7 +48,9 @@
       ci:\
             :umask=002:\
             :path=~/bin /usr/local/bin /usr/local/sbin /bin /sbin /usr/bin /usr/sbin:\
-            :setenv=CMAKE_PREFIX_PATH=/usr/local:
+            :setenv=CMAKE_PREFIX_PATH=/usr/local:\
+            :charset=UTF-8:\
+            :lang=en_US.UTF-8:\
             :tc=default:
   become: yes
   register: ci_login
