@@ -9,9 +9,8 @@
   src: https://github.com/openmicroscopy/ansible-role-selinux-utils.git
   version: 1.0.3
 
-- name: openmicroscopy.jekyll-build
-  src: https://github.com/openmicroscopy/ansible-role-jekyll-build.git
-  version: 1.2.0
+- src: openmicroscopy.jekyll-build
+  version: 1.2.1
 
 - name: openmicroscopy.system-monitor-agent
   src: https://github.com/openmicroscopy/ansible-role-system-monitor-agent.git
