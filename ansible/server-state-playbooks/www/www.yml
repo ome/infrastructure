@@ -214,7 +214,7 @@
     - match: "~/site/products/omero/?$"
       dest: /omero
     - match: "~/site/products/omero/downloads/?$"
-      dest: /omero/downloads
+      dest: /omero/downloads/
     - match: "~/site/products/omero/feature-list/?$"
       dest: /omero/new
     - match: "~/site/products/omero/big-images-support/?$"
@@ -226,7 +226,7 @@
     - match: "~/site/products/bio-formats/?$"
       dest: /bio-formats
     - match: "~/site/products/bio-formats/downloads/?$"
-      dest: /bio-formats/downloads
+      dest: /bio-formats/downloads/
     - match: "~/site/products/ome-files-cpp/?$"
       dest: /ome-files
     - match: "~/site/products/(?<link>.*)$"
