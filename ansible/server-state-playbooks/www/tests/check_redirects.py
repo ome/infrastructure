@@ -29,7 +29,9 @@ redirect_uris = [
 
     ('/site/products', '/products'),
     ('/site/products/bio-formats', '/bio-formats'),
+    ('/site/products/bio-formats/downloads', '/bio-formats/downloads'),
     ('/site/products/omero', '/omero'),
+    ('/site/products/omero/downloads', '/omero/downloads'),
     ('/site/products/omero/feature-list', '/omero/new'),
 
     ('/site/support', '/docs'),
