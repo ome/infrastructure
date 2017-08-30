@@ -182,7 +182,7 @@
     - match: "~/info/?$"
       dest: /
     - match: "~/info/vulnerabilities(?<link>/?.*)$"
-      dest: https://www.openmicroscopy.org/security$link
+      dest: /security$link
     - match: "~/info/(?<link>.*)$"
       dest: https://www-legacy.openmicroscopy.org/info/$link
     - match: "~/omero-blog.*"
