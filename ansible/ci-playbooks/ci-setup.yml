@@ -52,6 +52,10 @@
   roles:
     - role: pkg-sphinx
 
+- hosts: role-devtoolset-4
+  roles:
+    - role: pkg-devtoolset-4
+
 - hosts: role-vs2015
   roles:
     - role: pkg-vs2015
