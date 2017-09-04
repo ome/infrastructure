@@ -182,9 +182,9 @@
     - match: "~/info/?$"
       dest: /
     - match: "~/info/vulnerabilities/?$"
-      dest: /security/
+      dest: /security/advisories/
     - match: "~/info/vulnerabilities/(?<link>.*[^/])/?$"
-      dest: /security/$link/
+      dest: /security/advisories/$link/
     - match: "~/info/(?<link>.*)$"
       dest: https://www-legacy.openmicroscopy.org/info/$link
     - match: "~/omero-blog.*"
@@ -220,9 +220,9 @@
     - match: "~/site/products/omero/big-images-support/?$"
       dest: /omero/view/
     - match: "~/site/products/omero/secvuln/?$"
-      dest: /security/
+      dest: /security/advisories/
     - match: "~/site/products/omero/secvuln/(?<link>.*[^/])/?$"
-      dest: /security/$link/
+      dest: /security/advisories/$link/
     - match: "~/site/products/bio-formats/?$"
       dest: /bio-formats
     - match: "~/site/products/bio-formats/downloads/?$"
