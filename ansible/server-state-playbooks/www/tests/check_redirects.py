@@ -29,11 +29,20 @@ redirect_uris = [
 
     ('/site/products', '/products'),
     ('/site/products/bio-formats', '/bio-formats'),
+    ('/site/products/bio-formats/downloads', '/bio-formats/downloads/'),
     ('/site/products/omero', '/omero'),
+    ('/site/products/omero/downloads', '/omero/downloads/'),
     ('/site/products/omero/feature-list', '/omero/new'),
+    ('/site/products/omero/secvuln', '/security/advisories/'),
+    ('/site/products/omero/secvuln/2014-SV3-csrf',
+     '/security/advisories/2014-SV3-csrf/'),
 
     ('/site/support', '/docs'),
     ('/site/news', '/announcements'),
+
+    ('/info/vulnerabilities', '/security/advisories/'),
+    ('/info/vulnerabilities/2014-SV3-csrf',
+     '/security/advisories/2014-SV3-csrf/'),
 ]
 blog_uris = ('/omero-blog', 'http://blog.openmicroscopy.org')
 legacy_uris = [
@@ -47,7 +56,6 @@ legacy_uris = [
     '/site/community/minutes/conference-calls/2017',
     '/site/products/ome-tiff',
     '/site/products/partner',
-    '/site/products/omero/secvuln',
     '/site/products/ome5',
     '/site/support/omero5.3',
     '/site/support/bio-formats5.5',
