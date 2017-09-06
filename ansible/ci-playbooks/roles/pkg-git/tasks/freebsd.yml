@@ -1,0 +1,6 @@
+---
+- name: git (freebsd) | Install Git
+  pkgng:
+    name: git
+    state: present
+  become: yes

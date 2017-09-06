@@ -1,0 +1,8 @@
+select disk 1
+online disk
+attributes disk clear readonly
+clean
+convert gpt
+create partition primary
+format quick fs=ntfs label="Scratch space"
+assign letter="S:"

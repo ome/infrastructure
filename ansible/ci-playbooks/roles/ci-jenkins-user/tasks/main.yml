@@ -1,0 +1,8 @@
+---
+- include: unix.yml
+  static: no
+  when: ansible_os_family != 'Windows'
+
+- include: windows.yml
+  static: no
+  when: ansible_os_family == 'Windows'

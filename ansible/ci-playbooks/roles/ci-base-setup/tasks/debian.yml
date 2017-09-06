@@ -1,0 +1,26 @@
+---
+- name: ci-base-setup (debian) | Set hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+  become: yes
+
+- name: ci-base-setup (debian) | Install Python build dependencies
+  apt:
+    name:  "{{ item }}"
+    state: present
+  with_items:
+    - libssl-dev
+    - python-dev
+    - libffi-dev
+  become: yes
+  when: ansible_distribution_release == 'trusty'
+
+- name: ci-base-setup (debian) | Install Python packages for SNI
+  pip:
+    name: "{{ item }}"
+  with_items:
+    - pyOpenSSL
+    - ndg-httpsclient
+    - pyasn1
+  become: yes
+  when: ansible_distribution_release == 'trusty'

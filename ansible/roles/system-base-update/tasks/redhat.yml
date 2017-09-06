@@ -1,5 +1,0 @@
----
-- name: system-base-update (redhat) | Upgrade all packages
-  yum:
-    name: '*'
-    state: latest

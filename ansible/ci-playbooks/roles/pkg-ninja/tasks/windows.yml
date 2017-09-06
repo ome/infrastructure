@@ -1,0 +1,21 @@
+---
+- name: ninja (windows) | Check if Ninja is installed
+  win_stat: path="{{ tools_location_norm }}/bin/ninja.exe"
+  register: ninja_installed
+
+- name: ninja (windows) | Create tools directory
+  win_file:
+    path: "{{ tools_location }}\\bin"
+    state: directory
+
+- name: ninja (windows) | Download Ninja
+  win_get_url:
+    url: 'https://github.com/ninja-build/ninja/releases/download/v{{ ninja.windows.version }}/ninja-win.zip'
+    dest: "{{ ansible_user_dir }}\\Downloads\\ninja-win.zip"
+  when: not ninja_installed.stat.exists
+
+- name: ninja (windows) | Extract Ninja
+  win_unzip:
+    src: "{{ ansible_user_dir }}\\Downloads\\ninja-win.zip"
+    dest: "{{ tools_location }}\\bin"
+    creates: "{{ tools_location }}\\bin\\ninja.exe"

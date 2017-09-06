@@ -1,0 +1,6 @@
+---
+- name: ci-data-repo (debian) | Install CIFS support
+  apt:
+    name: cifs-utils
+    state: present
+  become: yes

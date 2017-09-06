@@ -12,7 +12,7 @@ Follow the [local setup](local-setup.md) instructions before starting.
 Download image from the above URL, then run:
 
 ```sh
-openstack image create --file ~/Downloads/windows_server_2012_r2_standard_eval_kvm_20170321.qcow2 --disk-format bare --container-format qcow2 "Windows Server 2012R2"
+openstack image create --file ~/Downloads/windows_server_2012_r2_standard_eval_kvm_20170321.qcow2 --disk-format qcow2 --container-format bare "Windows Server 2012R2"
 ```
 
 ## Test

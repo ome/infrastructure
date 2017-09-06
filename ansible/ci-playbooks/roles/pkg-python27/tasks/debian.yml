@@ -1,0 +1,9 @@
+---
+- name: python27 (debian) | Install Python 2.7
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - python2.7
+    - python-virtualenv
+  become: yes

@@ -1,0 +1,6 @@
+---
+- name: ci-scratch-storage (redhat) | Install LVM
+  yum:
+    name: lvm2
+    state: latest
+  become: yes

@@ -1,0 +1,21 @@
+---
+- name: ci-admin-auth (unix) | Create .ssh
+  file:
+    path: /home/ci-admin/.ssh
+    state: directory
+    owner: ci-admin
+    group: ci-admin
+    mode: 0755
+  become: yes
+
+- name: ci-admin-auth (unix) | Update .ssh/authorized_keys
+  lineinfile:
+    path: /home/ci-admin/.ssh/authorized_keys
+    create: yes
+    owner: ci-admin
+    group: ci-admin
+    mode: 0600
+    state: "{{ item.state }}"
+    line: "{{ item.sshpubkey }}"
+  with_items: "{{ ci_admin_authorized_keys }}"
+  become: yes

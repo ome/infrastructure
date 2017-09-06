@@ -1,0 +1,24 @@
+---
+- include: unix.yml
+  static: no
+  when: ansible_os_family != 'Windows'
+
+- include: debian.yml
+  static: no
+  when: ansible_os_family == 'Debian'
+
+- include: redhat.yml
+  static: no
+  when: ansible_os_family == 'RedHat'
+
+- include: linux.yml
+  static: no
+  when: ansible_system == 'Linux'
+
+- include: freebsd.yml
+  static: no
+  when: ansible_os_family == 'FreeBSD'
+
+- include: windows.yml
+  static: no
+  when: ansible_os_family == 'Windows'

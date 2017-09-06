@@ -1,0 +1,69 @@
+---
+# Set up host as a CI worker
+
+- hosts: all
+  roles:
+    - role: ci-base-setup
+    - role: ci-admin-auth
+
+- hosts: role-ome-data
+  roles:
+    - role: ci-data-repo
+
+- hosts: role-jenkins-slave:role-java
+  roles:
+    - role: pkg-jdk8
+
+- hosts: role-jenkins-slave
+  roles:
+    - role: ci-jenkins-user
+    - role: ci-jenkins-workspace
+    - role: pkg-jenkins-tools
+    - role: ci-jenkins-service
+
+- hosts: all
+  roles:
+    - role: pkg-git
+    - role: pkg-zip
+
+- hosts: role-cpp
+  roles:
+    - role: pkg-cmake
+    - role: pkg-ninja
+    - role: pkg-cpp-tools
+
+- hosts: role-cpp-full
+  roles:
+    # Due to the big dependency collection required for doxygen, we
+    # don't want it for minimal systems since the libraries it pulls
+    # in may conflict with our builds.
+    - role: pkg-doxygen
+    - role: pkg-cpp-libs
+
+- hosts: role-java
+  roles:
+    - role: pkg-java-tools
+
+- hosts: role-python2
+  roles:
+    - role: pkg-python27
+
+- hosts: role-docs
+  roles:
+    - role: pkg-sphinx
+
+- hosts: role-devtoolset-4
+  roles:
+    - role: pkg-devtoolset-4
+
+- hosts: role-vs2015
+  roles:
+    - role: pkg-vs2015
+
+- hosts: role-vs2017
+  roles:
+    - role: pkg-vs2017
+
+- hosts: role-cygwin
+  roles:
+    - role: cygwin

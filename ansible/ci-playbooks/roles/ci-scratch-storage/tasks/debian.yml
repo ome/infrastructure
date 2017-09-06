@@ -1,0 +1,6 @@
+---
+- name: ci-scratch-storage (debian) | Install LVM
+  apt:
+    name: lvm2
+    state: present
+  become: yes

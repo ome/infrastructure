@@ -1,8 +1,0 @@
----
-- name: system-package-update (apt) | Update package list
-  apt:
-    update_cache: yes
-
-- name: system-package-update (apt) | Upgrade packages
-  apt:
-    upgrade: safe

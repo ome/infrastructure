@@ -1,0 +1,45 @@
+---
+- name: ant (linux) | Check Ant installation
+  stat:
+    path: "/opt/ant-{{ ant.version }}/bin/ant"
+  register: ant_installed
+
+- name: ant (linux) | Download Ant
+  get_url:
+    url: "http://mirror.ox.ac.uk/sites/rsync.apache.org/ant/binaries/apache-ant-{{ ant.version}}-bin.tar.xz"
+    checksum: "sha256:51dd6b4ec740013dc5ad71812ce5d727a9956aa3a56de7164c76cbd70d015d79"
+    dest: /tmp
+  register: ant_download
+  when: ant_installed.stat.exists == false
+
+- name: ci-jenkins-workspace (debian) | Create Ant directory
+  file:
+    path: "/opt/ant-{{ ant.version }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  become: yes
+
+- name: ant (linux) | Extract Ant
+  unarchive:
+    src: "{{ ant_download.dest }}"
+    dest: "/opt/ant-{{ ant.version }}"
+    remote_src: yes
+    extra_opts: ['--strip-components=1']
+  when: ant_installed.stat.exists == false
+  become: yes
+
+- name: ant (linux) | Link Ant
+  file:
+    src: "/opt/ant-{{ ant.version }}"
+    dest: /opt/ant
+    state: link
+  become: yes
+
+- name: ant (linux) | Add to tools
+  file:
+    src: "/opt/ant/bin/ant"
+    dest: "{{ tools_location }}/bin/ant"
+    state: link
+  become: yes

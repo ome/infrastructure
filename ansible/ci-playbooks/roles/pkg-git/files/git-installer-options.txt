@@ -1,0 +1,16 @@
+[Setup]
+Lang=default
+Dir=C:\Program Files\Git
+Group=Git
+NoIcons=0
+SetupType=default
+Components=ext,ext\shellhere,ext\guihere,assoc,assoc_sh
+Tasks=
+PathOption=BashOnly
+SSHOption=OpenSSH
+CURLOption=OpenSSL
+CRLFOption=LFOnly
+BashTerminalOption=MinTTY
+PerformanceTweaksFSCache=Enabled
+UseCredentialManager=Enabled
+EnableSymlinks=Disabled

@@ -1,0 +1,9 @@
+---
+- name: doxygen (debian) | Install Doxygen
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - doxygen
+    - graphviz
+  become: yes

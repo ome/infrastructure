@@ -1,0 +1,9 @@
+---
+- name: doxygen (redhat) | Install Doxygen
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - doxygen
+    - graphviz
+  become: yes

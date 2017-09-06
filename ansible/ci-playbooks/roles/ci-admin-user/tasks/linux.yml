@@ -1,0 +1,9 @@
+---
+- name: ci-admin-user (linux) | Add ci-admin to sudoers
+  copy:
+    src: 90-ome-admin-users
+    dest: /etc/sudoers.d/90-ome-admin-users
+    owner: root
+    group: root
+    mode: 0440
+  become: yes

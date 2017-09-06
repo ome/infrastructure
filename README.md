@@ -21,8 +21,12 @@ provided in the [ansible README](ansible/README.md).
   first steps.
 - [Local setup](docs/openstack/local-setup.md) details the steps to
   access OpenStack from a client system
+- [CentOS image creation](docs/openstack/centos-image.md)
 - [FreeBSD image creation](docs/openstack/freebsd-image.md)
+- [Ubuntu image creation](docs/openstack/ubuntu-image.md)
 - [Windows image creation](docs/openstack/windows-image.md)
+- [CI setup](docs/openstack/ci-setup.md) details the steps to
+  set up a CI node
 
 ## GPFS
 

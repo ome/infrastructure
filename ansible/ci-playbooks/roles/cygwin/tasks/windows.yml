@@ -1,0 +1,8 @@
+---
+- name: cygwin (windows) | Download Cygwin installer
+  win_get_url:
+    url: 'https://cygwin.org/setup-x86_64.exe'
+    dest: "{{ ansible_user_dir }}\\Downloads\\cygwin-setup.exe"
+
+- name: cygwin (windows) | Install and/or update Cygwin
+  win_command: "{{ ansible_user_dir }}\\Downloads\\cygwin-setup.exe -s https://www.mirrorservice.org/sites/sourceware.org/pub/cygwin -q -R C:\\cygwin -l {{ ansible_user_dir }}\\Downloads\\cygwin-packages -N -d -g -o -f -P bash,binutils,bzip2,cmake,coreutils,curl,cygwin-devel,dash,diffutils,findutils,file,gawk,gcc-core,gcc-g++,grep,groff,gzip,hostname,less,make,man-db,openssh,openssl,patch,pkg-config,rsync,sed,tar,unzip,util-linux,w32api-headers,w32api-runtime,xz,zip,libcurl-devel,libicu-devel"

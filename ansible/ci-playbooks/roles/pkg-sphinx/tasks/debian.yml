@@ -1,0 +1,8 @@
+---
+- name: sphinx (debian) | Install Sphinx
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    python-sphinx
+  become: yes

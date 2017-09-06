@@ -1,0 +1,6 @@
+---
+- name: ci-admin-user (debian) | Add ci-admin to admin groups
+  user:
+    name: ci-admin
+    groups: [adm,sudo]
+  become: yes

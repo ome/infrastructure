@@ -1,0 +1,4 @@
+---
+- include: windows.yml
+  static: no
+  when: ansible_os_family == 'Windows'

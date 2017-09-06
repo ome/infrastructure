@@ -1,0 +1,7 @@
+---
+- name: sphinx (windows) | Check if Python 2.7 is installed
+  win_stat: path='C:/Python27/scripts/pip2.exe'
+  register: pip2_installed
+
+- name: sphinx (windows) Install Sphinx
+  win_shell: 'C:\Python27\scripts\pip2.exe sphinx'

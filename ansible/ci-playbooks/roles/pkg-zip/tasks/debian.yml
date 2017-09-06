@@ -1,0 +1,9 @@
+---
+- name: zip (debian) | Install zip and unzip
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - zip
+    - unzip
+  become: yes

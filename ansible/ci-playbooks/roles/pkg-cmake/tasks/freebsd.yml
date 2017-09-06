@@ -1,0 +1,6 @@
+---
+- name: cmake (freebsd) | Install CMake
+  pkgng:
+    name: cmake
+    state: present
+  become: yes

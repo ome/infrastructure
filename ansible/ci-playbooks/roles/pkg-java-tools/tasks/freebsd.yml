@@ -1,0 +1,12 @@
+---
+- name: pkg-java-tools (freebsd) | Install Java build tools
+  pkgng:
+    name: apache-ant,maven33
+    state: present
+  become: yes
+
+- name: pkg-java-tools (freebsd) | Install Java testing tools
+  pkgng:
+    name: java-findbugs,junit
+    state: present
+  become: yes

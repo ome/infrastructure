@@ -1,4 +1,0 @@
----
-- include: freebsd.yml
-  when: ansible_os_family == 'FreeBSD'
-  tags: package

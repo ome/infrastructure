@@ -1,0 +1,12 @@
+---
+- name: pkg-cpp-tools (freebsd) | Install C++ build tools
+  pkgng:
+    name: binutils,gmake
+    state: present
+  become: yes
+
+- name: pkg-cpp-tools (freebsd) | Install GNU Autotools
+  pkgng:
+    name: autoconf,automake,libtool,m4
+    state: present
+  become: yes

@@ -1,0 +1,6 @@
+---
+- name: zip (freebsd) | Install zip and unzip
+  pkgng:
+    name: zip
+    state: present
+  become: yes

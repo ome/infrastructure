@@ -1,0 +1,9 @@
+---
+- name: devtoolset-4 (redhat) | Install devtoolset-4
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - centos-release-scl
+    - devtoolset-4
+  become: yes

@@ -1,0 +1,29 @@
+---
+- apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: DA1A4A13543B466853BAF164EB9B1D8886F44E2A
+    state: present
+    keyring: /etc/apt/trusted.gpg.d/openjdk-r-ppa.gpg
+  when: ansible_distribution_release == 'trusty'
+  become: yes
+
+- name: pkg-jdk8 (debian) | Add JDK8 PPA
+  apt_repository:
+    repo: 'deb http://ppa.launchpad.net/openjdk-r/ppa/ubuntu trusty main'
+    state: present
+  when: ansible_distribution_release == 'trusty'
+  become: yes
+
+- name: pkg-jdk8 (debian) | Install JDK8
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - java-common
+    - openjdk-8-jdk
+    - openjdk-8-jre
+  become: yes
+
+- name: pkg-jdk8 (debian) | Set default JDK
+  command: 'update-java-alternatives -s java-1.8.0-openjdk-amd64'
+  become: Yes

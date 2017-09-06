@@ -1,0 +1,6 @@
+---
+- name: git (redhat) | Install Git
+  yum:
+    name: git
+    state: latest
+  become: yes

@@ -1,0 +1,23 @@
+---
+- name: ci-jenkins-user (unix) | Create ci-jenkins group
+  group:
+    name: "{{ ci_jenkins_group }}"
+    state: present
+  become: yes
+
+- name: ci-jenkins-user (unix) | Create ci-jenkins user
+  user:
+    name: "{{ ci_jenkins_user }}"
+    comment: "CI Jenkins worker"
+    group: "{{ ci_jenkins_group }}"
+    login_class: ci
+    password: "{{ ci_jenkins_password_hash }}"
+    state: present
+  become: yes
+
+- name: ci-jenkins-user (unix) | Add SSH key
+  authorized_key:
+    user: "{{ ci_jenkins_user }}"
+    state: present
+    key: "{{ ci_jenkins_ssh_key }}"
+  become: yes

@@ -1,0 +1,25 @@
+---
+- name: ci-base-setup (redhat) | Set hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+  become: yes
+
+- name: ci-base-setup (redhat) | Add PATH to /etc/environment
+  lineinfile:
+    dest: /etc/environment
+    state: present
+    create: yes
+    regexp: '^PATH='
+    line: 'PATH=/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin'
+  become: yes
+
+- name: ci-base-setup (redhat) | Install Python packages for SNI
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - pyOpenSSL
+    - python2-ndg_httpsclient
+    - python-pyasn1
+  become: yes
+  when: ansible_distribution_major_version == '6'

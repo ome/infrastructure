@@ -1,0 +1,17 @@
+---
+- name: pkg-jenkins-tools (debian) | Install download and upload tools
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - curl
+    - wget
+    - rsync
+  become: yes
+
+- name: pkg-jenkins-tools (debian) | Install miscellaneous tools
+  apt:
+    name: fakeroot
+    state: present
+  become: yes
+

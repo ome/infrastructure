@@ -1,8 +1,0 @@
----
-- name: system-base-update (debian) | Update packages
-  apt:
-    update_cache: yes
-
-- name: system-base-update (debian) | Upgrade packages
-  apt:
-    upgrade: dist

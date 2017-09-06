@@ -1,0 +1,4 @@
+---
+- include: centos.yml
+  static: no
+  when: ansible_distribution == 'CentOS'

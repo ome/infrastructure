@@ -1,0 +1,17 @@
+---
+- name: cmake (windows) | Check if CMake is installed
+  win_stat: path='C:/Program Files/CMake/bin/cmake.exe'
+  register: cmake_installed
+
+- name: cmake (windows) | Download CMake installer
+  win_get_url:
+    url: 'https://cmake.org/files/v{{ cmake.shortversion }}/cmake-{{ cmake.version }}-win64-x64.msi'
+    dest: "{{ ansible_user_dir }}\\Downloads\\cmake-{{ cmake.version }}-win64-x64.msi"
+  when: not cmake_installed.stat.exists
+
+- name: cmake (windows) | Install CMake
+  win_msi:
+    creates: 'C:\Program Files\CMake\bin\cmake'
+    extra_args: "ADD_CMAKE_TO_PATH=None ALL_USERS=1"
+    path: "{{ ansible_user_dir }}\\Downloads\\cmake-{{ cmake.version }}-win64-x64.msi"
+    state: present

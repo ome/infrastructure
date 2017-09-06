@@ -1,0 +1,5 @@
+---
+python27:
+  windows:
+    version: "2.7.13"
+    installer_options: "ALLUSERS=1 ADDLOCAL=DefaultFeature,SharedCRT,Extensions,TclTk,Documentation,Tools,pip_feature,Testsuite"

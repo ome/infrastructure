@@ -1,0 +1,7 @@
+---
+- name: ci-data-repo (windows) | Mount data repo
+  win_shell: |
+    $User = "LIFESCI-AD\hslave-x"
+    $PWord = ConvertTo-SecureString -String "{{ ci_hslave_x_password }}" -AsPlainText -Force
+    $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User, $PWord
+    New-PSDrive -Name O -PSProvider FileSystem -Root \\fs0.lifesci.dundee.ac.uk\ome-data-repo -Credential $Credential -Persist

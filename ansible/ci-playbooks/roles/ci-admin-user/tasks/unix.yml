@@ -1,0 +1,15 @@
+---
+- name: ci-admin-user (unix) | Create ci-admin group
+  group:
+    name: ci-admin
+    state: present
+  become: yes
+
+- name: ci-admin-user (unix) | Create ci-admin user
+  user:
+    name: ci-admin
+    comment: "CI System Administrator for Ansible use"
+    group: ci-admin
+    password: "{{ ci_admin_password_hash }}"
+    state: present
+  become: yes
