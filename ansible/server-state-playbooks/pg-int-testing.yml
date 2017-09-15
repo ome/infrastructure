@@ -43,10 +43,6 @@
 
     - role: openmicroscopy.postgresql
       postgresql_install_server: True
-      postgresql_users_databases:
-      - user: omero
-        password: omero
-        databases: [omero]
   
   post_tasks:
 
