@@ -38,6 +38,10 @@
     - role: omero-web-runtime
     - role: nginx
 
+# Deploy C++ build dependencies
+- hosts: cowfish.openmicroscopy.org
+  roles:
+    - role: devtoolset-4
 
 # Deploy Documentation prerequisites
 - hosts: ci-docs
