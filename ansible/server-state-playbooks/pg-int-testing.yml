@@ -1,0 +1,113 @@
+# Install PostgreSQL and prepare the OME (UoD/SLS) prerequisites
+
+- hosts: pg-int-testing.openmicroscopy.org
+  pre_tasks:
+    - name: Install open-vm-tools if system is a VMware vm
+      become: yes
+      yum:
+        name: open-vm-tools
+        state: latest
+      when: >
+           ((ansible_virtualization_type is defined)
+           and (ansible_virtualization_type == "VMware"))
+
+    # Perhaps alter the role at https://github.com/openmicroscopy/ansible-role-lvm-partition/
+    # to make some of the variables non-required.
+    - name: Resize root FS without altering mount options
+      tags: lvm
+      become: yes
+      lvol:
+        lv: root
+        vg: VolGroup00
+        size: "{{ provision_root_lvsize }}"
+        shrink: no
+
+  roles:
+
+    # Disk Layout - PostgreSQL | data dir on separate VG (SSD) 
+    - role: openmicroscopy.lvm-partition
+      tags: lvm
+      lvm_lvname: pgdata
+      lvm_vgname: "{{ provision_postgres_vgname }}"
+      lvm_lvmount: /var/lib/pgsql
+      lvm_lvsize: "{{ provision_postgres_lvsize }}"
+      lvm_lvfilesystem: "{{ filesystem }}"
+      lvm_shrink: False
+
+    # Checking `is server deployed in Dundee/SLS` is checking for the SLS nameservers.
+    - role: openmicroscopy.system-monitor-agent
+      tags: monitoring
+      when: "'10.1.255.216' in ansible_dns.nameservers"
+
+    - role: openmicroscopy.basedeps
+
+    - role: openmicroscopy.postgresql
+      postgresql_install_server: True
+  
+  post_tasks:
+
+    - name: Check_MK postgres plugin | check for plugin existence
+      tags: monitoring
+      stat:
+        path: "{{ check_mk_agent_plugin_path }}/mk_postgres"
+      register: check_mk_postgres_plugin_st
+
+    - name: Check_MK postgres plugin | activate the plugin
+      tags: monitoring
+      become: yes
+      command: cp "{{ check_mk_agent_plugin_path }}/mk_postgres" /usr/share/check-mk-agent/plugins/ creates=/usr/share/check-mk-agent/plugins/mk_postgres
+      when: check_mk_postgres_plugin_st.stat.exists
+
+    - name: Check_MK logwatch plugin | check for plugin existence
+      tags: monitoring
+      stat:
+        path: "{{ check_mk_agent_plugin_path }}/mk_logwatch"
+      register: check_mk_logwatch_plugin_st
+
+    - name: Check_MK logwatch plugin | activate the plugin
+      tags: monitoring
+      become: yes
+      command: cp "{{ check_mk_agent_plugin_path }}/mk_logwatch" /usr/share/check-mk-agent/plugins/ creates=/usr/share/check-mk-agent/plugins/mk_logwatch
+      when: check_mk_logwatch_plugin_st.stat.exists
+
+    - name: Check_MK logwatch plugin | check for default config file
+      tags: monitoring
+      stat:
+        path: "{{ check_mk_agent_config_example_path }}/logwatch.cfg"
+      register: check_mk_logwatch_plugin_conf_st
+      
+    - name: Check_MK logwatch plugin | copy the default config
+      tags: monitoring
+      become: yes
+      command: cp "{{ check_mk_agent_config_example_path }}/logwatch.cfg" "{{ check_mk_agent_config_path }}/logwatch.cfg" creates="{{ check_mk_agent_config_path }}/logwatch.cfg"
+      when: check_mk_logwatch_plugin_conf_st.stat.exists
+
+    - name: PostgreSQL Nightly Backups | Create the backups directory
+      become: yes
+      file:
+        path: "{{ omero_server_db_dumpdir_parent }}/{{ omero_server_db_dumpdir_name }}"
+        state: directory
+        owner: postgres
+        group: postgres
+        mode: "u=rwx,go="
+
+    - name: PostgreSQL Nightly Backups | send the backup script
+      become: yes
+      template:
+        src: nightly-pg_dump-omero.sh.j2
+        dest: /etc/cron.daily/nightly-pg_dump-omero.sh
+        mode: "u=rwx,go="
+
+  vars:
+    # Check_MK (system monitoring) paths
+    check_mk_agent_plugin_path: /usr/share/check-mk-agent/available-plugins
+    check_mk_agent_config_example_path: /usr/share/check_mk/agents/cfg_examples
+    check_mk_agent_config_path: /etc/check-mk-agent
+
+    # Backup folder for PostgreSQL 'folder' format dump
+    omero_server_db_dumpdir_parent: /tmp
+    omero_server_db_dumpdir_name: nightly-pg_dump_omero.dir
+
+    postgresql_version: "9.6"
+    filesystem: "xfs"
+
