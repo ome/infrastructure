@@ -1,9 +1,12 @@
 ---
+- name: devtoolset-4 | Enable SCL repository
+  yum:
+    name: centos-release-scl
+    state: latest
+  become: yes
+
 - name: devtoolset-4 | Install devtoolset-4
   yum:
-    name: "{{ item }}"
+    name: devtoolset-4
     state: latest
-  with_items:
-    - centos-release-scl
-    - devtoolset-4
   become: yes
