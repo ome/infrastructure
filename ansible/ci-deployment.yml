@@ -4,9 +4,9 @@
 - hosts: ci-jenkins-linux
   roles:
     - role: jenkinsslave
-    - role: sudoers
-    - role: versioncontrol-utils
-    - role: system-monitor-agent
+    - role: openmicroscopy.sudoers
+    - role: openmicroscopy.versioncontrol-utils
+    - role: openmicroscopy.system-monitor-agent
 
 # Deploy OMERO build and runtime prerequisites
 - hosts: ci-omero
@@ -14,7 +14,7 @@
     - role: omero-build
     - role: omero-runtime
 #    - role: omero-build-cpp
-    - role: postgresql
+    - role: openmicroscopy.postgresql
       postgresql_server_listen: "'*'"
       postgresql_server_auth:
       - database: all
@@ -35,8 +35,8 @@
 - hosts: ci-omero-web
   roles:
     - role: omero-runtime
-    - role: omero-web-runtime
-    - role: nginx
+    - role: openmicroscopy.omero-web-runtime
+    - role: openmicroscopy.nginx
 
 # Deploy C++ build dependencies
 - hosts: cowfish.openmicroscopy.org
@@ -47,4 +47,5 @@
 - hosts: ci-docs
   roles:
     - role: sphinx-build
+      tags: sphinx
     - role: ansible

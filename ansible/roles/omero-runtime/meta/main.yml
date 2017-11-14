@@ -1,6 +1,6 @@
 ---
 dependencies:
-- { role: basedeps }
-- { role: java }
-- { role: omero-python-deps }
-- { role: ice }
+- { role: openmicroscopy.basedeps }
+- { role: openmicroscopy.java }
+- { role: openmicroscopy.omero-python-deps }
+- { role: openmicroscopy.ice }

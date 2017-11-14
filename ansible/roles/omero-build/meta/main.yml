@@ -1,5 +1,5 @@
 ---
 dependencies:
-- { role: basedeps }
-- { role: java }
-- { role: ice }
+- { role: openmicroscopy.basedeps }
+- { role: openmicroscopy.java }
+- { role: openmicroscopy.ice }
