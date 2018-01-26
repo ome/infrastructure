@@ -91,7 +91,7 @@
 - name: exe4j packages | install
   become: yes
   yum:
-    name: http://download-aws.ej-technologies.com/exe4j/exe4j_linux_5_0_1.rpm
+    name: http://download-aws.ej-technologies.com/exe4j/exe4j_linux_6_0.rpm 
     state: present
 
 - name: exe4j packages | install license
