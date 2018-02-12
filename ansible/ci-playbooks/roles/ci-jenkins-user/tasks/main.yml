@@ -1,8 +1,6 @@
 ---
-- include: unix.yml
-  static: no
+- include_tasks: unix.yml
   when: ansible_os_family != 'Windows'
 
-- include: windows.yml
-  static: no
+- include_tasks: windows.yml
   when: ansible_os_family == 'Windows'

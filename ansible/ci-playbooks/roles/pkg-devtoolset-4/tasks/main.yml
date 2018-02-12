@@ -1,4 +1,3 @@
 ---
-- include: centos.yml
-  static: no
+- include_tasks: centos.yml
   when: ansible_distribution == 'CentOS'
