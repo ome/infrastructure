@@ -91,13 +91,15 @@
 - name: exe4j packages | install
   become: yes
   yum:
-    name: http://download-aws.ej-technologies.com/exe4j/exe4j_linux_6_0.rpm 
+    name: http://download-aws.ej-technologies.com/exe4j/exe4j_linux_6_0.rpm
     state: present
+  tags: [exe4j]
 
 - name: exe4j packages | install license
   become: yes
-  command: exe4jc -L="{{ exe4j_license_key }}"
-  when: exe4j_license_key
+  shell: env PATH=/opt/hudson/tools/hudson.model.JDK/8_LATEST/bin/:$PATH /opt/exe4j/bin/exe4jc -L="{{ exe4j_license_key }}"
+  when: exe4j_license_key is defined
+  tags: [exe4j]
 
 - name: findbugs | download and extract
   become: yes
