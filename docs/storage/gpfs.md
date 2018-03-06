@@ -84,3 +84,21 @@ To list all snapshots:
 To delete a snapshot:
 
     mmdelsnapshot gpfs-1 downloads-0.1 -j downloads
+
+
+NFS CES shares
+--------------
+
+Any directory can be made into a share, but to avoid problems ensure there are no nested shares.
+For example, to add a read-write share accessible to 10.0.0.0/8 with the default root-squash and support for NFS3 and NFS4:
+
+    mmnfs export add /data/downloads -c "10.0.0.0/8(Access_Type=RW,Protocols=3:4)"
+
+To add client settings to an existing share:
+
+    mmnfs export change /data/downloads --nfsadd "192.168.1.0/24(Access_Type=RO,Protocols=3:4)"
+
+Use `--nfschange` to change existing client settings.
+
+See the documentation for the full set of client options.
+- https://www.ibm.com/support/knowledgecenter/en/STXKQY_4.2.1/com.ibm.spectrum.scale.v4r21.doc/bl1adm_mmnfs.htm
