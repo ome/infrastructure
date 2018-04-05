@@ -1,0 +1,9 @@
+---
+- name: devtoolset-7 | Install devtoolset-7
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - centos-release-scl
+    - devtoolset-7
+  become: yes

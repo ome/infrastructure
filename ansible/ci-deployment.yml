@@ -42,6 +42,7 @@
 - hosts: cowfish.openmicroscopy.org
   roles:
     - role: devtoolset-4
+    - role: devtoolset-7
 
 # Deploy Documentation prerequisites
 - hosts: ci-docs
