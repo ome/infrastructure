@@ -2,7 +2,7 @@
 - name: devtoolset-4 | Install devtoolset-4
   yum:
     name: "{{ item }}"
-    state: latest
+    state: present
   with_items:
     - centos-release-scl
     - devtoolset-4
