@@ -7,3 +7,11 @@
     - centos-release-scl
     - devtoolset-4
   become: yes
+
+- name: devtoolset-4 | Remove Java packages which break Jenkins
+  yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - rh-java-common-runtime
+  become: yes
