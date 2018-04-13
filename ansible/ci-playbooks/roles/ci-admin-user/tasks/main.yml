@@ -2,6 +2,9 @@
 - include_tasks: unix.yml
   when: ansible_os_family != 'Windows'
 
+- include_tasks: darwin.yml
+  when: ansible_os_family == 'Darwin'
+
 - include_tasks: linux.yml
   when: ansible_system == 'Linux'
 
