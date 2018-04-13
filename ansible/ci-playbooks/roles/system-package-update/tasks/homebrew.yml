@@ -1,14 +1,39 @@
 ---
+- name: system-package-update (homebrew) | Check homebrew installation
+  stat:
+    path: "/usr/local/bin/brew"
+  register: brew_installed
+
+- name: system-package-update (homebrew) | Install homebrew
+  shell: '/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"'
+  become: true
+  become_user: "{{homebrew_user}}"
+  when: brew_installed.stat.exists == false
+
 - name: system-package-update (homebrew) | Update and upgrade packages
   homebrew:
     update_homebrew: yes
     upgrade_all: yes
+  become: true
+  become_user: "{{homebrew_user}}"
 
 - name: system-package-update (homebrew) | Clean up
   command: brew cleanup
+  become: true
+  become_user: "{{homebrew_user}}"
+  environment:
+    PATH: "/usr/local/bin:/usr/local/sbin:{{ ansible_env.PATH }}"
 
 - name: system-package-update (homebrew) | Prune stale links
   command: brew prune
+  become: true
+  become_user: "{{homebrew_user}}"
+  environment:
+    PATH: "/usr/local/bin:/usr/local/sbin:{{ ansible_env.PATH }}"
 
 - name: system-package-update (homebrew) | Check for problems
   command: brew doctor
+  become: true
+  become_user: "{{homebrew_user}}"
+  environment:
+    PATH: "/usr/local/bin:/usr/local/sbin:{{ ansible_env.PATH }}"
