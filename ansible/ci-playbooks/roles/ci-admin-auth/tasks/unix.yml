@@ -1,7 +1,7 @@
 ---
 - name: ci-admin-auth (unix) | Create .ssh
   file:
-    path: /home/ci-admin/.ssh
+    path: ~ci-admin/.ssh
     state: directory
     owner: ci-admin
     group: ci-admin
@@ -10,7 +10,7 @@
 
 - name: ci-admin-auth (unix) | Update .ssh/authorized_keys
   lineinfile:
-    path: /home/ci-admin/.ssh/authorized_keys
+    path: ~ci-admin/.ssh/authorized_keys
     create: yes
     owner: ci-admin
     group: ci-admin
