@@ -1,16 +1,12 @@
 ---
-- include: debian.yml
-  static: no
+- include_tasks: debian.yml
   when: ansible_os_family == 'Debian'
 
-- include: redhat.yml
-  static: no
+- include_tasks: redhat.yml
   when: ansible_os_family == 'RedHat'
 
-- include: freebsd.yml
-  static: no
+- include_tasks: freebsd.yml
   when: ansible_os_family == 'FreeBSD'
 
-- include: windows.yml
-  static: no
+- include_tasks: windows.yml
   when: ansible_os_family == 'Windows'

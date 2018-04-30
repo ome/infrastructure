@@ -10,6 +10,19 @@
     name: ci-admin
     comment: "CI System Administrator for Ansible use"
     group: ci-admin
-    password: "{{ ci_admin_password_hash }}"
     state: present
   become: yes
+
+- name: ci-admin-user (unix) | Set ci-admin user password
+  user:
+    name: ci-admin
+    password: "{{ ci_admin_password_hash }}"
+  become: yes
+  when: ansible_os_family != 'Darwin'
+
+- name: ci-admin-user (darwin) | Set ci-admin user password
+  user:
+    name: ci-admin
+    password: "{{ ci_admin_password }}"
+  become: yes
+  when: ansible_os_family == 'Darwin'

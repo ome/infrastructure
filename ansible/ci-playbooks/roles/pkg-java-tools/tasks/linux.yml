@@ -12,7 +12,7 @@
   register: ant_download
   when: ant_installed.stat.exists == false
 
-- name: ci-jenkins-workspace (debian) | Create Ant directory
+- name: ant (linux) | Create Ant directory
   file:
     path: "/opt/ant-{{ ant.version }}"
     state: directory

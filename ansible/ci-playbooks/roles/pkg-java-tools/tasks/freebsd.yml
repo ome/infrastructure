@@ -1,7 +1,7 @@
 ---
 - name: pkg-java-tools (freebsd) | Install Java build tools
   pkgng:
-    name: apache-ant,maven33
+    name: apache-ant,maven
     state: present
   become: yes
 

@@ -1,20 +1,12 @@
 ---
-- include: homebrew.yml
-  static: no
-  when: ansible_pkg_mgr is defined and ansible_pkg_mgr == 'homebrew'
-  become: true
-  become_user: "{{homebrew_user}}"
-  environment:
-    PATH: "/usr/local/bin:/usr/local/sbin:{{ ansible_env.PATH }}"
+- include_tasks: homebrew.yml
+  when: (ansible_pkg_mgr is defined and ansible_pkg_mgr == 'homebrew') or ansible_os_family == 'Darwin'
 
-- include: apt.yml
-  static: no
+- include_tasks: apt.yml
   when: ansible_pkg_mgr is defined and ansible_pkg_mgr == 'apt'
 
-- include: pkgng.yml
-  static: no
+- include_tasks: pkgng.yml
   when: ansible_pkg_mgr is defined and ansible_pkg_mgr == 'pkgng'
 
-- include: yum.yml
-  static: no
+- include_tasks: yum.yml
   when: ansible_pkg_mgr is defined and ansible_pkg_mgr == 'yum'
