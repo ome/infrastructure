@@ -1,0 +1,9 @@
+[submodule "devspace"]
+	path = devspace
+	url = git://github.com/ome/devspace
+[submodule "omego"]
+	path = omego
+	url = git://github.com/ome/omego
+[submodule "scc"]
+	path = scc
+	url = git://github.com/ome/scc
