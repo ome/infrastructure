@@ -5,8 +5,6 @@ Tools, scripts and other systems infrastructure used to support the work of OME 
 If you are interested in this work or require more information, please
 [contact us](http://www.openmicroscopy.org/site/community).
 
-[![Build Status](https://travis-ci.org/openmicroscopy/infrastructure.png)](http://travis-ci.org/openmicroscopy/infrastructure)
-
 ## Ansible
 
 OME uses Ansible extensively for deploying production services. Installation and usage instructions are
