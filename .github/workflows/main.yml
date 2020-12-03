@@ -25,4 +25,4 @@ jobs:
       - name: Build
         run: |
           cd ansible
-          bash travis.sh
+          bash build.sh
