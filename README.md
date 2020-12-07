@@ -1,5 +1,7 @@
 # OME Infrastructure
 
+[![Actions Status](https://github.com/ome/infrastructure/workflows/Build/badge.svg)](https://github.com/ome/infrastructure/actions)
+
 Tools, scripts and other systems infrastructure used to support the work of OME (http://www.openmicroscopy.org/).
 
 If you are interested in this work or require more information, please
